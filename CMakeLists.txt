@@ -54,7 +54,7 @@ IF(CUDA_FOUND)
         SET (CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel.")
     ENDIF (DEFINED CMAKE_BUILD_TYPE)
 
-    message(STATUS ${CMAKE_CURRENT_BINARY_DIR})
+    #message(STATUS ${CMAKE_CURRENT_BINARY_DIR})
 
     if ( CMAKE_SIZEOF_VOID_P EQUAL 4 )
         SET(Tracer_LIB_DIR "Tracer/lib32")
@@ -65,23 +65,25 @@ IF(CUDA_FOUND)
         SET(freeglut_LIB_DIR "freeglut/lib/x64")
         SET(bit_dest "")
     endif ( CMAKE_SIZEOF_VOID_P EQUAL 4 )
-
-    find_library(MacroSim_Tracer_LIBD ITO-MacroSimd HINTS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
-    find_library(MacroSim_Tracer_LIBR ITO-MacroSim HINTS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
+	
+	find_library(MacroSim_Tracer_LIBD ITO-MacroSimd PATHS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
+    find_library(MacroSim_Tracer_LIBR ITO-MacroSim PATHS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
+	message(STATUS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
+	message(STATUS ${MacroSim_Tracer_LIBR})
     set(MacroSim_Tracer_LIB debug ${MacroSim_Tracer_LIBD} optimized ${MacroSim_Tracer_LIBR}  CACHE STRING "" FORCE)
-
-    find_library(MacroSim_Propagation_LIBD PropagationMathd HINTS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
-    find_library(MacroSim_Propagation_LIBR PropagationMath HINTS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
+	
+	find_library(MacroSim_Propagation_LIBD PropagationMathd PATHS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
+    find_library(MacroSim_Propagation_LIBR PropagationMath PATHS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
     set(MacroSim_Propagation_LIB debug ${MacroSim_Propagation_LIBD} optimized ${MacroSim_Propagation_LIBR}  CACHE STRING "" FORCE)
 
     #set(MacroSim_FFTW_LIB debug libfftw3-3 optimized ITO-MacroSim  CACHE STRING "" FORCE)
 
-    find_library(MacroSim_OptiX_LIBR optix.1 HINTS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
-    find_library(MacroSim_OptiXu_LIBR optixu.1 HINTS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
+    find_library(MacroSim_OptiX_LIBR optix.1 PATHS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
+    find_library(MacroSim_OptiXu_LIBR optixu.1 PATHS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
     set(MacroSim_OptiX_LIB debug ${MacroSim_OptiX_LIBR} optimized ${MacroSim_OptiX_LIBR}  CACHE STRING "" FORCE)
     set(MacroSim_OptiXu_LIB debug ${MacroSim_OptiXu_LIBR} optimized ${MacroSim_OptiXu_LIBR}  CACHE STRING "" FORCE)
 
-    find_library(Freeglut_LIBR freeglut HINTS ${CMAKE_CURRENT_SOURCE_DIR}/${freeglut_LIB_DIR})
+    find_library(Freeglut_LIBR freeglut PATHS ${CMAKE_CURRENT_SOURCE_DIR}/${freeglut_LIB_DIR})
     set(Freeglut_LIB debug ${Freeglut_LIBR} optimized ${Freeglut_LIBR}  CACHE STRING "" FORCE)
 
 
