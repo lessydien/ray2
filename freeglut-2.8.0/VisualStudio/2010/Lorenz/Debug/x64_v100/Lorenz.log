@@ -1,0 +1,28 @@
+﻿Build started 15.02.2013 15:02:49.
+     1>Project "E:\itom_plugins\plugins\MacroSim\freeglut-2.8.0\VisualStudio\2010\Lorenz\Lorenz.vcxproj" on node 6 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Debug\x64_v100\Lorenz.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\x86_amd64\CL.exe /c /I..\..\..\include /Zi /nologo /W3 /WX- /Od /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\x64_v100\\" /Fd"Debug\x64_v100\vc100.pdb" /Gd /TC /wd4996 /errorReport:prompt ..\..\..\progs\demos\Lorenz\lorenz.c
+         lorenz.c
+       ManifestResourceCompile:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /nologo /fo"Debug\x64_v100\Lorenz.exe.embed.manifest.res" Debug\x64_v100\Lorenz_manifest.rc 
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"..\..\..\progs\demos\x64\debug_dll\Lorenz.exe" /INCREMENTAL /NOLOGO /LIBPATH:..\..\..\lib\x64\debug\ kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\x64_v100\Lorenz.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"E:\itom_plugins\plugins\MacroSim\freeglut-2.8.0\progs\demos\x64\debug_dll\Lorenz.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"..\..\..\progs\demos\x64\debug_dll\Lorenz.lib" /MACHINE:X64 Debug\x64_v100\Lorenz.exe.embed.manifest.res
+         Debug\x64_v100\lorenz.obj
+         Lorenz.vcxproj -> E:\itom_plugins\plugins\MacroSim\freeglut-2.8.0\VisualStudio\2010\Lorenz\..\..\..\progs\demos\x64\debug_dll\Lorenz.exe
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /out:"Debug\x64_v100\Lorenz.exe.embed.manifest" /manifest Debug\x64_v100\Lorenz.exe.intermediate.manifest
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /nologo /fo"Debug\x64_v100\Lorenz.exe.embed.manifest.res" Debug\x64_v100\Lorenz_manifest.rc 
+       LinkEmbedManifest:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"..\..\..\progs\demos\x64\debug_dll\Lorenz.exe" /INCREMENTAL /NOLOGO /LIBPATH:..\..\..\lib\x64\debug\ kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\x64_v100\Lorenz.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"E:\itom_plugins\plugins\MacroSim\freeglut-2.8.0\progs\demos\x64\debug_dll\Lorenz.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"..\..\..\progs\demos\x64\debug_dll\Lorenz.lib" /MACHINE:X64 Debug\x64_v100\Lorenz.exe.embed.manifest.res
+         Debug\x64_v100\lorenz.obj
+         Lorenz.vcxproj -> E:\itom_plugins\plugins\MacroSim\freeglut-2.8.0\VisualStudio\2010\Lorenz\..\..\..\progs\demos\x64\debug_dll\Lorenz.exe
+       FinalizeBuildStatus:
+         Deleting file "Debug\x64_v100\Lorenz.unsuccessfulbuild".
+         Touching "Debug\x64_v100\Lorenz.lastbuildstate".
+     1>Done Building Project "E:\itom_plugins\plugins\MacroSim\freeglut-2.8.0\VisualStudio\2010\Lorenz\Lorenz.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.83

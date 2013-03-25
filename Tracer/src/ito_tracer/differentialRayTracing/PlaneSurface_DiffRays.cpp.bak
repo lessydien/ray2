@@ -1,0 +1,271 @@
+fle/**\file PlaneSurface_DiffRays.cpp
+* \brief plane surface for differential rays
+* 
+*           
+* \author Mauch
+*/
+
+#include "PlaneSurface_DiffRays.h"
+#include "PlaneSurface_DiffRays_intersect.h"
+#include <iostream>
+//#include "rayTracingMath.h"
+#include <sutil.h>
+
+/**
+ * \detail intersect function for differential rays
+ *
+ * \param[in] rayStruct ray
+ * 
+ * \return double t. That is the factor t for which r=ray.position+t*ray.direction is the intersection point of the ray with the surface
+ * \sa 
+ * \remarks This is a wrapper that calls the inline function intersectRayAsphere that can be called from GPU as well
+ * \author Mauch
+ */
+double PlaneSurface_DiffRays::intersect(diffRayStruct *ray)
+{
+	return intersectRayPlaneSurface_DiffRays(ray->position,ray->direction,*(this->reducedParamsPtr));
+};
+
+/**
+ * \detail reduceParams
+ *
+ * \param[in] void
+ * 
+ * \return geometryError
+ * \sa 
+ * \remarks 
+ * \author Mauch
+ */
+geometryError PlaneSurface_DiffRays::reduceParams(void)
+{
+	if ( (this->paramsPtr!=NULL) && (this->reducedParamsPtr!=NULL) )
+	{
+		this->reducedParamsPtr->geometryID=this->paramsPtr->geometryID;
+		this->reducedParamsPtr->root=this->paramsPtr->root;
+		this->reducedParamsPtr->apertureRadius=this->paramsPtr->apertureRadius;
+		this->reducedParamsPtr->normal=this->paramsPtr->normal;
+		this->reducedParamsPtr->apertureType=this->paramsPtr->apertureType;
+		//this->reducedParamsPtr->rotNormal=this->paramsPtr->rotNormal;
+		this->reducedParamsPtr->tilt=this->paramsPtr->tilt;
+	}
+	return GEOM_NO_ERR;
+};
+
+/**
+ * \detail hit function function for differential rays
+ *
+ * we calc the normal to the surface in the intersection point. Then we call the hit function of the material that is attached to the surface
+ *
+ * \param[in] diffRayStruct ray
+ * \param[in] double ray
+ * 
+ * \return geometryError
+ * \sa 
+ * \remarks 
+ * \author Mauch
+ */
+geometryError PlaneSurface_DiffRays::hit(diffRayStruct &ray, double t)
+{
+	Mat_DiffRays_hitParams hitParams;
+	hitParams.normal=this->paramsPtr->normal;
+	// calc main directions at intersection point
+	hitParams.mainDirX=rotateRay(make_double3(1,0,0),this->paramsPtr->tilt);
+	hitParams.mainDirY=rotateRay(make_double3(0,1,0),this->paramsPtr->tilt);
+	// calc main radii of curvature at intersection. DOUBLE_MAX is the closest we can get to infinity here...
+	hitParams.mainRad=make_double2(DOUBLE_MAX,DOUBLE_MAX);
+	int i;
+	for (i=0;i<this->materialListLength;i++)
+	{
+		this->getMaterial(i)->hit(ray, hitParams, t, this->paramsPtr->geometryID);
+	}
+	
+	return GEOM_NO_ERR;
+ };
+
+/**
+ * \detail updateCPUSimInstance 
+ *
+ * \param[in] double lambda, simMode mode
+ * 
+ * \return geometryError
+ * \sa 
+ * \remarks 
+ * \author Mauch
+ */
+geometryError PlaneSurface_DiffRays::updateCPUSimInstance(double lambda, simMode mode)
+{
+	/* check wether any material is present */
+	if (this->materialListLength==0)
+	{
+		std::cout << "error in Geometry.updateCPUSimInstance(): no material attached to surface at geometry:" << this->paramsPtr->geometryID << std::endl;
+		return GEOM_NOMATERIAL_ERR;
+	}
+	this->mode=mode;
+	/* create instances of material */
+	int i;
+	for (i=0; i<materialListLength; i++)
+	{
+		if ( MAT_NO_ERR != this->materialList[i]->updateCPUSimInstance(lambda) )
+		{
+			std::cout << "error in Geometry.updateCPUSimInstance(): material.createCPUSimInstance() returned an error at geometry:" << this->paramsPtr->geometryID << std::endl;
+			return GEOM_ERR;
+		}
+	}
+	if (this->update)
+		reduceParams();
+	return GEOM_NO_ERR;
+};
+
+/**
+ * \detail createOptixInstance
+ *
+ * we create an OptiX instance of the surface and the materials attached to it
+ *
+ * \param[in] RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda
+ * 
+ * \return geometryError
+ * \sa 
+ * \remarks 
+ * \author Mauch
+ */
+geometryError PlaneSurface_DiffRays::createOptixInstance( RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda )
+{
+	reduceParams();
+	/* check wether any geometry is present */
+	if (this->materialListLength==0)
+	{
+		std::cout <<"error in PlaneSurface_DiffRays.createOptixInstance(): no material attached to surface at geometry:" << this->paramsPtr->geometryID << std::endl;
+		return GEOM_NOMATERIAL_ERR;
+	}
+
+	RT_CHECK_ERROR( rtGeometryCreate( context, &geometry ) );
+	RT_CHECK_ERROR( rtGeometrySetPrimitiveCount( geometry, 1u ) );
+
+    /* Create this geometry instance */
+    RT_CHECK_ERROR( rtGeometryInstanceCreate( context, &instance ) );
+    RT_CHECK_ERROR( rtGeometryInstanceSetGeometry( instance, geometry ) );
+    RT_CHECK_ERROR( rtGeometryInstanceSetMaterialCount( instance, materialListLength ) );
+
+	/* create instances of material */
+	int i;
+	for (i=0; i<materialListLength; i++)
+	{
+		if (MAT_NO_ERR != this->materialList[i]->createOptiXInstance(context, instance, i, mode, lambda) )
+		{
+			std::cout <<"error in PlaneSurface_DiffRays.createOptixInstance(): materialList[i]->createOptiXInstance() returned an error at index:" << i << " at geometry: " << this->paramsPtr->geometryID << std::endl;
+			return GEOM_ERR;
+		}
+	}
+
+	/* set the variables of the geometry */
+	RT_CHECK_ERROR( rtGeometryInstanceDeclareVariable( instance, "params", &params ) );
+	RT_CHECK_ERROR( rtGeometryInstanceDeclareVariable( instance, "geometryID", &geometryID ) );
+	RT_CHECK_ERROR( rtGeometryInstanceDeclareVariable( instance, "mode", &l_mode ) );
+	RT_CHECK_ERROR( rtGeometryInstanceDeclareVariable( instance, "materialListLength", &l_materialListLength ) );
+
+	RT_CHECK_ERROR( rtVariableSetUserData(params, sizeof(PlaneSurface_DiffRays_ReducedParams), this->reducedParamsPtr) );
+	RT_CHECK_ERROR( rtVariableSetUserData(l_mode, sizeof(simMode), &mode) );
+	RT_CHECK_ERROR( rtVariableSet1i(geometryID, this->paramsPtr->geometryID) );
+	RT_CHECK_ERROR( rtVariableSet1i(l_materialListLength, this->materialListLength) );
+
+	/* set intersection program */
+	RT_CHECK_ERROR( rtProgramCreateFromPTXFile( context, this->path_to_ptx_intersect, "intersect", &geometry_intersection_program ) );
+    RT_CHECK_ERROR( rtGeometrySetIntersectionProgram( geometry, geometry_intersection_program ) );
+
+	/* set bounding box program */
+	if (GEOM_NO_ERR != createOptixBoundingBox( context, geometry ) )
+	{
+		std::cout <<"error in PlaneSurface_DiffRays.createOptixInstance(): createOptixBoundingBox() returned an error at geometry:" << this->paramsPtr->geometryID << std::endl;
+		return GEOM_ERR;
+	}
+
+	/* add this geometry instance to geometry group */
+    RT_CHECK_ERROR( rtGeometryGroupSetChild( geometrygroup, index, instance ) );
+
+	this->update=false;
+	return GEOM_NO_ERR;
+
+};
+
+/**
+ * \detail createCPUSimInstance 
+ *
+ * \param[in] double lambda, simMode mode
+ * 
+ * \return geometryError
+ * \sa 
+ * \remarks 
+ * \author Mauch
+ */
+geometryError PlaneSurface_DiffRays::createCPUSimInstance(double lambda, simMode mode)
+{
+	this->reduceParams();
+	/* check wether any material is present */
+	if (this->materialListLength==0)
+	{
+		std::cout << "error in PlaneSurface_DiffRays.createCPUInstance(): no material attached to surface at geometry:" << this->paramsPtr->geometryID << std::endl;
+		return GEOM_NOMATERIAL_ERR;
+	}
+	this->mode=mode;
+	/* create instances of material */
+	int i;
+	for (i=0; i<materialListLength; i++)
+	{
+		if ( MAT_NO_ERR != this->materialList[i]->createCPUSimInstance(lambda) )
+		{
+			std::cout << "error in PlaneSurface_DiffRays.createCPUInstance(): material.createCPUSimInstance() returned an error at geometry:" << this->paramsPtr->geometryID << std::endl;
+			return GEOM_ERR;
+		}
+	}
+	return GEOM_NO_ERR;
+};
+
+/**
+ * \detail updateOptixInstance
+ *
+ * instead of destroying the OptiX instance of the surface we can change some of its parameters and update it and the materials attached to it
+ *
+ * \param[in] RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda
+ * 
+ * \return geometryError
+ * \sa 
+ * \remarks maybe we should include means to update only those parameters that have changed instead of updating all parameters at once...
+ * \author Mauch
+ */
+geometryError PlaneSurface_DiffRays::updateOptixInstance( RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda )
+{
+	if (this->update)
+	{
+		reduceParams();
+		/* check wether any geometry is present */
+		if (this->materialListLength==0)
+		{
+			std::cout <<"error in PlaneSurface_DiffRays.updateOptixInstance(): no material attached to surface at geometry:" << this->paramsPtr->geometryID << std::endl;
+			return GEOM_NOMATERIAL_ERR;
+		}
+
+		/* create instances of material */
+		int i;
+		for (i=0; i<materialListLength; i++)
+		{
+			if (MAT_NO_ERR != this->materialList[i]->updateOptiXInstance(context, instance, i, mode, lambda) )
+			{
+				std::cout <<"error in PlaneSurface_DiffRays.updateOptixInstance(): materialList[i] returned an error at index:" << i << " at geometry: " << this->paramsPtr->geometryID << std::endl;
+				return GEOM_ERR;
+			}
+		}
+
+		/* set the variables of the geometry */
+		RT_CHECK_ERROR( rtGeometryInstanceQueryVariable( instance, "params", &params ) );
+		RT_CHECK_ERROR( rtGeometryInstanceQueryVariable( instance, "geometryID", &geometryID ) );
+		RT_CHECK_ERROR( rtGeometryInstanceQueryVariable( instance, "mode", &l_mode ) );
+		RT_CHECK_ERROR( rtGeometryInstanceQueryVariable( instance, "materialListLength", &l_materialListLength ) );
+
+		RT_CHECK_ERROR( rtVariableSetUserData(params, sizeof(PlaneSurface_DiffRays_ReducedParams), this->reducedParamsPtr) );
+		RT_CHECK_ERROR( rtVariableSetUserData(l_mode, sizeof(simMode), &mode) );
+		RT_CHECK_ERROR( rtVariableSet1i(geometryID, this->paramsPtr->geometryID) );
+		RT_CHECK_ERROR( rtVariableSet1i(l_materialListLength, this->materialListLength) );
+	}
+	this->update=false;
+	return GEOM_NO_ERR;
+};
