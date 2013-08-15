@@ -3584,6 +3584,7 @@ parserError parseZemaxGlassCatalog(parseGlassResultStruct** parseResultsGlassPtr
 	glassResultStructPtr=new parseGlassResultStruct();
 	sprintf(search_glassName, "%s", glassName);
 	yyin = hfile;
+	glassFound=false;
 	//yyin = fopen( "e:\\mauch\\glass.AGF", "r" );
     /* do the actual parsing */
 //	while(yylex() != 0)

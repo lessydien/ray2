@@ -58,6 +58,22 @@ GeometryItem* GeometryItemLib::createGeometry(GeometryItem::GeomType type)
 		case GeometryItem::MICROLENSARRAY:
 			l_pItem=new MicroLensArrayItem();
 			break;
+		case GeometryItem::APERTUREARRAY:
+			l_pItem=new ApertureArrayItem();
+			break;
+		case GeometryItem::STOPARRAY:
+			l_pItem=new StopArrayItem();
+			break;
+		case GeometryItem::CADOBJECT:
+			l_pItem=new CadObjectItem();
+			break;
+		case GeometryItem::SUBSTRATE:
+			l_pItem=new SubstrateItem();
+			break;
+		case GeometryItem::VOLUMESCATTERER:
+			l_pItem=new VolumeScattererItem();
+			break;
+
 		//case GeometryItem::DETECTOR:
 		//	l_pItem=new MaterialPathTraceSourceItem();
 		//	break;
@@ -136,6 +152,21 @@ QString GeometryItemLib::geomTypeToString(const GeometryItem::GeomType type) con
 	case GeometryItem::MICROLENSARRAY:
 		str="MICROLENSARRAY";
 		break;
+	case GeometryItem::APERTUREARRAY:
+		str="APERTUREARRAY";
+		break;
+	case GeometryItem::STOPARRAY:
+		str="STOPARRAY";
+		break;
+	case GeometryItem::CADOBJECT:
+		str="CADOBJECT";
+		break;
+	case GeometryItem::SUBSTRATE:
+		str="SUBSTRATE";
+		break;
+	case GeometryItem::VOLUMESCATTERER:
+		str="VOLUMESCATTERER";
+		break;
 
 	default:
 		str="UNKNOWN";
@@ -170,6 +201,16 @@ GeometryItem::GeomType GeometryItemLib::stringToGeomType(const QString str) cons
 		return GeometryItem::IDEALLENSE;
 	if (!str.compare("MICROLENSARRAY"))
 		return GeometryItem::MICROLENSARRAY;
+	if (!str.compare("APERTUREARRAY"))
+		return GeometryItem::APERTUREARRAY;
+	if (!str.compare("STOPARRAY"))
+		return GeometryItem::STOPARRAY;
+	if (!str.compare("CADOBJECT"))
+		return GeometryItem::CADOBJECT;
+	if (!str.compare("SUBSTRATE"))
+		return GeometryItem::SUBSTRATE;
+	if (!str.compare("VOLUMESCATTERER"))
+		return GeometryItem::VOLUMESCATTERER;
 
 	//if (!str.compare("DETECTOR"))
 	//	return GeometryItem::DETECTOR;
@@ -200,6 +241,8 @@ GeometryItem::Abstract_MaterialType GeometryItemLib::stringToGeomMatType(const Q
 		return GeometryItem::PATHTRACESOURCE;
 	if (!str.compare("DOE"))
 		return GeometryItem::DOE;
+	if (!str.compare("VOLUMESCATTER"))
+		return GeometryItem::VOLUMESCATTER;
 
 	return GeometryItem::ABSORBING;
 }
@@ -236,6 +279,13 @@ QString GeometryItemLib::geomMatTypeToString(const GeometryItem::Abstract_Materi
 	case GeometryItem::PATHTRACESOURCE:
 		str = "PATHTRACESOURCE";
 		break;
+	case GeometryItem::DOE:
+		str = "DOE";
+		break;
+	case GeometryItem::VOLUMESCATTER:
+		str = "VOLUMESCATTER";
+		break;
+
 	default:
 		break;
 	}
@@ -255,6 +305,11 @@ QList<AbstractItem*> GeometryItemLib::fillLibrary() const
 	l_list.append(new IdealLenseItem());
 	l_list.append(new ApertureStopItem());
 	l_list.append(new MicroLensArrayItem());
+	l_list.append(new ApertureArrayItem());
 	l_list.append(new ParabolicSurfaceItem());
+	l_list.append(new CadObjectItem());
+	l_list.append(new SubstrateItem());
+	l_list.append(new StopArrayItem());
+	l_list.append(new VolumeScattererItem());
 	return l_list;
 }

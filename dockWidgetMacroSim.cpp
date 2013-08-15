@@ -22,7 +22,7 @@
 	ui.setupUi(this); 
     
     char* temp = Params["name"].getVal<char*>();
-	ui.lblName->setText(temp);
+//	ui.lblName->setText(temp);
 	ui.lblID->setText(QString::number(uniqueID));
     free(temp);
 

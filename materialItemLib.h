@@ -29,6 +29,7 @@
 #include "materialReflectingItem.h"
 #include "materialRefractingItem.h"
 #include "materialDOEItem.h"
+#include "materialVolumeScatterItem.h"
 //#include "materialAbsorbingItem.h"
 //#include "geometryItem.h"
 

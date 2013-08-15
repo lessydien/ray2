@@ -23,6 +23,9 @@
 #include "QPropertyEditor/CustomTypes.h"
 #include "GeometryItem.h"
 
+#include <vtkPolyData.h>
+#include <vtkPolyDataMapper.h>
+
 using namespace macrosim;
 
 namespace macrosim 
@@ -43,8 +46,11 @@ class MicroLensArrayItem :
 	Q_PROPERTY(double microLensRadius READ getMicroLensRadius WRITE setMicroLensRadius DESIGNABLE true USER true);
 	Q_PROPERTY(double microLensAptRad READ getMicroLensAptRad WRITE setMicroLensAptRad DESIGNABLE true USER true);
 	Q_PROPERTY(double microLensPitch READ getMicroLensPitch WRITE setMicroLensPitch DESIGNABLE true USER true);
-	Q_PROPERTY(MicroLensAptType microLensAptType READ getMicroLensAptType WRITE setMicroLensAptType DESIGNABLE true USER true);	
+	//Q_PROPERTY(MicroLensAptType microLensAptType READ getMicroLensAptType WRITE setMicroLensAptType DESIGNABLE true USER true);	
 	Q_PROPERTY(double thickness READ getThickness WRITE setThickness DESIGNABLE true USER true);
+	Q_CLASSINFO("microLensRadius", "decimals=10;");
+	Q_CLASSINFO("microLensAptRad", "decimals=10;");
+	Q_CLASSINFO("microLensPitch", "decimals=10;");
 
 
 public:
@@ -55,20 +61,23 @@ public:
 
 	// functions for property editor
 	double getMicroLensRadius() const {return m_microLensRadius;};
-	void setMicroLensRadius(const double in) {m_microLensRadius=in; emit itemChanged(m_index, m_index);};
+	void setMicroLensRadius(const double in) {m_microLensRadius=in; this->updateVtk(); emit itemChanged(m_index, m_index);};
 	double getMicroLensAptRad() const {return m_microLensAptRad;};
-	void setMicroLensAptRad(const double in) {m_microLensAptRad=in; emit itemChanged(m_index, m_index);};
+	void setMicroLensAptRad(const double in) {m_microLensAptRad=in; this->updateVtk(); emit itemChanged(m_index, m_index);};
 	double getThickness() const {return m_thickness;};
-	void setThickness(const double in) {m_thickness=in; emit itemChanged(m_index, m_index);};
+	void setThickness(const double in) {m_thickness=in; this->updateVtk(); emit itemChanged(m_index, m_index);};
 	double getMicroLensPitch() const {return m_microLensPitch;};
-	void setMicroLensPitch(const double in) {m_microLensPitch=in; emit itemChanged(m_index, m_index);};
+	void setMicroLensPitch(const double in) {m_microLensPitch=in; this->updateVtk(); emit itemChanged(m_index, m_index);};
 	MicroLensAptType getMicroLensAptType() const {return m_microLensAptType;};
-	void setMicroLensAptType(const MicroLensAptType in) {m_microLensAptType=in; emit itemChanged(m_index, m_index);};
+	void setMicroLensAptType(const MicroLensAptType in) {m_microLensAptType=in; this->updateVtk(); emit itemChanged(m_index, m_index);};
 
 	bool writeToXML(QDomDocument &document, QDomElement &root) const;
 	bool readFromXML(const QDomElement &node);
 	void render(QMatrix4x4 &m, RenderOptions &options);
+	void renderVtk(vtkSmartPointer<vtkRenderer> renderer);
+
 	Vec3f calcNormal(Vec3f vertex, Vec3f* neighbours, int nr);
+	Vec3f calcNormal(Vec3f vertex);
 
 	QString microLensAptTypeToString(MicroLensAptType in) const;
 	MicroLensAptType stringToMicroLensAptType(QString in) const;
@@ -77,11 +86,18 @@ public:
 //	void setMaterial(const MaterialItem::MaterialType type) {m_materialType=type;};
 
 private:
+	void updateVtk();
+
+	vtkSmartPointer<vtkPolyData> m_pPolydata;
+	vtkSmartPointer<vtkPolyDataMapper> m_pMapper;
+
 	double m_microLensRadius;
 	double m_microLensAptRad;
 	double m_thickness;
 	double m_microLensPitch;
 	MicroLensAptType m_microLensAptType;
+
+	float calcZCoordinate(float x, float y, float lensHeightMax, Vec3f* z);
 
 //	MaterialItem::MaterialType m_materialType;
 };

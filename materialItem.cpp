@@ -69,8 +69,16 @@ void MaterialItem::setScatType(const Mat_ScatterType type)
 		m_scatType=type;
 		ScatterItemLib l_scatLib;
 		ScatterItem::ScatterType l_newScatType=l_scatLib.matScatTypeToScatType(type);
-		ScatterItem* l_pNewScat=l_scatLib.createScatter(l_newScatType);
-		this->setChild(l_pNewScat);
+		ScatterItem* l_pNewScatter=l_scatLib.createScatter(l_newScatType);
+		AbstractItem* l_pOldScatter=this->getChild(1);
+		QModelIndex l_oldParentIndex;
+		if (l_pOldScatter!=NULL)
+		{
+			l_oldParentIndex=this->getModelIndex();
+			this->m_childs.replace(1, l_pNewScatter);
+			emit itemExchanged(l_oldParentIndex, 1, 1, *l_pNewScatter);
+		}
+//		this->setChild(l_pNewScatter);
 		emit itemChanged(m_index, m_index);
 	}
 }
@@ -83,7 +91,15 @@ void MaterialItem::setCoatType(const Mat_CoatingType type)
 		CoatingItemLib l_coatLib;
 		CoatingItem::CoatingType l_newCoatType=l_coatLib.matCoatTypeToCoatType(type);
 		CoatingItem* l_pNewCoat=l_coatLib.createCoating(l_newCoatType);
-		this->setChild(l_pNewCoat);
+		AbstractItem* l_pOldCoating=this->getChild(0);
+		QModelIndex l_oldParentIndex;
+		if (l_pOldCoating != NULL)
+		{
+			l_oldParentIndex=this->getModelIndex();
+			this->m_childs.replace(0, l_pNewCoat);
+			emit itemExchanged(l_oldParentIndex, 0, 0, *l_pNewCoat);
+		}
+		//this->setChild(l_pNewCoat);
 		emit itemChanged(m_index, m_index);
 	}
 }

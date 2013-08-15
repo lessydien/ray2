@@ -388,8 +388,49 @@ struct double1
 /*DEVICE_BUILTIN*/
 struct __builtin_align__(16) double2
 {
+	//double2()
+	//{
+	//};
+	//double2(volatile double2& in)
+	//{
+	//	this->x=in.x;
+	//	this->y=in.y;
+	//};
+	//double2(double2& in)
+	//{
+	//	this->x=in.x;
+	//	this->y=in.y;
+	//};
+ // double2& double2::operator=(const double2& in)
+ // {
+	//if (this != &in)
+	//{
+	//	this->x=in.x;
+	//	this->y=in.y;
+	//}
+	//return *this;
+ // };
+ // volatile double2& double2::operator=(volatile double2& in) volatile
+ // {
+	//if (this != &in)
+	//{
+	//	this->x=in.x;
+	//	this->y=in.y;
+	//}
+	//return *this;
+ // };
+ // volatile double2& double2::operator=(double2& in)
+ // {
+	//if (this != &in)
+	//{
+	//	this->x=in.x;
+	//	this->y=in.y;
+	//}
+	//return *this;
+ // };
   double x, y;
-  __cuda_assign_operators(double2)
+  __cuda_assign_operators(double2);
+ 
 };
 
 /*DEVICE_BUILTIN*/

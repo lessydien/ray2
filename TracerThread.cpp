@@ -71,7 +71,8 @@ void TracerThread::init(QString& scene, ito::DataObject* field, ConsoleStream *o
 	strcpy(&(this->m_params.outputFilesPath[0]), l_outFilePathString.c_str());
 	string l_inFilePathString=guiParams.inputFilePath.toAscii();
 	strcpy(&(this->m_params.inputFilesPath[0]), l_inFilePathString.c_str());
-
+	string l_path_to_ptx=guiParams.path_to_ptx.toAscii();
+	strcpy(&(this->m_params.path_to_ptx[0]), l_path_to_ptx.c_str());
 }
 
 //void TracerThread::run()

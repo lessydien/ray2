@@ -22,6 +22,8 @@
 
 #include "QPropertyEditor/CustomTypes.h"
 #include "GeometryItem.h"
+#include <vtkPolyData.h>
+#include <vtkPolyDataMapper.h>
 
 using namespace macrosim;
 
@@ -48,14 +50,19 @@ public:
 	bool writeToXML(QDomDocument &document, QDomElement &root) const;
 	bool readFromXML(const QDomElement &node);
 	void render(QMatrix4x4 &m, RenderOptions &options);
+	void renderVtk(vtkSmartPointer<vtkRenderer> renderer);
 
 	Vec3f calcNormal(Vec3f vertex, Vec3f* neighbours, int nr);
+	Vec3f calcNormal(Vec3f vertex);
 
 //	MaterialItem::MaterialType getMaterial() const {return m_materialType;};
 //	void setMaterial(const MaterialItem::MaterialType type) {m_materialType=type;};
 
 private:
+	void updateVtk();
 
+	vtkSmartPointer<vtkPolyData> m_pPolydata;
+	vtkSmartPointer<vtkPolyDataMapper> m_pMapper;
 };
 
 }; //namespace macrosim

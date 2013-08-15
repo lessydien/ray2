@@ -18,6 +18,8 @@
 #include "abstractItem.h"
 #include "geometryItemLib.h"
 #include "materialItemLib.h"
+#include "macrosim_scenemodel.h"
+#include <vtkProperty.h>
 #include <iostream>
 using namespace std;
 
@@ -50,14 +52,86 @@ void AbstractItem::setMaterialType(const Abstract_MaterialType type)
 		MaterialItemLib l_matLib;
 		MaterialItem::MaterialType l_newMatType=l_matLib.abstractMatTypeToMatType(type);
 		MaterialItem* l_pNewMat=l_matLib.createMaterial(l_newMatType);
-		// remove old material
-		this->removeChild(0);
-		this->setChild(l_pNewMat);
+		AbstractItem* l_pOldMaterial=this->getChild(0);
+		QModelIndex l_oldParentIndex;
+		if (l_pOldMaterial!=NULL)
+		{
+			l_oldParentIndex=this->getModelIndex();
+			// free old material
+			this->m_childs.replace(0, l_pNewMat);
+			emit itemExchanged(l_oldParentIndex, 0, 0, *l_pNewMat);
+		}
 		emit itemChanged(m_index, m_index);
+
+		if (this->m_renderOptions.m_renderMode==RENDER_TRANSPARENCY )
+			m_pActor->GetProperty()->SetOpacity(this->getChild(0)->getTransparency());
+		else
+			m_pActor->GetProperty()->SetOpacity(1.0);
+
+		this->updateVtk();
 	}
 };
 
-void AbstractItem::render(QMatrix4x4 &m, RenderOptions &options)
+QModelIndex AbstractItem::hasActor(void *actor) const
 {
+	if (actor==this->m_pActor)
+	{
+		return this->getModelIndex();
+	}
+	return QModelIndex();
+}
 
+void AbstractItem::createModelIndex(QModelIndex &parent, int row, int coloumn)
+{
+	const SceneModel *l_pModel;
+	l_pModel=reinterpret_cast<const SceneModel*>(parent.model());
+	QModelIndex l_index;
+	//l_pModel->beginInsertRows(parent, row, coloumn);
+	l_index=l_pModel->index(row, coloumn, parent);
+	this->setModelIndex(l_index);
+	// loop over childs
+	for (int i=0; i<this->getNumberOfChilds(); i++)
+	{
+		AbstractItem* l_pChild=this->getChild(i);
+		l_pChild->createModelIndex(this->getModelIndex(), i, 0);
+	}
+};
+
+
+
+void AbstractItem::setRender(const bool in)
+{
+	m_render=in;
+	if (m_render)
+		m_pActor->SetVisibility(1);
+	else
+		m_pActor->SetVisibility(0);
+
+	this->updateVtk();
+};
+
+void AbstractItem::setRenderOptions(RenderOptions options)
+{
+	m_renderOptions=options;
+	switch (options.m_renderMode)
+	{
+	case RENDER_TRANSPARENCY:
+		if (this->m_childs.size() == 1)
+			m_pActor->GetProperty()->SetOpacity(this->getChild(0)->getTransparency());
+		else
+			m_pActor->GetProperty()->SetOpacity(1.0);
+		m_pActor->GetProperty()->SetRepresentationToSurface();
+		break;
+	case RENDER_SOLID:
+		m_pActor->GetProperty()->SetOpacity(1.0);
+		m_pActor->GetProperty()->SetRepresentationToSurface();
+		break;
+	case RENDER_WIREGRID:
+		m_pActor->GetProperty()->SetOpacity(1.0);
+		m_pActor->GetProperty()->SetRepresentationToWireframe();
+		break;
+	}
+	m_pActor->GetProperty()->SetAmbient(options.m_ambientInt);
+	m_pActor->GetProperty()->SetDiffuse(options.m_diffuseInt);
+	m_pActor->GetProperty()->SetSpecular(options.m_specularInt);
 };

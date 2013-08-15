@@ -25,15 +25,15 @@ RayFieldItem::RayFieldItem(QString name, FieldType type, QObject *parent) :
 	FieldItem(name, type, parent),
 //		m_root(Vec3d(0.0,0.0,0.0)),
 		m_tilt(Vec3d(0.0,0.0,0.0)),
-		m_rayDirection(Vec3d(0.0,0.0,0.0)),
+		m_rayDirection(Vec3d(0.0,0.0,1.0)),
 		m_alphaMax(Vec2d(0.0,0.0)),
 		m_alphaMin(Vec2d(0.0,0.0)),
-		m_power(0.0),
+		m_power(1.0),
 		m_coherence(0.0),
-		m_width(0),
-		m_height(0),
-		m_widthLayout(0),
-		m_heightLayout(0),
+		m_width(10),
+		m_height(10),
+		m_widthLayout(10),
+		m_heightLayout(10),
 		m_rayDirDistrType(RAYDIR_UNIFORM),
 		m_rayPosDistrType(RAYPOS_GRID_RECT)
 {
@@ -49,11 +49,14 @@ QString RayFieldItem::rayDirDistrTypeToString(const RayDirDistrType type) const
 	QString str;
 	switch (this->m_rayDirDistrType)
 	{
-	case RAYDIR_RAND:
-		str="RAYDIR_RAND";
+	case RAYDIR_RAND_RECT:
+		str="RAYDIR_RAND_RECT";
 		break;
-	case RAYDIR_RAND_NORM:
-		str="RAYDIR_RAND_NORM";
+	case RAYDIR_RAND_RAD:
+		str="RAYDIR_RAND_RAD";
+		break;
+	case RAYDIR_RANDNORM_RECT:
+		str="RAYDIR_RANDNORM_RECT";
 		break;
 	case RAYDIR_RANDIMPAREA:
 		str="RAYDIR_RANDIMPAREA";
@@ -79,10 +82,12 @@ QString RayFieldItem::rayDirDistrTypeToString(const RayDirDistrType type) const
 
 RayFieldItem::RayDirDistrType RayFieldItem::stringToRayDirDistrType(const QString str) const
 {
-	if (!str.compare("RAYDIR_RAND"))
-		return RAYDIR_RAND;
-	if (!str.compare("RAYDIR_RAND_NORM"))
-		return RAYDIR_RAND_NORM;
+	if (!str.compare("RAYDIR_RAND_RECT"))
+		return RAYDIR_RAND_RECT;
+	if (!str.compare("RAYDIR_RAND_RAD"))
+		return RAYDIR_RAND_RAD;
+	if (!str.compare("RAYDIR_RANDNORM_RECT"))
+		return RAYDIR_RANDNORM_RECT;
 	if (!str.compare("RAYDIR_RANDIMPAREA"))
 		return RAYDIR_RANDIMPAREA;
 	if (!str.compare("RAYDIR_UNIFORM"))

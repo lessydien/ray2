@@ -17,6 +17,7 @@
 
 #include "renderFuncs.h"
 #include "DataObject/dataObjectFuncs.h"
+#include <GL/glew.h>
 
 //using namespace macrosim;
 
@@ -127,6 +128,10 @@ void renderIntensityField(ito::DataObject &field, RenderOptions &options)
 	}
 };
 
+void renderSemiSphereVtk(double aptRadius, double radius, double numApt, RenderOptions &options)
+{
+}
+
 void renderSemiSphere(double aptRadius, double radius, double numApt, RenderOptions &options)
 {
 	double ar=aptRadius;
@@ -152,8 +157,6 @@ void renderSemiSphere(double aptRadius, double radius, double numApt, RenderOpti
 	//for (float phi=0; phi <= PI/2; phi+=factor)
 	for (int iv=0; iv<options.m_slicesHeight; iv++)
 	{
-		Vec3f neighbours[8];
-
 		double phi=0+iv*deltaV;
 		glBegin(GL_TRIANGLE_STRIP);
 
@@ -223,4 +226,46 @@ Vec3f calcSemiSphereNormal(Vec3f vertex, double radius)
 	if (radius < 0)
 		normal=normal*-1;
 	return normal;
+}
+
+void rotateVec(Vec3d *vec, Vec3d tilt)
+{
+	Mat3x3d Mx=Mat3x3d(1,0,0, 0,cos(tilt.X),-sin(tilt.X), 0,sin(tilt.X),cos(tilt.X));
+	Mat3x3d My=Mat3x3d(cos(tilt.Y),0,sin(tilt.Y), 0,1,0, -sin(tilt.Y),0,cos(tilt.Y));
+	Mat3x3d Mz=Mat3x3d(cos(tilt.Z),-sin(tilt.Z),0, sin(tilt.Z),cos(tilt.Z),0, 0,0,1);
+	Mat3x3d Mxy=Mx*My;
+	Mat3x3d M=Mxy*Mz;
+	Vec3d tmpVec=M*(*vec);
+	*vec=tmpVec;
+}
+
+RenderMode stringToRenderMode(QString str)
+{
+	if (str.isNull())
+		return RENDER_SOLID;
+	if (!str.compare("Wireframe"))
+		return RENDER_WIREGRID;
+	if (!str.compare("Transparent"))
+		return RENDER_TRANSPARENCY;
+
+	return RENDER_SOLID;
+};
+
+int renderModeToComboBoxIndex(RenderMode in)
+{
+	switch (in)
+	{
+	case RENDER_SOLID:
+		return 0;
+		break;
+	case RENDER_WIREGRID:
+		return 1;
+		break;
+	case RENDER_TRANSPARENCY:
+		return 2;
+		break;
+	default:
+		return 0;
+		break;
+	}
 }

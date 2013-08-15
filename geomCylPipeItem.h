@@ -22,6 +22,8 @@
 
 #include "QPropertyEditor/CustomTypes.h"
 #include "GeometryItem.h"
+#include <vtkPolyData.h>
+#include <vtkPolyDataMapper.h>
 
 using namespace macrosim;
 
@@ -41,6 +43,8 @@ class CylPipeItem :
 	Q_PROPERTY(double radius READ getRadius WRITE setRadius DESIGNABLE true USER true);
 	Q_PROPERTY(double thickness READ getThickness WRITE setThickness DESIGNABLE true USER true);
 	//Q_PROPERTY(MaterialItem::MaterialType Material READ getMaterial WRITE setMaterial DESIGNABLE true USER true);
+	Q_CLASSINFO("radius", "decimals=10;");
+	Q_CLASSINFO("thickness", "decimals=10;");
 
 
 public:
@@ -50,24 +54,30 @@ public:
 
 	// functions for property editor
 	double getRadius() const {return m_radius;};
-	void setRadius(const double in) {m_radius=in; emit itemChanged(m_index, m_index);};
+	void setRadius(const double in) {m_radius=in; this->updateVtk(); emit itemChanged(m_index, m_index);};
 	double getThickness() const {return m_thickness;};
-	void setThickness(const double in) {m_thickness=in; emit itemChanged(m_index, m_index);};
+	void setThickness(const double in) {m_thickness=in; this->updateVtk(); emit itemChanged(m_index, m_index);};
 
 	bool writeToXML(QDomDocument &document, QDomElement &root) const;
 	bool readFromXML(const QDomElement &node);
 	void render(QMatrix4x4 &m, RenderOptions &options);
+	void renderVtk(vtkSmartPointer<vtkRenderer> renderer);
 
 	Vec3f calcNormal(Vec3f vertex, Vec3f* neighbours, int nr);
+	Vec3f calcNormal(Vec3f vertex);
 
 //	MaterialItem::MaterialType getMaterial() const {return m_materialType;};
 //	void setMaterial(const MaterialItem::MaterialType type) {m_materialType=type;};
 
 private:
+	void updateVtk();
 
 //	MaterialItem::MaterialType m_materialType;
 	double m_radius;
 	double m_thickness;
+
+	vtkSmartPointer<vtkPolyData> m_pPolydata;
+	vtkSmartPointer<vtkPolyDataMapper> m_pMapper;
 };
 
 }; //namespace macrosim

@@ -22,7 +22,10 @@
 
 #include "QPropertyEditor/CustomTypes.h"
 #include "GeometryItem.h"
-#include <QtOpenGL\qglfunctions.h>
+
+#include <vtkPolyData.h>
+#include <vtkPolyDataMapper.h>
+//#include <QtOpenGL\qglfunctions.h>
 //#include "glut.h"
 
 using namespace macrosim;
@@ -46,6 +49,11 @@ class SphericalLenseItem :
 	Q_PROPERTY(double thickness READ getThickness WRITE setThickness DESIGNABLE true USER true);
 	//Q_PROPERTY(MaterialItem::MaterialType Material READ getMaterial WRITE setMaterial DESIGNABLE true USER true);
 
+	Q_CLASSINFO("radius1", "decimals=10;");
+	Q_CLASSINFO("radius2", "decimals=10;");
+	Q_CLASSINFO("apertureRadius2", "decimals=10;");
+	Q_CLASSINFO("thickness", "decimals=10;");
+
 
 public:
 
@@ -54,18 +62,20 @@ public:
 
 	// functions for property editor
 	double getRadius1() const {return m_radius1;};
-	void setRadius1(const double radius) {m_radius1=radius; emit itemChanged(m_index, m_index);};
-	double getRadius2() const {return m_radius2;};
-	void setRadius2(const double radius) {m_radius2=radius; emit itemChanged(m_index, m_index);};
+	void setRadius1(const double radius) {m_radius1=radius; this->updateVtk(); emit itemChanged(m_index, m_index);};
+	double getRadius2() const {return m_radius2; };
+	void setRadius2(const double radius) {m_radius2=radius; this->updateVtk(); emit itemChanged(m_index, m_index);};
 	Vec2d getApertureRadius2() const {return m_apertureRadius2;};
-	void setApertureRadius2(Vec2d in) {m_apertureRadius2=in; emit itemChanged(m_index, m_index);};
+	void setApertureRadius2(Vec2d in) {m_apertureRadius2=in; this->updateVtk(); emit itemChanged(m_index, m_index);};
 	double getThickness() const {return m_thickness;};
-	void setThickness(const double thickness) {m_thickness=thickness; emit itemChanged(m_index, m_index);};
+	void setThickness(const double thickness) {m_thickness=thickness; this->updateVtk(); emit itemChanged(m_index, m_index);};
 
 	bool writeToXML(QDomDocument &document, QDomElement &root) const;
 	bool readFromXML(const QDomElement &node);
 
 	void render(QMatrix4x4 &m, RenderOptions &options);
+	void renderVtk(vtkSmartPointer<vtkRenderer> renderer);
+	void updateVtk();
 	Vec3f calcNormal(Vec3f vertex, Vec3f* neighbours, int nr);
 
 //	MaterialItem::MaterialType getMaterial() const {return m_materialType;};
@@ -74,12 +84,17 @@ public:
 private:
 	Vec3f calcNormalSide(Vec3f vertex);
 	Vec3f calcNormalBack(Vec3f vertex);
+	Vec3f calcNormal(Vec3f vertex);
 
 //	MaterialItem::MaterialType m_materialType;
 	double m_radius1;
 	double m_radius2;
 	Vec2d m_apertureRadius2;
 	double m_thickness;
+
+	vtkSmartPointer<vtkPolyData> m_pPolydata;
+	vtkSmartPointer<vtkPolyDataMapper> m_pMapper;
+
 };
 
 }; //namespace macrosim

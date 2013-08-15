@@ -22,10 +22,28 @@
 
 #include "QPropertyEditor/CustomTypes.h"
 #include "AbstractItem.h"
-#include <QtOpenGL\qglfunctions.h>
+//#include <QtOpenGL\qglfunctions.h>
+#include "glut.h"
 #include "DataObject/dataobj.h"
 
 using namespace macrosim;
+
+typedef struct test
+{
+	int x;
+	test() : x(1)
+	{
+	}
+	test& test::operator=(const test& in)
+	{
+		if (this!=&in)
+		{
+			this->x=in.x;
+		}
+		return *this;
+	}
+};
+
 
 namespace macrosim 
 {

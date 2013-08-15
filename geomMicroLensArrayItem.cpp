@@ -18,6 +18,14 @@
 #include "geomMicroLensArrayItem.h"
 #include "materialItemLib.h"
 #include "geometryItemLib.h"
+#include "glut.h"
+
+#include <vtkVertex.h>
+#include <vtkCellArray.h>
+#include <vtkProperty.h>
+#include <vtkDoubleArray.h>
+#include <vtkPointData.h>
+
 #ifdef max
 #undef max
 #endif
@@ -30,13 +38,27 @@ using namespace macrosim;
 
 MicroLensArrayItem::MicroLensArrayItem(QString name, QObject *parent) :
 	GeometryItem(name, MICROLENSARRAY, parent),
-		m_thickness(10),
-		m_microLensPitch(0),
-		m_microLensAptRad(0),
-		m_microLensRadius(0),
-		m_microLensAptType(MICROELLIPTICAL)
+		m_thickness(2),
+		m_microLensPitch(2),
+		m_microLensAptRad(2),
+		m_microLensRadius(-2),
+		m_microLensAptType(MICRORECTANGULAR)
 {
+	//this->setApertureType(RECTANGULAR);
+	// Create a polydata to store everything in
+	m_pPolydata = vtkSmartPointer<vtkPolyData>::New();
 
+	// Setup actor and mapper
+	vtkSmartPointer<vtkPolyDataMapper> m_pMapper =	vtkSmartPointer<vtkPolyDataMapper>::New();
+
+#if VTK_MAJOR_VERSION <= 5
+	m_pMapper->SetInput(m_pPolydata);
+#else
+	m_pMapper->SetInputData(m_pPolydata);
+#endif
+	m_pActor->SetMapper(m_pMapper);
+
+	this->setApertureType(RECTANGULAR);
 }
 
 MicroLensArrayItem::~MicroLensArrayItem()
@@ -86,7 +108,7 @@ bool MicroLensArrayItem::writeToXML(QDomDocument &document, QDomElement &root) c
 	backNode.setAttribute("faceType", "BACKFACE");
 	backNode.setAttribute("objectType", "GEOMETRY");
 	backNode.setAttribute("geomType", "MICROLENSARRAYSURF");
-	backNode.setAttribute("nrSurfacesSeq", "2");
+	backNode.setAttribute("nrSurfacesSeq", "1");
 
 	Vec3d orientation(0,0,1);
 	rotateVec3d(&orientation, this->getTilt());
@@ -291,6 +313,14 @@ bool MicroLensArrayItem::writeToXML(QDomDocument &document, QDomElement &root) c
 		sideNode1.setAttribute("thickness", QString::number(m_thickness));
 		sideNode1.setAttribute("apertureRadius.x", QString::number(this->getApertureRadius().X));
 		sideNode1.setAttribute("apertureRadius.y", QString::number(this->getApertureRadius().Y));
+
+		if (this->getApertureRadius().X != this->getApertureRadius().Y)
+		{
+			cout << "warning in SubstrateItem.writeToXML(): different aperture radii in x and y for elliptical apertures are not implmented yet. An circular aperture with radius x will be assuemed." << endl;
+		}
+		sideNode1.setAttribute("radius.x", QString::number(this->getApertureRadius().X));
+		sideNode1.setAttribute("radius.y", QString::number(this->getApertureRadius().X));
+
 		sideNode1.setAttribute("nrSurfacesSeq", "1");
 		sideNode1.setAttribute("nrSurfacesNonSeq", "1");
 		sideNode1.setAttribute("geometryID", QString::number(this->getGeometryID()));
@@ -303,8 +333,8 @@ bool MicroLensArrayItem::writeToXML(QDomDocument &document, QDomElement &root) c
 		baseNode.appendChild(sideNode1);
 	}
 
-	baseNode.appendChild(frontNode);
 	baseNode.appendChild(backNode);
+	baseNode.appendChild(frontNode);
 
 	baseNode.setAttribute("name", this->getName());
 	baseNode.setAttribute("objectType", "GEOMETRY");
@@ -344,6 +374,7 @@ bool MicroLensArrayItem::readFromXML(const QDomElement &node)
 
 	QDomElement l_ele;
 
+	Vec3d l_root;	
 	for (unsigned int i=0; i<l_nodeList.count(); i++)
 	{
 		l_ele=l_nodeList.at(i).toElement();
@@ -351,17 +382,19 @@ bool MicroLensArrayItem::readFromXML(const QDomElement &node)
 		{
 			QString l_geomType=l_ele.attribute("geomType");
 			if (l_geomType.compare("MICROLENSARRAYSURF"))
+			{
 				cout << "error in MicroLensArrayItem.readFromXML(): front face is not a microLensArraySurf" << endl;
+				return false;
+			}
 			Vec3d l_tilt;
 			l_tilt.X=l_ele.attribute("tilt.x").toDouble();
 			l_tilt.Y=l_ele.attribute("tilt.y").toDouble();
 			l_tilt.Z=l_ele.attribute("tilt.z").toDouble();
 			this->setTilt(l_tilt);
-			Vec3d l_root;
+			
 			l_root.X=l_ele.attribute("root.x").toDouble();
 			l_root.Y=l_ele.attribute("root.y").toDouble();
 			l_root.Z=l_ele.attribute("root.z").toDouble();
-			this->setRoot(l_root);
 			int l_geometryID=l_ele.attribute("geometryID").toDouble();
 			this->setGeometryID(l_geometryID);
 			ApertureType l_at;
@@ -380,18 +413,22 @@ bool MicroLensArrayItem::readFromXML(const QDomElement &node)
 		{
 			QString l_geomType=l_ele.attribute("geomType");
 			if (l_geomType.compare("PLANESURFACE"))
+			{
 				cout << "error in MicroLensArrayItem.readFromXML(): back face is not a plane surface" << endl;
-			Vec3d l_root;
-			l_root.X=l_ele.attribute("root.x").toDouble();
-			l_root.Y=l_ele.attribute("root.y").toDouble();
-			l_root.Z=l_ele.attribute("root.z").toDouble();
-			m_thickness=sqrt((l_root-this->getRoot())*(l_root-this->getRoot()));
+				false;
+			}
+			Vec3d t_root;
+			t_root.X=l_ele.attribute("root.x").toDouble();
+			t_root.Y=l_ele.attribute("root.y").toDouble();
+			t_root.Z=l_ele.attribute("root.z").toDouble();
+			this->setRoot(t_root);
 		}
 		if (!l_ele.attribute("faceType").compare("SIDEFACE"))
 		{
 			// nothing needs to be read here....
 		}
 	}
+	m_thickness=sqrt((l_root-this->getRoot())*(l_root-this->getRoot()));
 
 	// look for material
 	QDomNodeList l_matNodeList=node.elementsByTagName("material");
@@ -683,4 +720,448 @@ void MicroLensArrayItem::render(QMatrix4x4 &m, RenderOptions &options)
 Vec3f MicroLensArrayItem::calcNormal(Vec3f vertex, Vec3f* neighbours, int nr)
 {
 	return Vec3f(0,0,1);
+}
+
+
+Vec3f MicroLensArrayItem::calcNormal(Vec3f vertex)
+{
+	return Vec3f(0,0,-1);
+}
+
+void MicroLensArrayItem::renderVtk(vtkSmartPointer<vtkRenderer> renderer)
+{
+	renderer->AddActor(m_pActor);
+
+	this->updateVtk();
+}
+
+void MicroLensArrayItem::updateVtk()
+{
+	vtkSmartPointer<vtkPoints> points =  vtkSmartPointer<vtkPoints>::New();
+	vtkSmartPointer<vtkDoubleArray> pointNormalsArray =  vtkSmartPointer<vtkDoubleArray>::New();
+	pointNormalsArray->SetNumberOfComponents(3); //3d normals (ie x,y,z)
+
+	vtkSmartPointer<vtkVertex> vertex = vtkSmartPointer<vtkVertex>::New();
+	// Create a cell array to store the vertices
+	vtkSmartPointer<vtkCellArray> cells =  vtkSmartPointer<vtkCellArray>::New();
+
+	// calc number of vertices 
+	//unsigned long numVert=13+4*4+1;//((m_renderOptions.m_slicesWidth+1)*(m_renderOptions.m_slicesHeight+1));
+	//unsigned long numVert=13+4*((m_renderOptions.m_slicesWidth)*(m_renderOptions.m_slicesHeight))+1;
+	unsigned long numVert=23+4*((m_renderOptions.m_slicesWidth)*(m_renderOptions.m_slicesHeight))+1;
+
+	pointNormalsArray->SetNumberOfTuples(numVert);
+
+	vertex->GetPointIds()->SetNumberOfIds(numVert);
+
+	vtkIdType pid;
+	unsigned long vertexIndex=0;
+
+	Vec3d root=this->getRoot();
+	Vec2d aptRadius=this->getApertureRadius();
+	Vec3f normal=this->calcNormal(Vec3f());
+	
+	if (1)//this->getApertureType()==RECTANGULAR)
+	{
+		// render front face
+		double x=-aptRadius.X;
+		double y=-aptRadius.Y;
+		double z=0;
+		pid=points->InsertNextPoint(x,y,z);
+		pointNormalsArray->SetTuple(pid, &normal.X);
+		vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+		vertexIndex++;
+
+		x=-aptRadius.X;
+		y=aptRadius.Y;
+		z=0;
+		pid=points->InsertNextPoint(x,y,z);
+		pointNormalsArray->SetTuple(pid, &normal.X);
+		vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+		vertexIndex++;
+
+		x=aptRadius.X;
+		y=-aptRadius.Y;
+		z=0;		
+		pid=points->InsertNextPoint(x,y,z);
+		pointNormalsArray->SetTuple(pid, &normal.X);
+		vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+		vertexIndex++;
+
+		x=aptRadius.X;
+		y=aptRadius.Y;
+		z=0;
+		pid=points->InsertNextPoint(x,y,z);
+		pointNormalsArray->SetTuple(pid, &normal.X);
+		vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+		vertexIndex++;
+
+		// side face
+		float lensHeightMax;
+		float effectiveAptRadius=min(m_microLensPitch/2,m_microLensAptRad);
+		float rmax;
+		if ((this->m_microLensAptType == MICRORECTANGULAR) || (m_microLensPitch/2<m_microLensAptRad))
+			rmax=sqrt(effectiveAptRadius*effectiveAptRadius+effectiveAptRadius*effectiveAptRadius);
+		else
+			rmax=effectiveAptRadius;	
+		if (rmax>abs(m_microLensRadius))
+			lensHeightMax=sqrt(m_microLensRadius*m_microLensRadius-effectiveAptRadius*effectiveAptRadius);
+		else
+			lensHeightMax=sqrt(m_microLensRadius*m_microLensRadius-rmax*rmax);
+
+			x=aptRadius.X;
+			y=aptRadius.Y;
+			z=0;
+			pid=points->InsertNextPoint(x,y,z);
+			normal=Vec3f(0,-1,0);
+			pointNormalsArray->SetTuple(pid, &normal.X);
+			vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+			vertexIndex++;
+
+			x=aptRadius.X;
+			y=aptRadius.Y;
+			z=this->calcZCoordinate(x, y, lensHeightMax, &normal);
+			//z=this->getThickness();
+			pid=points->InsertNextPoint(x,y,z);
+			normal=Vec3f(0,-1,0);
+			pointNormalsArray->SetTuple(pid, &normal.X);
+			vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+			vertexIndex++;
+
+			x=-aptRadius.X;
+			y=aptRadius.Y;
+			z=0;
+			pid=points->InsertNextPoint(x,y,z);
+			normal=Vec3f(0,-1,0);
+			pointNormalsArray->SetTuple(pid, &normal.X);
+			vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+			vertexIndex++;
+
+			x=-aptRadius.X;
+			y=aptRadius.Y;
+			z=this->calcZCoordinate(x, y, lensHeightMax, &normal);
+			pid=points->InsertNextPoint(x,y,z);
+			normal=Vec3f(0,-1,0);
+			pointNormalsArray->SetTuple(pid, &normal.X);
+			vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+			vertexIndex++;
+
+			x=-aptRadius.X;
+			y=aptRadius.Y;
+			z=this->calcZCoordinate(x, y, lensHeightMax, &normal);
+			pid=points->InsertNextPoint(x,y,z);
+			normal=Vec3f(-1,0,0);
+			pointNormalsArray->SetTuple(pid, &normal.X);
+			vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+			vertexIndex++;
+
+			x=-aptRadius.X;
+			y=aptRadius.Y;
+			z=0;
+			pid=points->InsertNextPoint(x,y,z);
+			normal=Vec3f(-1,0,0);
+			pointNormalsArray->SetTuple(pid, &normal.X);
+			vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+			vertexIndex++;
+
+			x=-aptRadius.X;
+			y=-aptRadius.Y;
+			z=this->calcZCoordinate(x, y, lensHeightMax, &normal);
+			pid=points->InsertNextPoint(x,y,z);
+			normal=Vec3f(-1,0,0);
+			pointNormalsArray->SetTuple(pid, &normal.X);
+			vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+			vertexIndex++;
+
+			x=-aptRadius.X;
+			y=-aptRadius.Y;
+			z=0;
+			pid=points->InsertNextPoint(x,y,z);
+			normal=Vec3f(-1,0,0);
+			pointNormalsArray->SetTuple(pid, &normal.X);
+			vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+			vertexIndex++;
+
+			x=-aptRadius.X;
+			y=-aptRadius.Y;
+			z=0;
+			pid=points->InsertNextPoint(x,y,z);
+			normal=Vec3f(0,1,0);
+			pointNormalsArray->SetTuple(pid, &normal.X);
+			vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+			vertexIndex++;
+
+			x=-aptRadius.X;
+			y=-aptRadius.Y;
+			z=this->calcZCoordinate(x, y, lensHeightMax, &normal);
+			pid=points->InsertNextPoint(x,y,z);
+			normal=Vec3f(0,1,0);
+			pointNormalsArray->SetTuple(pid, &normal.X);
+			vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+			vertexIndex++;
+
+			x=aptRadius.X;
+			y=-aptRadius.Y;
+			z=0;
+			pid=points->InsertNextPoint(x,y,z);
+			normal=Vec3f(0,1,0);
+			pointNormalsArray->SetTuple(pid, &normal.X);
+			vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+			vertexIndex++;
+
+			x=aptRadius.X;
+			y=-aptRadius.Y;
+			z=this->calcZCoordinate(x, y, lensHeightMax, &normal);
+			pid=points->InsertNextPoint(x,y,z);
+			normal=Vec3f(0,1,0);
+			pointNormalsArray->SetTuple(pid, &normal.X);
+			vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+			vertexIndex++;
+
+			x=aptRadius.X;
+			y=-aptRadius.Y;
+			z=this->calcZCoordinate(x, y, lensHeightMax, &normal);
+			pid=points->InsertNextPoint(x,y,z);
+			normal=Vec3f(1,0,0);
+			pointNormalsArray->SetTuple(pid, &normal.X);
+			vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+			vertexIndex++;
+
+			x=aptRadius.X;
+			y=-aptRadius.Y;
+			z=0;
+			pid=points->InsertNextPoint(x,y,z);
+			normal=Vec3f(1,0,0);
+			pointNormalsArray->SetTuple(pid, &normal.X);
+			vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+			vertexIndex++;
+
+			x=aptRadius.X;
+			y=aptRadius.Y;
+			z=this->calcZCoordinate(x, y, lensHeightMax, &normal);
+			pid=points->InsertNextPoint(x,y,z);
+			normal=Vec3f(1,0,0);
+			pointNormalsArray->SetTuple(pid, &normal.X);
+			vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+			vertexIndex++;
+
+			x=aptRadius.X;
+			y=aptRadius.Y;
+			z=0;
+			pid=points->InsertNextPoint(x,y,z);
+			normal=Vec3f(1,0,0);
+			pointNormalsArray->SetTuple(pid, &normal.X);
+			vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+			vertexIndex++;
+
+			x=aptRadius.X;
+			y=aptRadius.Y;
+			z=0;
+			pid=points->InsertNextPoint(x,y,z);
+			normal=Vec3f(1,0,0);
+			pointNormalsArray->SetTuple(pid, &normal.X);
+			vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+			vertexIndex++;
+
+			x=aptRadius.X;
+			y=aptRadius.Y;
+			z=this->calcZCoordinate(x, y, lensHeightMax, &normal);
+			pid=points->InsertNextPoint(x,y,z);
+			normal=Vec3f(1,0,0);
+			pointNormalsArray->SetTuple(pid, &normal.X);
+			vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+			vertexIndex++;
+
+			x=aptRadius.X;
+			y=aptRadius.Y;
+			z=this->calcZCoordinate(x, y, lensHeightMax, &normal);
+			pid=points->InsertNextPoint(x,y,z);
+			normal=Vec3f(0,-1,0);
+			pointNormalsArray->SetTuple(pid, &normal.X);
+			vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+			vertexIndex++;
+
+
+		// back face
+		x=+aptRadius.X;
+		y=+aptRadius.Y;
+		z=this->calcZCoordinate(x, y, lensHeightMax, &normal);
+		//z=this->getThickness();
+		pid=points->InsertNextPoint(x,y,z);
+		normal=Vec3f(0,-1,0);
+		pointNormalsArray->SetTuple(pid, &normal.X);
+		vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+		vertexIndex++;
+
+		float sizeX=2*this->getApertureRadius().X;
+		float sizeY=2*this->getApertureRadius().Y;
+
+//		m_renderOptions.m_slicesWidth=2;
+//		m_renderOptions.m_slicesHeight=2;
+
+		float dx=sizeX/(m_renderOptions.m_slicesWidth);
+		float dy=sizeY/(m_renderOptions.m_slicesHeight);
+
+		float x0=this->getApertureRadius().X;
+		float y0=this->getApertureRadius().Y;
+
+		for (unsigned int iy=0; iy<m_renderOptions.m_slicesHeight;iy++)
+		{
+			for (unsigned int ix=0; ix<m_renderOptions.m_slicesWidth;ix++)
+			{
+				if ( (iy % 2) == 0)
+				{
+					// we need to create a square around each of the points we created in our direct OpenGL view to get the ordering right
+					// first point of the square
+					float xC=this->getApertureRadius().X-dx/2-ix*dx;
+					float yC=this->getApertureRadius().X-dy/2-iy*dy;
+					float z;
+					Vec3f normal;
+					x=xC+dx/2;
+					y=yC+dy/2;
+					z=this->calcZCoordinate(x, y, lensHeightMax, &normal);
+					pid=points->InsertNextPoint(x,y,z);
+					pointNormalsArray->SetTuple(pid, &normal.X);
+					vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+					vertexIndex++;
+
+					x=xC+dx/2;
+					y=yC-dy/2;
+					z=this->calcZCoordinate(x, y, lensHeightMax, &normal);
+					pid=points->InsertNextPoint(x,y,z);
+					pointNormalsArray->SetTuple(pid, &normal.X);
+					vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+					vertexIndex++;
+
+					x=xC-dx/2;
+					y=yC+dy/2;
+					z=this->calcZCoordinate(x, y, lensHeightMax, &normal);
+					pid=points->InsertNextPoint(x,y,z);
+					pointNormalsArray->SetTuple(pid, &normal.X);
+					vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+					vertexIndex++;
+
+					x=xC-dx/2;
+					y=yC-dy/2;
+					z=this->calcZCoordinate(x, y, lensHeightMax, &normal);
+					pid=points->InsertNextPoint(x,y,z);
+					pointNormalsArray->SetTuple(pid, &normal.X);
+					vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+					vertexIndex++;
+				}
+				else
+				{
+					// we need to create a square around each of the points we created in our direct OpenGL view to get the ordering right
+					// first point of the square
+					float xC=-this->getApertureRadius().X+dx/2+ix*dx;
+					float yC=this->getApertureRadius().X-dy/2-iy*dy;
+					float z;
+					Vec3f normal;
+					x=xC-dx/2;
+					y=yC+dy/2;
+					z=this->calcZCoordinate(x, y, lensHeightMax, &normal);
+					normal=normal*-1;
+					pid=points->InsertNextPoint(x,y,z);
+					pointNormalsArray->SetTuple(pid, &normal.X);
+					vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+					vertexIndex++;
+
+					x=xC-dx/2;
+					y=yC-dy/2;
+					z=this->calcZCoordinate(x, y, lensHeightMax, &normal);
+					normal=normal*-1;
+					pid=points->InsertNextPoint(x,y,z);
+					pointNormalsArray->SetTuple(pid, &normal.X);
+					vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+					vertexIndex++;
+
+					x=xC+dx/2;
+					y=yC+dy/2;
+					z=this->calcZCoordinate(x, y, lensHeightMax, &normal);
+					normal=normal*-1;
+					pid=points->InsertNextPoint(x,y,z);
+					pointNormalsArray->SetTuple(pid, &normal.X);
+					vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+					vertexIndex++;
+
+					x=xC+dx/2;
+					y=yC-dy/2;
+					z=this->calcZCoordinate(x, y, lensHeightMax, &normal);
+					normal=normal*-1;
+					pid=points->InsertNextPoint(x,y,z);
+					pointNormalsArray->SetTuple(pid, &normal.X);
+					vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+					vertexIndex++;
+				}
+			}
+		}
+	}
+
+	cells->InsertNextCell(vertex);
+	// store everything in polydata
+	m_pPolydata->SetPoints(points);
+	// Add the normals to the points in the polydata
+	m_pPolydata->GetPointData()->SetNormals(pointNormalsArray);
+	m_pPolydata->SetStrips(cells);
+
+	if (this->getRender())
+		m_pActor->SetVisibility(1);
+	else
+		m_pActor->SetVisibility(0);
+
+	// apply root and tilt
+	//m_pActor->SetOrigin(this->getRoot().X, this->getRoot().Y, this->getRoot().Z);
+	m_pActor->SetPosition(this->getRoot().X, this->getRoot().Y, this->getRoot().Z);
+	m_pActor->SetOrientation(this->getTilt().X, this->getTilt().Y, this->getTilt().Z);
+
+	// set lighting properties
+	m_pActor->GetProperty()->SetAmbient(m_renderOptions.m_ambientInt);
+	m_pActor->GetProperty()->SetDiffuse(m_renderOptions.m_diffuseInt);
+	m_pActor->GetProperty()->SetSpecular(m_renderOptions.m_specularInt);
+
+	// Set shading
+	m_pActor->GetProperty()->SetInterpolationToGouraud();
+
+	if (this->m_focus)
+		m_pActor->GetProperty()->SetColor(0.0,1.0,0.0); // green
+	else
+		m_pActor->GetProperty()->SetColor(0.0,0.0,1.0); // red
+
+	// request the update
+	m_pPolydata->Update();
+}
+
+float MicroLensArrayItem::calcZCoordinate(float x, float y, float lensHeightMax, Vec3f* normal)
+{
+	float z;
+	float fac=floorf(x/m_microLensPitch+0.5);
+	float xloc=x-fac*m_microLensPitch;
+	fac=floorf(y/m_microLensPitch+0.5);
+	float yloc=y-fac*m_microLensPitch;
+	float r; // lateral distance to local centre
+	if (m_microLensAptType==MICRORECTANGULAR)
+		r=max(abs(xloc),abs(yloc));
+	else
+		r=sqrt(xloc*xloc+yloc*yloc);
+	if ( (r>=m_microLensAptRad) || (sqrt(xloc*xloc+yloc*yloc)>=abs(m_microLensRadius)) )
+	{
+		z=m_thickness;
+		*normal=Vec3f(0,0,-1);
+	}
+	else
+	{
+		z=sqrt(m_microLensRadius*m_microLensRadius-xloc*xloc-yloc*yloc);
+		float l_vecLength=sqrt(xloc*xloc+yloc*yloc+z*z);
+		if (m_microLensRadius<0)
+		{
+			z=z-lensHeightMax+m_thickness;
+			*normal=Vec3f(-xloc/l_vecLength, -yloc/l_vecLength, -z/l_vecLength);
+		}
+		else
+		{
+			z=-z+lensHeightMax+m_thickness;
+			*normal=Vec3f(xloc/l_vecLength, yloc/l_vecLength, -z/l_vecLength);
+		}
+	}
+	return z;
 }

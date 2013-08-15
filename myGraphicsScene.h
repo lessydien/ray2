@@ -29,7 +29,8 @@
 
 #include "ui_renderOptionsDialog.h"
 
-#include <QtOpenGL>
+
+//#include <QtOpenGL>
 
 //using namespace macrosim;
 #ifndef PI
@@ -156,6 +157,7 @@ public:
 		m_renderOptions.m_slicesHeight=10;
 		m_renderOptions.m_slicesWidth=11;
 		m_renderOptions.m_showCoordAxes=true;
+
 	};
 	~MyGraphicsScene()
 	{

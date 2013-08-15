@@ -25,6 +25,7 @@
 #include "scalarPlaneFieldItem.h"
 #include "scalarSphericalFieldItem.h"
 #include "scalarUserFieldItem.h"
+#include "pathIntTissueFieldItem.h"
 
 using namespace macrosim;
 

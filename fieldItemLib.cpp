@@ -43,6 +43,9 @@ FieldItem* FieldItemLib::createField(FieldItem::FieldType type)
 		case FieldItem::SCALARUSERWAVE:
 			l_pItem=new ScalarUserFieldItem();
 			break;
+		case FieldItem::PATHINTTISSUERAYFIELD:
+			l_pItem=new PathIntTissueFieldItem();
+			break;
 
 		default:
 			break;
@@ -74,6 +77,9 @@ QString FieldItemLib::fieldTypeToString(const FieldItem::FieldType type) const
 	case FieldItem::SCALARUSERWAVE:
 		str="SCALARUSERWAVE";
 		break;
+	case FieldItem::PATHINTTISSUERAYFIELD:
+		str="PATHINTTISSUERAYFIELD";
+		break;
 	default:
 		str="UNKNOWN";
 		break;
@@ -97,6 +103,9 @@ FieldItem::FieldType FieldItemLib::stringToFieldType(const QString str) const
 		return FieldItem::SCALARUSERWAVE;
 	if (!str.compare("INTENSITYFIELD") )
 		return FieldItem::INTENSITYFIELD;
+	if (!str.compare("PATHINTTISSUERAYFIELD") )
+		return FieldItem::PATHINTTISSUERAYFIELD;
+
 	return FieldItem::UNDEFINED;
 };
 
@@ -109,5 +118,6 @@ QList<AbstractItem*> FieldItemLib::fillLibrary() const
 	l_list.append(new ScalarSphericalFieldItem());
 	l_list.append(new ScalarGaussianFieldItem());
 	l_list.append(new ScalarUserFieldItem());
+	l_list.append(new PathIntTissueFieldItem());
 	return l_list;
 }

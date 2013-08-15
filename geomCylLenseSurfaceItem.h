@@ -39,6 +39,7 @@ class CylLensSurfaceItem :
 	Q_OBJECT
 
 	Q_PROPERTY(double radius READ getRadius WRITE setRadius DESIGNABLE true USER true);
+	Q_CLASSINFO("radius", "decimals=10;");
 
 
 public:

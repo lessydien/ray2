@@ -16,6 +16,11 @@
 ************************************************************************/
 
 #include "geomRayFieldItem.h"
+#include <vtkVersion.h>
+#include <vtkPlaneSource.h> 
+#include <vtkPolyData.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkSphereSource.h>
 
 using namespace macrosim;
 
@@ -57,6 +62,11 @@ bool GeomRayFieldItem::readFromXML(const QDomElement &node)
 }
 
 void GeomRayFieldItem::render(QMatrix4x4 &m, RenderOptions &options)
+{
+
+}
+
+void GeomRayFieldItem::renderVtk(vtkSmartPointer<vtkRenderer> renderer)
 {
 
 }

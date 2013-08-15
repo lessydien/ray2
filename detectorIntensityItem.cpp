@@ -21,7 +21,9 @@
 using namespace macrosim;
 
 DetectorIntensityItem::DetectorIntensityItem(QString name, QObject *parent) :
-	DetectorItem(name, INTENSITY, parent)
+	DetectorItem(name, INTENSITY, parent),
+		m_ignoreDepth(-1),
+		m_detPixel(1,1)
 {
 	this->m_render=false;
 }
@@ -41,6 +43,7 @@ bool DetectorIntensityItem::writeToXML(QDomDocument &document, QDomElement &root
 
 	node.setAttribute("detPixel.x", QString::number(m_detPixel.X));
 	node.setAttribute("detPixel.y", QString::number(m_detPixel.Y));
+	node.setAttribute("ignoreDepth", QString::number(m_ignoreDepth));
 
 	root.appendChild(node);
 	return true;
@@ -54,6 +57,7 @@ bool DetectorIntensityItem::readFromXML(const QDomElement &node)
 
 	m_detPixel.X=node.attribute("detPixel.x").toDouble();
 	m_detPixel.Y=node.attribute("detPixel.y").toDouble();
+	m_ignoreDepth=node.attribute("ignoreDepth").toInt();
 
 	return true;
 }

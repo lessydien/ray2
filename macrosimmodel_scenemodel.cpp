@@ -24,9 +24,11 @@
 #include "materialItemLib.h"
 #include "coatingItemLib.h"
 #include "scatterItemLib.h"
+#include "miscItem.h"
+#include "miscItemLib.h"
 
-#include <QtOpenGL\qglfunctions.h>
-#include "glut.h"
+//#include <QtOpenGL\qglfunctions.h>
+//#include "glut.h"
 
 using namespace macrosim;
 //----------------------------------------------------------------------------------------------------------------------------------
@@ -37,7 +39,9 @@ using namespace macrosim;
 SceneModel::SceneModel(QObject *parent)
 	: QAbstractItemModel(parent),
 	m_focusedItemIndex(QModelIndex()),
-	m_geomID(0)
+	m_geomID(0),
+	m_geomGroupNr(0),
+	m_currentGeomGroupIndex(QModelIndex())
 {
 	m_headers << tr("Name") << tr("objectType");
 	m_alignment << QVariant(Qt::AlignLeft) << QVariant(Qt::AlignRight);
@@ -70,8 +74,8 @@ QVariant SceneModel::data ( const QModelIndex &index, int role ) const
 			case 1:
 				switch (item->getObjectType())
 				{
-				case AbstractItem::GEOMETRYGROUP:
-					return tr("GeometryGroup");
+				case AbstractItem::MISCITEM:
+					return tr("MiscItem");
 					break;
 				case AbstractItem::GEOMETRY:
 					return tr("Geometry");
@@ -155,7 +159,7 @@ QModelIndex SceneModel::getItemWithSpecificChild(AbstractItem* rootItem, const A
 			// if one of the childs of the current root item equals the child we are looking for, we return the index to it as parent
 			if(rootItem->getChild(i) == child)
 			{
-				return createIndex(i,0,reinterpret_cast<void*>(rootItem));
+				return rootItem->getModelIndex();//createIndex(i,0,reinterpret_cast<void*>(rootItem));
 			}
 			// 
 			// if not, call recursion for the child with index i
@@ -234,72 +238,349 @@ AbstractItem* SceneModel::getItem(const QModelIndex &index) const
 	return (AbstractItem*) reinterpret_cast<AbstractItem*>(index.internalPointer());
 }
 
-void SceneModel::appendItem(macrosim::AbstractItem* item) 
+void SceneModel::exchangeItem(const QModelIndex &parentIndex, const int row, const int coloumn, macrosim::AbstractItem &pItem) 
+{
+	AbstractItem* l_pParentItem=reinterpret_cast<AbstractItem*>(parentIndex.internalPointer());
+
+	this->beginInsertRows(parentIndex, row, row);
+	QModelIndex l_index=this->index(row, 0, parentIndex);
+	pItem.setModelIndex(l_index);
+	this->endInsertRows();
+
+	// recurse through childs
+	for (int i=0; i<pItem.getNumberOfChilds(); i++)
+	{
+		this->exchangeItem(l_index, i, 0, *(pItem.getChild(i)));
+	}
+};
+
+void SceneModel::appendItem(macrosim::AbstractItem* item, vtkSmartPointer<vtkRenderer> renderer, QModelIndex parentIndex, int rowIn) 
 {
 	GeometryItem* l_pGeom;
-	// assign geometryID if item is Geometry
-	if (item->getObjectType() == AbstractItem::GEOMETRY)
+	MiscItem* l_pMiscItem;
+	GeomGroupItem* l_pGeomGroupItem;
+//	QModelIndex l_index;
+	// get row to insert the item
+	int row;
+	if (parentIndex==QModelIndex())
+		row=m_data.size();
+	else
 	{
-		m_geomID++;
-		l_pGeom=reinterpret_cast<GeometryItem*>(item);
-		l_pGeom->setGeometryID(m_geomID);
+		row=rowIn;
 	}
-	int row=m_data.size();
-	// do the actual appending
-	beginInsertRows(QModelIndex(), row, row);
-	m_data.append(item);
+	int coloumn=0;
+	bool geomToGeomGroup=false;
+	bool geomGroupChanged=false;
+	switch (item->getObjectType())
+	{
+	case AbstractItem::MISCITEM:
+		l_pMiscItem=reinterpret_cast<MiscItem*>(item);
+		switch (l_pMiscItem->getMiscType())
+		{
+		case MiscItem::GEOMETRYGROUP:
+			l_pGeomGroupItem=reinterpret_cast<GeomGroupItem*>(l_pMiscItem);
+			m_geomGroupNr++;
+			geomGroupChanged=true;
+			break;
+		default:
+			break;
+		}
+		break;
+	case AbstractItem::GEOMETRY:
+		l_pGeom=reinterpret_cast<GeometryItem*>(item);
+		// if we don't have any geometrGroup yet, we create one
+		if (m_geomGroupNr==0)
+		{
+			m_geomGroupNr++;
+			// create the geometryGroup
+			l_pGeomGroupItem=new GeomGroupItem();
+			// now add the geometry to this group
+			l_pGeomGroupItem->setChild(l_pGeom);
+			// instead of appending the geometry to the model, we append the newly created geometryGroup
+			// the geometry will be inserted inside the recursion of appending of the geometryGroup
+			item=l_pGeomGroupItem;
+			// signal creation of geometryGroup, so currentGeomGroupIndex will be set, once an index for the geometryGroup is created
+			geomGroupChanged=true;
+		}
+		else
+		{
+			m_geomID++;
+			l_pGeom->setGeometryID(m_geomID);
+			// if this geometry was added from the library, it has no connection to a geometryGroup yet. therefore we create one here
+			if (parentIndex==QModelIndex())
+			{
+				l_pGeomGroupItem=reinterpret_cast<GeomGroupItem*>(m_currentGeomGroupIndex.internalPointer());
+				l_pGeomGroupItem->setChild(l_pGeom); // add the geometry
+				row=l_pGeomGroupItem->getNumberOfChilds()-1; // index of geometry has to be created with the correct row
+				// signal that a geometry has to be appended to the current geometryGroup
+				geomToGeomGroup=true;
+			}
+		}
+			
+		break;
+	default:
+		break;
+	}
+	if (geomToGeomGroup)
+		parentIndex=this->m_currentGeomGroupIndex;
+	beginInsertRows(parentIndex, row, row);
+	// only if we append at the top level, we need to actually append the item to the models data list
+	if (parentIndex==QModelIndex())
+		m_data.append(item);
 	// create modelIndex at which the item was just inserted
-	QModelIndex l_index=this->index(row,0,QModelIndex());
+	QModelIndex l_index=this->index(row, coloumn, parentIndex);
 	// save this modelIndex to the appended item
 	item->setModelIndex(l_index);
-	// create modelIndices for childs of this item
-	for (int i=0; i<item->getNumberOfChilds(); i++)
-	{
-		AbstractItem* l_pChild=item->getChild(i);
-		QModelIndex l_childIndex=this->index(i,1,l_index);
-		l_pChild->setModelIndex(l_childIndex);
-		// create modelIndices for childs of this child
-		for (int j=0; j<l_pChild->getNumberOfChilds(); j++)
-		{
-			AbstractItem* l_pChildChild=l_pChild->getChild(j);
-			QModelIndex l_childChildIndex=this->index(j,2,l_childIndex);
-			l_pChildChild->setModelIndex(l_childChildIndex);
-		}
-	}
-	// emit rowsInserted-event ??
 	endInsertRows();
-	item->setFocus(false);
+	if (geomGroupChanged)
+		this->m_currentGeomGroupIndex=l_index;
+	// now do the recursion over the items childs
+	for (unsigned int i=0; i<item->getNumberOfChilds(); i++)
+	{
+		this->appendItem(item->getChild(i), renderer, l_index, i);
+	}
+
 	// connect signals
-	bool test=connect(item, SIGNAL(itemChanged(const QModelIndex &, const QModelIndex &)), this, SLOT(changeItemData(const QModelIndex &,  const QModelIndex &)));
-	int bla=0;
+	bool test=connect(item, SIGNAL(itemExchanged(const QModelIndex &, const int, const int, macrosim::AbstractItem &)), this, SLOT(exchangeItem(const QModelIndex &, const int, const int, macrosim::AbstractItem &)));	
+	test=connect(item, SIGNAL(itemChanged(const QModelIndex &, const QModelIndex &)), this, SLOT(changeItemData(const QModelIndex &,  const QModelIndex &)));
+	item->setRenderOptions(this->m_renderOptions);
+	if (renderer)
+		item->renderVtk(renderer);
+
+	//GeometryItem* l_pGeom;
+	//MiscItem* l_pMiscItem;
+	//GeomGroupItem* l_pGeomGroupItem;
+	//QModelIndex l_index;
+	//int row=m_data.size();
+	//int coloumn=0;
+	//switch (item->getObjectType())
+	//{
+	//case AbstractItem::MISCITEM:
+	//	l_pMiscItem=reinterpret_cast<MiscItem*>(item);
+	//	switch (l_pMiscItem->getMiscType())
+	//	{
+	//	case MiscItem::GEOMETRYGROUP:
+	//		l_pGeomGroupItem=reinterpret_cast<GeomGroupItem*>(l_pMiscItem);
+	//		m_geomGroupNr++;
+	//		// append geomGroup
+	//		beginInsertRows(QModelIndex(), row, row);
+	//		m_data.append(l_pGeomGroupItem);
+	//		// create modelIndex at which the item was just inserted
+	//		l_index=this->index(row, coloumn, QModelIndex());
+	//		l_pGeomGroupItem->setModelIndex(l_index);
+	//		// emit rowsInserted-event ??
+	//		endInsertRows();
+	//		for (unsigned int i=0; i<l_pGeomGroupItem->getNumberOfChilds(); i++)
+	//		{
+	//			beginInsertRows(l_pGeomGroupItem->getModelIndex(), i, i);
+	//			l_pGeomGroupItem->getChild(i)->createModelIndex(l_pGeomGroupItem->getModelIndex(), i, 0);
+	//			endInsertRows();
+	//		}
+	//		m_currentGeomGroupIndex=l_pGeomGroupItem->getModelIndex();
+	//		break;
+	//	default:
+	//		break;
+	//	}
+	//	break;
+	//case AbstractItem::GEOMETRY:
+	//	m_geomID++;
+	//	l_pGeom=reinterpret_cast<GeometryItem*>(item);
+	//	l_pGeom->setGeometryID(m_geomID);
+	//	// if we don't have any geometrGroup yet, we create one
+	//	if (m_geomGroupNr==0)
+	//	{
+	//		m_geomGroupNr++;
+	//		beginInsertRows(QModelIndex(), row, row);
+	//		l_pGeomGroupItem=new GeomGroupItem();
+	//		m_data.append(l_pGeomGroupItem);
+	//		endInsertRows();
+	//		l_index=this->index(row, coloumn, QModelIndex());
+	//		l_pGeomGroupItem->setModelIndex(l_index);
+	//		beginInsertRows(l_pGeomGroupItem->getModelIndex(), l_pGeomGroupItem->getNumberOfChilds(), l_pGeomGroupItem->getNumberOfChilds());
+	//		l_pGeomGroupItem->setChild(l_pGeom);
+	//		l_pGeom->createModelIndex(l_pGeomGroupItem->getModelIndex(), l_pGeomGroupItem->getNumberOfChilds()-1, 0);
+	//		endInsertRows();
+	//		m_currentGeomGroupIndex=l_pGeomGroupItem->getModelIndex();
+	//		
+	//	}
+	//	else
+	//	{
+	//		// if not, we grab the current geometryGroup
+	//		l_pGeomGroupItem=reinterpret_cast<GeomGroupItem*>(this->m_currentGeomGroupIndex.internalPointer());
+	//		beginInsertRows(l_pGeomGroupItem->getModelIndex(), l_pGeomGroupItem->getNumberOfChilds(), l_pGeomGroupItem->getNumberOfChilds());
+	//		l_pGeomGroupItem->setChild(l_pGeom);
+	//		l_pGeom->createModelIndex(l_pGeomGroupItem->getModelIndex(), l_pGeomGroupItem->getNumberOfChilds()-1, coloumn); 
+	//		endInsertRows();
+	//	}		
+	//		
+	//	break;
+	//default:
+	//	beginInsertRows(QModelIndex(), row, row);
+	//	m_data.append(item);
+	//	// create modelIndex at which the item was just inserted
+	//	QModelIndex l_index=this->createIndex(row, 0, item);
+	//	// save this modelIndex to the appended item
+	//	item->setModelIndex(l_index);
+	//	endInsertRows();
+	//	break;
+	//}
+	//// connect signals
+	//connect(item, SIGNAL(itemChanged(const QModelIndex &, const QModelIndex &)), this, SLOT(changeItemData(const QModelIndex &,  const QModelIndex &)));
+
+	//item->setRenderOptions(this->m_renderOptions);
+	//if (renderer)
+	//	item->renderVtk(renderer);
+
+// ************************ very old ************************************************************
+	//GeometryItem* l_pGeom;
+	//// assign geometryID if item is Geometry
+	//if (item->getObjectType() == AbstractItem::GEOMETRY)
+	//{
+	//	m_geomID++;
+	//	l_pGeom=reinterpret_cast<GeometryItem*>(item);
+	//	l_pGeom->setGeometryID(m_geomID);
+	//}
+	//int row=m_data.size();
+	//// do the actual appending
+	//beginInsertRows(QModelIndex(), row, row);
+	//m_data.append(item);
+	//// create modelIndex at which the item was just inserted
+	//QModelIndex l_index=this->createIndex(row, 0, item);
+	//// save this modelIndex to the appended item
+	//item->setModelIndex(l_index);
+	//// create modelIndices for childs of this item
+	//for (int i=0; i<item->getNumberOfChilds(); i++)
+	//{
+	//	AbstractItem* l_pChild=item->getChild(i);
+	//	QModelIndex l_childIndex=this->createIndex(i,1,l_pChild);
+	//	l_pChild->setModelIndex(l_childIndex);
+	//	// create modelIndices for childs of this child
+	//	for (int j=0; j<l_pChild->getNumberOfChilds(); j++)
+	//	{
+	//		AbstractItem* l_pChildChild=l_pChild->getChild(j);
+	//		QModelIndex l_childChildIndex=this->createIndex(j,2, l_pChildChild);
+	//		l_pChildChild->setModelIndex(l_childChildIndex);
+	//	}
+	//}
+	//// emit rowsInserted-event ??
+	//endInsertRows();
+	//item->setFocus(false);
+	//// connect signals
+	//bool test=connect(item, SIGNAL(itemChanged(const QModelIndex &, const QModelIndex &)), this, SLOT(changeItemData(const QModelIndex &,  const QModelIndex &)));
 }
+
+void SceneModel::clearModel(void) 
+{
+	m_data.clear(); 
+	m_geomID=0;
+	m_geomGroupNr=0;
+	m_focusedItemIndex=QModelIndex();
+	m_currentGeomGroupIndex=QModelIndex();
+};
 
 void SceneModel::removeItem(QModelIndex index)
 {
 	if (index.isValid())
 	{
-		// get root item
-		QModelIndex rootIndex=this->getRootIndex(index);
-		// check wether root item is a geometry
-		AbstractItem* l_pAbstractToBeRemoved=reinterpret_cast<AbstractItem*>(rootIndex.internalPointer());
-		if (l_pAbstractToBeRemoved->getObjectType() == AbstractItem::GEOMETRY)
+		// save parent item
+		QModelIndex l_parentIndex=index.parent();
+		AbstractItem* l_pParentItem=NULL;
+		if (l_parentIndex.isValid())
+			l_pParentItem=reinterpret_cast<AbstractItem*>(l_parentIndex.internalPointer());
+
+		// get base item
+		QModelIndex baseIndex=this->getBaseIndex(index);
+		QModelIndex l_rootIndex;
+		int removedGeomID;
+		int geomGroupRemoveID;
+		GeometryItem* l_pGeomToBeRemoved;
+		AbstractItem* l_pRootItem;
+		MiscItem* l_pMiscItem;
+		GeomGroupItem* l_pGeomGroupItem;
+		AbstractItem* l_pAbstract;
+		GeometryItem* l_pGeom;
+		// check wether base item is a geometry
+		AbstractItem* l_pAbstractToBeRemoved=reinterpret_cast<AbstractItem*>(baseIndex.internalPointer());
+		switch (l_pAbstractToBeRemoved->getObjectType())
 		{
-			GeometryItem* l_pGeomToBeRemoved=reinterpret_cast<GeometryItem*>(l_pAbstractToBeRemoved);
+		case AbstractItem::GEOMETRY:
+			l_pGeomToBeRemoved=reinterpret_cast<GeometryItem*>(l_pAbstractToBeRemoved);
+			removedGeomID=l_pGeomToBeRemoved->getGeometryID();
+			geomGroupRemoveID=l_pGeomToBeRemoved->getGeomGroupID();
 			// adjust geomIDs of all geometries behind the geometry that that is about to be removed
-			for (int i=index.row()+1;i<m_data.size();i++)
+			// delete geometry item from its respective geometryGroup
+			l_rootIndex=this->getRootIndex(index);
+			if (l_rootIndex.isValid())
 			{
-				AbstractItem* l_pAbstract=reinterpret_cast<AbstractItem*>(m_data.at(i));
-				if (l_pAbstract->getObjectType()==AbstractItem::GEOMETRY)
+				l_pRootItem=reinterpret_cast<AbstractItem*>(l_rootIndex.internalPointer());
+				if (l_pRootItem->getObjectType() == AbstractItem::MISCITEM)
 				{
-					GeometryItem* l_pGeom=reinterpret_cast<GeometryItem*>(m_data.at(i));
-					l_pGeom->setGeometryID(l_pGeom->getGeometryID()-1);
+					l_pMiscItem=reinterpret_cast<MiscItem*>(l_pRootItem);
+					if (l_pMiscItem->getMiscType()==MiscItem::GEOMETRYGROUP)
+					{
+						l_pGeomGroupItem=reinterpret_cast<GeomGroupItem*>(l_pMiscItem);
+						l_pGeomGroupItem->removeChild(baseIndex.row());
+						// decrement internal geometry counter
+						m_geomID--;
+					}
 				}
+				// adjust geomIDs of all geometries behind the geometry that that has just been removed
+				// loop through all top level elements
+				for (int i=0;i<m_data.size();i++)
+				{
+					l_pAbstract=reinterpret_cast<AbstractItem*>(m_data.at(i));
+					// see if we have a geometryGroupItem
+					if (l_pAbstract->getObjectType()==AbstractItem::MISCITEM)
+					{
+						l_pMiscItem=reinterpret_cast<MiscItem*>(l_pAbstract);
+						if (l_pMiscItem->getMiscType()==MiscItem::GEOMETRYGROUP)
+						{
+							// if we have a geometryGroup, loop through all its geometries
+							for (unsigned int iMisc=0; iMisc<l_pMiscItem->getNumberOfChilds(); iMisc++)
+							{
+								l_pGeom=reinterpret_cast<GeometryItem*>(l_pMiscItem->getChild(iMisc));
+								if (l_pGeom != NULL)
+								{
+									// if the current geometryID is higher than that of the removed geometry, decrement it
+									if (l_pGeom->getGeometryID() > l_pGeomToBeRemoved->getGeometryID())
+										l_pGeom->setGeometryID(l_pGeom->getGeometryID()-1);
+								}
+							}
+						}
+					}
+				}
+			break;
+		case AbstractItem::MISCITEM:
+			l_pMiscItem=reinterpret_cast<MiscItem*>(l_pAbstractToBeRemoved);
+			if (l_pMiscItem->getMiscType() == MiscItem::GEOMETRYGROUP)
+			{
+				this->m_geomGroupNr--;
+				this->removeRow(baseIndex.row(),baseIndex.parent());
 			}
-			// decrement internal geometry counter
-			m_geomID--;
+			break;
+		default:
+			this->removeRow(baseIndex.row(),baseIndex.parent());
+			break;
+			}
+
 		}
 
-		this->removeRow(index.row(),QModelIndex());
+		// adjust model indices
+		unsigned int l_numberOfChilds=0;
+		if (l_pParentItem)
+			l_numberOfChilds=l_pParentItem->getNumberOfChilds();
+		else
+			l_numberOfChilds=this->m_data.size();
+		for (unsigned int i=index.row(); i< l_numberOfChilds; i++)
+		{
+			QModelIndex newIndex=this->index(i, 0, l_parentIndex);
+			//QModelIndex newIndex=this->index(i, 0, l_pParentItem->getModelIndex());
+			if (l_pParentItem)
+				l_pParentItem->getChild(i)->setModelIndex(newIndex);
+			else
+				this->m_data.at(i)->setModelIndex(newIndex);
+		}
+
 	}
 }
 
@@ -332,6 +613,29 @@ QModelIndex SceneModel::getRootIndex(const QModelIndex &index)
 		return index;
 	else
 		return getRootIndex(rootIndex);
+}
+
+// returns the modelIndex of the base item that ultimately holds the item with the given index. Base item is either the root item or in case of a geometry groups it is the geometry item
+QModelIndex SceneModel::getBaseIndex(const QModelIndex &index)
+{
+	// if index already points to a geometry, smiply return index
+	AbstractItem* l_pAbstractItem=reinterpret_cast<AbstractItem*>(index.internalPointer());
+	if (l_pAbstractItem->getObjectType()==AbstractItem::GEOMETRY)
+		return index;
+	// if not, take a look at its parent
+	else
+	{
+		QModelIndex parentIndex;
+		parentIndex=parent(index);
+		// if parent is invalid, we're already at root level and return the root index
+		if (!parentIndex.isValid())
+			return index;
+		else
+		{
+			l_pAbstractItem=reinterpret_cast<AbstractItem*>(parentIndex.internalPointer());
+			return getBaseIndex(parentIndex);
+		}
+	}
 }
 
 void SceneModel::changeItemData(const QModelIndex &topLeft, const QModelIndex &bottomRight)
@@ -385,12 +689,19 @@ void SceneModel::changeItemData(const QModelIndex &topLeft, const QModelIndex &b
 
 void SceneModel::changeItemFocus(const QModelIndex &index)
 {
-	// find rootItem that ultimately holds the item that just changed
-	QModelIndex rootItemIndex=this->getRootIndex(index);
-
-	if (rootItemIndex != m_focusedItemIndex)
+	QModelIndex baseItemIndex;
+	if (index.isValid())
 	{
-		if (rootItemIndex!=QModelIndex())
+		// find baseItem that ultimately holds the item that just changed
+		baseItemIndex=this->getBaseIndex(index);
+	}
+	else
+	{ 
+		baseItemIndex=index;
+	}
+	if (baseItemIndex != m_focusedItemIndex)
+	{
+		if (baseItemIndex!=QModelIndex())
 		{
 			// if any item had focus before, remove focus from it now
 			if (m_focusedItemIndex != QModelIndex())
@@ -398,10 +709,10 @@ void SceneModel::changeItemFocus(const QModelIndex &index)
 
 			// set new focus
 			// all items in our model are AbstractItems, so we can savely cast here
-			AbstractItem* l_pAbstractItem=this->getItem(rootItemIndex);
+			AbstractItem* l_pAbstractItem=this->getItem(baseItemIndex);
 			l_pAbstractItem->setFocus(true);
 		}
-		m_focusedItemIndex=rootItemIndex;
+		m_focusedItemIndex=baseItemIndex;
 		emit itemFocusChanged(index);
 	}
 }
@@ -410,4 +721,23 @@ void SceneModel::render(QMatrix4x4  &matrix, RenderOptions &options)
 {
 	for (int i=0; i < this->m_data.size(); i++)
 		m_data.at(i)->render(matrix, options);
+}
+
+void SceneModel::renderVtk(vtkSmartPointer<vtkRenderer> renderer)
+{
+	for (int i=0; i < this->m_data.size(); i++)
+		m_data.at(i)->renderVtk(renderer);
+}
+
+void SceneModel::updateVtk()
+{
+	for (int i=0; i < this->m_data.size(); i++)
+		m_data.at(i)->updateVtk();
+}
+
+void SceneModel::setRenderOptions(RenderOptions options)
+{
+	m_renderOptions=options;
+	for (int i=0; i < this->m_data.size(); i++)
+		m_data.at(i)->setRenderOptions(options);
 }

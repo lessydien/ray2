@@ -26,12 +26,16 @@ ELSE(BUILD_SHARED_LIBS)
 	SET(LIBRARY_TYPE STATIC)
 ENDIF(BUILD_SHARED_LIBS)
 
-find_package(Qt4 REQUIRED)
 find_package(OpenCV REQUIRED)
 #find_package(Glut REQUIRED)
 find_package(ITOM_SDK REQUIRED)
 find_package(FFTW 3)
 find_package(CUDA 4)
+find_package(GLEW)
+find_package(VTK REQUIRED)
+include(${VTK_USE_FILE})
+find_package(Qt4 REQUIRED)
+include(${QT_USE_FILE})
 
 IF(CUDA_FOUND)
 
@@ -54,40 +58,48 @@ IF(CUDA_FOUND)
         SET (CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel.")
     ENDIF (DEFINED CMAKE_BUILD_TYPE)
 
-    #message(STATUS ${CMAKE_CURRENT_BINARY_DIR})
+    message(STATUS ${CMAKE_CURRENT_BINARY_DIR})
 
     if ( CMAKE_SIZEOF_VOID_P EQUAL 4 )
         SET(Tracer_LIB_DIR "Tracer/lib32")
         SET(freeglut_LIB_DIR "freeglut/lib")
+		SET(Tracer_PTX_DIR "Tracer/build/lib/ptx")
         SET(bit_dest "32")
     else ( CMAKE_SIZEOF_VOID_P EQUAL 4 )
         SET(Tracer_LIB_DIR "Tracer/lib")
         SET(freeglut_LIB_DIR "freeglut/lib/x64")
+		SET(Tracer_PTX_DIR "Tracer/build64/lib/ptx")
         SET(bit_dest "")
     endif ( CMAKE_SIZEOF_VOID_P EQUAL 4 )
+
+	set(PTX_DIR ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_PTX_DIR} CACHE PATH "Path to where the samples look for the PTX code.")
 	
-	find_library(MacroSim_Tracer_LIBD ITO-MacroSimd PATHS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
-    find_library(MacroSim_Tracer_LIBR ITO-MacroSim PATHS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
-	message(STATUS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
-	message(STATUS ${MacroSim_Tracer_LIBR})
+    find_library(MacroSim_Tracer_LIBD ITO-MacroSimd HINTS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
+    find_library(MacroSim_Tracer_LIBR ITO-MacroSim HINTS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
     set(MacroSim_Tracer_LIB debug ${MacroSim_Tracer_LIBD} optimized ${MacroSim_Tracer_LIBR}  CACHE STRING "" FORCE)
-	
-	find_library(MacroSim_Propagation_LIBD PropagationMathd PATHS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
-    find_library(MacroSim_Propagation_LIBR PropagationMath PATHS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
+
+    find_library(MacroSim_Propagation_LIBD PropagationMathd HINTS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
+    find_library(MacroSim_Propagation_LIBR PropagationMath HINTS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
     set(MacroSim_Propagation_LIB debug ${MacroSim_Propagation_LIBD} optimized ${MacroSim_Propagation_LIBR}  CACHE STRING "" FORCE)
 
-    #set(MacroSim_FFTW_LIB debug libfftw3-3 optimized ITO-MacroSim  CACHE STRING "" FORCE)
+	find_library(MacroSim_nvCommon_LIBD nvCommond HINTS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
+    find_library(MacroSim_nvCommon_LIBR nvCommon HINTS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
+    set(MacroSim_nvCommon_LIB debug ${MacroSim_nvCommon_LIBD} optimized ${MacroSim_nvCommon_LIBR}  CACHE STRING "" FORCE)
 
-    find_library(MacroSim_OptiX_LIBR optix.1 PATHS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
-    find_library(MacroSim_OptiXu_LIBR optixu.1 PATHS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
+	find_library(MacroSim_nvModel_LIBD nvModeld HINTS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
+    find_library(MacroSim_nvModel_LIBR nvModel HINTS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
+    set(MacroSim_nvModel_LIB debug ${MacroSim_nvModel_LIBD} optimized ${MacroSim_nvModel_LIBR}  CACHE STRING "" FORCE)
+	
+    find_library(MacroSim_OptiX_LIBR optix.1 HINTS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
+    find_library(MacroSim_OptiXu_LIBR optixu.1 HINTS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
     set(MacroSim_OptiX_LIB debug ${MacroSim_OptiX_LIBR} optimized ${MacroSim_OptiX_LIBR}  CACHE STRING "" FORCE)
     set(MacroSim_OptiXu_LIB debug ${MacroSim_OptiXu_LIBR} optimized ${MacroSim_OptiXu_LIBR}  CACHE STRING "" FORCE)
 
-    find_library(Freeglut_LIBR freeglut PATHS ${CMAKE_CURRENT_SOURCE_DIR}/${freeglut_LIB_DIR})
+    find_library(Freeglut_LIBR freeglut HINTS ${CMAKE_CURRENT_SOURCE_DIR}/${freeglut_LIB_DIR})
     set(Freeglut_LIB debug ${Freeglut_LIBR} optimized ${Freeglut_LIBR}  CACHE STRING "" FORCE)
 
 
-    set(MacroSim_Tracer_LIBS ${MacroSim_Tracer_LIBS} ${MacroSim_Tracer_LIB} ${MacroSim_OptiX_LIB} ${MacroSim_OptiXu_LIB} ${MacroSim_Propagation_LIB} ${Freeglut_LIB})
+    set(MacroSim_Tracer_LIBS ${MacroSim_Tracer_LIBS} ${MacroSim_Tracer_LIB} ${MacroSim_OptiX_LIB} ${MacroSim_OptiXu_LIB} ${MacroSim_Propagation_LIB} ${Freeglut_LIB} ${MacroSim_nvModel_LIB} ${MacroSim_nvCommon_LIB} ${GLEW_LIBRARIES})
 
     INCLUDE_DIRECTORIES(
         ${CMAKE_CURRENT_BINARY_DIR}
@@ -95,9 +107,16 @@ IF(CUDA_FOUND)
         ${QT_QTCORE_INCLUDE_DIR}
         ${OpenCV_DIR}/include
         ${ITOM_SDK_INCLUDE_DIR}
-        ${CMAKE_CURRENT_SOURCE_DIR}/Tracer/include
+        #${CMAKE_CURRENT_SOURCE_DIR}/Tracer/include
+		${CMAKE_CURRENT_SOURCE_DIR}/Tracer/src/nvcommon/include
+		${CMAKE_CURRENT_SOURCE_DIR}/Tracer/src/nvcommon/nvModel/include
+		${CMAKE_CURRENT_SOURCE_DIR}/Tracer/src/PropagationMath/include
+		${CMAKE_CURRENT_SOURCE_DIR}/Tracer/src/ito_tracer/include
         ${CMAKE_CURRENT_SOURCE_DIR}/freeglut/include/GL
         ${CUDA_INCLUDE_DIRS}
+		${FFTW_INCLUDE_DIR}
+		${GLEW_INCLUDE_PATH}
+#		${VTK_SOURCE_DIR}/GUISupport/Qt
     )
 
     LINK_DIRECTORIES(
@@ -115,13 +134,13 @@ IF(CUDA_FOUND)
         ${ITOM_SDK_INCLUDE_DIR}/common/sharedStructures.h
         ${ITOM_SDK_INCLUDE_DIR}/common/sharedStructuresQt.h
         ${ITOM_SDK_INCLUDE_DIR}/common/typeDefs.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/ColorCombo.h
+#        ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/ColorCombo.h
         ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/CustomTypes.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/EnumProperty.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/Property.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/QPropertyEditorWidget.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/QPropertyModel.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/QVariantDelegate.h
+#        ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/EnumProperty.h
+#        ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/Property.h
+#        ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/QPropertyEditorWidget.h
+#        ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/QPropertyModel.h
+#        ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/QVariantDelegate.h
         ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/Vec2dProperty.h
         ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/Vec2iProperty.h
         ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/Vec3dProperty.h
@@ -160,6 +179,10 @@ IF(CUDA_FOUND)
         ${CMAKE_CURRENT_SOURCE_DIR}/geomRayFieldItem.h
         ${CMAKE_CURRENT_SOURCE_DIR}/geomSphericalLenseItem.h
         ${CMAKE_CURRENT_SOURCE_DIR}/geomSphericalSurfaceItem.h
+		${CMAKE_CURRENT_SOURCE_DIR}/geomApertureArrayItem.h
+		${CMAKE_CURRENT_SOURCE_DIR}/geomSubstrateItem.h
+		${CMAKE_CURRENT_SOURCE_DIR}/geomStopArrayItem.h
+		${CMAKE_CURRENT_SOURCE_DIR}/geomVolumeScattererItem.h
         ${CMAKE_CURRENT_SOURCE_DIR}/intensityFieldItem.h
         ${CMAKE_CURRENT_SOURCE_DIR}/macroSim.h
         ${CMAKE_CURRENT_SOURCE_DIR}/macrosim_librarymodel.h
@@ -177,8 +200,9 @@ IF(CUDA_FOUND)
         ${CMAKE_CURRENT_SOURCE_DIR}/materialReflectingItem.h
         ${CMAKE_CURRENT_SOURCE_DIR}/materialRefractingItem.h
 		${CMAKE_CURRENT_SOURCE_DIR}/materialDOEItem.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/MyDelegate.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/myGraphicsScene.h
+		${CMAKE_CURRENT_SOURCE_DIR}/materialVolumeScatterItem.h
+#        ${CMAKE_CURRENT_SOURCE_DIR}/MyDelegate.h
+#        ${CMAKE_CURRENT_SOURCE_DIR}/myGraphicsScene.h
         ${CMAKE_CURRENT_SOURCE_DIR}/rayFieldItem.h
         ${CMAKE_CURRENT_SOURCE_DIR}/renderFuncs.h
         ${CMAKE_CURRENT_SOURCE_DIR}/scalarFieldItem.h
@@ -198,6 +222,14 @@ IF(CUDA_FOUND)
         ${CMAKE_CURRENT_SOURCE_DIR}/TracerThread.h
         ${CMAKE_CURRENT_SOURCE_DIR}/trackball.h
         ${CMAKE_CURRENT_SOURCE_DIR}/oGLdrawWidget.h
+		${CMAKE_CURRENT_SOURCE_DIR}/pathIntTissueFieldItem.h
+		${CMAKE_CURRENT_SOURCE_DIR}/geomCadObjectItem.h
+		${CMAKE_CURRENT_SOURCE_DIR}/geomGroupItem.h
+		${CMAKE_CURRENT_SOURCE_DIR}/miscLibraryContainer.h
+		${CMAKE_CURRENT_SOURCE_DIR}/miscItemLib.h
+		${CMAKE_CURRENT_SOURCE_DIR}/miscItem.h
+		${CMAKE_CURRENT_SOURCE_DIR}/myVtkWindow.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/pluginVersion.h
     )
 
     QT4_WRAP_CPP_ITOM(plugin_HEADERS_MOC ${plugin_HEADERS})
@@ -207,6 +239,7 @@ IF(CUDA_FOUND)
         ${CMAKE_CURRENT_SOURCE_DIR}/mainWinMacroSim.ui
         ${CMAKE_CURRENT_SOURCE_DIR}/renderOptionsDialog.ui
         ${CMAKE_CURRENT_SOURCE_DIR}/simConfigDialog.ui
+		${CMAKE_CURRENT_SOURCE_DIR}/imageSavingIdleDialog.ui
     )
 
     QT4_WRAP_UI_ITOM(plugin_ui_MOC ${plugin_ui})
@@ -216,13 +249,13 @@ IF(CUDA_FOUND)
         ${ITOM_SDK_INCLUDE_DIR}/common/helperCommon.cpp
         ${ITOM_SDK_INCLUDE_DIR}/common/sharedStructures.cpp
         ${ITOM_SDK_INCLUDE_DIR}/common/sharedStructuresQt.cpp	
-        ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/ColorCombo.cpp
+#        ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/ColorCombo.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/CustomTypes.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/EnumProperty.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/Property.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/QPropertyEditorWidget.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/QPropertyModel.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/QVariantDelegate.cpp
+#        ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/EnumProperty.cpp
+#        ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/Property.cpp
+#        ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/QPropertyEditorWidget.cpp
+#        ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/QPropertyModel.cpp
+#        ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/QVariantDelegate.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/Vec2dProperty.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/Vec2iProperty.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/Vec3dProperty.cpp
@@ -261,6 +294,10 @@ IF(CUDA_FOUND)
         ${CMAKE_CURRENT_SOURCE_DIR}/geomRayFieldItem.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/geomSphericalLenseItem.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/geomSphericalSurfaceItem.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/geomApertureArrayItem.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/geomSubstrateItem.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/geomStopArrayItem.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/geomVolumeScattererItem.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/intensityFieldItem.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/macroSim.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/macrosimmodel_librarymodel.cpp
@@ -278,8 +315,9 @@ IF(CUDA_FOUND)
         ${CMAKE_CURRENT_SOURCE_DIR}/materialReflectingItem.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/materialRefractingItem.cpp
 		${CMAKE_CURRENT_SOURCE_DIR}/materialDOEItem.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/MyDelegate.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/myGraphicsScene.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/materialVolumeScatterItem.cpp
+#        ${CMAKE_CURRENT_SOURCE_DIR}/MyDelegate.cpp
+#        ${CMAKE_CURRENT_SOURCE_DIR}/myGraphicsScene.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/rayFieldItem.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/renderFuncs.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/scalarFieldItem.cpp
@@ -299,8 +337,20 @@ IF(CUDA_FOUND)
         ${CMAKE_CURRENT_SOURCE_DIR}/TracerThread.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/trackball.cpp	
         ${CMAKE_CURRENT_SOURCE_DIR}/oGLdrawWidget.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/pathIntTissueFieldItem.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/geomCadObjectItem.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/geomGroupItem.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/miscLibraryContainer.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/miscItemLib.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/miscItem.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/myVtkWindow.cpp
     )
 	
+    #Add version information to the plugIn-dll unter MSVC
+    if(MSVC)
+        list(APPEND plugin_SOURCES ${ITOM_SDK_INCLUDE_DIR}/../pluginLibraryVersion.rc)
+    endif(MSVC)    
+    
 	set(qitom_rcc
 		${CMAKE_CURRENT_SOURCE_DIR}/macroSimRes.qrc
 	)
@@ -314,9 +364,12 @@ IF(CUDA_FOUND)
 	file (GLOB EXISTING_TRANSLATION_FILES "translation/*.ts")
 	#handle translations END STEP 1
 
-    ADD_LIBRARY(${target_name} ${LIBRARY_TYPE} ${plugin_SOURCES} ${plugin_RESOURCES} ${plugin_HEADERS} ${plugin_HEADERS_MOC} ${plugin_ui_MOC} ${plugin_rcc_MOC})
-    TARGET_LINK_LIBRARIES(${target_name} ${QT_LIBRARIES} ${QT_QTUITOOLS_LIBRARY} ${QT_QTXML_LIBRARY} ${OpenCV_LIBS} ${MacroSim_Tracer_LIBS} ${ITOM_SDK_dataobject_LIBRARY} ${FFTW_LIBRARY_D} ${CUDA_CUFFT_LIBRARIES} ${CUDA_LIBRARIES})
-
+    ADD_LIBRARY(${target_name} ${LIBRARY_TYPE} ${plugin_SOURCES} ${plugin_RESOURCES} ${plugin_HEADERS} ${plugin_HEADERS_MOC} ${plugin_ui_MOC} ${plugin_rcc_MOC} ${EXISTING_TRANSLATION_FILES})
+	if (VTK_LIBRARIES)
+		TARGET_LINK_LIBRARIES(${target_name} ${QT_LIBRARIES} ${QT_QTUITOOLS_LIBRARY} ${QT_QTXML_LIBRARY} ${OpenCV_LIBS} ${MacroSim_Tracer_LIBS} ${ITOM_SDK_dataobject_LIBRARY} ${ITOM_SDK_qpropertyeditor_LIBRARY} ${FFTW_LIBRARY_D} ${CUDA_CUFFT_LIBRARIES} ${CUDA_LIBRARIES} ${VTK_LIBRARIES} QVTK)
+	else ()
+		TARGET_LINK_LIBRARIES(${target_name} ${QT_LIBRARIES} ${QT_QTUITOOLS_LIBRARY} ${QT_QTXML_LIBRARY} ${OpenCV_LIBS} ${MacroSim_Tracer_LIBS} ${ITOM_SDK_dataobject_LIBRARY} ${ITOM_SDK_qpropertyeditor_LIBRARY} ${FFTW_LIBRARY_D} ${CUDA_CUFFT_LIBRARIES} ${CUDA_LIBRARIES} vtkHybrid QVTK vtkViews)
+	endif()
 	#handle translations BEGIN STEP 2
 	if (UPDATE_TRANSLATIONS)
 		QT4_CREATE_TRANSLATION_ITOM(TRANSLATION_OUTPUT_FILES TRANSLATIONS_FILES ${target_name} ITOM_LANGUAGES ${FILES_TO_TRANSLATE} ${TRANSLATIONS_FILES})
@@ -340,6 +393,13 @@ IF(CUDA_FOUND)
     # copy dlls in itoms lib folder
     file(GLOB dlls "${CMAKE_CURRENT_SOURCE_DIR}/Tracer/bin${bit_dest}/*.dll")
     POST_BUILD_COPY_FILE_TO_LIB_FOLDER(${target_name} dlls)
+	POST_BUILD_COPY_FILE_TO_LIB_FOLDER(${target_name} GLEW_RUNTIME_LIBRARIES)
+		
+	ADD_CUSTOM_COMMAND(TARGET ${target_name} POST_BUILD                 # Adds a post-build event to MyTest
+		COMMAND ${CMAKE_COMMAND} -E copy_directory
+			"${PTX_DIR}"
+			"${ITOM_APP_DIR}/plugins/${target_name}/ptx"
+			)	
 
 ELSE(CUDA_FOUND)
     message(WARNING "CUDA could not be found. ${target_name} will not be build")

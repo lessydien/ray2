@@ -10,5 +10,8 @@
 	    <file>icons/configure.png</file>
       <file>icons/pencil.ico</file>
       <file>icons/new.png</file>
+      <file>icons/snapshot.png</file>
+      <file>icons/snapshot.png</file>
+      <file>icons/loader16x16.gif</file>
     </qresource>
 </RCC>

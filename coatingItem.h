@@ -37,8 +37,12 @@ class CoatingItem :
 {
 	Q_OBJECT
 
-	Q_PROPERTY(CoatingType CoatType READ getCoatingType DESIGNABLE true USER true);
 	Q_ENUMS(CoatingType);
+
+	Q_PROPERTY(CoatingType CoatType READ getCoatingType DESIGNABLE true USER true);
+	Q_PROPERTY(Mat_CoatingType CoatType DESIGNABLE true USER true); // overwrite coatingType-Property of materialItem, so it can not be changed in propertyEditor of this item
+	Q_PROPERTY(Abstract_MaterialType materialType DESIGNABLE true USER true); // overwrite materialType-Property of abstractItem, so it can not be changed in propertyEditor of this item
+	
 
 
 public:

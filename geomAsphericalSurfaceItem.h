@@ -48,6 +48,16 @@ class AsphericalSurfaceItem :
 	Q_PROPERTY(double c12 READ getC12 WRITE setC12 DESIGNABLE true USER true);
 	Q_PROPERTY(double c14 READ getC14 WRITE setC14 DESIGNABLE true USER true);
 	Q_PROPERTY(double c16 READ getC16 WRITE setC16 DESIGNABLE true USER true);
+	Q_CLASSINFO("k", "decimals=10;");
+	Q_CLASSINFO("c", "decimals=10;");
+	Q_CLASSINFO("c2", "decimals=10;");
+	Q_CLASSINFO("c4", "decimals=10;");
+	Q_CLASSINFO("c6", "decimals=10;");
+	Q_CLASSINFO("c8", "decimals=10;");
+	Q_CLASSINFO("c10", "decimals=10;");
+	Q_CLASSINFO("c12", "decimals=10;");
+	Q_CLASSINFO("c14", "decimals=10;");
+	Q_CLASSINFO("c16", "decimals=10;");
 	//Q_PROPERTY(MaterialItem::MaterialType Material READ getMaterial WRITE setMaterial DESIGNABLE true USER true);
 
 

@@ -40,7 +40,6 @@ class MacroSimInterface : public ito::AddInInterfaceBase
 
     private:
         ito::RetVal closeThisInst(ito::AddInBase **addInInst);
-        static int m_instCounter; //! To identify every loaded Plugin by an id
 };
 
 //----------------------------------------------------------------------------------------------------------------------------------
@@ -54,7 +53,7 @@ class MacroSim : public ito::AddInAlgo
     Q_OBJECT
 
     protected:
-        MacroSim(int uniqueID);
+        MacroSim();
         ~MacroSim() {};
 
     public:
@@ -65,6 +64,8 @@ class MacroSim : public ito::AddInAlgo
         
         static ito::RetVal runSimulation(QVector<ito::ParamBase> *paramsMand, QVector<ito::ParamBase> *paramsOpt, QVector<ito::ParamBase> *paramsOut);
         static ito::RetVal runSimulationParams(QVector<ito::Param> *paramsMand, QVector<ito::Param> *paramsOpt, QVector<ito::Param> *paramsOut);
+        static ito::RetVal simConfPointSensor(QVector<ito::ParamBase> *paramsMand, QVector<ito::ParamBase> *paramsOpt, QVector<ito::ParamBase> *paramsOut);
+        static ito::RetVal simConfPointSensorParams(QVector<ito::Param> *paramsMand, QVector<ito::Param> *paramsOpt, QVector<ito::Param> *paramsOut);
 
     private:
 

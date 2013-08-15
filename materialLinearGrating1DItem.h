@@ -78,6 +78,8 @@ public:
 	bool writeToXML(QDomDocument &document, QDomElement &root) const;
 	bool readFromXML(const QDomElement &node);
 
+	double getTransparency() {return 0.5;};
+
 private:
 
 	Vec3d m_diffAxis;

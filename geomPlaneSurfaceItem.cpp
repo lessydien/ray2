@@ -16,13 +16,27 @@
 ************************************************************************/
 
 #include "geomPlaneSurfaceItem.h"
+#include "glut.h"
+#include <vtkCellArray.h>
+#include <vtkPoints.h>
+#include <vtkDoubleArray.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkProperty.h>
+#include <vtkVertex.h>
+#include <vtkPointData.h>
 
 using namespace macrosim;
 
 PlaneSurfaceItem::PlaneSurfaceItem(QString name, QObject *parent) :
 	GeometryItem(name, PLANESURFACE, parent)
 {
+	// Create a polydata to store everything in
+	m_pPolydata = vtkSmartPointer<vtkPolyData>::New();
+  
+	// Setup actor and mapper
+	m_pMapper =	vtkSmartPointer<vtkPolyDataMapper>::New();
 
+	m_pActor->SetMapper(m_pMapper);
 }
 
 PlaneSurfaceItem::~PlaneSurfaceItem()
@@ -130,4 +144,170 @@ void PlaneSurfaceItem::render(QMatrix4x4 &m, RenderOptions &options)
 Vec3f PlaneSurfaceItem::calcNormal(Vec3f vertex, Vec3f* neighbours, int nr)
 {
 	return Vec3f(0,0,1);
+}
+
+Vec3f PlaneSurfaceItem::calcNormal(Vec3f vertex)
+{
+	return Vec3f(0,0,-1);
+}
+
+void PlaneSurfaceItem::updateVtk()
+{
+	if (this->getApertureType() == RECTANGULAR)
+	{
+		vtkSmartPointer<vtkPoints> points =  vtkSmartPointer<vtkPoints>::New();
+		vtkSmartPointer<vtkDoubleArray> pointNormalsArray =  vtkSmartPointer<vtkDoubleArray>::New();
+		pointNormalsArray->SetNumberOfComponents(3); //3d normals (ie x,y,z)
+
+		vtkSmartPointer<vtkVertex> vertex = vtkSmartPointer<vtkVertex>::New();
+		// Create a cell array to store the vertices
+		vtkSmartPointer<vtkCellArray> cells =  vtkSmartPointer<vtkCellArray>::New();
+
+		vtkIdType pid;
+		pointNormalsArray->SetNumberOfTuples(4);
+		vertex->GetPointIds()->SetNumberOfIds(4);
+		// Create four points (must be in counter clockwise order)
+		float p0[3] = {float(-this->getApertureRadius().X), float(-this->getApertureRadius().Y), 0.0f};
+		float p1[3] = {float(-this->getApertureRadius().X), float(this->getApertureRadius().Y), 0.0f};
+		float p3[3] = {float(this->getApertureRadius().X), float(this->getApertureRadius().Y), 0.0f};
+		float p2[3] = {float(this->getApertureRadius().X), float(-this->getApertureRadius().Y), 0.0f};
+ 
+		// Add the points to a vtkPoints object
+		pid=points->InsertNextPoint(p0);
+		Vec3f normal=calcNormal(Vec3f());
+		pointNormalsArray->SetTuple(pid, &normal.X);
+		vertex->GetPointIds()->SetId(0,0);
+
+		pid=points->InsertNextPoint(p1);
+		normal=calcNormal(Vec3f());
+		pointNormalsArray->SetTuple(pid, &normal.X);
+		vertex->GetPointIds()->SetId(1,1);
+
+		pid=points->InsertNextPoint(p2);
+		normal=calcNormal(Vec3f());
+		pointNormalsArray->SetTuple(pid, &normal.X);
+		vertex->GetPointIds()->SetId(2,2);
+
+		pid=points->InsertNextPoint(p3);
+		normal=calcNormal(Vec3f());
+		pointNormalsArray->SetTuple(pid, &normal.X);
+		vertex->GetPointIds()->SetId(3,3);
+
+		cells->InsertNextCell(vertex);
+		// Add the points and quads to the dataset
+		m_pPolydata->SetPoints(points);
+		m_pPolydata->GetPointData()->SetNormals(pointNormalsArray);
+		m_pPolydata->SetStrips(cells);
+#if VTK_MAJOR_VERSION <= 5
+		m_pMapper->SetInput(m_pPolydata);
+#else
+		m_pMapper->SetInputData(m_pPolydata);
+#endif
+	}
+	else
+	{
+		vtkSmartPointer<vtkPoints> points =  vtkSmartPointer<vtkPoints>::New();
+		vtkSmartPointer<vtkDoubleArray> pointNormalsArray =  vtkSmartPointer<vtkDoubleArray>::New();
+		pointNormalsArray->SetNumberOfComponents(3); //3d normals (ie x,y,z)
+
+		vtkSmartPointer<vtkVertex> vertex = vtkSmartPointer<vtkVertex>::New();
+		// Create a cell array to store the vertices
+		vtkSmartPointer<vtkCellArray> cells =  vtkSmartPointer<vtkCellArray>::New();
+
+		unsigned long numVertices=(m_renderOptions.m_slicesWidth+1)*2;
+
+		vtkIdType pid;
+		pointNormalsArray->SetNumberOfTuples(numVertices);
+		vertex->GetPointIds()->SetNumberOfIds(numVertices);
+
+
+		unsigned long vertexIndex=0;
+
+		double deltaU=2*PI/m_renderOptions.m_slicesWidth;
+		double a=this->getApertureRadius().X;
+		double b=this->getApertureRadius().Y;
+
+		double x=a*cos(0*deltaU);
+		double y=b*sin(0*deltaU);
+		double z=0;
+		pid=points->InsertNextPoint(x,y,z);
+		Vec3f normal=calcNormal(Vec3f());
+		pointNormalsArray->SetTuple(pid, &normal.X);
+		vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+		vertexIndex++;
+
+		x=0;
+		y=0;
+		z=0;
+		pid=points->InsertNextPoint(x,y,z);
+		normal=calcNormal(Vec3f());
+		pointNormalsArray->SetTuple(pid, &normal.X);
+		vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+		vertexIndex++;
+
+		for (unsigned int i=1; i<=m_renderOptions.m_slicesWidth; i++)
+		//for (unsigned int i=1; i<=1; i++)
+		{
+			x=a*cos(double(i)*deltaU);
+			y=b*sin(double(i)*deltaU);
+			z=0;
+			pid=points->InsertNextPoint(x,y,z);
+			normal=calcNormal(Vec3f());
+			pointNormalsArray->SetTuple(pid, &normal.X);
+			vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+			vertexIndex++;
+
+			x=0;
+			y=0;
+			z=0;
+			pid=points->InsertNextPoint(x,y,z);
+			normal=calcNormal(Vec3f());
+			pointNormalsArray->SetTuple(pid, &normal.X);
+			vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+			vertexIndex++;
+		}
+
+		cells->InsertNextCell(vertex);
+		// Add the points and quads to the dataset
+		m_pPolydata->SetPoints(points);
+		m_pPolydata->GetPointData()->SetNormals(pointNormalsArray);
+		m_pPolydata->SetStrips(cells);
+#if VTK_MAJOR_VERSION <= 5
+		m_pMapper->SetInput(m_pPolydata);
+#else
+		m_pMapper->SetInputData(m_pPolydata);
+#endif
+	}
+
+	// apply root and tilt
+	m_pActor->SetPosition(this->getRoot().X, this->getRoot().Y, this->getRoot().Z);
+	//m_pActor->SetOrigin(this->getRoot().X, this->getRoot().Y, this->getRoot().Z);
+	m_pActor->SetOrientation(this->getTilt().X, this->getTilt().Y, this->getTilt().Z);
+	//m_pActor->GetProperty()->SetRepresentationToWireframe();
+
+	// set lighting properties
+	m_pActor->GetProperty()->SetAmbient(m_renderOptions.m_ambientInt);
+	m_pActor->GetProperty()->SetDiffuse(m_renderOptions.m_diffuseInt);
+	m_pActor->GetProperty()->SetSpecular(m_renderOptions.m_specularInt);
+
+	// set color to red
+	if (this->m_focus)
+		m_pActor->GetProperty()->SetColor(0.0,1.0,0.0);
+	else
+		m_pActor->GetProperty()->SetColor(0.0,0.0,1.0);
+	
+	if (this->getRender())
+		m_pActor->SetVisibility(1);
+	else
+		m_pActor->SetVisibility(0);
+	
+	// request the update
+	m_pPolydata->Update();
+};
+
+void PlaneSurfaceItem::renderVtk(vtkSmartPointer<vtkRenderer> renderer)
+{
+	renderer->AddActor(m_pActor);
+
+	this->updateVtk();
 }

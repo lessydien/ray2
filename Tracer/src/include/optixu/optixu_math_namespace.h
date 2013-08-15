@@ -878,6 +878,8 @@ OPTIXU_INLINE RT_HOSTDEVICE bool operator!=(double2 a, double2 b)
 	return ( (a.x != b.x) && (a.y != b.y) );
 }
 
+
+
 /* double3 functions */
 /******************************************************************************/
 

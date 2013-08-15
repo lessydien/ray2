@@ -25,7 +25,7 @@ FieldItem::FieldItem(QString name, FieldType type, QObject *parent) :
 	AbstractItem(FIELD, name, parent),
 	m_fieldType(type),
 	m_apertureHalfWidth(Vec2d(0.0,0.0)),
-	m_lambda(0.0),
+	m_lambda(630.0),
 	m_root(Vec3d(0,0,0)),
 	m_tilt(Vec3d(0,0,0))
 {

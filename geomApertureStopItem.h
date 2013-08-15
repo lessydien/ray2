@@ -23,6 +23,9 @@
 #include "QPropertyEditor/CustomTypes.h"
 #include "GeometryItem.h"
 
+#include <vtkPolyData.h>
+#include <vtkPolyDataMapper.h>
+
 using namespace macrosim;
 
 namespace macrosim 
@@ -39,6 +42,7 @@ class ApertureStopItem :
 	Q_OBJECT
 
 	Q_PROPERTY(Vec2d apertureStopRadius READ getApertureStopRadius WRITE setApertureStopRadius DESIGNABLE true USER true);
+	Q_CLASSINFO("apertureStopRadius", "decimals=10;");
 	//Q_PROPERTY(MaterialItem::MaterialType Material READ getMaterial WRITE setMaterial DESIGNABLE true USER true);
 
 
@@ -49,18 +53,24 @@ public:
 
 	// functions for property editor
 	Vec2d getApertureStopRadius() const {return m_apertureStopRadius;};
-	void setApertureStopRadius(const Vec2d in) {m_apertureStopRadius=in; emit itemChanged(m_index, m_index);};
+	void setApertureStopRadius(const Vec2d in) {m_apertureStopRadius=in; this->updateVtk(); emit itemChanged(m_index, m_index);};
 
 	bool writeToXML(QDomDocument &document, QDomElement &root) const;
 	bool readFromXML(const QDomElement &node);
 	void render(QMatrix4x4 &m, RenderOptions &options);
+	void renderVtk(vtkSmartPointer<vtkRenderer> renderer);
 
 	Vec3f calcNormal(Vec3f vertex, Vec3f* neighbours, int nr);
+	Vec3f calcNormal(Vec3f vertex);
 
 //	MaterialItem::MaterialType getMaterial() const {return m_materialType;};
 //	void setMaterial(const MaterialItem::MaterialType type) {m_materialType=type;};
 
 private:
+	void updateVtk();
+
+	vtkSmartPointer<vtkPolyData> m_pPolydata;
+	vtkSmartPointer<vtkPolyDataMapper> m_pMapper;
 
 //	MaterialItem::MaterialType m_materialType;
 	Vec2d m_apertureStopRadius;

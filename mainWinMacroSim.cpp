@@ -26,12 +26,16 @@
 #include "fieldLibraryContainer.h"
 #include "detectorLibraryContainer.h"
 #include "geometryLibraryContainer.h"
+#include "miscLibraryContainer.h"
+#include "geomGroupItem.h"
 #include <cstring>
 #include "TracerThread.h"
 #include "materialItemLib.h"
 #include "coatingItemLib.h"
 #include "scatterItemLib.h"
+#include "miscItemLib.h"
 #include "oGLdrawWidget.h"
+#include "qcoreapplication.h"
 
 //#include "testFile.h"
 
@@ -66,29 +70,31 @@ MainWinMacroSim::MainWinMacroSim(QWidget *parent) :
 	m_pProgBar(NULL),
 	m_pTracerStatOutStream(NULL),
 	m_activeItemIndex(QModelIndex()),
-	m_pScene(NULL),
+//	m_pScene(NULL),
 	m_pTracerThreadThread(NULL),
-	m_pResultField(NULL)
+	m_pResultField(NULL),
+	m_pQVTKWidget(NULL)
 {
 	ui.setupUi(this);
 
 	m_pSceneModel = new SceneModel(this);
 
 	// create openGl widget and set it as viewport for our graphicsView
-	//OGLdrawWidget *l_pQGLWidget=new OGLdrawWidget(this);
-	OGLdrawWidget *l_pWidget = new OGLdrawWidget();
-	l_pWidget->makeCurrent();
+	//OGLdrawWidget *l_pWidget = new OGLdrawWidget();
+	//l_pWidget->makeCurrent();
 
-//	this->setCentralWidget(l_pWidget);
-//	l_pWidget->show();
+	//m_pScene = new MyGraphicsScene(this);
+	//m_pScene->setModel(m_pSceneModel);
 
-	m_pScene = new MyGraphicsScene(this);
-	m_pScene->setModel(m_pSceneModel);
-	
-	ui.SceneModel_GraphicsView->setViewport(l_pWidget); 
-	ui.SceneModel_GraphicsView->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
-	ui.SceneModel_GraphicsView->setScene(m_pScene);
-	ui.SceneModel_GraphicsView->show();
+	m_pQVTKWidget=new myVtkWindow(this);
+	m_pQVTKWidget->setModel(m_pSceneModel);
+	this->setCentralWidget(m_pQVTKWidget);
+
+	m_pQVTKWidget->getScene()->SetAlphaBitPlanes(1);
+	m_pQVTKWidget->getScene()->SetMultiSamples(0);
+	m_pQVTKWidget->getRenderer()->SetUseDepthPeeling(1);
+	m_pQVTKWidget->getRenderer()->SetMaximumNumberOfPeels(100);
+	m_pQVTKWidget->getRenderer()->SetOcclusionRatio(0.1);
 
 	// create text edit in a dock widget
 	m_pDockWidget_Console = new dockWidget_Console("tracer status out", this);
@@ -106,14 +112,16 @@ MainWinMacroSim::MainWinMacroSim(QWidget *parent) :
 
 
 	// create libraryModel
-	m_pLibraryModel = new SceneModel(this); // library model is of the same type as the scene model, it just contains all items available...
+	m_pLibraryModel = new LibraryModel(this); // library model is of the same type as the scene model, it just contains all items available...
 	// now fill the model
 	FieldLibContainer *l_pFieldContainer=new FieldLibContainer();
 	GeometryLibContainer *l_pGeomContainer=new GeometryLibContainer();
 	DetectorLibContainer *l_pDetContainer=new DetectorLibContainer();
-	m_pLibraryModel->appendItem(l_pFieldContainer);
-	m_pLibraryModel->appendItem(l_pGeomContainer);
-	m_pLibraryModel->appendItem(l_pDetContainer);
+	MiscLibContainer	*l_pMiscContainer=new MiscLibContainer();
+	m_pLibraryModel->appendItem(l_pFieldContainer, NULL);
+	m_pLibraryModel->appendItem(l_pGeomContainer, NULL);
+	m_pLibraryModel->appendItem(l_pDetContainer, NULL);
+	m_pLibraryModel->appendItem(l_pMiscContainer, NULL);
 
 	// create LibraryModel tree view in dock widget
 	m_pDockWidget_LibraryView = new QDockWidget("MacroSim Library", this);
@@ -128,6 +136,8 @@ MainWinMacroSim::MainWinMacroSim(QWidget *parent) :
 	l_modelIndex=m_pLibraryModel->index(1,0,QModelIndex());
 	m_pLibraryModel_TreeView->setExpanded(l_modelIndex,true);
 	l_modelIndex=m_pLibraryModel->index(2,0,QModelIndex());
+	m_pLibraryModel_TreeView->setExpanded(l_modelIndex,true);
+	l_modelIndex=m_pLibraryModel->index(3,0,QModelIndex());
 	m_pLibraryModel_TreeView->setExpanded(l_modelIndex,true);
 
 	//m_pLibraryModel_TreeView->setColumnHidden(1, true);
@@ -147,28 +157,35 @@ MainWinMacroSim::MainWinMacroSim(QWidget *parent) :
 	test=connect(m_pLibraryModel_TreeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(addItemToScene(QModelIndex)));
 
 	// wire sceneModel with our graphicsView, i.e. our scene
-	test=connect(m_pSceneModel, SIGNAL(modelReset()), m_pScene, SLOT(clear()));
-	test=connect(m_pSceneModel, SIGNAL(layoutChanged()), m_pScene, SLOT(layoutChanged()));
-	test=connect(m_pSceneModel, SIGNAL(rowsInserted(const QModelIndex &, int, int)), m_pScene, SLOT(rowsInserted(const QModelIndex &, int, int)));
-	test=connect(m_pSceneModel, SIGNAL(rowsAboutToBeRemoved(const QModelIndex &, int, int)), m_pScene, SLOT(rowsAboutToBeRemoved(const QModelIndex &, int, int)));
-	test=connect(m_pSceneModel, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)), m_pScene, SLOT(changeItemData(const QModelIndex &, const QModelIndex &)));
-//	test=connect(m_pSceneModel, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)), m_pSceneTreeView, SLOT(dataChanged(QModelIndex &, const QModelIndex &)));
+	test=connect(m_pSceneModel, SIGNAL(modelReset()), this->m_pQVTKWidget, SLOT(clear()));
+	test=connect(m_pSceneModel, SIGNAL(layoutChanged()), m_pQVTKWidget, SLOT(layoutChanged()));
+	test=connect(m_pSceneModel, SIGNAL(rowsInserted(const QModelIndex &, int, int)), m_pQVTKWidget, SLOT(rowsInserted(const QModelIndex &, int, int)));
+	test=connect(m_pSceneModel, SIGNAL(rowsAboutToBeRemoved(const QModelIndex &, int, int)), m_pQVTKWidget, SLOT(rowsAboutToBeRemoved(const QModelIndex &, int, int)));
+	test=connect(m_pSceneModel, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)), m_pQVTKWidget, SLOT(changeItemData(const QModelIndex &, const QModelIndex &)));
+	// as the sceneModel does not know the index in the PropEditor-model of the property that changed, we need to take a detour through a mainWinFunction and simply push the item to the propertyEditor again
+	test=connect(m_pSceneModel, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)), this, SLOT(sceneDataChangedFromPropEdit(const QModelIndex &, const QModelIndex &)));
+	//	test=connect(m_pSceneModel, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)), m_pSceneTreeView, SLOT(dataChanged(QModelIndex &, const QModelIndex &)));
 
 	// change of item focus
 	test=connect(m_pSceneTreeView,SIGNAL(doubleClicked(QModelIndex)), m_pSceneModel, SLOT(changeItemFocus(QModelIndex)));
 	test=connect(m_pSceneTreeView,SIGNAL(doubleClicked(QModelIndex)), this, SLOT(pushItemToPropertyEditor(QModelIndex)));
+	test=connect(m_pQVTKWidget,SIGNAL(itemFocusChanged(QModelIndex)), m_pSceneModel, SLOT(changeItemFocus(QModelIndex)));
+	test=connect(m_pQVTKWidget,SIGNAL(itemFocusChanged(QModelIndex)), this, SLOT(pushItemToPropertyEditor(QModelIndex)));
+	test=connect(m_pQVTKWidget,SIGNAL(changeItemSelection(const QModelIndex &)), m_pSceneTreeView, SLOT(setCurrentIndex(const QModelIndex &)));
+	test=connect(m_pQVTKWidget,SIGNAL(vtkWinKeyEvent(QKeyEvent *)), this, SLOT(processKeyEvent(QKeyEvent *)));
 	// as the graphicsView is not able to pass the model index of the newly selected item, we need to take a detour through a mainWin Function...
 //	test=connect(m_pScene, SIGNAL(selectionChanged()), this, SLOT(sceneSelectionChanged()));
-	test=connect(this, SIGNAL(signalSceneSelectionChanged(const QModelIndex)), m_pSceneModel, SLOT(changeItemFocus(const QModelIndex)));
+//	test=connect(this, SIGNAL(signalSceneSelectionChanged(const QModelIndex)), m_pSceneModel, SLOT(changeItemFocus(const QModelIndex)));
 	// tell propertyEditor and GraphicsView about the change
 	//test=connect(m_pSceneModel, SIGNAL(itemFocusChanged(QModelIndex)), this, SLOT(pushItemToPropertyEditor(QModelIndex)));
-	test=connect(m_pSceneModel, SIGNAL(itemFocusChanged(QModelIndex)), m_pScene, SLOT(changeItemFocus(QModelIndex)));
+	test=connect(m_pSceneModel, SIGNAL(itemFocusChanged(QModelIndex)), m_pQVTKWidget, SLOT(changeItemFocus(QModelIndex)));
 
 	// item data changed
 	// as the propertyEditor does not know the index of its item in the sceneModel, we need to take a detour through a mainWinFunction and the focusedItemIndex
 	test=connect(this, SIGNAL(signalSceneDataChangedFromPropEdit(const QModelIndex &, const QModelIndex &)), m_pSceneModel, SLOT(changeItemData(const QModelIndex &, const QModelIndex &)));
-	// as the sceneModel does not know the index in the PropEditor-model of the property that changed, we need to take a detour through a mainWinFunction and simply push the item to the propertyEditor again
-	test=connect(m_pSceneModel, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)), this, SLOT(sceneDataChangedFromPropEdit(const QModelIndex &, const QModelIndex &)));
+
+	test=connect(this, SIGNAL(signalSaveImage()), m_pQVTKWidget, SLOT(saveImage()));
+	test=connect(m_pQVTKWidget, SIGNAL(saveImageDone()), this, SLOT(saveImageDone()));
 
 	createMenus();
 	createToolBars();
@@ -178,6 +195,8 @@ MainWinMacroSim::MainWinMacroSim(QWidget *parent) :
 
 	// create thread for actual tracer
 	m_pTracerThreadThread = new QThread();
+
+	this->showMaximized(); // maximize window
 }
 
 MainWinMacroSim::~MainWinMacroSim()
@@ -196,19 +215,38 @@ MainWinMacroSim::~MainWinMacroSim()
 	}
 }
 
-void MainWinMacroSim::keyPressEvent(QKeyEvent *keyEvent)
+void MainWinMacroSim::processKeyEvent(QKeyEvent *keyEvent)
 {
 	// if we have an item focused and hit a delete button
-	if ( m_pSceneModel->getFocusedItemIndex()!=QModelIndex() && ( (keyEvent->key()==Qt::Key_Escape) || (keyEvent->key()==Qt::Key_Delete) || (keyEvent->key()==Qt::Key_Clear) || (keyEvent->key()==Qt::Key_Backspace) ) )
+	QModelIndex l_index=m_pSceneModel->getFocusedItemIndex();
+	if ( l_index!=QModelIndex() && ( (keyEvent->key()==Qt::Key_Escape) || (keyEvent->key()==Qt::Key_Delete) || (keyEvent->key()==Qt::Key_Clear) || (keyEvent->key()==Qt::Key_Backspace) ) )
 	{
 		QMessageBox::StandardButton ret;
 		ret=QMessageBox::warning(this, tr("MacroSim"), tr("Do you really want to delete the selected item?"),QMessageBox::Yes | QMessageBox::No);
 
+		QModelIndex l_rootIndex=this->m_pSceneModel->getRootIndex(l_index);
 		if (ret == QMessageBox::Yes)
 		{
+			// if we have to remove a geometry, we need to expand the geometryGroup again, to hide errors of our model in the tree view...
+			AbstractItem* l_pAbstractItem=reinterpret_cast<AbstractItem*>(l_index.internalPointer());
+			l_pAbstractItem->removeFromView(this->m_pQVTKWidget->getRenderer());
+			//this->m_pQVTKWidget->getRenderer()->RemoveActor(l_pAbstractItem->getActor());
+			//l_pAbstractItem->setRender(false);
 			m_pSceneModel->removeFocusedItem();
+			if (l_pAbstractItem->getObjectType() == AbstractItem::GEOMETRY)
+			{
+				m_pSceneTreeView->setExpanded( l_rootIndex ,false);
+				m_pSceneTreeView->setExpanded( l_rootIndex ,true);
+			}
+
 		}
 	}
+
+}
+
+void MainWinMacroSim::keyPressEvent(QKeyEvent *keyEvent)
+{
+	this->processKeyEvent(keyEvent);
 	// throw event up the foodchain
 	QMainWindow::keyPressEvent(keyEvent);
 }
@@ -223,8 +261,9 @@ void MainWinMacroSim::keyPressEvent(QKeyEvent *keyEvent)
 void MainWinMacroSim::pushItemToPropertyEditor(const QModelIndex index)
 {
 	m_pItemPropertyWidget->setObject(m_pSceneModel->getItem(index));
-	m_pScene->setItemFocus(index);
+	this->m_pQVTKWidget->setItemFocus(index);
 	m_activeItemIndex=index;
+	this->m_pQVTKWidget->getScene()->Render();
 }
 
 //! slot method 
@@ -243,10 +282,12 @@ void MainWinMacroSim::addItemToScene(const QModelIndex index)
 	DetectorItem *l_pNewDetItem;
 	FieldItem *l_pField;
 	GeometryItem *l_pGeom;
+	MiscItem *l_pMiscItem;
 	DetectorItem *l_pDet;
 	FieldItemLib l_fieldLib;
 	GeometryItemLib l_geomLib;
 	DetectorItemLib l_detLib;
+	MiscItemLib l_miscItemLib;
 	bool test;
 	switch (l_objType)
 	{
@@ -258,6 +299,7 @@ void MainWinMacroSim::addItemToScene(const QModelIndex index)
 	case AbstractItem::GEOMETRY:
 		l_pGeom=reinterpret_cast<GeometryItem*>(l_pAbstractItem);
 		l_pNewAbstractItem=l_geomLib.createGeometry(l_pGeom->getGeomType());
+		this->m_pActorList.append(l_pGeom->getActor());
 		break;
 
 	case AbstractItem::DETECTOR:
@@ -265,6 +307,11 @@ void MainWinMacroSim::addItemToScene(const QModelIndex index)
 		l_pNewAbstractItem=l_detLib.createDetector(l_pDet->getDetType());
 		l_pDet=reinterpret_cast<DetectorItem*>(l_pNewAbstractItem);
 		test=connect(this, SIGNAL(simulationFinished(ito::DataObject)), l_pDet, SLOT(simulationFinished(ito::DataObject)));
+		break;
+
+	case AbstractItem::MISCITEM:
+		l_pMiscItem=reinterpret_cast<MiscItem*>(l_pAbstractItem);
+		l_pNewAbstractItem=l_miscItemLib.createMiscItem(l_pMiscItem->getMiscType());
 		break;
 
 	default:
@@ -278,7 +325,11 @@ void MainWinMacroSim::addItemToScene(const QModelIndex index)
 	}
 	else
 		// append geometry to scene model
-		m_pSceneModel->appendItem(l_pNewAbstractItem);
+		m_pSceneModel->appendItem(l_pNewAbstractItem, this->m_pQVTKWidget->getRenderer());
+
+	// render vtk window
+	this->m_pQVTKWidget->getScene()->Render();
+	this->m_pQVTKWidget->getRenderer()->ResetCamera();
 }
 
 bool MainWinMacroSim::writeSceneToXML()
@@ -316,53 +367,53 @@ bool MainWinMacroSim::writeSceneToXML()
 	for (int i=0; i<m_pSceneModel->rowCount(QModelIndex()); i++)
 	{
 		AbstractItem* t_pItem=m_pSceneModel->getItem(m_pSceneModel->index(i,0,QModelIndex()));
-		// we only write the field items here
-		if (t_pItem->getObjectType() == AbstractItem::FIELD)
-		{
+		//// we only write the field items here
+		//if (t_pItem->getObjectType() == AbstractItem::FIELD)
+		//{
 			if (!t_pItem->writeToXML(document, root))
 			{
 				cout << "error writing element " << i << " to XML" << endl;
 				return false;
 			}
-		}
+//		}
 	}
 
-	// create the geometryGroup
-	QDomElement geometryGroup = document.createElement("geometryGroup");
+	//// create the geometryGroup
+	//QDomElement geometryGroup = document.createElement("geometryGroup");
 
-	// add the geometries to our document
-	for(int i = 0; i < m_pSceneModel->rowCount(QModelIndex()); i++)
-	{
-		AbstractItem* t_pItem=m_pSceneModel->getItem(m_pSceneModel->index(i,0,QModelIndex()));
+	//// add the geometries to our document
+	//for(int i = 0; i < m_pSceneModel->rowCount(QModelIndex()); i++)
+	//{
+	//	AbstractItem* t_pItem=m_pSceneModel->getItem(m_pSceneModel->index(i,0,QModelIndex()));
 
-		// we only write the geometry items items here
-		if (t_pItem->getObjectType() == AbstractItem::GEOMETRY)
-		{
-			if (!t_pItem->writeToXML(document, geometryGroup))
-			{
-				cout << "error writing element " << i << " to XML" << endl;
-				return false;
-			}
-		}
-	}
-	// add geometryGroup to the scene
-	root.appendChild(geometryGroup);
+	//	// we only write the geometry items items here
+	//	if (t_pItem->getObjectType() == AbstractItem::GEOMETRY)
+	//	{
+	//		if (!t_pItem->writeToXML(document, geometryGroup))
+	//		{
+	//			cout << "error writing element " << i << " to XML" << endl;
+	//			return false;
+	//		}
+	//	}
+	//}
+	//// add geometryGroup to the scene
+	//root.appendChild(geometryGroup);
 
 
-	// write the detectors
-	for (int i=0; i<m_pSceneModel->rowCount(QModelIndex()); i++)
-	{
-		AbstractItem* t_pItem=m_pSceneModel->getItem(m_pSceneModel->index(i,0,QModelIndex()));
-		// we only write the field items here
-		if (t_pItem->getObjectType() == AbstractItem::DETECTOR)
-		{
-			if (!t_pItem->writeToXML(document, root))
-			{
-				cout << "error writing element " << i << " to XML" << endl;
-				return false;
-			}
-		}
-	}
+	//// write the detectors
+	//for (int i=0; i<m_pSceneModel->rowCount(QModelIndex()); i++)
+	//{
+	//	AbstractItem* t_pItem=m_pSceneModel->getItem(m_pSceneModel->index(i,0,QModelIndex()));
+	//	// we only write the field items here
+	//	if (t_pItem->getObjectType() == AbstractItem::DETECTOR)
+	//	{
+	//		if (!t_pItem->writeToXML(document, root))
+	//		{
+	//			cout << "error writing element " << i << " to XML" << endl;
+	//			return false;
+	//		}
+	//	}
+	//}
 
 
 	// add scene to the document
@@ -408,6 +459,7 @@ bool MainWinMacroSim::resetScene()
 			m_pSceneModel->clearModel();
 			//delete m_pSceneModel;
 		}
+		this->m_pQVTKWidget->resetScene();
 	}
 	return true;
 }
@@ -425,6 +477,7 @@ bool MainWinMacroSim::loadScene()
 		m_pSceneModel->clearModel();
 		//delete m_pSceneModel;
 	}
+	this->m_pQVTKWidget->resetScene();
 
 	// set up the new model according to file
 	QDomDocument doc;
@@ -479,7 +532,7 @@ bool MainWinMacroSim::loadScene()
 			return false;
 		}
 		l_pField->readFromXML(l_fieldElement);
-		m_pSceneModel->appendItem(l_pField);
+		m_pSceneModel->appendItem(l_pField, this->m_pQVTKWidget->getRenderer());
 	}
 
 	// load all geometries in the scene and add them to our sceneModel
@@ -489,6 +542,7 @@ bool MainWinMacroSim::loadScene()
 	for (int iGeomGroup=0; iGeomGroup<l_geomGroupNodeList.count(); iGeomGroup++)
 	{
 		QDomElement l_geomGroupElement=l_geomGroupNodeList.at(iGeomGroup).toElement();
+		GeomGroupItem *l_pGeomGroup=new GeomGroupItem();
 		QDomNodeList l_geomNodeList = l_geomGroupElement.elementsByTagName("geometry");
 
 		for (int iGeom=0; iGeom<l_geomNodeList.count(); iGeom++)
@@ -503,8 +557,9 @@ bool MainWinMacroSim::loadScene()
 				return false;
 			}
 			l_pGeom->readFromXML(l_geomElement);
-			m_pSceneModel->appendItem(l_pGeom);
+			l_pGeomGroup->setChild(l_pGeom);		
 		}
+		m_pSceneModel->appendItem(l_pGeomGroup, this->m_pQVTKWidget->getRenderer());
 	}
 
 	// load all fields in the scene and add them to our sceneModel
@@ -525,8 +580,15 @@ bool MainWinMacroSim::loadScene()
 		}
 		bool test=connect(this, SIGNAL(simulationFinished(ito::DataObject)), l_pDet, SLOT(simulationFinished(ito::DataObject)));
 		l_pDet->readFromXML(l_detElement);
-		m_pSceneModel->appendItem(l_pDet);
+		m_pSceneModel->appendItem(l_pDet, this->m_pQVTKWidget->getRenderer());
 	}
+
+	// save filename for future calls to save the scene
+	m_fileName=filename;
+
+	// render vtk window
+	this->m_pQVTKWidget->getScene()->Render();
+	m_pQVTKWidget->getRenderer()->ResetCamera();
 
 	return true;
 }
@@ -535,11 +597,15 @@ void MainWinMacroSim::sceneDataChangedFromPropEdit(const QModelIndex &topLeft, c
 {
 	// if materialType, scatterType or coatingType changed, we might need to create new instances of those and append it to its parents
 	// find rootItem that ultimately holds the item that just changed
-	QModelIndex rootItemIndex=m_pSceneModel->getRootIndex(m_activeItemIndex);
-	// all items in our model are AbstractItems, so we can savely cast here
-	AbstractItem* l_pAbstractItem=m_pSceneModel->getItem(rootItemIndex);
+	QModelIndex l_rootItemIndex=m_pSceneModel->getBaseIndex(m_activeItemIndex);
 
-	m_pSceneTreeView->repaint();
+//	m_pSceneTreeView->setExpanded( l_rootItemIndex ,false);
+//	m_pSceneTreeView->setExpanded( l_rootItemIndex ,true);
+
+	// render vtk window
+	this->m_pQVTKWidget->getScene()->Render();
+
+//	m_pSceneTreeView->repaint();
 }
 
 //void MainWinMacroSim::sceneSelectionChanged()
@@ -603,24 +669,39 @@ void MainWinMacroSim::startSimulation()
 
 	//create output data object
 	if (m_pResultField)
+	{
 		delete m_pResultField;
+		m_pResultField=NULL;
+	}
 	m_pResultField = new ito::DataObject();
 
-	m_pTracer->init(m_html, m_pResultField, m_pTracerStatOutStream, m_guiSimParams);
+	// get file to ptx
+	QString path = QCoreApplication::applicationDirPath();
+	QDir l_path_to_ptx(path);
+	if (l_path_to_ptx.cd("plugins\\MacroSim\\ptx"))
+	{
+		m_guiSimParams.path_to_ptx=l_path_to_ptx.canonicalPath();
 
-	m_pTracer->moveToThread(m_pTracerThreadThread);
+		m_pTracer->init(m_html, m_pResultField, m_pTracerStatOutStream, m_guiSimParams);
 
-	test=connect(m_pTracer, SIGNAL(percentageCompleted(int)), m_pProgBar, SLOT(setValue(int)),Qt::QueuedConnection);
-//	test=connect(m_pTracer, SIGNAL(percentageCompleted(int)), this, SLOT(tracerThreadUpdate(int)),Qt::QueuedConnection);
-	test=connect(m_pTracer, SIGNAL(finished(bool)), this, SLOT(tracerThreadFinished(bool)),Qt::QueuedConnection);
-	test=connect(m_pTracer, SIGNAL(terminated()), this, SLOT(tracerThreadTerminated()),Qt::QueuedConnection);
-	test=connect(this, SIGNAL(runSimulation()), m_pTracer, SLOT(runSimulation()), Qt::QueuedConnection);
-	test=connect(this, SIGNAL(terminateSimulation()), m_pTracer, SLOT(terminate()));
+		m_pTracer->moveToThread(m_pTracerThreadThread);
 
-	//qDebug() << QThread::currentThreadId();
+		test=connect(m_pTracer, SIGNAL(percentageCompleted(int)), m_pProgBar, SLOT(setValue(int)),Qt::QueuedConnection);
+	//	test=connect(m_pTracer, SIGNAL(percentageCompleted(int)), this, SLOT(tracerThreadUpdate(int)),Qt::QueuedConnection);
+		test=connect(m_pTracer, SIGNAL(finished(bool)), this, SLOT(tracerThreadFinished(bool)),Qt::QueuedConnection);
+		test=connect(m_pTracer, SIGNAL(terminated()), this, SLOT(tracerThreadTerminated()),Qt::QueuedConnection);
+		test=connect(this, SIGNAL(runSimulation()), m_pTracer, SLOT(runSimulation()), Qt::QueuedConnection);
+		test=connect(this, SIGNAL(terminateSimulation()), m_pTracer, SLOT(terminate()));
 
-	//m_pTracer->runSimulation();
-	emit runSimulation();
+		//qDebug() << QThread::currentThreadId();
+
+		//m_pTracer->runSimulation();
+		emit runSimulation();
+	}
+	else
+		cout << "error in startSimulation(): path to ptx files does not exist at: path/plugins/MacroSim" << endl;
+
+
 }
 
 void MainWinMacroSim::startLayoutMode()
@@ -629,13 +710,16 @@ void MainWinMacroSim::startLayoutMode()
 	m_pTracerThreadThread->start(QThread::HighestPriority);
 
 	// delete old rayPlotData
-	m_pScene->getRayPlotData()->getData()->clear();
+	m_pQVTKWidget->getRayPlotData()->getData()->clear();
 
 	// write xmlto member variable m_html
 	writeSceneToXML();
 
 	if (m_pResultField)
+	{
 		delete m_pResultField;
+		m_pResultField=NULL;
+	}
 
 	// connect output stream of tracer to our output widget
 	ostream* l_pTracerStandardOutStream=m_pTracer->getCout();
@@ -655,7 +739,7 @@ void MainWinMacroSim::startLayoutMode()
 
 	test=connect(m_pTracerStatOutStream, SIGNAL(flushStream(QString)), this, SLOT(tracerStreamFlushed(QString)));
 
-	emit runLayoutMode(this->m_pScene->getRayPlotData());
+	emit runLayoutMode(this->m_pQVTKWidget->getRayPlotData());
 }
 
 void MainWinMacroSim::tracerThreadTerminated()
@@ -700,10 +784,16 @@ void MainWinMacroSim::tracerThreadFinished(bool success)
 		delete m_pTracer;
 		m_pTracer=NULL;
 	}
+	// render ray plot data
+	if (this->m_pQVTKWidget->getRayPlotData() != NULL)
+	{
+		this->m_pQVTKWidget->removeRaysFromView();
+		this->m_pQVTKWidget->renderRays();
+	}
 
 	if(m_pResultField && success)
 	{
-//		emit this->simulationFinished(*m_pResultField);
+		emit this->simulationFinished(*m_pResultField);
 	}
 }
 
@@ -751,15 +841,15 @@ void MainWinMacroSim::createMenus()
 	m_pSimMenu->addAction(QIcon("::gui/icons/Run.png"), tr("run"), this, SLOT(startSimulation()), QKeySequence(tr("Ctrl+R", "Simulation|run")));
 	m_pSimMenu->addAction(QIcon("::gui/icons/Abort.png"), tr("abort"), this, SLOT(stopSimulation()), QKeySequence(tr("Ctrl+A", "Simulation|abort")));
 	m_pSimMenu->addAction(QIcon("::gui/icons/pencil.ico"), tr("run layout"), this, SLOT(startLayoutMode()), QKeySequence(tr("Ctrl+L", "Simulation|layout")));
-	m_pSimMenu->addAction(QIcon("::gui/icons/configure.png"), tr("configure"), this, SLOT(showSimConfigDialog()), QKeySequence(tr("Ctrl+C", "Simulation|configure")));
+	m_pSimMenu->addAction(QIcon("::gui/icons/configure.png"), tr("configure"), this, SLOT(showSimConfigDialog()), QKeySequence(tr("Ctrl+P", "Simulation|configure")));
 
 	m_pViewMenu = new QMenu(tr("&View"), this);
 	menuBar()->addMenu(m_pViewMenu);
-	m_pViewMenu->addAction(QIcon(), tr("toggle coordinate axes"), m_pScene, SLOT(toggleCoordinateAxes()));
-	m_pViewMenu->addAction(QIcon(), tr("set xy-view"), m_pScene, SLOT(setXYView()));
-	m_pViewMenu->addAction(QIcon(), tr("set xz-view"), m_pScene, SLOT(setXZView()));
-	m_pViewMenu->addAction(QIcon(), tr("set yz-view"), m_pScene, SLOT(setYZView()));
-	m_pViewMenu->addAction(QIcon(), tr("render options"), m_pScene, SLOT(showRenderOptions()));
+	m_pViewMenu->addAction(QIcon(), tr("toggle coordinate axes"), m_pQVTKWidget, SLOT(toggleCoordinateAxes()));
+	m_pViewMenu->addAction(QIcon(), tr("set x-view up"), m_pQVTKWidget, SLOT(setXViewUp()));
+	m_pViewMenu->addAction(QIcon(), tr("set y-view up"), m_pQVTKWidget, SLOT(setYViewUp()));
+	m_pViewMenu->addAction(QIcon(), tr("set z-view up"), m_pQVTKWidget, SLOT(setZViewUp()));
+	m_pViewMenu->addAction(QIcon(), tr("render options"), m_pQVTKWidget, SLOT(showRenderOptions()));
 //	m_pViewMenu->addAction(QIcon("::gui/icons/Abort.png"), tr("abort"), this, SLOT(stopSimulation()), QKeySequence(tr("Ctrl+A", "Simulation|abort")));
 //	m_pViewMenu->addAction(QIcon("::gui/icons/configure.png"), tr("configure"), this, SLOT(showSimConfigDialog()), QKeySequence(tr("Ctrl+C", "Simulation|configure")));
 }
@@ -784,6 +874,7 @@ void MainWinMacroSim::createToolBars()
 	m_pSimToolBar->addAction(QIcon(":/gui/icons/Abort.png"), tr("abort"), this, SLOT(stopSimulation()));
 	m_pSimToolBar->addAction(QIcon(":/gui/icons/pencil.ico"), tr("run layout"), this, SLOT(startLayoutMode()));
 	m_pSimToolBar->addAction(QIcon(":/gui/icons/configure.png"), tr("configure"), this, SLOT(showSimConfigDialog()));
+	m_pSimToolBar->addAction(QIcon(":/gui/icons/snapshot.png"), tr("saveImage"), m_pQVTKWidget, SLOT(saveImage()));
 }
 
 void MainWinMacroSim::closeEvent(QCloseEvent *event)

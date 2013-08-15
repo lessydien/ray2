@@ -41,8 +41,6 @@ bool MaterialAbsorbingItem::writeToXML(QDomDocument &document, QDomElement &root
 	QModelIndex l_parentIndex=l_index.parent();
 	AbstractItem* l_pItem=reinterpret_cast<AbstractItem*>(l_parentIndex.internalPointer());
 
-	Vec3d l_root=l_pItem->getRoot();
-
 	root.appendChild(material);
 
 	return true;

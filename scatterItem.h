@@ -38,8 +38,11 @@ class ScatterItem :
 {
 	Q_OBJECT
 
-	Q_PROPERTY(ScatterType ScatType READ getScatterType DESIGNABLE true USER true);
 	Q_ENUMS(ScatterType);
+	Q_PROPERTY(ScatterType ScatType READ getScatterType DESIGNABLE true USER true);
+	Q_PROPERTY(Mat_ScatterType ScatType DESIGNABLE true USER true); // overwrite scatterType-Property of materialItem, so it can not be changed in propertyEditor of this item
+	Q_PROPERTY(Abstract_MaterialType materialType DESIGNABLE true USER true); // overwrite materialType-Property of abstractItem, so it can not be changed in propertyEditor of this item
+	
 
 
 public:

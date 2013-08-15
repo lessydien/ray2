@@ -18,7 +18,7 @@
 #ifndef RENDERFUNCS_H
 #define RENDERFUNCS_H
 
-#include <QtOpenGL\qglfunctions.h>
+//#include <QtOpenGL\qglfunctions.h>
 #include "DataObject/dataobj.h"
 #include "QPropertyEditor/CustomTypes.h"
 #include "qmatrix4x4.h"
@@ -29,19 +29,26 @@
 
 //namespace macrosim
 //{
+typedef enum
+{
+	RENDER_SOLID,
+	RENDER_TRANSPARENCY,
+	RENDER_WIREGRID
+} RenderMode;
 
 class RenderOptions
 {
 public:
 	RenderOptions() :
-	  m_slicesHeight(5),
-		  m_slicesWidth(5),
+	  m_slicesHeight(31),
+		  m_slicesWidth(31),
 		  m_showCoordAxes(true),
 		  m_ambientInt(0.25),
 		  m_diffuseInt(0.75),
 		  m_specularInt(0.5),
 		  m_backgroundColor(Vec3d(0.7, 0.7, 0.7)),
-		  m_lightPos(Vec3d(0.0, 0.0, 150.0))
+		  m_lightPos(Vec3d(0.0, 0.0, 150.0)),
+		  m_renderMode(RENDER_SOLID)
 	  {
 	  }
 
@@ -53,13 +60,18 @@ public:
 	Vec3d m_backgroundColor;
 	Vec3d m_lightPos;
 	bool m_showCoordAxes;
+	RenderMode m_renderMode;
 };
+
+RenderMode stringToRenderMode(QString str);
+int renderModeToComboBoxIndex(RenderMode in);
 
 void loadGlMatrix(const QMatrix4x4& m);
 
 void renderIntensityField(ito::DataObject &field, RenderOptions &options);
 void renderSemiSphere(double aptRadius, double radius, double numApt, RenderOptions &options);
 Vec3f calcSemiSphereNormal(Vec3f vertex, double radius);
+void rotateVec(Vec3d *vec, Vec3d tilt);
 
 //}; // end namespace
 

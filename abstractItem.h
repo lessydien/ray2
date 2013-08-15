@@ -18,15 +18,22 @@
 #ifndef ABSTRACTITEM
 #define ABSTRACTITEM
 
+#include "GL/glew.h"
 #include <qobject.h>
 #include <qlist.h>
 #include <QDomElement>
-#include <Qgraphicsitem>
-#include <QPainter>
+//#include <Qgraphicsitem>
+//#include <QPainter>
 #include <QModelIndex>
 #include <QColor>
 #include <qmatrix4x4.h>
 #include "renderFuncs.h"
+//#include "macrosim_scenemodel.h"
+
+#include <vtkRenderer.h>
+#include <vtkSmartPointer.h>
+#include <vtkActor.h>
+#include <vtkProperty.h>
 
 namespace macrosim
 {
@@ -45,9 +52,9 @@ class AbstractItem : public QObject
 
 public:
 
-	enum ObjectType {OBJUNKNOWN, FIELD, GEOMETRYGROUP, GEOMETRY, MATERIAL, SCATTER, COATING, DETECTOR, GEOMETRYCONTAINER, FIELDCONTAINER, DETECTORCONTAINER};
+	enum ObjectType {OBJUNKNOWN, FIELD, MISCITEM, GEOMETRY, MATERIAL, SCATTER, COATING, DETECTOR, GEOMETRYCONTAINER, FIELDCONTAINER, DETECTORCONTAINER, MISCCONTAINER};
 	// note this has to be exactly the same definition including ordering as MaterialType in materialItem.h
-	enum Abstract_MaterialType {MATUNKNOWN, REFRACTING, ABSORBING, DIFFRACTING, FILTER, LINGRAT1D, MATIDEALLENSE, REFLECTING, REFLECTINGCOVGLASS, PATHTRACESOURCE, DOE};
+	enum Abstract_MaterialType {MATUNKNOWN, REFRACTING, ABSORBING, DIFFRACTING, FILTER, LINGRAT1D, MATIDEALLENSE, REFLECTING, REFLECTINGCOVGLASS, PATHTRACESOURCE, DOE, VOLUMESCATTER};
 
 	AbstractItem(ObjectType type=OBJUNKNOWN, QString name="name",  QObject *parent = 0) :
 		QObject(parent),
@@ -58,7 +65,7 @@ public:
 		m_focus(false),
 		m_render(true)
 		{
-
+			m_pActor = vtkSmartPointer<vtkActor>::New();
 		}
 
 	~AbstractItem(void) 
@@ -76,17 +83,23 @@ public:
 	void setName(const QString &name) {m_name=name; emit itemChanged(m_index, m_index);};
 	ObjectType const getObjectType() const { return m_objectType; };
 	void setObjectType(ObjectType type) { m_objectType=type; emit itemChanged(m_index, m_index);};
+	Vec3d getRoot() const {return m_root;};
+	void setRoot(const Vec3d root) {m_root=root; this->updateVtk(); emit itemChanged(m_index, m_index);};
 //	virtual bool signalDataChanged() {return true;};
 	void setModelIndex(QModelIndex &in) {m_index=in;};
+	void createModelIndex(QModelIndex &parent, int row, int coloumn);
 	QModelIndex getModelIndex() const {return m_index;};
-	void setRoot(const Vec3d &in) {m_root=in; emit itemChanged(m_index, m_index);};
-	Vec3d getRoot() const {return m_root;};
 	Abstract_MaterialType getMaterialType() const {return m_materialType;};
 	void setMaterialType(const Abstract_MaterialType type);
-	void setFocus(const bool in) {m_focus=in;};
-	void setRender(const bool in) {m_render=in;};
+	void setFocus(const bool in) {m_focus=in; this->updateVtk();};
+	void setRender(const bool in);
 	bool getRender() {return m_render;};
+	vtkSmartPointer<vtkActor> getActor() {return m_pActor;};
 
+	virtual double getTransparency() {return 1.0;};
+	virtual QModelIndex hasActor(void *actor) const;
+
+	virtual void removeFromView(vtkSmartPointer<vtkRenderer> renderer) {renderer->RemoveActor(m_pActor);};
 
 	virtual bool writeToXML(QDomDocument &document, QDomElement &root) const;
 	virtual bool readFromXML(const QDomElement &node);
@@ -111,8 +124,8 @@ public:
 		case FIELD:
 			str= "FIELD";
 			break;
-		case GEOMETRYGROUP:
-			str= "GEOMETRYGROUP";
+		case MISCITEM:
+			str= "MISCITEM";
 			break;
 		case GEOMETRY:
 			str= "GEOMETRY";
@@ -141,8 +154,8 @@ public:
 		
 		if (!str.compare("FIELD"))
 			return FIELD;
-		if (!str.compare("GEOMETRYGROUP"))
-			return GEOMETRYGROUP;
+		if (!str.compare("MISCITEM"))
+			return MISCITEM;
 		if (!str.compare("GEOMETRY"))
 			return GEOMETRY;
 		if (!str.compare("MATERIAL"))
@@ -158,6 +171,11 @@ public:
 		return OBJUNKNOWN;
 	}
 
+	virtual void render(QMatrix4x4 &m, RenderOptions &options) {};
+	virtual void renderVtk(vtkSmartPointer<vtkRenderer> renderer) {};
+	virtual void updateVtk() {};
+	virtual void setRenderOptions(RenderOptions options);
+
 protected:
 	QList<AbstractItem*> m_childs;
 	ObjectType m_objectType;
@@ -167,15 +185,16 @@ protected:
 	Abstract_MaterialType m_materialType;
 	bool m_focus;
 	bool m_render;
+	vtkSmartPointer<vtkActor> m_pActor;
+	vtkSmartPointer<vtkMapper> m_pMapper;
+	RenderOptions m_renderOptions;
 
 private:
 
-public:
-	virtual void render(QMatrix4x4 &m, RenderOptions &options);
-
 signals:
+	void itemExchanged(const QModelIndex &parentIndex, const int row, const int coloumn, macrosim::AbstractItem &pNewItem);
 	void itemChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
-
+	
 	public slots:
 		void changeItem(const QModelIndex &topLeft, const QModelIndex &bottomRight)	{ emit itemChanged(m_index, m_index); };
 

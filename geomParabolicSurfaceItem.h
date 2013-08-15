@@ -22,8 +22,11 @@
 
 #include "QPropertyEditor/CustomTypes.h"
 #include "GeometryItem.h"
-#include <QtOpenGL\qglfunctions.h>
+//#include <QtOpenGL\qglfunctions.h>
 #include "glut.h"
+
+#include <vtkPolyData.h>
+#include <vtkPolyDataMapper.h>
 
 using namespace macrosim;
 
@@ -41,6 +44,7 @@ class ParabolicSurfaceItem :
 	Q_OBJECT
 
 	Q_PROPERTY(double radius READ getRadius WRITE setRadius DESIGNABLE true USER true);
+	Q_CLASSINFO("radius", "decimals=10;");
 
 
 public:
@@ -50,17 +54,23 @@ public:
 
 	// functions for property editor
 	double getRadius() const {return m_radius;};
-	void setRadius(const double in) {m_radius=in; emit itemChanged(m_index, m_index);};
+	void setRadius(const double in) {m_radius=in; this->updateVtk(); emit itemChanged(m_index, m_index);};
 
 	bool writeToXML(QDomDocument &document, QDomElement &root) const;
 	bool readFromXML(const QDomElement &node);
 
 	void render(QMatrix4x4 &m, RenderOptions &options);
+	void renderVtk(vtkSmartPointer<vtkRenderer> renderer);
 
 	Vec3f calcNormal(Vec3f vertex, Vec3f* neighbours, int nr);
+	Vec3f calcNormal(Vec3f vertex);
 
 
 private:
+	void updateVtk();
+
+	vtkSmartPointer<vtkPolyData> m_pPolydata;
+	vtkSmartPointer<vtkPolyDataMapper> m_pMapper;
 
 //	MaterialItem::MaterialType m_materialType;
 	double m_radius;

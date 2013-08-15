@@ -22,38 +22,22 @@
 #include "abstractItem.h"
 #include <qabstractitemmodel.h>
 #include "common/sharedStructures.h"
+#include "macrosim_scenemodel.h"
 
 
 namespace macrosim
 {
 
-class LibraryModel : public QAbstractItemModel
+class LibraryModel : public SceneModel
 {
 	Q_OBJECT
 
 public:
-	LibraryModel(const QStringList &strings, QObject *parent);
+	LibraryModel(QObject *parent);
 	~LibraryModel();
 
-	// functions we need to implement
-	int columnCount ( const QModelIndex &parent  ) const;
-	QVariant data ( const QModelIndex &index, int role ) const;
-	QModelIndex index ( int row, int column, const QModelIndex &parent ) const;
-//	QModelIndex	parent ( const QModelIndex & index ) const;
-	int	rowCount ( const QModelIndex &parent ) const;
+	void appendItem(macrosim::AbstractItem* item, vtkSmartPointer<vtkRenderer> renderer, QModelIndex parentIndex, int rowIn);
 
-    Qt::ItemFlags flags(const QModelIndex &index) const;
-    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
-//    int update(void) { emit(beginResetModel()); emit(endResetModel()); return 0; };
-	void clearModel(void) {m_data.clear();};
-
-protected:
-
-private:
-    QList<QString> m_headers;									//!<  string list of names of column headers
-    QList<QVariant> m_alignment;								//!<  list of alignments for the corresponding headers
-	QList<macrosim::AbstractItem*> m_data;		//!<  list containing the individual model items
-	
 };
 
 }; // end namespace macrosim

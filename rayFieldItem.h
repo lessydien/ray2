@@ -52,11 +52,17 @@ class RayFieldItem :
 	Q_PROPERTY(RayDirDistrType rayDirDistrType READ getRayDirDistrType WRITE setRayDirDistrType DESIGNABLE true USER true);
 	Q_PROPERTY(RayPosDistrType rayPosDistrType READ getRayPosDistrType WRITE setRayPosDistrType DESIGNABLE true USER true);
 
+	Q_CLASSINFO("tilt", "decimals=10;");
+	Q_CLASSINFO("rayDirection", "decimals=10;");
+	Q_CLASSINFO("alphaMax", "decimals=10;");
+	Q_CLASSINFO("alphaMin", "decimals=10;");
+
+
 	Q_ENUMS(RayDirDistrType);
 	Q_ENUMS(RayPosDistrType);
 
 public:
-	enum RayDirDistrType {RAYDIR_RAND, RAYDIR_RAND_NORM, RAYDIR_RANDIMPAREA, RAYDIR_UNIFORM, RAYDIR_GRID_RECT, RAYDIR_GRID_RECT_FARFIELD, RAYDIR_GRID_RAD, RAYDIR_UNKNOWN};
+	enum RayDirDistrType {RAYDIR_RAND_RECT, RAYDIR_RAND_RAD, RAYDIR_RANDNORM_RECT, RAYDIR_RANDIMPAREA, RAYDIR_UNIFORM, RAYDIR_GRID_RECT, RAYDIR_GRID_RECT_FARFIELD, RAYDIR_GRID_RAD, RAYDIR_UNKNOWN};
 	enum RayPosDistrType {RAYPOS_RAND_RECT, RAYPOS_RAND_RECT_NORM, RAYPOS_GRID_RECT, RAYPOS_RAND_RAD, RAYPOS_RAND_RAD_NORM, RAYPOS_GRID_RAD, RAYPOS_UNKNOWN};
 
 	RayFieldItem(QString name="name", FieldType type=UNDEFINED, QObject *parent=0);

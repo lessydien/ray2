@@ -23,7 +23,7 @@
 #include "DataObject/dataobj.h"
 
 
-#include "MyDelegate.h"
+//#include "MyDelegate.h"
 #include "geometryItem.h"
 #include "geomSphericalLenseItem.h"
 #include "materialItem.h"
@@ -32,11 +32,13 @@
 #include "macrosim_scenemodel.h"
 #include "macrosim_librarymodel.h"
 #include "QPropertyEditor/QPropertyModel.h"
-#include "myGraphicsScene.h"
+//#include "myGraphicsScene.h"
 #include <qplaintextedit.h>
 #include "TracerThread.h"
 #include "dockWidget_Console.h"
 #include "consoleStream.h"
+
+#include "myVtkWindow.h"
 
 #include <QtGui>
 #include <qdialog.h>
@@ -72,12 +74,13 @@ protected:
 private:
 	Ui::MainWinMacroSim ui;
 
-	MyGraphicsScene *m_pScene;
+//	MyGraphicsScene *m_pScene;
 
 	macrosim::SceneModel *m_pSceneModel;
 	macrosim::SceneModel *m_pLibraryModel;
 	QStringList m_Library;
 
+	myVtkWindow *m_pQVTKWidget;
 
 	QDockWidget *m_pDockWidget_PropEditor;
 	QPropertyEditorWidget *m_pItemPropertyWidget;
@@ -108,8 +111,10 @@ private:
 
 	ito::DataObject *m_pResultField;
 
+	QList<vtkSmartPointer<vtkActor>> m_pActorList;
+
 signals:
-	void signalSceneSelectionChanged(const QModelIndex topLeft);
+//	void signalSceneSelectionChanged(const QModelIndex topLeft);
 	void signalSceneDataChangedFromPropEdit(const QModelIndex &topLeft, const QModelIndex &bottomRight);
 	void terminateSimulation();
 	void runLayoutMode(RayPlotData *rayPlotData);
@@ -135,6 +140,7 @@ public slots:
 	void stopSimulation();
 	void showSimConfigDialog();
 	void startLayoutMode();
+	void processKeyEvent(QKeyEvent *keyEvent);
 
 private slots:
 

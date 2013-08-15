@@ -9,7 +9,7 @@ cmake_minimum_required(VERSION 2.6.3 FATAL_ERROR)
 
 SET (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR} ${ITOM_SDK_DIR})
 
-OPTION(BUILD_TARGET64 "Build for 64 bit target if set to ON or 32 bit if set to OFF." OFF)
+OPTION(BUILD_TARGET64 "Build for 64 bit target if set to ON or 32 bit if set to OFF." ON)
 
 # we need to find the itom SDK
 find_package(ITOM_SDK REQUIRED)
@@ -131,7 +131,7 @@ set(Flex_INCLUDE "${CMAKE_SOURCE_DIR}/LexParser/include")
 set(USE_PERFORCE OFF CACHE BOOL "This is forced off." FORCE)
 
 ##################################################################
-# SUtil compilation
+# Sutil compilation
 
 set(PTX_DIR "${CMAKE_BINARY_DIR}/lib/ptx" CACHE PATH "Path to where the samples look for the PTX code.")
 set(SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}" CACHE PATH "Path to the source directory.")
@@ -156,7 +156,9 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sampleConfig.h.in ${CMAKE_CURRENT_BIN
 # Path to sutil.h that all the samples need
 include_directories( ${MacroSim_INCLUDE}/optixu
                      ${CMAKE_CURRENT_BINARY_DIR}
-                     ${CUDA_INCLUDE_DIRS} )
+                     ${CUDA_INCLUDE_DIRS}
+					 "${CMAKE_CURRENT_SOURCE_DIR}/nvcommon/include"
+					 "${CMAKE_CURRENT_SOURCE_DIR}/nvcommon/nvModel/include")
 
 include(FindSUtilGLUT)
 
@@ -225,6 +227,8 @@ endfunction()
 # and the CMakeLists.txt file.
 
 add_subdirectory(ito_tracer)
+add_subdirectory(nvcommon)
+add_subdirectory(PropagationMath)
 
 # This copies out dlls into the build directories, so that users no longer need to copy
 # them over in order to run the samples.  This depends on the cook sample being compiled.

@@ -16,6 +16,7 @@
 ************************************************************************/
 
 #include "geomCylLenseSurfaceItem.h"
+#include "glut.h"
 
 using namespace macrosim;
 

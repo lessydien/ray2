@@ -39,6 +39,7 @@ class DetectorIntensityItem :
 	Q_OBJECT
 
 	Q_PROPERTY(Vec2d detPixel READ getDetPixel WRITE setDetPixel DESIGNABLE true USER true);	
+	Q_PROPERTY(int ignoreDepth READ getIgnoreDepth WRITE setIgnoreDepth DESIGNABLE true USER true);	
 
 public:
 
@@ -48,6 +49,9 @@ public:
 	// functions for property editor
 	const Vec2d getDetPixel()  {return m_detPixel;};
 	void setDetPixel(const Vec2d in) {m_detPixel=in;};
+	const int getIgnoreDepth() {return m_ignoreDepth;};
+	void setIgnoreDepth(const int in) {m_ignoreDepth=in;};
+
 	void render(QMatrix4x4 &m, RenderOptions &options);
 
 
@@ -56,6 +60,7 @@ public:
 
 private:
 	Vec2d m_detPixel;
+	int m_ignoreDepth;
 
 };
 

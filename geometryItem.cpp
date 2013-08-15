@@ -26,6 +26,7 @@ using namespace macrosim;
 GeometryItem::GeometryItem(QString name, GeomType type, QObject *parent) :
 	AbstractItem(GEOMETRY, name, parent),
 	m_geometryID(0),
+	m_geomGroupID(0),
 	m_geomType(type),
 	m_apertureType(ELLIPTICAL),
 	m_apertureRadius(2.0,2.0),

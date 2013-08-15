@@ -58,6 +58,9 @@ MaterialItem* MaterialItemLib::createMaterial(MaterialItem::MaterialType type)
 		case MaterialItem::PATHTRACESOURCE:
 			l_pItem=new MaterialPathTraceSourceItem();
 			break;
+		case MaterialItem::VOLUMESCATTER:
+			l_pItem=new MaterialVolumeScatterItem();
+			break;
 		default:
 			break;
 		}
@@ -88,6 +91,8 @@ MaterialItem::MaterialType MaterialItemLib::stringToMaterialType(const QString s
 		return MaterialItem::REFLECTINGCOVGLASS;
 	if (!str.compare("PATHTRACESOURCE"))
 		return MaterialItem::PATHTRACESOURCE;
+	if (!str.compare("VOLUMESCATTER"))
+		return MaterialItem::VOLUMESCATTER;
 
 	return MaterialItem::ABSORBING;
 }
@@ -126,6 +131,9 @@ QString MaterialItemLib::materialTypeToString(const MaterialItem::MaterialType t
 		break;
 	case MaterialItem::PATHTRACESOURCE:
 		str = "PATHTRACESOURCE";
+		break;
+	case MaterialItem::VOLUMESCATTER:
+		str = "VOLUMESCATTER";
 		break;
 	default:
 		break;
@@ -253,6 +261,9 @@ MaterialItem::MaterialType MaterialItemLib::abstractMatTypeToMatType(const Abstr
 	case AbstractItem::PATHTRACESOURCE:
 		typeOut = MaterialItem::PATHTRACESOURCE;
 		break;
+	case AbstractItem::VOLUMESCATTER:
+		typeOut = MaterialItem::VOLUMESCATTER;
+		break;
 	default:
 		break;
 	}
@@ -293,6 +304,9 @@ AbstractItem::Abstract_MaterialType MaterialItemLib::matTypeToAbstractMatType(co
 		break;
 	case MaterialItem::PATHTRACESOURCE:
 		typeOut = AbstractItem::PATHTRACESOURCE;
+		break;
+	case MaterialItem::VOLUMESCATTER:
+		typeOut = AbstractItem::VOLUMESCATTER;
 		break;
 	default:
 		break;

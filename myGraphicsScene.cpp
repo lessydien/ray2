@@ -20,8 +20,7 @@
 #include "geometryItem.h"
 #include "fieldItem.h"
 #include "detectorItem.h"
-#include <QGraphicsView>
-#include <QtOpenGL\qglfunctions.h>
+//#include <QtOpenGL\qglfunctions.h>
 #include "glut.h"
 
 using namespace macrosim;
@@ -73,7 +72,7 @@ void MyGraphicsScene::rowsAboutToBeRemoved(const QModelIndex &parent, int start,
 void MyGraphicsScene::changeItemData(const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
 	// find rootItem that ultimately holds the item that just changed
-	QModelIndex rootItemIndex=m_pModel->getRootIndex(topLeft);
+	QModelIndex rootItemIndex=m_pModel->getBaseIndex(topLeft);
 	// all items in our model are AbstractItems, so we can savely cast here
 	AbstractItem* l_pAbstractItem=m_pModel->getItem(rootItemIndex);
 //	l_pAbstractItem->getGraphViewItem()->update();
@@ -87,7 +86,7 @@ void MyGraphicsScene::changeItemFocus(const QModelIndex &index)
 	if (index != QModelIndex())
 	{
 		// find rootItem that ultimately holds the item that just changed
-		rootItemIndex=m_pModel->getRootIndex(index);
+		rootItemIndex=m_pModel->getBaseIndex(index);
 		// all items in our model are AbstractItems, so we can savely cast here
 //		AbstractItem* l_pAbstractItem=m_pModel->getItem(rootItemIndex);
 //		l_pGraphItem=l_pAbstractItem->getGraphViewItem();

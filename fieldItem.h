@@ -56,7 +56,7 @@ class FieldItem :
 
 public:
 
-	enum FieldType {UNDEFINED, RAYFIELD, GEOMRAYFIELD, DIFFRAYFIELD, DIFFRAYFIELDRAYAIM, PATHTRACERAYFIELD, INTENSITYFIELD, SCALARFIELD, VECFIELD, SCALARPLANEWAVE, SCALARSPHERICALWAVE, SCALARGAUSSIANWAVE, SCALARUSERWAVE};
+	enum FieldType {UNDEFINED, RAYFIELD, GEOMRAYFIELD, DIFFRAYFIELD, DIFFRAYFIELDRAYAIM, PATHTRACERAYFIELD, INTENSITYFIELD, SCALARFIELD, VECFIELD, SCALARPLANEWAVE, SCALARSPHERICALWAVE, SCALARGAUSSIANWAVE, SCALARUSERWAVE, PATHINTTISSUERAYFIELD};
 
 	FieldItem(QString name="name", FieldType type=UNDEFINED, QObject *parent=0);
 	~FieldItem(void);
@@ -81,6 +81,7 @@ public:
 	virtual bool writeToXML(QDomDocument &document, QDomElement &root) const;
 	virtual bool readFromXML(const QDomElement &node);
 	virtual void render(QMatrix4x4 &m, RenderOptions &options) {};
+	virtual void renderVtk(vtkSmartPointer<vtkRenderer> renderer) {};
 
 	MaterialItem* getChild() const 
 	{ 

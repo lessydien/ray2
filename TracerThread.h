@@ -27,7 +27,9 @@
 #include <qvector.h>
 #include <qlist.h>
 #include "QPropertyEditor/CustomTypes.h"
-#include "myGraphicsScene.h"
+#include "qdir.h"
+//#include "myGraphicsScene.h"
+#include "myVtkWindow.h"
 
 using namespace macrosim;
 
@@ -42,7 +44,9 @@ public :
 		   inputFilePath(QString()),
 		   subsetWidth(2000),
 		   subsetHeight(2000),
-		   numCPU(1)
+		   numCPU(1),
+		   path_to_ptx(QString())
+		   
 	{
 	};
 	enum TraceMode {SEQUENTIAL, NONSEQUENTIAL};
@@ -55,6 +59,7 @@ public :
 	unsigned long subsetWidth;
 	unsigned long subsetHeight;
 	int numCPU;
+	QString path_to_ptx;
 };
 
 class TracerThread :
@@ -79,6 +84,7 @@ protected:
 	ConsoleStream* m_pOutBuffer;
 	MacroSimTracer* m_pTracer;
 	RayPlotData *m_pRayPlotData;
+	QDir m_path_to_ptx;
 
 	static void callbackProgressWrapper(void* p2Object, int progressValue);
 	static void callbackRayPlotData(void* p2Object, double* rayPlotData, RayPlotDataParams* params);

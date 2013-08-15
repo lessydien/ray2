@@ -40,16 +40,18 @@ class MaterialItem :
 	Q_OBJECT
 
 	Q_ENUMS(MaterialType);
-	Q_PROPERTY(MaterialType MatType READ getMaterialType DESIGNABLE false USER false);
-
-	Q_PROPERTY(Mat_ScatterType ScatType READ getScatType WRITE setScatType DESIGNABLE true USER true);
 	Q_ENUMS(Mat_ScatterType);
-	Q_PROPERTY(Mat_CoatingType CoatType READ getCoatType WRITE setCoatType DESIGNABLE true USER true);
 	Q_ENUMS(Mat_CoatingType);
 
+	//Q_PROPERTY(MaterialType MatType READ getMaterialType DESIGNABLE false USER false);
+	Q_PROPERTY(Abstract_MaterialType materialType DESIGNABLE true USER true); // overwrite materialType-Property of abstractItem, so it can not be changed in propertyEditor of this item
+	Q_PROPERTY(Mat_ScatterType ScatType READ getScatType WRITE setScatType DESIGNABLE true USER true);
+	Q_PROPERTY(Mat_CoatingType CoatType READ getCoatType WRITE setCoatType DESIGNABLE true USER true);
+	
+
 public:
-	// note this has to be exactly the same definition including ordering as GeomMaterialType in geometryItem.h
-	enum MaterialType {REFRACTING, ABSORBING, DIFFRACTING, FILTER, LINGRAT1D, MATIDEALLENSE, REFLECTING, REFLECTINGCOVGLASS, PATHTRACESOURCE, DOE};
+	// note this has to be exactly the same definition including ordering as AbstractMaterialType in abstractItem.h
+	enum MaterialType {REFRACTING, ABSORBING, DIFFRACTING, FILTER, LINGRAT1D, MATIDEALLENSE, REFLECTING, REFLECTINGCOVGLASS, PATHTRACESOURCE, DOE, VOLUMESCATTER};
 	enum Mat_ScatterType {NOSCATTER, LAMBERT2D, TORRSPARR1D, TORRSPARR2D, TORRSPARR2DPATHTRACE, DISPDOUBLECAUCHY1D, DOUBLECAUCHY1D};
 	enum Mat_CoatingType {NOCOATING, NUMCOEFFS};
 	enum Test {TEST1, TEST2};

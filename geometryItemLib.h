@@ -29,6 +29,11 @@
 #include "geomParabolicSurfaceItem.h"
 #include "geomSphericalSurfaceItem.h"
 #include "geomMicroLensArrayItem.h"
+#include "geomApertureArrayItem.h"
+#include "geomCadObjectItem.h"
+#include "geomSubstrateItem.h"
+#include "geomStopArrayItem.h"
+#include "geomVolumeScattererItem.h"
 
 using namespace macrosim;
 

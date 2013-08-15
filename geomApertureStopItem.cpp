@@ -17,6 +17,14 @@
 
 #include "geomApertureStopItem.h"
 #include <math.h>
+#include "glut.h"
+#include <vtkCellArray.h>
+#include <vtkPoints.h>
+#include <vtkDoubleArray.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkProperty.h>
+#include <vtkVertex.h>
+#include <vtkPointData.h>
 
 using namespace macrosim;
 
@@ -139,3 +147,242 @@ Vec3f ApertureStopItem::calcNormal(Vec3f vertex, Vec3f* neighbours, int nr)
 {
 	return Vec3f(0,0,1);
 }
+
+Vec3f ApertureStopItem::calcNormal(Vec3f vertex)
+{
+	return Vec3f(0,0,-1);
+}
+
+void ApertureStopItem::renderVtk(vtkSmartPointer<vtkRenderer> renderer)
+{
+	// Create a polydata to store everything in
+	m_pPolydata = vtkSmartPointer<vtkPolyData>::New();
+  
+	// Setup actor and mapper
+	m_pMapper =	vtkSmartPointer<vtkPolyDataMapper>::New();
+
+#if VTK_MAJOR_VERSION <= 5
+	m_pMapper->SetInput(m_pPolydata);
+#else
+	m_pMapper->SetInputData(m_pPolydata);
+#endif
+
+	m_pActor->SetMapper(m_pMapper);
+
+	renderer->AddActor(m_pActor);
+
+	this->updateVtk();
+}
+
+void ApertureStopItem::updateVtk()
+{
+	vtkSmartPointer<vtkPoints> points =  vtkSmartPointer<vtkPoints>::New();
+	vtkSmartPointer<vtkDoubleArray> pointNormalsArray =  vtkSmartPointer<vtkDoubleArray>::New();
+	pointNormalsArray->SetNumberOfComponents(3); //3d normals (ie x,y,z)
+
+	vtkSmartPointer<vtkVertex> vertex = vtkSmartPointer<vtkVertex>::New();
+	// Create a cell array to store the vertices
+	vtkSmartPointer<vtkCellArray> cells =  vtkSmartPointer<vtkCellArray>::New();
+
+	vtkIdType pid;
+
+	Vec2d ar=this->getApertureRadius();
+	Vec2d asr=this->getApertureStopRadius();
+
+	unsigned long vertexIndex=0;
+
+	if (this->getApertureType() == RECTANGULAR)
+	{
+		pointNormalsArray->SetNumberOfTuples(11);
+		vertex->GetPointIds()->SetNumberOfIds(11);
+
+		double x=-asr.X;
+		double y=-asr.Y;
+		double z=0;
+		pid=points->InsertNextPoint(x,y,z);
+		Vec3f normal=calcNormal(Vec3f());
+		pointNormalsArray->SetTuple(pid, &normal.X);
+		vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+		vertexIndex++;
+
+		x=-ar.X;
+		y=-ar.Y;
+		z=0;
+		pid=points->InsertNextPoint(x,y,z);
+		normal=calcNormal(Vec3f());
+		pointNormalsArray->SetTuple(pid, &normal.X);
+		vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+		vertexIndex++;
+
+		x=-asr.X;
+		y=+asr.Y;
+		z=0;
+		pid=points->InsertNextPoint(x,y,z);
+		normal=calcNormal(Vec3f());
+		pointNormalsArray->SetTuple(pid, &normal.X);
+		vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+		vertexIndex++;
+
+		x=-ar.X;
+		y=+ar.Y;
+		z=0;
+		pid=points->InsertNextPoint(x,y,z);
+		normal=calcNormal(Vec3f());
+		pointNormalsArray->SetTuple(pid, &normal.X);
+		vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+		vertexIndex++;
+
+		x=-asr.X;
+		y=+asr.Y;
+		z=0;
+		pid=points->InsertNextPoint(x,y,z);
+		normal=calcNormal(Vec3f());
+		pointNormalsArray->SetTuple(pid, &normal.X);
+		vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+		vertexIndex++;
+
+		x=+ar.X;
+		y=+ar.Y;
+		z=0;
+		pid=points->InsertNextPoint(x,y,z);
+		normal=calcNormal(Vec3f());
+		pointNormalsArray->SetTuple(pid, &normal.X);
+		vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+		vertexIndex++;
+
+		x=+asr.X;
+		y=+asr.Y;
+		z=0;
+		pid=points->InsertNextPoint(x,y,z);
+		normal=calcNormal(Vec3f());
+		pointNormalsArray->SetTuple(pid, &normal.X);
+		vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+		vertexIndex++;
+
+		x=+ar.X;
+		y=-ar.Y;
+		z=0;
+		pid=points->InsertNextPoint(x,y,z);
+		normal=calcNormal(Vec3f());
+		pointNormalsArray->SetTuple(pid, &normal.X);
+		vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+		vertexIndex++;
+
+		x=+asr.X;
+		y=-asr.Y;
+		z=0;
+		pid=points->InsertNextPoint(x,y,z);
+		normal=calcNormal(Vec3f());
+		pointNormalsArray->SetTuple(pid, &normal.X);
+		vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+		vertexIndex++;
+
+		x=-ar.X;
+		y=-ar.Y;
+		z=0;
+		pid=points->InsertNextPoint(x,y,z);
+		normal=calcNormal(Vec3f());
+		pointNormalsArray->SetTuple(pid, &normal.X);
+		vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+		vertexIndex++;
+
+		x=-asr.X;
+		y=-asr.Y;
+		z=0;
+		pid=points->InsertNextPoint(x,y,z);
+		normal=calcNormal(Vec3f());
+		pointNormalsArray->SetTuple(pid, &normal.X);
+		vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+		vertexIndex++;
+
+	}
+	else
+	{
+		unsigned long numVertices=4*(m_renderOptions.m_slicesWidth);
+
+		vtkIdType pid;
+		pointNormalsArray->SetNumberOfTuples(numVertices);
+		vertex->GetPointIds()->SetNumberOfIds(numVertices);
+
+		unsigned long vertexIndex=0;
+
+		double deltaU=2*PI/m_renderOptions.m_slicesWidth;
+		double deltaV=2*PI/m_renderOptions.m_slicesWidth;
+
+		double x=0;
+		double y=0;
+		double z=0;
+		Vec3f normal;
+
+		for (unsigned int i=1; i<=m_renderOptions.m_slicesWidth; i++)
+		//for (unsigned int i=1; i<=1; i++)
+		{
+			x=asr.X*cos(double(-i)*deltaU);
+			y=asr.Y*sin(double(-i)*deltaU);
+			z=0;
+			pid=points->InsertNextPoint(x,y,z);
+			normal=calcNormal(Vec3f());
+			pointNormalsArray->SetTuple(pid, &normal.X);
+			vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+			vertexIndex++;
+
+			x=ar.X*cos(double(-i)*deltaU);
+			y=ar.Y*sin(double(-i)*deltaU);
+			z=0;
+			pid=points->InsertNextPoint(x,y,z);
+			normal=calcNormal(Vec3f());
+			pointNormalsArray->SetTuple(pid, &normal.X);
+			vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+			vertexIndex++;
+
+			x=asr.X*cos(double(-(i+1))*deltaU);
+			y=asr.Y*sin(double(-(i+1))*deltaU);
+			z=0;
+			pid=points->InsertNextPoint(x,y,z);
+			normal=calcNormal(Vec3f());
+			pointNormalsArray->SetTuple(pid, &normal.X);
+			vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+			vertexIndex++;
+
+			x=ar.X*cos(double(-(i+1))*deltaU);
+			y=ar.Y*sin(double(-(i+1))*deltaU);
+			z=0;
+			pid=points->InsertNextPoint(x,y,z);
+			normal=calcNormal(Vec3f());
+			pointNormalsArray->SetTuple(pid, &normal.X);
+			vertex->GetPointIds()->SetId(vertexIndex,vertexIndex);
+			vertexIndex++;
+		}
+
+	}
+
+	cells->InsertNextCell(vertex);
+	// Add the points and quads to the dataset
+	m_pPolydata->SetPoints(points);
+	m_pPolydata->GetPointData()->SetNormals(pointNormalsArray);
+	m_pPolydata->SetStrips(cells);
+
+	// apply root and tilt
+	//m_pActor->SetOrigin(this->getRoot().X, this->getRoot().Y, this->getRoot().Z);
+	m_pActor->SetPosition(this->getRoot().X, this->getRoot().Y, this->getRoot().Z);
+	m_pActor->SetOrientation(this->getTilt().X, this->getTilt().Y, this->getTilt().Z);
+
+	// set lighting properties
+	m_pActor->GetProperty()->SetAmbient(m_renderOptions.m_ambientInt);
+	m_pActor->GetProperty()->SetDiffuse(m_renderOptions.m_diffuseInt);
+	m_pActor->GetProperty()->SetSpecular(m_renderOptions.m_specularInt);
+
+	// set color to red
+	if (this->m_focus)
+		m_pActor->GetProperty()->SetColor(0.0,1.0,0.0);
+	else
+		m_pActor->GetProperty()->SetColor(0.0,0.0,1.0);
+	
+	if (this->getRender())
+		m_pActor->SetVisibility(1);
+	else
+		m_pActor->SetVisibility(0);
+	
+	// request the update
+	m_pPolydata->Update();
+};

@@ -54,13 +54,19 @@ bool MaterialDOEItem::writeToXML(QDomDocument &document, QDomElement &root) cons
 	QModelIndex test=QModelIndex();
 
 	AbstractItem* l_pAbstractItem=reinterpret_cast<AbstractItem*>(l_parentIndex.internalPointer());
-	if (l_pAbstractItem->getObjectType() == GEOMETRY)
+	if (l_pAbstractItem != NULL)
 	{
-		GeometryItem* l_pGeomItem=reinterpret_cast<GeometryItem*>(l_pAbstractItem);
-		l_root=l_pGeomItem->getRoot();
-		l_tilt=l_pGeomItem->getTilt();
+		if (l_pAbstractItem->getObjectType() == GEOMETRY)
+		{
+			GeometryItem* l_pGeomItem=reinterpret_cast<GeometryItem*>(l_pAbstractItem);
+			l_root=l_pGeomItem->getRoot();
+			l_tilt=l_pGeomItem->getTilt();
+		}
+		else
+		{
+			cout << "error in materialDOEItem.writeToXML(): parent seems to not be a geometry. Probably the model is messed up" << endl;
+		}
 	}
-
 	material.setAttribute("geomRoot.x", QString::number(l_root.X));
 	material.setAttribute("geomRoot.y", QString::number(l_root.Y));
 	material.setAttribute("geomRoot.z", QString::number(l_root.Z));

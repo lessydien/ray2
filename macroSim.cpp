@@ -29,6 +29,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "pluginVersion.h"
 #include "common/apiFunctionsInc.h"
 
 void ** ITOM_API_FUNCS=NULL;
@@ -36,12 +37,10 @@ void ** ITOM_API_FUNCS=NULL;
 //----------------------------------------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------------------------------
 
-int MacroSimInterface::m_instCounter = 0;	//! This varialbe is used to initilize the unique number with 0.
-
 //----------------------------------------------------------------------------------------------------------------------------------
 ito::RetVal MacroSimInterface::getAddInInst(ito::AddInBase **addInInst)
 {
-    MacroSim* newInst = new MacroSim(++MacroSimInterface::m_instCounter);
+    MacroSim* newInst = new MacroSim();
     newInst->setBasePlugin(this);
     *addInInst = qobject_cast<ito::AddInBase*>(newInst);
 	m_InstList.append(*addInInst);
@@ -67,11 +66,16 @@ MacroSimInterface::MacroSimInterface()
 {
     m_type = ito::typeAlgo;
     setObjectName("MacroSim");
-
-    m_description = "Optical simulation suite";
-    m_detaildescription = "Our own little package for simulating optical systems via GPU accelerated raytracing or scalar wave optics";
-    m_author = "itomauch";
+    
+    m_description = QObject::tr("Optical simulation suite");
+    m_detaildescription = QObject::tr("Our own little package for simulating optical systems via GPU accelerated raytracing or scalar wave optics.");
+    m_author = "F. Mauch, ITO, University Stuttgart";
+    m_version = (PLUGIN_VERSION_MAJOR << 16) + (PLUGIN_VERSION_MINOR << 8) + PLUGIN_VERSION_PATCH;
+    m_minItomVer = MINVERSION;
+    m_maxItomVer = MAXVERSION;
     m_license = QObject::tr("GNU GPL 3.0");
+    m_aboutThis = QObject::tr("N.A.");     
+    
 }
 
 //----------------------------------------------------------------------------------------------------------------------------------
@@ -87,7 +91,7 @@ Q_EXPORT_PLUGIN2(MacroSim, MacroSimInterface)
 
 //----------------------------------------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------------------------------
-MacroSim::MacroSim(int uniqueID) : AddInAlgo(uniqueID)
+MacroSim::MacroSim() : AddInAlgo()
 {
 }
 
@@ -121,7 +125,10 @@ ito::RetVal MacroSim::init(QVector<ito::ParamBase> *paramsMand, QVector<ito::Par
     //specify filters here, example:
     filter = new FilterDef(MacroSim::runSimulation, MacroSim::runSimulationParams, "starts a simulation", ito::AddInAlgo::catNone, ito::AddInAlgo::iNotSpecified);
     m_filterList.insert("runSimulation", filter);
-    
+    filter = new FilterDef(MacroSim::simConfPointSensor, MacroSim::simConfPointSensorParams, "starts a simulation of a confocal point sensor", ito::AddInAlgo::catNone, ito::AddInAlgo::iNotSpecified);
+    m_filterList.insert("simConfPointSensor", filter);
+
+
     //specify dialogs, main-windows, widgets... here, example:
 	widget = new AlgoWidgetDef(MacroSim::dialog, MacroSim::dialogParams, "MacroSim-GUI", ito::AddInAlgo::catNone, ito::AddInAlgo::iNotSpecified);
     m_algoWidgetList.insert("MacroSim_MainWin", widget);
@@ -209,7 +216,97 @@ ito::RetVal MacroSim::runSimulationParams(QVector<ito::Param> *paramsMand, QVect
     return retval;
 }
 
+//----------------------------------------------------------------------------------------------------------------------------------
+/** short description for this filter
+*	@param [in]	paramsMand	mandatory parameters
+*	@param [in]	paramsOpt	optional parameters
+*
+*	longer description for this filter
+*/
+ito::RetVal MacroSim::simConfPointSensor(QVector<ito::ParamBase> *paramsMand, QVector<ito::ParamBase> *paramsOpt, QVector<ito::ParamBase> *paramsOut)
+{
+    ito::RetVal retval = ito::retOk;
+    
+	// call to macrosim-runSimulation()
+	if ((*paramsMand).size() != 2)
+	{
+		retval = ito::retError;
+		return retval;
+	}
+	double *l_paramsVec = (*paramsMand)[0].getVal<double*>();
+	ito::DataObject *l_pDataObject = (*paramsMand)[1].getVal<ito::DataObject*>();
 
+	ConfPoint_Params l_confPointParams;
+	l_confPointParams.gridWidth=l_paramsVec[0];
+	l_confPointParams.n=l_paramsVec[1];
+	l_confPointParams.magnif=l_paramsVec[2];
+	l_confPointParams.NA=l_paramsVec[3];
+	l_confPointParams.scanNumber.x=l_paramsVec[4];
+	l_confPointParams.scanNumber.y=l_paramsVec[5];
+	l_confPointParams.scanNumber.z=l_paramsVec[6];
+	l_confPointParams.scanStep.x=l_paramsVec[7];
+	l_confPointParams.scanStep.y=l_paramsVec[8];
+	l_confPointParams.scanStep.z=l_paramsVec[9];
+	l_confPointParams.wvl=l_paramsVec[10];
+	l_confPointParams.apodisationRadius=l_paramsVec[11];
+	memcpy(&(l_confPointParams.pAberrVec[0]), &(l_paramsVec[12]), 16*sizeof(double));
+
+	MacroSimTracer l_tracer;
+	double* l_pResult;
+
+	bool ret=l_tracer.runConfPointSensorSim(l_confPointParams, &l_pResult);
+
+	if (ret)
+	{
+		// create continous dataObject
+		*l_pDataObject = ito::DataObject(l_confPointParams.scanNumber.x, l_confPointParams.scanNumber.y, l_confPointParams.scanNumber.z, ito::tFloat64, 1);
+		cv::Mat *MAT1;
+		MAT1 = (cv::Mat*)(l_pDataObject->get_mdata()[l_pDataObject->seekMat(0)]);
+		memcpy(MAT1->ptr(0), l_pResult, l_confPointParams.scanNumber.x*l_confPointParams.scanNumber.y*l_confPointParams.scanNumber.z*sizeof(double));
+		// set data object tags
+		l_pDataObject->setAxisOffset(0, -l_confPointParams.scanStep.x*l_confPointParams.scanNumber.x/2);
+		l_pDataObject->setAxisOffset(1, -l_confPointParams.scanStep.y*l_confPointParams.scanNumber.y/2);
+		l_pDataObject->setAxisOffset(2, -l_confPointParams.scanStep.z*l_confPointParams.scanNumber.z/2);
+		l_pDataObject->setAxisScale(0, l_confPointParams.scanStep.x);
+		l_pDataObject->setAxisScale(1, l_confPointParams.scanStep.y);
+		l_pDataObject->setAxisScale(2, l_confPointParams.scanStep.z);
+		l_pDataObject->setAxisUnit(0,"um");
+		l_pDataObject->setAxisUnit(1,"um");
+		l_pDataObject->setAxisUnit(2,"um");
+
+		// create data object from l_pField and push it to outVals
+	}
+	else
+		retval = ito::retError;
+    return retval;
+}
+
+//----------------------------------------------------------------------------------------------------------------------------------
+/** parameters for calling the corresponding filter
+*	@param [in]	paramsMand	mandatory parameters for calling the corresponding filter
+*	@param [in]	paramsOpt	optional parameters for calling the corresponding filter
+*
+*	mand. Params:
+*		- test parameter1
+*
+*   opt. Params:
+*       - describe the optional parameter here (list)
+*/
+ito::RetVal MacroSim::simConfPointSensorParams(QVector<ito::Param> *paramsMand, QVector<ito::Param> *paramsOpt, QVector<ito::Param> *paramsOut)
+{
+    ito::RetVal retval = ito::retOk;
+    ito::Param param;
+	retval += ito::checkParamVectors(paramsMand,paramsOpt,paramsOut);
+	if(retval.containsError()) return retval;
+
+	paramsMand->clear();
+	paramsMand->append(ito::Param("params", ito::ParamBase::DoubleArray, 0, "vector holding the parameters of the simulation. The format is as follows: gridWidth, , number of sample points along grid, magnification, NA, number of scan points in x, number of scan points in y, number of scan points in z, scan step in x, scan step in y, scan step in z, wavelength, vector containing 16 zernike coefficients") );
+	paramsMand->append(ito::Param("resultPtr", ito::ParamBase::DObjPtr, NULL, "pointer to the dataObject where the result will be saved") );
+
+	paramsOpt->clear();
+
+    return retval;
+}
 //----------------------------------------------------------------------------------------------------------------------------------
 /** short description for this widget
 *	@param [in]	paramsMand	mandatory parameters

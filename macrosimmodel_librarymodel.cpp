@@ -17,6 +17,15 @@
 
 #include "macrosim_librarymodel.h"
 #include "abstractItem.h"
+#include "GeometryItem.h"
+#include "MaterialItem.h"
+#include "ScatterItem.h"
+#include "CoatingItem.h"
+#include "materialItemLib.h"
+#include "coatingItemLib.h"
+#include "scatterItemLib.h"
+#include "miscItem.h"
+#include "miscItemLib.h"
 
 using namespace macrosim;
 //----------------------------------------------------------------------------------------------------------------------------------
@@ -24,125 +33,44 @@ using namespace macrosim;
 *
 *   contructor, creating column headers for the tree view
 */
-LibraryModel::LibraryModel(const QStringList &strings, QObject *parent=0)
-	: QAbstractItemModel(parent)
+LibraryModel::LibraryModel(QObject *parent=0) :
+	SceneModel(parent)
 {
-	m_headers << tr("Name");
-	m_alignment << QVariant(Qt::AlignLeft);
 }
 
 LibraryModel::~LibraryModel()
 {
-   m_headers.clear();
-   m_alignment.clear();
-   m_data.clear();
-   return;
 }
 
-int LibraryModel::columnCount ( const QModelIndex &parent ) const
+void LibraryModel::appendItem(macrosim::AbstractItem* item, vtkSmartPointer<vtkRenderer> renderer, QModelIndex parentIndex, int rowIn) 
 {
-	return m_headers.size();
-}
-
-QVariant LibraryModel::data ( const QModelIndex &index, int role ) const
-{
-	if (!index.isValid())
-		return QVariant();
+	GeometryItem* l_pGeom;
+	MiscItem* l_pMiscItem;
+	GeomGroupItem* l_pGeomGroupItem;
+//	QModelIndex l_index;
+	// get row to insert the item
+	int row;
+	if (parentIndex==QModelIndex())
+		row=m_data.size();
 	else
 	{
-		AbstractItem* item = reinterpret_cast<AbstractItem*>(index.internalPointer());
-		if (role == Qt::DisplayRole)
-		{
-			switch(index.column())
-			{
-			case 1:
-				switch (item->getObjectType())
-				{
-				case AbstractItem::GEOMETRYGROUP:
-					return tr("GeometryGroup");
-					break;
-				case AbstractItem::GEOMETRY:
-					return tr("Geometry");
-					break;
-				case AbstractItem::MATERIAL:
-					return tr("Material");
-					break;
-				case AbstractItem::COATING:
-					return tr("Coating");
-					break;
-				case AbstractItem::SCATTER:
-					return tr("Scatter");
-					break;
-				default:
-					return QVariant();
-					break;
-				}
-				break;
-			case 0:
-				return item->getName();
-				break;
-			default:
-				return QVariant();
-				break;
-			}
-		}
+		row=rowIn;
 	}
-	return QVariant();
-}
+	int coloumn=0;
 
-int	LibraryModel::rowCount ( const QModelIndex &parent ) const
-{
-	return m_data.count();
-}
-
-QModelIndex LibraryModel::index ( int row, int column, const QModelIndex &parent ) const
-{
-	if(parent.isValid()) //we are not in the root level
+	beginInsertRows(parentIndex, row, row);
+	// only if we append at the top level, we need to actually append the item to the models data list
+	if (parentIndex==QModelIndex())
+		m_data.append(item);
+	// create modelIndex at which the item was just inserted
+	QModelIndex l_index=this->index(row, coloumn, parentIndex);
+	// save this modelIndex to the appended item
+	item->setModelIndex(l_index);
+	endInsertRows();
+	// now do the recursion over the items childs
+	for (unsigned int i=0; i<item->getNumberOfChilds(); i++)
 	{
-		AbstractItem* parentItem = reinterpret_cast<AbstractItem*>(parent.internalPointer());
-		if(parentItem != NULL)
-		{
-			if (row<0 || row>=parentItem->getNumberOfChilds())
-				return QModelIndex();
-			return createIndex(row, column, reinterpret_cast<void*>(parentItem->getChild(row)));
-			//return createIndex(row, column, reinterpret_cast<void*>(&parentItem));
-		}
-		else
-		{
-			return QModelIndex();
-		}
+		this->appendItem(item->getChild(i), renderer, l_index, i);
 	}
-	else //root level
-	{
-		if(row < 0 || row >= m_data.size())
-		{
-			return QModelIndex();
-		}
-		else
-		{
-			return createIndex(row, column, reinterpret_cast<void*>(m_data[row]));
-		}
-	}
-}
 
-//----------------------------------------------------------------------------------------------------------------------------------
-/** return the header / captions for the tree view model
-*
-*/
-QVariant LibraryModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-	if (role != Qt::DisplayRole)
-		return QVariant();
-	if (orientation == Qt::Horizontal)
-		return QString("Object Type").arg(section);
-	else
-		return QString("Row %1").arg(section);
-}
-
-//----------------------------------------------------------------------------------------------------------------------------------
-Qt::ItemFlags LibraryModel::flags(const QModelIndex &index) const
-{
-    if (!index.isValid())
-        return 0;
-	return Qt::ItemIsEnabled | Qt::ItemIsSelectable && !Qt::ItemIsEditable;
 }
