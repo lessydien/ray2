@@ -1,3 +1,0 @@
-
-#define SAMPLES_DIR "@SAMPLES_DIR@"
-#define SAMPLES_PTX_DIR "@PTX_DIR@"
