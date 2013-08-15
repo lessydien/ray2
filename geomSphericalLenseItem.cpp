@@ -18,7 +18,7 @@
 #include "geomSphericalLenseItem.h"
 #include "materialItemLib.h"
 #include "geometryItemLib.h"
-#include "glut.h"
+//#include "glut.h"
 
 #include <vtkVertex.h>
 #include <vtkCellArray.h>

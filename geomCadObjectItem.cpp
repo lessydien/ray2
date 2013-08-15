@@ -17,7 +17,7 @@
 
 
 #include "geomCadObjectItem.h"
-#include "glut.h"
+//#include "glut.h"
 #include <vtkCell.h>
 #include <vtkCellArray.h>
 #include <vtkPolyDataMapper.h>

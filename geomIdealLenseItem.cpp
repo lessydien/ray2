@@ -16,7 +16,7 @@
 ************************************************************************/
 
 #include "geomIdealLenseItem.h"
-#include "glut.h"
+//#include "glut.h"
 
 #include <vtkCellArray.h>
 #include <vtkPoints.h>

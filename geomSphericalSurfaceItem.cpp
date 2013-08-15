@@ -16,7 +16,7 @@
 ************************************************************************/
 
 #include "geomSphericalSurfaceItem.h"
-#include "glut.h"
+//#include "glut.h"
 
 #include <vtkPoints.h>
 #include <vtkVertex.h>

@@ -16,7 +16,7 @@
 ************************************************************************/
 
 #include "geomCylPipeItem.h"
-#include "glut.h"
+//#include "glut.h"
 
 #include <vtkVertex.h>
 #include <vtkCellArray.h>

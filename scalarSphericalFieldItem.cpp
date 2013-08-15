@@ -16,7 +16,7 @@
 ************************************************************************/
 
 #include "scalarSphericalFieldItem.h"
-#include "glut.h"
+//#include "glut.h"
 
 using namespace macrosim;
 

@@ -19,7 +19,7 @@ License along with this library; If not, see <http://www.gnu.org/licenses/>.
 #define OGLDRAWWIDGET
 
 #include <QGLWidget>
-#include "glut.h"
+//#include "glut.h"
 //#include <qwidget.h>
 
 class OGLdrawWidget : public QGLWidget

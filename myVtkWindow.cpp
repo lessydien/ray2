@@ -21,7 +21,7 @@
 #include "fieldItem.h"
 #include "detectorItem.h"
 //#include <QtOpenGL\qglfunctions.h>
-#include "glut.h"
+//#include "glut.h"
 
 #include <qfiledialog.h>
 #include <qmovie.h>

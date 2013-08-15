@@ -23,7 +23,7 @@
 #include "QPropertyEditor/CustomTypes.h"
 #include "GeometryItem.h"
 //#include <QtOpenGL\qglfunctions.h>
-#include "glut.h"
+//#include "glut.h"
 
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
