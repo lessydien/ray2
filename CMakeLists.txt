@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 2.8)
 
 OPTION(BUILD_UNICODE "Build with unicode charset if set to ON, else multibyte charset." ON)
 OPTION(BUILD_SHARED_LIBS "Build shared library." ON)
-OPTION(BUILD_TARGET64 "Build for 64 bit target if set to ON or 32 bit if set to OFF." OFF)
+OPTION(BUILD_TARGET64 "Build for 64 bit target if set to ON or 32 bit if set to OFF." ON)
 OPTION(UPDATE_TRANSLATIONS "Update source translation translation/*.ts files (WARNING: make clean will delete the source .ts files! Danger!)")
 SET (ITOM_SDK_DIR "" CACHE PATH "base path to itom_sdk")
 SET (CMAKE_DEBUG_POSTFIX "d" CACHE STRING "Adds a postfix for debug-built libraries.")
@@ -62,12 +62,12 @@ IF(CUDA_FOUND)
 
     if ( CMAKE_SIZEOF_VOID_P EQUAL 4 )
         SET(Tracer_LIB_DIR "Tracer/lib32")
-        SET(freeglut_LIB_DIR "freeglut/lib")
+        #SET(freeglut_LIB_DIR "freeglut/lib")
 		SET(Tracer_PTX_DIR "Tracer/build/lib/ptx")
         SET(bit_dest "32")
     else ( CMAKE_SIZEOF_VOID_P EQUAL 4 )
         SET(Tracer_LIB_DIR "Tracer/lib")
-        SET(freeglut_LIB_DIR "freeglut/lib/x64")
+        #SET(freeglut_LIB_DIR "freeglut/lib/x64")
 		SET(Tracer_PTX_DIR "Tracer/build64/lib/ptx")
         SET(bit_dest "")
     endif ( CMAKE_SIZEOF_VOID_P EQUAL 4 )
@@ -95,11 +95,11 @@ IF(CUDA_FOUND)
     set(MacroSim_OptiX_LIB debug ${MacroSim_OptiX_LIBR} optimized ${MacroSim_OptiX_LIBR}  CACHE STRING "" FORCE)
     set(MacroSim_OptiXu_LIB debug ${MacroSim_OptiXu_LIBR} optimized ${MacroSim_OptiXu_LIBR}  CACHE STRING "" FORCE)
 
-    find_library(Freeglut_LIBR freeglut HINTS ${CMAKE_CURRENT_SOURCE_DIR}/${freeglut_LIB_DIR})
-    set(Freeglut_LIB debug ${Freeglut_LIBR} optimized ${Freeglut_LIBR}  CACHE STRING "" FORCE)
+    #find_library(Freeglut_LIBR freeglut HINTS ${CMAKE_CURRENT_SOURCE_DIR}/${freeglut_LIB_DIR})
+    #set(Freeglut_LIB debug ${Freeglut_LIBR} optimized ${Freeglut_LIBR}  CACHE STRING "" FORCE)
 
 
-    set(MacroSim_Tracer_LIBS ${MacroSim_Tracer_LIBS} ${MacroSim_Tracer_LIB} ${MacroSim_OptiX_LIB} ${MacroSim_OptiXu_LIB} ${MacroSim_Propagation_LIB} ${Freeglut_LIB} ${MacroSim_nvModel_LIB} ${MacroSim_nvCommon_LIB} ${GLEW_LIBRARIES})
+    set(MacroSim_Tracer_LIBS ${MacroSim_Tracer_LIBS} ${MacroSim_Tracer_LIB} ${MacroSim_OptiX_LIB} ${MacroSim_OptiXu_LIB} ${MacroSim_Propagation_LIB} ${MacroSim_nvModel_LIB} ${MacroSim_nvCommon_LIB} ${GLEW_LIBRARIES})
 
     INCLUDE_DIRECTORIES(
         ${CMAKE_CURRENT_BINARY_DIR}
@@ -112,7 +112,7 @@ IF(CUDA_FOUND)
 		${CMAKE_CURRENT_SOURCE_DIR}/Tracer/src/nvcommon/nvModel/include
 		${CMAKE_CURRENT_SOURCE_DIR}/Tracer/src/PropagationMath/include
 		${CMAKE_CURRENT_SOURCE_DIR}/Tracer/src/ito_tracer/include
-        ${CMAKE_CURRENT_SOURCE_DIR}/freeglut/include/GL
+        #${CMAKE_CURRENT_SOURCE_DIR}/freeglut/include/GL
         ${CUDA_INCLUDE_DIRS}
 		${FFTW_INCLUDE_DIR}
 		${GLEW_INCLUDE_PATH}
@@ -123,7 +123,7 @@ IF(CUDA_FOUND)
         ${OpenCV_DIR}/lib
     #	${CMAKE_CURRENT_SOURCE_DIR}/Tracer/lib
         ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR}
-        ${CMAKE_CURRENT_SOURCE_DIR}/${freeglut_LIB_DIR}
+        #${CMAKE_CURRENT_SOURCE_DIR}/${freeglut_LIB_DIR}
     )
 
     INCLUDE(${QT_USE_FILE})

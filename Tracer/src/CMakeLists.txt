@@ -63,6 +63,7 @@ OPTION(CUDA_REMOVE_GLOBAL_MEMORY_SPACE_WARNING "Suppress the \"Advisory: Cannot 
 
 # Find at least a 4.0 version of CUDA.
 find_package(CUDA 4.0 REQUIRED)
+find_package(FFTW 3 REQUIRED)
 
 # Present the CUDA_64_BIT_DEVICE_CODE on the default set of options.
 mark_as_advanced(CLEAR CUDA_64_BIT_DEVICE_CODE)
@@ -157,6 +158,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sampleConfig.h.in ${CMAKE_CURRENT_BIN
 include_directories( ${MacroSim_INCLUDE}/optixu
                      ${CMAKE_CURRENT_BINARY_DIR}
                      ${CUDA_INCLUDE_DIRS}
+					 ${FFTW_INCLUDE_DIR}
 					 "${CMAKE_CURRENT_SOURCE_DIR}/nvcommon/include"
 					 "${CMAKE_CURRENT_SOURCE_DIR}/nvcommon/nvModel/include")
 
