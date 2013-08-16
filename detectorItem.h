@@ -23,7 +23,7 @@
 #include "QPropertyEditor/CustomTypes.h"
 #include "AbstractItem.h"
 //#include <QtOpenGL\qglfunctions.h>
-#include "glut.h"
+//////#include "glut.h"
 #include "DataObject/dataobj.h"
 
 using namespace macrosim;

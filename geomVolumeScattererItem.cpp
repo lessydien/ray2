@@ -16,6 +16,7 @@
 ************************************************************************/
 
 #include "geomVolumeScattererItem.h"
+#include "materialVolumeScatterItem.h"
 //#include "glut.h"
 
 #include <vtkPoints.h>
@@ -36,6 +37,8 @@ VolumeScattererItem::VolumeScattererItem(QString name, QObject *parent) :
 	m_maxNrBounces(2),
 	m_showRayPaths(false)
 {
+	this->m_materialType=VOLUMESCATTER;
+	this->setChild(new MaterialVolumeScatterItem());
 	// Create a polydata to store everything in
 	m_pPolydata = vtkSmartPointer<vtkPolyData>::New();
 
