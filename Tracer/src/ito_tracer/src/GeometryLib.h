@@ -47,6 +47,7 @@
 #include "stopArraySurface.h"
 #include "cadObject.h"
 #include "substrate.h"
+#include "VolumeScattererBox.h"
 #include <vector>
 
 class GeometryFab

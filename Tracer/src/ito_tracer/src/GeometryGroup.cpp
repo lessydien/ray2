@@ -57,7 +57,7 @@ geometryGroupError  GeometryGroup::trace(rayStruct &ray)
 		else
 		{
 			tempDist=l_geometry->intersect(&ray);
-			if (tempDist>0.000001)
+			if (tempDist>EPSILON)
 				// if we intersect the geometry, hit it
 				this->getGeometry(ray.currentGeometryID)->hit(ray,tempDist);
 			else
@@ -78,7 +78,7 @@ geometryGroupError  GeometryGroup::trace(rayStruct &ray)
 		{
 			indexToTrace=0;
 			minDist=tempDist=this->getGeometry(0)->intersect(&ray);
-			if (minDist<=0) 
+			if (minDist<=EPSILON) 
 			{
 				ray.running=false;//stop ray
 				return GEOMGROUP_NO_ERR; // we have no intersection here. So we return

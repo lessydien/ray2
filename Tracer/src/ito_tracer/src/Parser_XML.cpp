@@ -283,6 +283,10 @@ geometry_type Parser_XML::asciiToGeometryType(const char* ascii) const
 	if (!strcmp(ascii, "SUBSTRATE"))
 		return GEOM_SUBSTRATE;
 
+	if (!strcmp(ascii, "VOLUMESCATTERERBOX"))
+		return GEOM_VOLUMESCATTERERBOX;
+
+
 	cout << "error in Parser_XML.asciiToGeometryType: unknown geometry type: "  << ascii << endl;
 
 	return GEOM_UNKNOWN;
@@ -348,6 +352,8 @@ MaterialType Parser_XML::asciiToMaterialType(const char* ascii) const
 		return MT_DOE;
 	if (!strcmp(ascii,"VOLUMESCATTER"))
 		return MT_VOLUMESCATTER;
+	if (!strcmp(ascii,"VOLUMESCATTERBOX"))
+		return MT_VOLUMESCATTERBOX;
 
 	cout << "error in Parser_XML.asciiToMaterialType: unknown material type: "  << ascii << endl;
 	return MT_UNKNOWNMATERIAL;

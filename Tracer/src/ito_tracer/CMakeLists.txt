@@ -197,6 +197,9 @@ OPTIX_add_sample_executable( ITO-MacroSim
   src/differentialRayTracing/ConePipe_DiffRays_intersect.h
   src/complex.cpp
   src/complex.h
+  src/volumeScattererBox.cpp
+  src/volumeScattererBox.h
+  src/volumeScattererBox_intersect.h
   src/IdealLense.cpp
   src/IdealLense.h
   src/IdealLense_Intersect.h
@@ -238,6 +241,9 @@ OPTIX_add_sample_executable( ITO-MacroSim
   src/MaterialVolumeScatter.cpp
   src/MaterialVolumeScatter.h
   src/MaterialVolumeScatter_hit.h
+  src/MaterialVolumeScatterBox.cpp
+  src/MaterialVolumeScatterBox.h
+  src/MaterialVolumeScatterBox_hit.h
   src/MaterialIdealLense.cpp
   src/MaterialIdealLense.h
   src/MaterialIdealLense_hit.h
@@ -378,6 +384,9 @@ OPTIX_add_sample_executable( ITO-MacroSim
   src/hitFunctionFilter.cu
   src/hitFunctionFilter_CoatNumCoeffs.cu
   
+  src/hitFunctionVolumeScatter.cu
+  src/hitFunctionVolumeScatterBox.cu
+  
   src/hitFunctionDOE.cu
   
   src/hitFunctionDiffracting.cu
@@ -451,6 +460,7 @@ OPTIX_add_sample_executable( ITO-MacroSim
   src/cylPipe_GaussBeam.cu
   src/conePipe.cu
   src/differentialRayTracing/conePipe_DiffRays.cu
+  src/volumeScattererBox.cu
   src/conePipe_GaussBeam.cu
   src/cadObject.cu
   src/boundingBox.cu

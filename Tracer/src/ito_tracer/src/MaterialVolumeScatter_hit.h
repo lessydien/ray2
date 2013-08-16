@@ -94,7 +94,10 @@ inline RT_HOSTDEVICE bool hitVolumeScatter(rayStruct &ray, Mat_hitParams hitPara
 			double l_prob=exp(-l_t/params.meanFreePath);
 			double l_threshold=Random(x1);
 			if (l_prob>l_threshold)
+			{
+				ray.currentSeed=x1[4];
 				break;
+			}
 		}
 		// if we have a volume hit
 		if (l_t<t_hit)
@@ -104,9 +107,9 @@ inline RT_HOSTDEVICE bool hitVolumeScatter(rayStruct &ray, Mat_hitParams hitPara
 			ray.opl=ray.opl+ray.nImmersed*t_hit;
 			// change ray direction
 			double3 l_tilt;
-			l_tilt.x=Random(x1)*2*M_PI/5;
-			l_tilt.y=Random(x1)*2*M_PI/5;
-			l_tilt.z=Random(x1)*2*M_PI/5;
+			l_tilt.x=(Random(x1)-0.5)*2*params.g;
+			l_tilt.y=(Random(x1)-0.5)*2*params.g;
+			l_tilt.z=(Random(x1)-0.5)*2*params.g;
 			rotateRay(&ray.direction, l_tilt);
 
 			l_surfaceHit=false;

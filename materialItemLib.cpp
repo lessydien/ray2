@@ -93,6 +93,8 @@ MaterialItem::MaterialType MaterialItemLib::stringToMaterialType(const QString s
 		return MaterialItem::PATHTRACESOURCE;
 	if (!str.compare("VOLUMESCATTER"))
 		return MaterialItem::VOLUMESCATTER;
+	if (!str.compare("VOLUMESCATTERBOX"))
+		return MaterialItem::VOLUMESCATTER;
 
 	return MaterialItem::ABSORBING;
 }

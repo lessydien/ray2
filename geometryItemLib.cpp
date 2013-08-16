@@ -165,7 +165,7 @@ QString GeometryItemLib::geomTypeToString(const GeometryItem::GeomType type) con
 		str="SUBSTRATE";
 		break;
 	case GeometryItem::VOLUMESCATTERER:
-		str="VOLUMESCATTERER";
+		str="VOLUMESCATTERERBOX";
 		break;
 
 	default:
@@ -209,7 +209,7 @@ GeometryItem::GeomType GeometryItemLib::stringToGeomType(const QString str) cons
 		return GeometryItem::CADOBJECT;
 	if (!str.compare("SUBSTRATE"))
 		return GeometryItem::SUBSTRATE;
-	if (!str.compare("VOLUMESCATTERER"))
+	if (!str.compare("VOLUMESCATTERERBOX"))
 		return GeometryItem::VOLUMESCATTERER;
 
 	//if (!str.compare("DETECTOR"))

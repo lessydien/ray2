@@ -131,6 +131,8 @@ public:
 
 
 private:
+
+protected:
 	
 	ApertureType m_apertureType;
 	GeomType m_geomType;

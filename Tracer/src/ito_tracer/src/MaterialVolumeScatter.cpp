@@ -115,7 +115,7 @@ MaterialError MaterialVolumeScatter::createOptiXInstance(RTcontext context, RTge
 	/* set the variables of the geometry */
 	if ( !RT_CHECK_ERROR_NOEXIT( rtProgramDeclareVariable( closest_hit_program, "params", &l_params ), context) )
 		return MAT_ERR;
-	if ( !RT_CHECK_ERROR_NOEXIT( rtVariableSetUserData(l_params, sizeof(MatRefracting_params), &(this->params)), context) )
+	if ( !RT_CHECK_ERROR_NOEXIT( rtVariableSetUserData(l_params, sizeof(MatVolumeScatter_params), &(this->params)), context) )
 		return MAT_ERR;
 
 	return MAT_NO_ERR;	
@@ -222,11 +222,13 @@ MaterialError MaterialVolumeScatter::parseXml(pugi::xml_node &material)
 		std::cout << "error in MaterialVolumeScatter.parseXml(): meanFreePath is not defined" << std::endl;
 		return MAT_ERR;
 	}
-	if (!l_parser.attrByNameToDouble(material, "anisotropyFac", this->params.g))
+	double l_g;
+	if (!l_parser.attrByNameToDouble(material, "anisotropyFac", l_g))
 	{
 		std::cout << "error in MaterialVolumeScatter.parseXml(): anisotropyFac is not defined" << std::endl;
 		return MAT_ERR;
 	}
+	this->params.g=l_g/360*2*M_PI;
 	if (!l_parser.attrByNameToDouble(material, "absorptionCoeff", this->params.absorptionCoeff))
 	{
 		std::cout << "error in MaterialVolumeScatter.parseXml(): absorptionCoeff is not defined" << std::endl;

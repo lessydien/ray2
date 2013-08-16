@@ -105,6 +105,10 @@ bool GeometryFab::createGeomInstFromXML(xml_node &geomNode, simMode l_mode, vect
 	case GEOM_SUBSTRATE:
 		l_pGeometry=new Substrate(1);
 		break;
+	case GEOM_VOLUMESCATTERERBOX:
+		l_pGeometry=new VolumeScattererBox(1);
+		break;
+
 	default:
 		cout << "error om GeometryFab.createInstanceFromXML(): unknown geometryType." << endl;
 		return false;

@@ -161,6 +161,8 @@ inline RT_HOSTDEVICE double intersectRayPlane(double3 rayPosition, double3 rayDi
 {
 	double tHelp1 = dot((rayPosition-root), normal);
 	double tHelp2 = dot(rayDirection, normal); 
+	if (tHelp2==0)
+		return 0;
 	return -tHelp1/tHelp2;
 }
 

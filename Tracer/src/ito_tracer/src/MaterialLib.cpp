@@ -77,6 +77,9 @@ bool MaterialFab::createMatInstFromXML(xml_node &node, Material* &pMat) const
 	case MT_VOLUMESCATTER:
 		pMat=new MaterialVolumeScatter();
 		break;
+	case MT_VOLUMESCATTERBOX:
+		pMat=new MaterialVolumeScatterBox();
+		break;
 	default:
 		pMat=new Material();
 		break;

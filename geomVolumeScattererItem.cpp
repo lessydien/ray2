@@ -32,13 +32,12 @@ using namespace macrosim;
 
 VolumeScattererItem::VolumeScattererItem(QString name, QObject *parent) :
 	GeometryItem(name, VOLUMESCATTERER, parent),
-	m_meanFreePath(1),
 	m_thickness(5),
-	m_maxNrBounces(2),
 	m_showRayPaths(false)
 {
 	this->m_materialType=VOLUMESCATTER;
 	this->setChild(new MaterialVolumeScatterItem());
+	this->m_apertureType=RECTANGULAR;
 	// Create a polydata to store everything in
 	m_pPolydata = vtkSmartPointer<vtkPolyData>::New();
 
@@ -63,15 +62,39 @@ bool VolumeScattererItem::writeToXML(QDomDocument &document, QDomElement &root) 
 	QDomElement node = document.createElement("geometry");
 
 	// call base class method
-	if (!GeometryItem::writeToXML(document, node))
+	if (!AbstractItem::writeToXML(document, node))
 		return false;
+	node.setAttribute("root.x", QString::number(m_root.X));
+	node.setAttribute("root.y", QString::number(m_root.Y));
+	node.setAttribute("root.z", QString::number(m_root.Z));
+	node.setAttribute("tilt.x", QString::number(m_tilt.X));
+	node.setAttribute("tilt.y", QString::number(m_tilt.Y));
+	node.setAttribute("tilt.z", QString::number(m_tilt.Z));
+	node.setAttribute("apertureRadius.x", QString::number(m_apertureRadius.X));
+	node.setAttribute("apertureRadius.y", QString::number(m_apertureRadius.Y));
+	node.setAttribute("apertureType", apertureTypeToString(m_apertureType));
+	//node.setAttribute("geometryID", QString::number(m_geometryID));
+	node.setAttribute("geometryID", QString::number(m_index.row()));
+	if (m_render)
+		node.setAttribute("render", "true");
+	else
+		node.setAttribute("render", "false");
 
-	node.setAttribute("geomType", "SPHERICALSURFACE");
+	node.setAttribute("geomType", "VOLUMESCATTERERBOX");
+
+	if (m_showRayPaths)
+	{
+		this->getChild()->writeToXML(document, node);
+	}
+	else
+	{
+		MaterialVolumeScatterItem *l_materialItem;
+		l_materialItem=reinterpret_cast<MaterialVolumeScatterItem*>(this->getChild());
+		l_materialItem->writeBoxToXML(document, node, this->getApertureRadius(), this->m_thickness, this->m_root, this->m_tilt);
+	}
 	node.setAttribute("nrSurfacesSeq", "1");
 	node.setAttribute("nrSurfacesNonSeq", "1");
-	node.setAttribute("meanFreePath", QString::number(m_meanFreePath));
-	node.setAttribute("depth", QString::number(m_thickness));
-	node.setAttribute("maxNrBounces", QString::number(m_maxNrBounces));
+	node.setAttribute("thickness", QString::number(m_thickness));
 	if (m_showRayPaths)
 		node.setAttribute("showRayPaths", "TRUE");
 	else
@@ -86,9 +109,7 @@ bool VolumeScattererItem::readFromXML(const QDomElement &node)
 	// read base class from XML
 	if (!GeometryItem::readFromXML(node))
 		return false;
-	m_meanFreePath=node.attribute("meanFreePath").toDouble();
-	m_thickness=node.attribute("depth").toDouble();
-	m_maxNrBounces=node.attribute("maxNrBounces").toDouble();
+	m_thickness=node.attribute("thickness").toDouble();
 	QString str=node.attribute("showRayPaths");
 	if (!str.compare("TRUE"))
 		m_showRayPaths=true;

@@ -44,10 +44,9 @@ class VolumeScattererItem :
 {
 	Q_OBJECT
 
-	Q_PROPERTY(double meanFreePath READ getMeanFreePath WRITE setMeanFreePath DESIGNABLE true USER true);
 	Q_PROPERTY(double thickness READ getThickness WRITE setThickness DESIGNABLE true USER true);
-	Q_PROPERTY(unsigned int maxNrBounces READ getMaxNrBounces WRITE setMaxNrBounces DESIGNABLE true USER true);
 	Q_PROPERTY(bool showRayPaths READ getShowRayPaths WRITE setShowRayPaths DESIGNABLE true USER true);
+	Q_PROPERTY(ApertureType apertureType READ getApertureType DESIGNABLE true USER true);	
 
 	Q_CLASSINFO("meanFreePath", "decimals=10;");
 	Q_CLASSINFO("thickness", "decimals=10;");
@@ -59,12 +58,8 @@ public:
 	~VolumeScattererItem(void);
 
 	// functions for property editor
-	double getMeanFreePath() const {return m_meanFreePath;};
-	void setMeanFreePath(const double in) {m_meanFreePath=in; this->updateVtk(); emit itemChanged(m_index, m_index);};
 	double getThickness() const {return m_thickness;};
 	void setThickness(const double in) {m_thickness=in; this->updateVtk(); emit itemChanged(m_index, m_index);};
-	unsigned int getMaxNrBounces() const {return m_maxNrBounces;};
-	void setMaxNrBounces(const unsigned int in) {m_maxNrBounces=in; this->updateVtk(); emit itemChanged(m_index, m_index);};
 	bool getShowRayPaths() const {return m_showRayPaths;};
 	void setShowRayPaths(const unsigned int in) {m_showRayPaths=in; this->updateVtk(); emit itemChanged(m_index, m_index);};
 
@@ -80,9 +75,7 @@ public:
 private:
 
 //	MaterialItem::MaterialType m_materialType;
-	double m_meanFreePath;
 	double m_thickness;
-	unsigned int m_maxNrBounces;
 	bool m_showRayPaths;
 
 	vtkSmartPointer<vtkPolyData> m_pPolydata;

@@ -31,7 +31,7 @@ using namespace macrosim;
 
 SphericalSurfaceItem::SphericalSurfaceItem(QString name, QObject *parent) :
 	GeometryItem(name, SPHERICALSURFACE, parent),
-	m_radius(0)
+	m_radius(3)
 {
 	// Create a polydata to store everything in
 	m_pPolydata = vtkSmartPointer<vtkPolyData>::New();
