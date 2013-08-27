@@ -44,7 +44,7 @@ class AbstractItem : public QObject
 
 	Q_PROPERTY(QString Name READ getName WRITE setName DESIGNABLE true USER true);
 	Q_PROPERTY(ObjectType Type READ getObjectType DESIGNABLE true USER true);
-	Q_PROPERTY(Abstract_MaterialType materialType READ getMaterialType DESIGNABLE true USER true);
+	Q_PROPERTY(Abstract_MaterialType materialType READ getMaterialType WRITE setMaterialType DESIGNABLE true USER true);
 	Q_PROPERTY(bool render READ getRender WRITE setRender DESIGNABLE true USER true);	
 
 	Q_ENUMS(ObjectType);
