@@ -46,7 +46,7 @@ class MicroLensArrayItem :
 	Q_PROPERTY(double microLensRadius READ getMicroLensRadius WRITE setMicroLensRadius DESIGNABLE true USER true);
 	Q_PROPERTY(double microLensAptRad READ getMicroLensAptRad WRITE setMicroLensAptRad DESIGNABLE true USER true);
 	Q_PROPERTY(double microLensPitch READ getMicroLensPitch WRITE setMicroLensPitch DESIGNABLE true USER true);
-	//Q_PROPERTY(MicroLensAptType microLensAptType READ getMicroLensAptType WRITE setMicroLensAptType DESIGNABLE true USER true);	
+	Q_PROPERTY(MicroLensAptType microLensAptType READ getMicroLensAptType WRITE setMicroLensAptType DESIGNABLE true USER true);	
 	Q_PROPERTY(double thickness READ getThickness WRITE setThickness DESIGNABLE true USER true);
 	Q_CLASSINFO("microLensRadius", "decimals=10;");
 	Q_CLASSINFO("microLensAptRad", "decimals=10;");
