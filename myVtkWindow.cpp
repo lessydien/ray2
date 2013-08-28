@@ -436,6 +436,12 @@ void myVtkWindow::saveImage()
 	m_pVtkAxesWidget->SetEnabled( 0 ); // disable coordinate axis, so it wont show up in the image
 
 	QString filename = QFileDialog::getSaveFileName(this, tr("Save file"), "", tr("Image Files (*.png *.jpg *.tiff *.bmp *.ps"));
+
+	if (filename.isEmpty())
+	{
+		return;
+	}
+
 	QStringList splittedStrList=filename.split(".");
 	QString extension;
 	if (splittedStrList.size()<2)

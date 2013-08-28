@@ -18,7 +18,7 @@
 #ifndef MYVTKWINDOW
 #define MYVTKWINDOW
 
-#include <qModelIndex>
+#include <QModelIndex>
 #include "macrosim_scenemodel.h"
 #include "abstractItem.h"
 #include <QReadWriteLock>
