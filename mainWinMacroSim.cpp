@@ -37,6 +37,8 @@
 #include "oGLdrawWidget.h"
 #include "qcoreapplication.h"
 
+#include <qdir.h>
+
 //#include "testFile.h"
 
 //#include <qglobal.h>
@@ -279,7 +281,6 @@ void MainWinMacroSim::addItemToScene(const QModelIndex index)
 	AbstractItem::ObjectType l_objType=l_pAbstractItem->getObjectType();
 	
 	AbstractItem *l_pNewAbstractItem=NULL;
-	DetectorItem *l_pNewDetItem;
 	FieldItem *l_pField;
 	GeometryItem *l_pGeom;
 	MiscItem *l_pMiscItem;
@@ -466,10 +467,29 @@ bool MainWinMacroSim::resetScene()
 
 bool MainWinMacroSim::loadScene()
 {
-	QString filename=QFileDialog::getOpenFileName(this, tr("Open Scene"), "E:/m12/trunk/iTOM/Qitom", tr("Scene Files (*.xml)"));
+	static QString defaultDir;
+
+	if (defaultDir.isEmpty())
+	{
+		defaultDir = QDir::currentPath();
+	}
+
+	QString filename=QFileDialog::getOpenFileName(this, tr("Open Scene"), defaultDir, tr("Scene Files (*.xml)"));
+
+	if (filename.isEmpty())
+	{
+		return false;
+	}
+
 	QFile inFile(filename);
 	if (!inFile.open(QIODevice::ReadOnly))
+	{
 		return false;
+	}
+
+	//store new directory (of indicated file) in defaultDir (default for next-time opening)
+	QFileInfo info(filename);
+	defaultDir = info.absolutePath();
 
 	// clear current model
 	if (m_pSceneModel!=NULL)
@@ -799,17 +819,34 @@ void MainWinMacroSim::tracerThreadFinished(bool success)
 
 void MainWinMacroSim::saveSceneAs()
 {
-	m_fileName=QFileDialog::getSaveFileName(this, tr("Save Scene"), "E:/m12/trunk/iTOM/Qitom", tr("Scene Files (*.xml)"));
-	QFile saveFile(m_fileName);
+	static QString defaultDir;
+
+	if (defaultDir.isEmpty())
+	{
+		defaultDir = QDir::currentPath();
+	}
+
+	QString fileName=QFileDialog::getSaveFileName(this, tr("Save Scene"), defaultDir, tr("Scene Files (*.xml)"));
+
+	if (fileName.isEmpty())
+	{
+		return;
+	}
+
+	QFile saveFile(fileName);
 	if (saveFile.open(QIODevice::WriteOnly))
 	{
-		QFile file(m_fileName);
+		m_fileName = fileName;
+		QFile file(fileName);
 		if(!file.open(QIODevice::WriteOnly | QIODevice::Text))
 		{
 			cout << "failed to open file for writing" << endl;
 		}
 		else
 		{
+			QFileInfo info(fileName);
+			defaultDir = info.absolutePath();
+
 			writeSceneToXML();
 			QTextStream stream(&file);
 			stream << m_html;
