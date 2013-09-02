@@ -118,6 +118,11 @@ void TracerThread::runSimulation()
 				m_pFieldObject->setAxisUnit(0,"mm");
 				m_pFieldObject->setAxisUnit(1,"mm");
 				m_pFieldObject->setTag("wvl", l_fieldParams.lambda);
+				m_pFieldObject->setTag("title", "Intensity Field");
+				m_pFieldObject->setValueDescription("intensity");
+				m_pFieldObject->setValueUnit("a.u.");
+				m_pFieldObject->addToProtocol("Traced with ito macro sim");
+
 				break;
 			case SCALARFIELD:
 				*m_pFieldObject = ito::DataObject(l_fieldParams.nrPixels[2], l_fieldParams.nrPixels[1], l_fieldParams.nrPixels[0], ito::tComplex64);
