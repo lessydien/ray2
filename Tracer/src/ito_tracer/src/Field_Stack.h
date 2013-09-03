@@ -28,7 +28,7 @@
 #include <optix.h>
 #include "stdlib.h"
 //#include "complex.h"
-#include "my_vector_types.h"
+#include "macrosim_types.h"
 //#include "optix_math.h"
 #include "Field.h"
 

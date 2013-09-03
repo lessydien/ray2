@@ -12,7 +12,7 @@ SET (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR} ${ITOM_SDK_DIR
 OPTION(BUILD_TARGET64 "Build for 64 bit target if set to ON or 32 bit if set to OFF." ON)
 
 # we need to find the itom SDK
-find_package(ITOM_SDK REQUIRED)
+#find_package(ITOM_SDK REQUIRED)
 
 if (BUILD_TARGET64)
    SET(bit_dest "")
@@ -68,44 +68,6 @@ find_package(FFTW 3 REQUIRED)
 # Present the CUDA_64_BIT_DEVICE_CODE on the default set of options.
 mark_as_advanced(CLEAR CUDA_64_BIT_DEVICE_CODE)
 
-# Add some useful default arguments to the nvcc flags.  This is an example of how we use
-# PASSED_FIRST_CONFIGURE.  Once you have configured, this variable is TRUE and following
-# block of code will not be executed leaving you free to edit the values as much as you
-# wish from the GUI or from ccmake.
-if(NOT PASSED_FIRST_CONFIGURE)
-  set(flag "--use_fast_math")
-  list(FIND CUDA_NVCC_FLAGS ${flag} index)
-  if(index EQUAL -1)
-    list(APPEND CUDA_NVCC_FLAGS ${flag})
-    set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} CACHE LIST "Semi-colon delimit multiple arguments." FORCE)
-  endif()
-
-  if (CUDA_VERSION VERSION_LESS "3.0")
-    set(flag "--keep")
-    list(FIND CUDA_NVCC_FLAGS ${flag} index)
-    if(index EQUAL -1)
-      list(APPEND CUDA_NVCC_FLAGS ${flag})
-      set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} CACHE LIST "Semi-colon delimit multiple arguments." FORCE)
-    endif()
-  endif()
-
-  if( APPLE )
-    # Undef'ing __BLOCKS__ for OSX builds.  This is due to a name clash between OSX 10.6
-    # C headers and CUDA headers
-    set(flag "-U__BLOCKS__")
-    list(FIND CUDA_NVCC_FLAGS ${flag} index)
-    if(index EQUAL -1)
-      list(APPEND CUDA_NVCC_FLAGS ${flag})
-      set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} CACHE LIST "Semi-colon delimit multiple arguments." FORCE)
-    endif()
-  endif()
-endif(NOT PASSED_FIRST_CONFIGURE)
-
-# This passes a preprocessor definition to cl.exe when processing CUDA code.
-if(USING_WINDOWS_CL)
-  list(APPEND CUDA_NVCC_FLAGS --compiler-options /D_USE_MATH_DEFINES)
-endif()
-
 # Put all the runtime stuff in the same directory.  By default, CMake puts each targets'
 # output into their own directory.  We want all the targets to be put in the same
 # directory, and we can do this by setting these variables.
@@ -117,6 +79,60 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 set(MacroSim_INSTALL_DIR "${CMAKE_SOURCE_DIR}/../")
 set(MacroSim_INCLUDE "${CMAKE_SOURCE_DIR}/include")
 set(Flex_INCLUDE "${CMAKE_SOURCE_DIR}/LexParser/include")
+
+
+
+# Add some useful default arguments to the nvcc flags.  This is an example of how we use
+# PASSED_FIRST_CONFIGURE.  Once you have configured, this variable is TRUE and following
+# block of code will not be executed leaving you free to edit the values as much as you
+# wish from the GUI or from ccmake.
+if(NOT PASSED_FIRST_CONFIGURE)
+    set(flag "--use_fast_math")
+
+    list(FIND CUDA_NVCC_FLAGS ${flag} index)
+    if(index EQUAL -1)
+        list(APPEND CUDA_NVCC_FLAGS ${flag})
+        set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} CACHE LIST "Semi-colon delimit multiple arguments." FORCE)
+    endif()
+
+    if (CUDA_VERSION VERSION_LESS "3.0")
+        set(flag "--keep")
+
+        list(FIND CUDA_NVCC_FLAGS ${flag} index)
+        if(index EQUAL -1)
+            list(APPEND CUDA_NVCC_FLAGS ${flag})
+            set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} CACHE LIST "Semi-colon delimit multiple arguments." FORCE)
+        endif()
+    endif()
+
+    if( APPLE )
+        # Undef'ing __BLOCKS__ for OSX builds.  This is due to a name clash between OSX 10.6
+        # C headers and CUDA headers
+        set(flag "-U__BLOCKS__")
+
+        list(FIND CUDA_NVCC_FLAGS ${flag} index)
+        if(index EQUAL -1)
+            list(APPEND CUDA_NVCC_FLAGS ${flag})
+            set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} CACHE LIST "Semi-colon delimit multiple arguments." FORCE)
+        endif()
+    endif()
+    
+    set(flag " -I'${MacroSim_INCLUDE}'")
+    list(FIND CUDA_NVCC_FLAGS ${flag} index)
+    if(index EQUAL -1)
+        list(APPEND CUDA_NVCC_FLAGS ${flag})
+        set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} CACHE LIST "Semi-colon delimit multiple arguments." FORCE)
+    endif()
+endif(NOT PASSED_FIRST_CONFIGURE)
+
+
+
+# This passes a preprocessor definition to cl.exe when processing CUDA code.
+if(USING_WINDOWS_CL)
+  list(APPEND CUDA_NVCC_FLAGS --compiler-options /D_USE_MATH_DEFINES)
+endif()
+
+
 
 
 # Search for the OptiX libraries and include files.

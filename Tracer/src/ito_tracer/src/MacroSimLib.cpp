@@ -28,7 +28,7 @@
 #include "TopObject.h"
 #include "cuda_runtime.h"
 #include <optix.h>
-#include "my_vector_functions.h"
+#include "macrosim_functions.h"
 #include "myUtil.h"
 #include <sampleConfig.h>
 #include "Group.h"

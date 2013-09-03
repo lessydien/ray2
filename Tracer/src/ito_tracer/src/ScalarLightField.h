@@ -30,7 +30,7 @@
 //#include "complex.h"
 #include <complex>
 #include "Field.h"
-//#include "my_vector_types.h"
+//#include "macrosim_types.h"
 #include <optix_math.h>
 #include "PropagationMath.h"
 #include "pugixml.hpp"

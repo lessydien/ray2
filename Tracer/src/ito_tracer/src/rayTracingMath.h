@@ -26,7 +26,7 @@
 #define RAYTRACINGMATH_H
 
 #include "internal/optix_declarations.h"  // For RT_HOSTDEVICE
-#include "my_vector_types.h"
+#include "macrosim_types.h"
 #include <optix_math.h>
 #include "Geometry_Intersect.h"
 #include "GlobalConstants.h"

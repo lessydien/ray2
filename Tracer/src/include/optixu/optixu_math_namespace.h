@@ -1876,8 +1876,8 @@ RT_DEFINE_HELPER2(longlong)
 RT_DEFINE_HELPER2(ulonglong)
 RT_DEFINE_HELPER2(double)
 
-using ::make_double3x3;
-using ::make_double4x4;
+//using optix::make_double3x3;
+//using ::make_double4x4;
 
 #undef RT_DEFINE_HELPER
 #undef RT_DEFINE_HELPER2

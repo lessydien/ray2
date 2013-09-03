@@ -38,15 +38,14 @@
 #    define RT_PULL_IN_VECTOR_FUNCTIONS
 #  endif
 
+#include "macrosim_functions.h"
+
 namespace optix {
 
 #endif /* #if defined (__cplusplus) */
 
 
-
-#include "my_vector_functions.h"
-
-
+#include "vector_functions.h"
 
 #if defined(__cplusplus)
 } /* end namespace optix */

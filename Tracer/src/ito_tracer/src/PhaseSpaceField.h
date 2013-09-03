@@ -29,7 +29,7 @@
 #include "stdlib.h"
 //#include "complex.h"
 #include <complex>
-#include "my_vector_types.h"
+#include "macrosim_types.h"
 #include "Field.h"
 //#include "PropagationMath.h"
 using namespace std;

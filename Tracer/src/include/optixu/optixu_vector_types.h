@@ -38,15 +38,14 @@
 #    define RT_PULL_IN_VECTOR_TYPES
 #  endif
 
+#include "macrosim_types.h"
+#include "macrosim_functions.h"
+
 namespace optix {
 
 #endif /* #if defined (__cplusplus) */
 
-
-
-#include "my_vector_types.h"
-
-
+#include "vector_types.h"
 
 #if defined(__cplusplus)
 } /* end namespace optix */

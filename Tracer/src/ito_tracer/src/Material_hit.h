@@ -25,7 +25,7 @@
 #ifndef MATERIAL_HIT_H
 #define MATERIAL_HIT_H
 
-#include "my_vector_types.h"
+#include "macrosim_types.h"
 
 /* declare class */
 /**

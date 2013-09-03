@@ -1,7 +1,7 @@
 #ifndef PROPMATH_H
   #define PROPMATH_H
 
-#include "../../include/my_vector_types.h"
+#include "vector_types.h"
 #define _USE_MATH_DEFINES
 #include <cmath>
 

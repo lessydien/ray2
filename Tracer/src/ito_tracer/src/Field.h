@@ -33,7 +33,7 @@
 #include "stdlib.h"
 #include <stdio.h>
 //#include "complex.h"
-#include "my_vector_types.h"
+#include "macrosim_types.h"
 //#include "optix_math.h"
 #include "DetectorParams.h"
 #include "Group.h"

@@ -31,7 +31,7 @@
 #include "pugixml.hpp"
 #include "stdio.h"
 #include <vector>
-#include "my_vector_functions.h"
+#include "macrosim_functions.h"
 
 #include <optix.h>
 

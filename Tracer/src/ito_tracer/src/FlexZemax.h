@@ -28,8 +28,8 @@
 #include <map>
 #include <string>
 
-#include "my_vector_types.h"
-#include "my_vector_functions.h"
+#include "macrosim_types.h"
+#include "macrosim_functions.h"
 //#include "rayTracingMath.h"
 #include "Material.h"
 #include "MaterialLib.h"

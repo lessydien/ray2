@@ -25,7 +25,7 @@
 #ifndef RAYDATA_H
 #define RAYDATA_H
 
-#include "my_vector_types.h"
+#include "macrosim_types.h"
 #include "MacroSimLib.h"
 
 typedef enum 

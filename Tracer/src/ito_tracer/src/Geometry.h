@@ -32,7 +32,7 @@
 #include <optix.h>
 #include "Material.h"
 #include "DetectorParams.h"
-#include "my_vector_functions.h" // from cuda toolkit
+#include "vector_functions.h" // from cuda toolkit
 #include "rayData.h"
 #include "stdio.h"
 #include "sampleConfig.h"

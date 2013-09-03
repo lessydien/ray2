@@ -118,7 +118,7 @@ class fieldParams
 {
 public:
 	long3 nrPixels; // number of pixels in each direction
-	double4x4 MTransform; 
+	optix::double4x4 MTransform; 
 	double3 scale; // physical size of voxel in each dimension
 	axesUnits units;
 	double lambda;

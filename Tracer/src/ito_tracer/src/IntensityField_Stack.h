@@ -29,7 +29,7 @@
 #include "stdlib.h"
 //#include "complex.h"
 //#include "optix_math.h"
-#include "my_vector_types.h"
+#include "macrosim_types.h"
 #include "Field.h"
 #include "Field_Stack.h"
 #include "IntensityField.h"

@@ -1,7 +1,7 @@
 #ifndef __kernel__
 	#define __kernel__
 
-#include "../../include/my_vector_types.h"
+#include "vector_types.h"
 #include "cuComplex.h"
 #include "cufft.h"
 #include <iostream>

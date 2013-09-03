@@ -34,8 +34,8 @@
  * These need to be included first in order to make sure the CUDA vector types are defined
  * in the global namespace necessary to maintain backward compatibility.
  */
-#include "my_vector_types.h"
-#include "my_vector_functions.h"
+#include "vector_types.h"
+#include "vector_functions.h"
 
 /*
  * Any types that were defined in the global namespace in previous versions need to be
