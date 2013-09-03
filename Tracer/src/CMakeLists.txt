@@ -220,20 +220,21 @@ function(OPTIX_add_sample_executable target_name)
     ${cmake_options}
     )
 
-
-  # Most of the samples link against the sutil library and the optix library.  Here is the
-  # rule that specifies this linkage.
-  IF (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-	  target_link_libraries( "${target_name}d"
-		optix
-		${optix_rpath}
-		)
-  ELSE (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-	  target_link_libraries( ${target_name}
-		optix
-		${optix_rpath}
-		)
-  ENDIF (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+    # Most of the samples link against the sutil library and the optix library.  Here is the
+    # rule that specifies this linkage.
+    target_link_libraries(${target_name} optix ${optix_rpath})
+    
+    #IF (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+    #  target_link_libraries( "${target_name}d"
+    #	optix
+    #	${optix_rpath}
+    #	)
+    #ELSE (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+    #	  target_link_libraries( ${target_name}
+    #	optix
+    #	${optix_rpath}
+    #	)
+    #ENDIF (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
 
 endfunction()
 

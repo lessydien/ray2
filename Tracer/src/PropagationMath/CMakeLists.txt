@@ -32,15 +32,15 @@ cuda_add_library(${target_name} STATIC
   
 set_property(TARGET ${target_name} PROPERTY FOLDER "${OPTIX_IDE_FOLDER}")
 
-SET(DebugLib "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/Debug/PropagationMathd.lib")
-SET(ReleaseLib "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/Release/PropagationMath.lib")
-ADD_CUSTOM_COMMAND(TARGET ${target_name} POST_BUILD            # Adds a post-build event 
-	COMMAND ${CMAKE_COMMAND} -E copy_if_different  			   # execute "cmake - E copy_if_different..."
-	"${DebugLib}"	      										   # <--this is in-file
-	"${MacroSim_INSTALL_DIR}lib${bit_dest}"                   # <--this is out-file path
+#try to create all pathes
+#first try to create the directory
+ADD_CUSTOM_COMMAND(TARGET ${target_name} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory
+        "${MacroSim_INSTALL_DIR}lib${bit_dest}"
 )
-ADD_CUSTOM_COMMAND(TARGET ${target_name} POST_BUILD            # Adds a post-build event 
-	COMMAND ${CMAKE_COMMAND} -E copy_if_different  			   # execute "cmake - E copy_if_different..."
-	"${ReleaseLib}"	      										   # <--this is in-file
-	"${MacroSim_INSTALL_DIR}lib${bit_dest}"                   # <--this is out-file path
+
+ADD_CUSTOM_COMMAND(TARGET ${target_name} POST_BUILD                 # Adds a post-build event to MyTest
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different  			   # which executes "cmake - E copy_if_different..."
+        "$<TARGET_FILE:${target_name}>"      										   # <--this is in-file
+        "${MacroSim_INSTALL_DIR}lib${bit_dest}"                 				               # <--this is out-file path
 )

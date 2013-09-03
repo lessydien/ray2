@@ -1,4 +1,3 @@
-#include "../../include/my_vector_types.h"
 #include "PropagationMath.h"
 #include "kernel.h"
 #include "cuda.h"
