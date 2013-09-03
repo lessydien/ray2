@@ -473,21 +473,6 @@ OPTIX_add_sample_executable( ITO-MacroSim
   
   )
 
-  
-#SET(DebugLib "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/Debug/ITO-MacroSimd.lib")
-#SET(ReleaseLib "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/Release/ITO-MacroSim.lib")
-#ADD_CUSTOM_COMMAND(TARGET ${target_name} POST_BUILD            # Adds a post-build event 
-#	COMMAND ${CMAKE_COMMAND} -E copy_if_different  			   # execute "cmake - E copy_if_different..."
-#	"${DebugLib}"	      										   # <--this is in-file
-#	"${MacroSim_INSTALL_DIR}lib${bit_dest}"                   # <--this is out-file path
-#)
-#ADD_CUSTOM_COMMAND(TARGET ${target_name} POST_BUILD            # Adds a post-build event 
-#	COMMAND ${CMAKE_COMMAND} -E copy_if_different  			   # execute "cmake - E copy_if_different..."
-#	"${ReleaseLib}"	      										   # <--this is in-file
-#	"${MacroSim_INSTALL_DIR}lib${bit_dest}"                   # <--this is out-file path
-#)
-
-
 #try to create all pathes
 #first try to create the directory
 ADD_CUSTOM_COMMAND(TARGET ${target_name} POST_BUILD
