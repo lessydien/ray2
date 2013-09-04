@@ -32,6 +32,7 @@ find_package(ITOM_SDK REQUIRED)
 find_package(FFTW 3)
 find_package(CUDA 4)
 find_package(GLEW)
+#SET(VTK_INSTALL_EXPORT_NAME 1) #avoid that vtk directly links to an absolute Qt-library, that is located somewhere on their computer configuration.
 find_package(VTK REQUIRED)
 include(${VTK_USE_FILE})
 find_package(Qt4 REQUIRED)
@@ -117,13 +118,16 @@ IF(CUDA_FOUND)
 		${FFTW_INCLUDE_DIR}
 		${GLEW_INCLUDE_PATH}
 #		${VTK_SOURCE_DIR}/GUISupport/Qt
+        ${VTK_INCLUDE_DIRS}
     )
+    
 
     LINK_DIRECTORIES(
         ${OpenCV_DIR}/lib
     #	${CMAKE_CURRENT_SOURCE_DIR}/Tracer/lib
         ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR}
         #${CMAKE_CURRENT_SOURCE_DIR}/${freeglut_LIB_DIR}
+        ${VTK_LIBRARY_DIRS}
     )
 
     INCLUDE(${QT_USE_FILE})

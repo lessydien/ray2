@@ -18,28 +18,29 @@
 #  INABILITY TO USE THIS SOFTWARE, EVEN IF NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF
 #  SUCH DAMAGES
 #
+SET (target_name nvModel)
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include"
 					"${CMAKE_CURRENT_SOURCE_DIR}../GLEW/include")
 
-add_library( nvModel STATIC
+add_library( ${target_name} STATIC
   src/nvModel.cpp
   src/nvModelObj.cpp
   src/nvModelQuery.cpp
   )
-set_property(TARGET nvModel PROPERTY FOLDER "${OPTIX_IDE_FOLDER}")
+set_property(TARGET ${target_name} PROPERTY FOLDER "${OPTIX_IDE_FOLDER}")
 
 message(STATUS "CMake nvModel" )
 
-SET(DebugLib "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/Debug/nvModeld.lib")
-SET(ReleaseLib "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/Release/nvModel.lib")
-ADD_CUSTOM_COMMAND(TARGET nvModel POST_BUILD            # Adds a post-build event 
-	COMMAND ${CMAKE_COMMAND} -E copy_if_different  			   # execute "cmake - E copy_if_different..."
-	"${DebugLib}"	      										   # <--this is in-file
-	"${MacroSim_INSTALL_DIR}lib${bit_dest}"                   # <--this is out-file path
+#try to create all pathes
+#first try to create the directory
+ADD_CUSTOM_COMMAND(TARGET ${target_name} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory
+        "${MacroSim_INSTALL_DIR}lib${bit_dest}"
 )
-ADD_CUSTOM_COMMAND(TARGET nvModel POST_BUILD            # Adds a post-build event 
-	COMMAND ${CMAKE_COMMAND} -E copy_if_different  			   # execute "cmake - E copy_if_different..."
-	"${ReleaseLib}"	      										   # <--this is in-file
-	"${MacroSim_INSTALL_DIR}lib${bit_dest}"                   # <--this is out-file path
+
+ADD_CUSTOM_COMMAND(TARGET ${target_name} POST_BUILD                 # Adds a post-build event to MyTest
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different  			   # which executes "cmake - E copy_if_different..."
+        "$<TARGET_FILE:${target_name}>"      										   # <--this is in-file
+        "${MacroSim_INSTALL_DIR}lib${bit_dest}"                 				               # <--this is out-file path
 )
