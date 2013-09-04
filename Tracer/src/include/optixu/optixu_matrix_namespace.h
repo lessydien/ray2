@@ -25,6 +25,13 @@
 #include "optixu_math_namespace.h"
 #include <assert.h>
 
+// __forceinline__ works in cuda, VS, and with gcc.  Leave it as macro in case
+// we need to make this per-platform or we want to switch off inlining globally.
+#ifndef OPTIXU_INLINE 
+#  define OPTIXU_INLINE_DEFINED 1
+#  define OPTIXU_INLINE __forceinline__
+#endif // OPTIXU_INLINE 
+
 #define RT_MATRIX_ACCESS(m,i,j) m[i*N+j]
 #define RT_MAT_DECL template <unsigned int M, unsigned int N>
 
@@ -38,29 +45,29 @@ namespace optix {
 
   template <unsigned int M, unsigned int N> class Matrix;
 
-  template <unsigned int M> Matrix<M,M>& operator*=(Matrix<M,M>& m1, const Matrix<M,M>& m2);
-  RT_MAT_DECL Matrix<M,N>& operator-=(Matrix<M,N>& m1, const Matrix<M,N>& m2);
-  RT_MAT_DECL Matrix<M,N>& operator+=(Matrix<M,N>& m1, const Matrix<M,N>& m2);
-  RT_MAT_DECL Matrix<M,N>& operator*=(Matrix<M,N>& m1, float f);
-  RT_MAT_DECL Matrix<M,N>& operator/=(Matrix<M,N>& m1, float f);
-  RT_MAT_DECL Matrix<M,N> operator-(const Matrix<M,N>& m1, const Matrix<M,N>& m2);
-  RT_MAT_DECL Matrix<M,N> operator+(const Matrix<M,N>& m1, const Matrix<M,N>& m2);
-  RT_MAT_DECL Matrix<M,N> operator/(const Matrix<M,N>& m, float f);
-  RT_MAT_DECL Matrix<M,N> operator*(const Matrix<M,N>& m, float f);
-  RT_MAT_DECL Matrix<M,N> operator*(float f, const Matrix<M,N>& m);
-  RT_MAT_DECL typename Matrix<M,N>::floatM operator*(const Matrix<M,N>& m, const typename Matrix<M,N>::floatN& v );
-  RT_MAT_DECL typename Matrix<M,N>::floatN operator*(const typename Matrix<M,N>::floatM& v, const Matrix<M,N>& m);
-  template<unsigned int M, unsigned int N, unsigned int R> Matrix<M,R> operator*(const Matrix<M,N>& m1, const Matrix<N,R>& m2);
+   template <unsigned int M> OPTIXU_INLINE RT_HOSTDEVICE Matrix<M,M>& operator*=(Matrix<M,M>& m1, const Matrix<M,M>& m2);
+   RT_MAT_DECL OPTIXU_INLINE RT_HOSTDEVICE Matrix<M,N>& operator-=(Matrix<M,N>& m1, const Matrix<M,N>& m2);
+   RT_MAT_DECL OPTIXU_INLINE RT_HOSTDEVICE Matrix<M,N>& operator+=(Matrix<M,N>& m1, const Matrix<M,N>& m2);
+   RT_MAT_DECL OPTIXU_INLINE RT_HOSTDEVICE Matrix<M,N>& operator*=(Matrix<M,N>& m1, float f);
+   RT_MAT_DECL OPTIXU_INLINE RT_HOSTDEVICE Matrix<M,N>&operator/=(Matrix<M,N>& m1, float f);
+   RT_MAT_DECL OPTIXU_INLINE RT_HOSTDEVICE Matrix<M,N> operator-(const Matrix<M,N>& m1, const Matrix<M,N>& m2);
+   RT_MAT_DECL OPTIXU_INLINE RT_HOSTDEVICE Matrix<M,N> operator+(const Matrix<M,N>& m1, const Matrix<M,N>& m2);
+   RT_MAT_DECL OPTIXU_INLINE RT_HOSTDEVICE Matrix<M,N> operator/(const Matrix<M,N>& m, float f);
+   RT_MAT_DECL OPTIXU_INLINE RT_HOSTDEVICE Matrix<M,N> operator*(const Matrix<M,N>& m, float f);
+   RT_MAT_DECL OPTIXU_INLINE RT_HOSTDEVICE Matrix<M,N> operator*(float f, const Matrix<M,N>& m);
+   RT_MAT_DECL OPTIXU_INLINE RT_HOSTDEVICE typename Matrix<M,N>::floatM operator*(const Matrix<M,N>& m, const typename Matrix<M,N>::floatN& v );
+   RT_MAT_DECL OPTIXU_INLINE RT_HOSTDEVICE typename Matrix<M,N>::floatN operator*(const typename Matrix<M,N>::floatM& v, const Matrix<M,N>& m);
+   template<unsigned int M, unsigned int N, unsigned int R> OPTIXU_INLINE RT_HOSTDEVICE Matrix<M,R> operator*(const Matrix<M,N>& m1, const Matrix<N,R>& m2);
 
 
   // Partial specializations to make matrix vector multiplication more efficient
   template <unsigned int N>
-  RT_HOSTDEVICE float2 operator*(const Matrix<2,N>& m, const typename Matrix<2,N>::floatN& vec );
+  OPTIXU_INLINE RT_HOSTDEVICE float2 operator*(const Matrix<2,N>& m, const typename Matrix<2,N>::floatN& vec );
   template <unsigned int N>
-  RT_HOSTDEVICE float3 operator*(const Matrix<3,N>& m, const typename Matrix<3,N>::floatN& vec );
+  OPTIXU_INLINE RT_HOSTDEVICE float3 operator*(const Matrix<3,N>& m, const typename Matrix<3,N>::floatN& vec );
   template <unsigned int N>
-  RT_HOSTDEVICE float4 operator*(const Matrix<4,N>& m, const typename Matrix<4,N>::floatN& vec );
-  RT_HOSTDEVICE float4 operator*(const Matrix<4,4>& m, const float4& vec );
+  OPTIXU_INLINE RT_HOSTDEVICE float4 operator*(const Matrix<4,N>& m, const typename Matrix<4,N>::floatN& vec );
+  OPTIXU_INLINE RT_HOSTDEVICE float4 operator*(const Matrix<4,4>& m, const float4& vec );
 
   // A matrix with M rows and N columns
   template <unsigned int M, unsigned int N>
@@ -71,113 +78,113 @@ namespace optix {
     typedef typename VectorDim<M>::VectorType  floatM; // A column of the matrix
 
     // Create an unitialized matrix.
-    RT_HOSTDEVICE              Matrix();
+     RT_HOSTDEVICE              Matrix();
 
     // Create a matrix from the specified float array.
-    RT_HOSTDEVICE explicit     Matrix( const float data[M*N] ) { for(unsigned int i = 0; i < M*N; ++i) _data[i] = data[i]; }
+     RT_HOSTDEVICE explicit     Matrix( const float data[M*N] ) { for(unsigned int i = 0; i < M*N; ++i) m_data[i] = data[i]; }
 
     // Copy the matrix.
-    RT_HOSTDEVICE              Matrix( const Matrix& m );
+     RT_HOSTDEVICE              Matrix( const Matrix& m );
 
     // Assignment operator.
-    RT_HOSTDEVICE Matrix&      operator=( const Matrix& b );
+     RT_HOSTDEVICE Matrix&      operator=( const Matrix& b );
 
     // Access the specified element 0..N*M-1
-    RT_HOSTDEVICE float        operator[]( unsigned int i )const { return _data[i]; }
+     RT_HOSTDEVICE float        operator[]( unsigned int i )const { return m_data[i]; }
 
     // Access the specified element 0..N*M-1
-    RT_HOSTDEVICE float&       operator[]( unsigned int i )      { return _data[i]; }
+     RT_HOSTDEVICE float&       operator[]( unsigned int i )      { return m_data[i]; }
 
     // Access the specified row 0..M.  Returns float, float2, float3 or float4 depending on the matrix size.
-    RT_HOSTDEVICE floatN       getRow( unsigned int m )const;
+     RT_HOSTDEVICE floatN       getRow( unsigned int m )const;
 
     // Access the specified column 0..N.  Returns float, float2, float3 or float4 depending on the matrix size.
-    RT_HOSTDEVICE floatM       getCol( unsigned int n )const;
+     RT_HOSTDEVICE floatM       getCol( unsigned int n )const;
 
     // Returns a pointer to the internal data array.  The data array is stored in row-major order.
-    RT_HOSTDEVICE float*       getData();
+     RT_HOSTDEVICE float*       getData();
 
     // Returns a const pointer to the internal data array.  The data array is stored in row-major order.
-    RT_HOSTDEVICE const float* getData()const;
+     RT_HOSTDEVICE const float* getData()const;
 
     // Assign the specified row 0..M.  Takes a float, float2, float3 or float4 depending on the matrix size.
-    RT_HOSTDEVICE void         setRow( unsigned int m, const floatN &r );
+     RT_HOSTDEVICE void         setRow( unsigned int m, const floatN &r );
 
     // Assign the specified column 0..N.  Takes a float, float2, float3 or float4 depending on the matrix size.
-    RT_HOSTDEVICE void         setCol( unsigned int n, const floatM &c );
+     RT_HOSTDEVICE void         setCol( unsigned int n, const floatM &c );
 
     // Returns the transpose of the matrix.
-    RT_HOSTDEVICE Matrix<N,M>         transpose() const;
+     RT_HOSTDEVICE Matrix<N,M>         transpose() const;
 
     // Returns the inverse of the matrix.
-    RT_HOSTDEVICE Matrix<4,4>         inverse() const;
+     RT_HOSTDEVICE Matrix<4,4>         inverse() const;
 
     // Returns the determinant of the matrix.
-    RT_HOSTDEVICE float               det() const;
+     RT_HOSTDEVICE float               det() const;
 
     // Returns a rotation matrix.
-    RT_HOSTDEVICE static Matrix<4,4>  rotate(const float radians, const float3& axis);
+     RT_HOSTDEVICE static Matrix<4,4>  rotate(const float radians, const float3& axis);
 
     // Returns a translation matrix.
-    RT_HOSTDEVICE static Matrix<4,4>  translate(const float3& vec);
+     RT_HOSTDEVICE static Matrix<4,4>  translate(const float3& vec);
 
     // Returns a scale matrix.
-    RT_HOSTDEVICE static Matrix<4,4>  scale(const float3& vec);
+     RT_HOSTDEVICE static Matrix<4,4>  scale(const float3& vec);
 
     // Returns the identity matrix.
-    RT_HOSTDEVICE static Matrix<N,N>  identity();
+     RT_HOSTDEVICE static Matrix<N,N>  identity();
 
     // Ordered comparison operator so that the matrix can be used in an STL container.
-    RT_HOSTDEVICE bool         operator<( const Matrix<M, N>& rhs ) const;
+     RT_HOSTDEVICE bool         operator<( const Matrix<M, N>& rhs ) const;
   private:
-    float _data[M*N]; // The data array is stored in row-major order.
+    float m_data[M*N]; // The data array is stored in row-major order.
   };
 
 
 
   template<unsigned int M, unsigned int N>
-  RT_HOSTDEVICE Matrix<M,N>::Matrix()
+  OPTIXU_INLINE RT_HOSTDEVICE Matrix<M,N>::Matrix()
   {
   }
 
   template<unsigned int M, unsigned int N>
-  RT_HOSTDEVICE Matrix<M,N>::Matrix( const Matrix<M,N>& m )
+  OPTIXU_INLINE RT_HOSTDEVICE Matrix<M,N>::Matrix( const Matrix<M,N>& m )
   {
     for(unsigned int i = 0; i < M*N; ++i)
-      _data[i] = m._data[i];
+      m_data[i] = m[i];
   }
 
   template<unsigned int M, unsigned int N>
-  RT_HOSTDEVICE Matrix<M,N>&  Matrix<M,N>::operator=( const Matrix& b )
+  OPTIXU_INLINE RT_HOSTDEVICE Matrix<M,N>&  Matrix<M,N>::operator=( const Matrix& b )
   {
     for(unsigned int i = 0; i < M*N; ++i)
-      _data[i] = b._data[i];
+      m_data[i] = b[i];
     return *this;
   }
 
 
   /*
   template<unsigned int M, unsigned int N>
-  RT_HOSTDEVICE float Matrix<M,N>::operator[]( unsigned int i )const
+  OPTIXU_INLINE RT_HOSTDEVICE float Matrix<M,N>::operator[]( unsigned int i )const
   {
   assert( i < M*N );
-  return _data[i];
+  return m_data[i];
   }
 
 
   template<unsigned int M, unsigned int N>
-  RT_HOSTDEVICE float& Matrix<M,N>::operator[]( unsigned int i )
+  OPTIXU_INLINE RT_HOSTDEVICE float& Matrix<M,N>::operator[]( unsigned int i )
   {
-  return _data[i];
+  return m_data[i];
   }
   */
 
   template<unsigned int M, unsigned int N>
-  RT_HOSTDEVICE typename Matrix<M,N>::floatN Matrix<M,N>::getRow( unsigned int m )const
+  OPTIXU_INLINE RT_HOSTDEVICE typename Matrix<M,N>::floatN Matrix<M,N>::getRow( unsigned int m )const
   {
     typename Matrix<M,N>::floatN temp;
     float* v = reinterpret_cast<float*>( &temp );
-    const float* row = &( _data[m*N] );
+    const float* row = &( m_data[m*N] );
     for(unsigned int i = 0; i < N; ++i)
       v[i] = row[i];
 
@@ -186,47 +193,47 @@ namespace optix {
 
 
   template<unsigned int M, unsigned int N>
-  RT_HOSTDEVICE typename Matrix<M,N>::floatM Matrix<M,N>::getCol( unsigned int n )const
+  OPTIXU_INLINE RT_HOSTDEVICE typename Matrix<M,N>::floatM Matrix<M,N>::getCol( unsigned int n )const
   {
     typename Matrix<M,N>::floatM temp;
     float* v = reinterpret_cast<float*>( &temp );
     for ( unsigned int i = 0; i < M; ++i )
-      v[i] = RT_MATRIX_ACCESS( _data, i, n );
+      v[i] = RT_MATRIX_ACCESS( m_data, i, n );
 
     return temp;
   }
 
 
   template<unsigned int M, unsigned int N>
-  RT_HOSTDEVICE float* Matrix<M,N>::getData()
+  OPTIXU_INLINE RT_HOSTDEVICE float* Matrix<M,N>::getData()
   {
-    return _data;
+    return m_data;
   }
 
 
   template<unsigned int M, unsigned int N>
-  RT_HOSTDEVICE const float* Matrix<M,N>::getData() const
+  OPTIXU_INLINE RT_HOSTDEVICE const float* Matrix<M,N>::getData() const
   {
-    return _data;
+    return m_data;
   }
 
 
   template<unsigned int M, unsigned int N>
-  RT_HOSTDEVICE void Matrix<M,N>::setRow( unsigned int m, const typename Matrix<M,N>::floatN &r )
+  OPTIXU_INLINE RT_HOSTDEVICE void Matrix<M,N>::setRow( unsigned int m, const typename Matrix<M,N>::floatN &r )
   {
     const float* v = reinterpret_cast<const float*>( &r );
-    float* row = &( _data[m*N] );
+    float* row = &( m_data[m*N] );
     for(unsigned int i = 0; i < N; ++i)
       row[i] = v[i];
   }
 
 
   template<unsigned int M, unsigned int N>
-  RT_HOSTDEVICE void Matrix<M,N>::setCol( unsigned int n, const typename Matrix<M,N>::floatM &c )
+  OPTIXU_INLINE RT_HOSTDEVICE void Matrix<M,N>::setCol( unsigned int n, const typename Matrix<M,N>::floatM &c )
   {
     const float* v = reinterpret_cast<const float*>( &c );
     for ( unsigned int i = 0; i < M; ++i )
-      RT_MATRIX_ACCESS( _data, i, n ) = v[i];
+      RT_MATRIX_ACCESS( m_data, i, n ) = v[i];
   }
 
 
@@ -321,7 +328,7 @@ namespace optix {
 
   // Multiply matrix2xN by floatN
   template<unsigned int N>
-  RT_HOSTDEVICE float2 operator*(const Matrix<2,N>& m, const typename Matrix<2,N>::floatN& vec )
+  OPTIXU_INLINE RT_HOSTDEVICE float2 operator*(const Matrix<2,N>& m, const typename Matrix<2,N>::floatN& vec )
   {
     float2 temp = { 0.0f, 0.0f };
     const float* v = reinterpret_cast<const float*>( &vec );
@@ -338,7 +345,7 @@ namespace optix {
 
   // Multiply matrix3xN by floatN
   template<unsigned int N>
-  RT_HOSTDEVICE float3 operator*(const Matrix<3,N>& m, const typename Matrix<3,N>::floatN& vec )
+  OPTIXU_INLINE RT_HOSTDEVICE float3 operator*(const Matrix<3,N>& m, const typename Matrix<3,N>::floatN& vec )
   {
     float3 temp = { 0.0f, 0.0f, 0.0f };
     const float* v = reinterpret_cast<const float*>( &vec );
@@ -358,7 +365,7 @@ namespace optix {
 
   // Multiply matrix4xN by floatN
   template<unsigned int N>
-  RT_HOSTDEVICE float4 operator*(const Matrix<4,N>& m, const typename Matrix<4,N>::floatN& vec )
+  OPTIXU_INLINE RT_HOSTDEVICE float4 operator*(const Matrix<4,N>& m, const typename Matrix<4,N>::floatN& vec )
   {
     float4 temp = { 0.0f, 0.0f, 0.0f, 0.0f };
 
@@ -381,7 +388,7 @@ namespace optix {
   }
 
   // Multiply matrix4x4 by float4
-  RT_HOSTDEVICE inline float4 operator*(const Matrix<4,4>& m, const float4& vec )
+  OPTIXU_INLINE RT_HOSTDEVICE float4 operator*(const Matrix<4,4>& m, const float4& vec )
   {
     float4 temp;
     temp.x  = m[ 0] * vec.x +
@@ -479,20 +486,20 @@ namespace optix {
 
   // Returns the transpose of the matrix.
   template<unsigned int M, unsigned int N>
-  RT_HOSTDEVICE inline Matrix<N,M> Matrix<M,N>::transpose() const
+  OPTIXU_INLINE RT_HOSTDEVICE Matrix<N,M> Matrix<M,N>::transpose() const
   {
     Matrix<N,M> ret;
     for( unsigned int row = 0; row < M; ++row )
       for( unsigned int col = 0; col < N; ++col )
-        ret._data[col*M+row] = _data[row*N+col];
+        ret[col*M+row] = m_data[row*N+col];
     return ret;
   }
 
   // Returns the determinant of the matrix.
   template<>
-  RT_HOSTDEVICE inline float Matrix<3,3>::det() const
+  OPTIXU_INLINE RT_HOSTDEVICE float Matrix<3,3>::det() const
   {
-    const float* m   = _data;
+    const float* m   = m_data;
     float d = m[0]*m[4]*m[8] + m[1]*m[5]*m[6] + m[2]*m[3]*m[7]
       - m[0]*m[5]*m[7] - m[1]*m[3]*m[8] - m[2]*m[4]*m[6];
     return d;
@@ -500,9 +507,9 @@ namespace optix {
 
   // Returns the determinant of the matrix.
   template<>
-  RT_HOSTDEVICE inline float Matrix<4,4>::det() const
+  OPTIXU_INLINE RT_HOSTDEVICE float Matrix<4,4>::det() const
   {
-    const float* m   = _data;
+    const float* m   = m_data;
     float d =
       m[0]*m[5]*m[10]*m[15]-
       m[0]*m[5]*m[11]*m[14]+m[0]*m[9]*m[14]*m[7]-
@@ -521,10 +528,10 @@ namespace optix {
 
   // Returns the inverse of the matrix.
   template<>
-  RT_HOSTDEVICE inline Matrix<4,4> Matrix<4,4>::inverse() const
+  OPTIXU_INLINE RT_HOSTDEVICE Matrix<4,4> Matrix<4,4>::inverse() const
   {
     Matrix<4,4> dst;
-    const float* m   = _data;
+    const float* m   = m_data;
     const float d = 1.0f / det();
 
     dst[0]  = d * (m[5] * (m[10] * m[15] - m[14] * m[11]) + m[9] * (m[14] * m[7] - m[6] * m[15]) + m[13] * (m[6] * m[11] - m[10] * m[7]));
@@ -549,7 +556,7 @@ namespace optix {
   // Returns a rotation matrix.
   // This is a static member.
   template<>
-  RT_HOSTDEVICE Matrix<4,4> inline Matrix<4,4>::rotate(const float radians, const float3& axis)
+  OPTIXU_INLINE RT_HOSTDEVICE Matrix<4,4> Matrix<4,4>::rotate(const float radians, const float3& axis)
   {
     Matrix<4,4> Mat = Matrix<4,4>::identity();
     float *m = Mat.getData();
@@ -586,7 +593,7 @@ namespace optix {
   // Returns a translation matrix.
   // This is a static member.
   template<>
-  RT_HOSTDEVICE Matrix<4,4> inline Matrix<4,4>::translate(const float3& vec)
+  OPTIXU_INLINE RT_HOSTDEVICE Matrix<4,4> Matrix<4,4>::translate(const float3& vec)
   {
     Matrix<4,4> Mat = Matrix<4,4>::identity();
     float *m = Mat.getData();
@@ -601,7 +608,7 @@ namespace optix {
   // Returns a scale matrix.
   // This is a static member.
   template<>
-  RT_HOSTDEVICE Matrix<4,4> inline Matrix<4,4>::scale(const float3& vec)
+  OPTIXU_INLINE RT_HOSTDEVICE Matrix<4,4> Matrix<4,4>::scale(const float3& vec)
   {
     Matrix<4,4> Mat = Matrix<4,4>::identity();
     float *m = Mat.getData();
@@ -616,7 +623,7 @@ namespace optix {
   // Returns the identity matrix.
   // This is a static member.
   template<unsigned int M, unsigned int N>
-  RT_HOSTDEVICE Matrix<N,N> Matrix<M,N>::identity()
+  OPTIXU_INLINE RT_HOSTDEVICE Matrix<N,N> Matrix<M,N>::identity()
   {
     float temp[N*N];
     for(unsigned int i = 0; i < N*N; ++i)
@@ -628,12 +635,12 @@ namespace optix {
 
   // Ordered comparison operator so that the matrix can be used in an STL container.
   template<unsigned int M, unsigned int N>
-  RT_HOSTDEVICE bool Matrix<M,N>::operator<( const Matrix<M, N>& rhs ) const
+  OPTIXU_INLINE RT_HOSTDEVICE bool Matrix<M,N>::operator<( const Matrix<M, N>& rhs ) const
   {
     for( unsigned int i = 0; i < N*M; ++i ) {
-      if( _data[i] < rhs._data[i] )
+      if( m_data[i] < rhs[i] )
         return true;
-      else if( _data[i] > rhs._data[i] )
+      else if( m_data[i] > rhs[i] )
         return false;
     }
     return false;
@@ -649,9 +656,36 @@ namespace optix {
   typedef Matrix<4, 3> Matrix4x3;
   typedef Matrix<4, 4> Matrix4x4;
 
+
+  OPTIXU_INLINE RT_HOSTDEVICE Matrix<3,3> make_matrix3x3(const Matrix<4,4> &matrix)
+  {
+    Matrix<3,3> Mat;
+    float *m = Mat.getData();
+    const float *m4x4 = matrix.getData();
+
+    m[0*3+0]=m4x4[0*4+0];
+    m[0*3+1]=m4x4[0*4+1];
+    m[0*3+2]=m4x4[0*4+2];
+             
+    m[1*3+0]=m4x4[1*4+0];
+    m[1*3+1]=m4x4[1*4+1];
+    m[1*3+2]=m4x4[1*4+2];
+             
+    m[2*3+0]=m4x4[2*4+0];
+    m[2*3+1]=m4x4[2*4+1];
+    m[2*3+2]=m4x4[2*4+2];
+
+    return Mat;
+  }
+
 } // end namespace optix
 
 #undef RT_MATRIX_ACCESS
 #undef RT_MAT_DECL
+
+#ifdef OPTIXU_INLINE_DEFINED
+#  undef OPTIXU_INLINE_DEFINED
+#  undef OPTIXU_INLINE
+#endif
 
 #endif //  __optixu_optixu_matrix_namespace_h__

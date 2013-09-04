@@ -31,6 +31,13 @@
 #  define RT_AABB_ASSERT(x)
 #endif
 
+// __forceinline__ works in cuda, VS, and with gcc.  Leave it as macro in case
+// we need to make this per-platform or we want to switch off inlining globally.
+#ifndef OPTIXU_INLINE 
+#  define OPTIXU_INLINE_DEFINED 1
+#  define OPTIXU_INLINE __forceinline__
+#endif // OPTIXU_INLINE 
+
 namespace optix {
 
   class Aabb
@@ -140,22 +147,22 @@ namespace optix {
   };
 
 
-  inline RT_HOSTDEVICE Aabb::Aabb()
+  OPTIXU_INLINE RT_HOSTDEVICE Aabb::Aabb()
   {
     invalidate();
   }
 
-  inline RT_HOSTDEVICE Aabb::Aabb( const float3& min, const float3& max )
+  OPTIXU_INLINE RT_HOSTDEVICE Aabb::Aabb( const float3& min, const float3& max )
   {
     set( min, max );
   }
 
-  inline RT_HOSTDEVICE Aabb::Aabb( const float3& v0, const float3& v1, const float3& v2 )
+  OPTIXU_INLINE RT_HOSTDEVICE Aabb::Aabb( const float3& v0, const float3& v1, const float3& v2 )
   {
     set( v0, v1, v2 );
   }
 
-  inline RT_HOSTDEVICE bool Aabb::operator==( const Aabb& other ) const
+  OPTIXU_INLINE RT_HOSTDEVICE bool Aabb::operator==( const Aabb& other ) const
   {
     return m_min.x == other.m_min.x &&
            m_min.y == other.m_min.y &&
@@ -165,118 +172,118 @@ namespace optix {
            m_max.z == other.m_max.z;
   }
 
-  inline RT_HOSTDEVICE float3& Aabb::operator[]( int i )
+  OPTIXU_INLINE RT_HOSTDEVICE float3& Aabb::operator[]( int i )
   {
     RT_AABB_ASSERT( i>=0 && i<=1 );
     return (&m_min)[i];
   }
 
-  inline RT_HOSTDEVICE const float3& Aabb::operator[]( int i ) const
+  OPTIXU_INLINE RT_HOSTDEVICE const float3& Aabb::operator[]( int i ) const
   {
     RT_AABB_ASSERT( i>=0 && i<=1 );
     return (&m_min)[i];
   }
 
-  inline RT_HOSTDEVICE void Aabb::set( const float3& min, const float3& max )
+  OPTIXU_INLINE RT_HOSTDEVICE void Aabb::set( const float3& min, const float3& max )
   {
     m_min = min;
     m_max = max;
   }
 
-  inline RT_HOSTDEVICE void Aabb::set( const float3& v0, const float3& v1, const float3& v2 )
+  OPTIXU_INLINE RT_HOSTDEVICE void Aabb::set( const float3& v0, const float3& v1, const float3& v2 )
   {
     m_min = fminf( v0, fminf(v1,v2) );
     m_max = fmaxf( v0, fmaxf(v1,v2) );
   }
 
-  inline RT_HOSTDEVICE void Aabb::invalidate()
+  OPTIXU_INLINE RT_HOSTDEVICE void Aabb::invalidate()
   {
     m_min = make_float3(  1e37f );
     m_max = make_float3( -1e37f );
   }
 
-  inline RT_HOSTDEVICE bool Aabb::valid() const
+  OPTIXU_INLINE RT_HOSTDEVICE bool Aabb::valid() const
   {
     return m_min.x <= m_max.x &&
       m_min.y <= m_max.y &&
       m_min.z <= m_max.z;
   }
 
-  inline RT_HOSTDEVICE bool Aabb::contains( const float3& p ) const
+  OPTIXU_INLINE RT_HOSTDEVICE bool Aabb::contains( const float3& p ) const
   {
     return  p.x >= m_min.x && p.x <= m_max.x &&
             p.y >= m_min.y && p.y <= m_max.y &&
             p.z >= m_min.z && p.z <= m_max.z;
   }
 
-  inline RT_HOSTDEVICE bool Aabb::contains( const Aabb& bb ) const
+  OPTIXU_INLINE RT_HOSTDEVICE bool Aabb::contains( const Aabb& bb ) const
   {
     return contains( bb.m_min ) && contains( bb.m_max );
   }
 
-  inline RT_HOSTDEVICE void Aabb::include( const float3& p )
+  OPTIXU_INLINE RT_HOSTDEVICE void Aabb::include( const float3& p )
   {
     m_min = fminf( m_min, p );
     m_max = fmaxf( m_max, p );
   }
 
-  inline RT_HOSTDEVICE void Aabb::include( const Aabb& other )
+  OPTIXU_INLINE RT_HOSTDEVICE void Aabb::include( const Aabb& other )
   {
     m_min = fminf( m_min, other.m_min );
     m_max = fmaxf( m_max, other.m_max );
   }
 
-  inline RT_HOSTDEVICE void Aabb::include( const float3& min, const float3& max )
+  OPTIXU_INLINE RT_HOSTDEVICE void Aabb::include( const float3& min, const float3& max )
   {
     m_min = fminf( m_min, min );
     m_max = fmaxf( m_max, max );
   }
 
-  inline RT_HOSTDEVICE float3 Aabb::center() const
+  OPTIXU_INLINE RT_HOSTDEVICE float3 Aabb::center() const
   {
     RT_AABB_ASSERT( valid() );
     return (m_min+m_max) * 0.5f;
   }
 
-  inline RT_HOSTDEVICE float Aabb::center( int dim ) const
+  OPTIXU_INLINE RT_HOSTDEVICE float Aabb::center( int dim ) const
   {
     RT_AABB_ASSERT( valid() );
     RT_AABB_ASSERT( dim>=0 && dim<=2 );
     return ( ((float*)(&m_min))[dim] + ((float*)(&m_max))[dim] ) * 0.5f;
   }
 
-  inline RT_HOSTDEVICE float3 Aabb::extent() const
+  OPTIXU_INLINE RT_HOSTDEVICE float3 Aabb::extent() const
   {
     RT_AABB_ASSERT( valid() );
     return m_max - m_min;
   }
 
-  inline RT_HOSTDEVICE float Aabb::extent( int dim ) const
+  OPTIXU_INLINE RT_HOSTDEVICE float Aabb::extent( int dim ) const
   {
     RT_AABB_ASSERT( valid() );
     return ((float*)(&m_max))[dim] - ((float*)(&m_min))[dim];
   }
 
-  inline RT_HOSTDEVICE float Aabb::volume() const
+  OPTIXU_INLINE RT_HOSTDEVICE float Aabb::volume() const
   {
     RT_AABB_ASSERT( valid() );
     const float3 d = extent();
     return d.x*d.y*d.z;
   }
 
-  inline RT_HOSTDEVICE float Aabb::area() const
+  OPTIXU_INLINE RT_HOSTDEVICE float Aabb::area() const
   {
     return 2.0f * halfArea();
   }
 
-  inline RT_HOSTDEVICE float Aabb::halfArea() const
+  OPTIXU_INLINE RT_HOSTDEVICE float Aabb::halfArea() const
   {
     RT_AABB_ASSERT( valid() );
     const float3 d = extent();
     return d.x*d.y + d.y*d.z + d.z*d.x;
   }
 
-  inline RT_HOSTDEVICE int Aabb::longestAxis() const
+  OPTIXU_INLINE RT_HOSTDEVICE int Aabb::longestAxis() const
   {
     RT_AABB_ASSERT( valid() );
     const float3 d = extent();
@@ -286,12 +293,12 @@ namespace optix {
     return d.y > d.z ? 1 : 2;
   }
 
-  inline RT_HOSTDEVICE float Aabb::maxExtent() const
+  OPTIXU_INLINE RT_HOSTDEVICE float Aabb::maxExtent() const
   {
     return extent( longestAxis() );
   }
 
-  inline RT_HOSTDEVICE bool Aabb::intersects( const Aabb& other ) const
+  OPTIXU_INLINE RT_HOSTDEVICE bool Aabb::intersects( const Aabb& other ) const
   {
     if( other.m_min.x > m_max.x || other.m_max.x < m_min.x ) return false;
     if( other.m_min.y > m_max.y || other.m_max.y < m_min.y ) return false;
@@ -299,7 +306,7 @@ namespace optix {
     return true;
   }
 
-  inline RT_HOSTDEVICE void Aabb::intersection( const Aabb& other )
+  OPTIXU_INLINE RT_HOSTDEVICE void Aabb::intersection( const Aabb& other )
   {
     m_min.x = fmaxf( m_min.x, other.m_min.x );
     m_min.y = fmaxf( m_min.y, other.m_min.y );
@@ -309,26 +316,26 @@ namespace optix {
     m_max.z = fminf( m_max.z, other.m_max.z );
   }
 
-  inline RT_HOSTDEVICE void Aabb::enlarge( float amount )
+  OPTIXU_INLINE RT_HOSTDEVICE void Aabb::enlarge( float amount )
   {
     RT_AABB_ASSERT( valid() );
     m_min -= make_float3( amount );
     m_max += make_float3( amount );
   }
 
-  inline RT_HOSTDEVICE bool Aabb::isFlat() const
+  OPTIXU_INLINE RT_HOSTDEVICE bool Aabb::isFlat() const
   {
     return m_min.x == m_max.x ||
            m_min.y == m_max.y ||
            m_min.z == m_max.z;
   }
 
-  inline RT_HOSTDEVICE float Aabb::distance( const float3& x ) const
+  OPTIXU_INLINE RT_HOSTDEVICE float Aabb::distance( const float3& x ) const
   {
     return sqrtf(distance2(x));
   }
 
-  inline RT_HOSTDEVICE float Aabb::signedDistance( const float3& x ) const
+  OPTIXU_INLINE RT_HOSTDEVICE float Aabb::signedDistance( const float3& x ) const
   {
     if( m_min.x <= x.x && x.x <= m_max.x &&
         m_min.y <= x.y && x.y <= m_max.y &&
@@ -344,7 +351,7 @@ namespace optix {
     return distance(x);
   }
 
-  inline RT_HOSTDEVICE float Aabb::distance2( const float3& x ) const
+  OPTIXU_INLINE RT_HOSTDEVICE float Aabb::distance2( const float3& x ) const
   {
     float3 box_dims = m_max - m_min;
 
@@ -383,6 +390,11 @@ namespace optix {
   }
 
 } // end namespace optix
+
+#ifdef OPTIXU_INLINE_DEFINED
+#  undef OPTIXU_INLINE_DEFINED
+#  undef OPTIXU_INLINE
+#endif
 
 #undef RT_AABB_ASSERT
 

@@ -46,6 +46,7 @@ On Windows you will need to include windows.h before this file:
 
 #include "optix.h"
 
+typedef struct IDXGIAdapter   IDXGIAdapter;
 typedef struct ID3D10Device   ID3D10Device;
 typedef struct ID3D10Resource ID3D10Resource;
 
@@ -55,6 +56,7 @@ typedef struct ID3D10Resource ID3D10Resource;
 #endif
 
   RTresult RTAPI rtContextSetD3D10Device                ( RTcontext context, ID3D10Device* device );
+  RTresult RTAPI rtDeviceGetD3D10Device                 ( int* device, IDXGIAdapter *pAdapter );
   RTresult RTAPI rtBufferCreateFromD3D10Resource        ( RTcontext context, unsigned int bufferdesc, ID3D10Resource* resource,  RTbuffer* buffer );
   RTresult RTAPI rtTextureSamplerCreateFromD3D10Resource( RTcontext context, ID3D10Resource* resource,  RTtexturesampler* textureSampler );
   RTresult RTAPI rtBufferGetD3D10Resource               ( RTbuffer buffer, ID3D10Resource** resource );

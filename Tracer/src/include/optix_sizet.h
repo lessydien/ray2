@@ -26,9 +26,7 @@
   #include <sys/types.h>
 #endif
 
-#include "optix.h"  /* For RT_HOSTDEVICE */
-#include "optixu/optixu_vector_functions.h"
-#include "optixu/optixu_math_namespace.h"
+#include "internal/optix_declarations.h"  /* For RT_HOSTDEVICE */
 
 #ifdef __cplusplus
 namespace optix {
@@ -115,7 +113,10 @@ namespace optix {
   
   inline RT_HOSTDEVICE float2 make_float2(size_t2 st)
   {
-    return make_float2( (float) st.x, (float) st.y );
+    float2 ret;
+    ret.x = (float)st.x;
+    ret.y = (float)st.y;
+    return ret;
   }
 
 #else

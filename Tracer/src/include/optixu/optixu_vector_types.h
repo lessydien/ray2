@@ -39,13 +39,15 @@
 #  endif
 
 #include "macrosim_types.h"
-#include "macrosim_functions.h"
 
 namespace optix {
 
 #endif /* #if defined (__cplusplus) */
 
-#include "vector_types.h"
+
+
+#include <vector_types.h>
+
 
 #if defined(__cplusplus)
 } /* end namespace optix */
@@ -60,15 +62,13 @@ namespace optix {
   using ::type##4;
 
 /* Some types didn't exist until CUDA 3.0.  CUDA_VERSION isn't defined while
-* building CUDA code, so we also need to check the CUDART_VERSION value. */
+ * building CUDA code, so we also need to check the CUDART_VERSION value. */
 #if (CUDA_VERSION >= 3000) || (CUDART_VERSION >= 3000)
 #define RT_DEFINE_HELPER2(type) RT_DEFINE_HELPER(type)
 #else
 #define RT_DEFINE_HELPER2(type) \
-  using ::make_##type##1; \
-  using ::make_##type##2; \
-  using ::make_##type##3; \
-  using ::make_##type##4; 
+  using ::type##1; \
+  using ::type##2;
 #endif
 
 namespace optix {
@@ -84,13 +84,10 @@ RT_DEFINE_HELPER(float)
 RT_DEFINE_HELPER2(longlong)
 RT_DEFINE_HELPER2(ulonglong)
 RT_DEFINE_HELPER2(double)
-
 using ::dim3;
-using ::double3x3;
-using ::make_double3x3;
-using ::double4x4;
-using ::make_double4x4;
 
+using ::double3x3;
+using ::double4x4;
 } /* end namespace optix */
 
 #undef RT_DEFINE_HELPER

@@ -55,6 +55,7 @@ typedef struct IDirect3DResource9 IDirect3DResource9;
 #endif
 
   RTresult RTAPI rtContextSetD3D9Device                ( RTcontext context, IDirect3DDevice9* device );
+  RTresult RTAPI rtDeviceGetD3D9Device                 ( int* device, const char* pszAdapterName );
   RTresult RTAPI rtBufferCreateFromD3D9Resource        ( RTcontext context, unsigned int bufferdesc, IDirect3DResource9* resource,  RTbuffer* buffer );
   RTresult RTAPI rtTextureSamplerCreateFromD3D9Resource( RTcontext context, IDirect3DResource9* resource,  RTtexturesampler* textureSampler );  
   RTresult RTAPI rtBufferGetD3D9Resource               ( RTbuffer buffer, IDirect3DResource9** resource );

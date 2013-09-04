@@ -34,8 +34,8 @@
  * These need to be included first in order to make sure the CUDA vector types are defined
  * in the global namespace necessary to maintain backward compatibility.
  */
-#include "vector_types.h"
-#include "vector_functions.h"
+#include <vector_types.h>
+#include <vector_functions.h>
 
 /*
  * Any types that were defined in the global namespace in previous versions need to be
@@ -66,7 +66,6 @@ using optix::ushort;
 
 /* Functions that also exist on the system */
 using optix::copysignf;
-using optix::copy_sign;
 using optix::expf;
 using optix::floor;
 using optix::fmaxf;

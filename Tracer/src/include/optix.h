@@ -31,7 +31,7 @@
 #ifndef __optix_optix_h__
 #define __optix_optix_h__
 
-#define OPTIX_VERSION 2011 /* 2.1.1 (major =  OPTIX_VERSION/1000,       *
+#define OPTIX_VERSION 3001 /* 3.0.1 (major =  OPTIX_VERSION/1000,       *
                             *        minor = (OPTIX_VERSION%1000)/10,   *
                             *        micro =  OPTIX_VERSION%10          */
 

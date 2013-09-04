@@ -24,18 +24,90 @@
 
 #include "optix_datatypes.h"
 #include "optix_defines.h"
-#include "optix_sizet.h"
+#include "../optix_sizet.h"
 
 struct rtObject;
 
 namespace optix {
 
-  __noinline__ __device__ void
-    rt_undefined_use(int)
+#if ((CUDA_VERSION >= 4010) || (CUDART_VERSION >= 4010)) && __CUDA_ARCH__ >= 200
+  __forceinline__
+#else
+  __noinline__
+#endif
+  __device__ void
+  rt_undefined_use(int)
+  {
+  }
+  
+#if ((CUDA_VERSION >= 4010) || (CUDART_VERSION >= 4010)) && __CUDA_ARCH__ >= 200
+  __forceinline__
+#else
+  __noinline__
+#endif
+  __device__ void
+  rt_undefined_use64(unsigned long long)
   {
   }
 
-  inline __device__ void*
+
+
+  inline __device__ float4
+    rt_texture_get_f_id(int tex, int dim, float x, float y, float z, float w)
+  {
+    float f0, f1, f2, f3;
+
+    asm volatile("call (%0, %1, %2, %3), _rt_texture_get_f_id, (%4, %5, %6, %7, %8, %9);" :
+                 "=f"(f0), "=f"(f1), "=f"(f2), "=f"(f3) :
+                 "r"(tex), "r"(dim), "f"(x), "f"(y), "f"(z), "f"(w) :
+                 );
+
+    rt_undefined_use((int)f0);
+    rt_undefined_use((int)f1);
+    rt_undefined_use((int)f2);
+    rt_undefined_use((int)f3);
+
+    return make_float4(f0, f1, f2, f3);
+  }
+
+  inline __device__ int4
+    rt_texture_get_i_id(int tex, int dim, float x, float y, float z, float w)
+  {
+    int i0, i1, i2, i3;
+
+    asm volatile("call (%0, %1, %2, %3), _rt_texture_get_i_id, (%4, %5, %6, %7, %8, %9);" :
+                 "=r"(i0), "=r"(i1), "=r"(i2), "=r"(i3) :
+                 "r"(tex), "r"(dim), "f"(x), "f"(y), "f"(z), "f"(w) :
+                 );
+
+    rt_undefined_use((int)i0);
+    rt_undefined_use((int)i1);
+    rt_undefined_use((int)i2);
+    rt_undefined_use((int)i3);
+
+    return make_int4(i0, i1, i2, i3);
+  }
+
+  inline __device__ uint4
+    rt_texture_get_u_id(int tex, int dim, float x, float y, float z, float w)
+  {
+    unsigned int u0, u1, u2, u3;
+
+    asm volatile("call (%0, %1, %2, %3), _rt_texture_get_u_id, (%4, %5, %6, %7, %8, %9);" :
+                 "=r"(u0), "=r"(u1), "=r"(u2), "=r"(u3) :
+                 "r"(tex), "r"(dim), "f"(x), "f"(y), "f"(z), "f"(w) :
+                 );
+
+    rt_undefined_use((int)u0);
+    rt_undefined_use((int)u1);
+    rt_undefined_use((int)u2);
+    rt_undefined_use((int)u3);
+
+    return make_uint4(u0, u1, u2, u3);
+  }
+
+ 
+  static inline __device__ void*
     rt_buffer_get(void* buffer, unsigned int dim, unsigned int element_size,
                   size_t i0_in, size_t i1_in, size_t i2_in, size_t i3_in)
   {
@@ -50,15 +122,16 @@ namespace optix {
                  OPTIX_ASM_PTR(buffer), "r"(dim), "r"(element_size),
                  OPTIX_ASM_SIZE_T(i0), OPTIX_ASM_SIZE_T(i1), OPTIX_ASM_SIZE_T(i2), OPTIX_ASM_SIZE_T(i3) :
                  );
+
 #if defined(__x86_64) || defined(AMD64) || defined(_M_AMD64)
-    rt_undefined_use((int)(reinterpret_cast<long long>(tmp)));
+    rt_undefined_use64((unsigned long long)tmp);
 #else
     rt_undefined_use((int)tmp);
 #endif
     return tmp;
   }
 
-  inline __device__ size_t4
+  static __forceinline__ __device__ size_t4
     rt_buffer_get_size(const void* buffer, unsigned int dim, unsigned int element_size)
   {
     optix::optix_size_t d0, d1, d2, d3;
@@ -69,14 +142,15 @@ namespace optix {
     return make_size_t4(d0, d1, d2, d3);
   }
 
-  inline __device__ void rt_trace(unsigned int group,
-                                  float3 origin, float3 direction, unsigned int ray_type, float tmin, float tmax,
-                                  void* prd, unsigned int prd_size)
+  static __forceinline__ __device__ void
+    rt_trace(unsigned int group,
+             float3 origin, float3 direction, unsigned int ray_type, float tmin, float tmax,
+             void* prd, unsigned int prd_size)
   {
     float ox = origin.x, oy = origin.y, oz = origin.z;
     float dx = direction.x, dy = direction.y, dz = direction.z;
 #if defined(__x86_64) || defined(AMD64) || defined(_M_AMD64)
-    rt_undefined_use((int)(reinterpret_cast<long long>(prd)));
+    rt_undefined_use64((unsigned long long)prd);
 #else
     rt_undefined_use((int)prd);
 #endif
@@ -87,7 +161,27 @@ namespace optix {
                  );
   }
 
-  inline __device__ bool rt_potential_intersection(float t)
+  static __forceinline__ __device__ unsigned int rt_pickle_pointer(void *p)
+  {
+    unsigned int ret;
+    asm volatile("call (%0), _rt_pickle_pointer"OPTIX_BITNESS_SUFFIX", (%1);" :
+    "=r"(ret) :
+    OPTIX_ASM_PTR(p):
+    );
+    return ret;    
+  }
+
+  static __forceinline__ __device__ void * rt_unpickle_pointer(unsigned int p)
+  {
+    void * ret;
+    asm volatile("call (%0), _rt_unpickle_pointer"OPTIX_BITNESS_SUFFIX", (%1);" :
+    "="OPTIX_ASM_PTR(ret) :
+    "r"(p):
+    );
+    return ret;    
+  }
+
+  static __forceinline__ __device__ bool rt_potential_intersection(float t)
   {
     int ret;
     asm volatile("call (%0), _rt_potential_intersection, (%1);" :
@@ -97,7 +191,7 @@ namespace optix {
     return ret;
   }
 
-  inline __device__ bool rt_report_intersection(unsigned int matlIndex)
+  static __forceinline__ __device__ bool rt_report_intersection(unsigned int matlIndex)
   {
     int ret;
     asm volatile("call (%0), _rt_report_intersection, (%1);" :
@@ -107,17 +201,17 @@ namespace optix {
     return ret;
   }
 
-  inline __device__ void rt_ignore_intersection()
+  static __forceinline__ __device__ void rt_ignore_intersection()
   {
     asm volatile("call _rt_ignore_intersection, ();");
   }
 
-  inline __device__ void rt_terminate_ray()
+  static __forceinline__ __device__ void rt_terminate_ray()
   {
     asm volatile("call _rt_terminate_ray, ();");
   }
 
-  inline __device__ void rt_intersect_child(unsigned int index)
+  static __forceinline__ __device__ void rt_intersect_child(unsigned int index)
   {
     asm volatile("call _rt_intersect_child, (%0);" :
                  /* no return value */ :
@@ -125,7 +219,7 @@ namespace optix {
                  );
   }
 
-  inline __device__ float3 rt_transform_point( RTtransformkind kind, const float3& p )
+  static __forceinline__ __device__ float3 rt_transform_point( RTtransformkind kind, const float3& p )
   {
 
     float f0, f1, f2, f3;
@@ -141,7 +235,7 @@ namespace optix {
 
   }
 
-  inline __device__ float3 rt_transform_vector( RTtransformkind kind, const float3& v )
+  static __forceinline__ __device__ float3 rt_transform_vector( RTtransformkind kind, const float3& v )
   {
     float f0, f1, f2, f3;
     asm volatile("call (%0, %1, %2, %3), _rt_transform_tuple, (%4, %5, %6, %7, %8);" :
@@ -156,7 +250,7 @@ namespace optix {
     return make_float3( f0, f1, f2 );
   }
 
-  inline __device__ float3 rt_transform_normal( RTtransformkind kind, const float3& n )
+  static __forceinline__ __device__ float3 rt_transform_normal( RTtransformkind kind, const float3& n )
   {
     float f0, f1, f2, f3;
     asm volatile("call (%0, %1, %2, %3), _rt_transform_tuple, (%4, %5, %6, %7, %8);" :
@@ -171,7 +265,7 @@ namespace optix {
     return make_float3( f0, f1, f2 );
   }
 
-  inline __device__ void rt_get_transform( RTtransformkind kind, float matrix[16] )
+  static __forceinline__ __device__ void rt_get_transform( RTtransformkind kind, float matrix[16] )
   {
     asm volatile("call (%0, %1, %2, %3, %4, %5, %6, %7, %8, %9, %10, %11, %12, %13, %14, %15), _rt_get_transform, (%16);" :
                  "=f"(matrix[ 0]), "=f"(matrix[ 1]), "=f"(matrix[ 2]), "=f"(matrix[ 3]),
@@ -182,7 +276,7 @@ namespace optix {
                  );
   }
 
-  inline __device__ void rt_throw( unsigned int code )
+  static __forceinline__ __device__ void rt_throw( unsigned int code )
   {
     asm volatile("call _rt_throw, (%0);" :
                  /* no return value */ :
@@ -190,7 +284,7 @@ namespace optix {
                  );
   }
   
-  inline __device__ unsigned int rt_get_exception_code()
+  static __forceinline__ __device__ unsigned int rt_get_exception_code()
   {
     unsigned int result;
     asm volatile("call (%0), _rt_get_exception_code, ();" :
@@ -216,7 +310,7 @@ namespace optix {
   template<>           struct rt_print_t<float>              { static const int desc = 2; };
   template<>           struct rt_print_t<double>             { static const int desc = 3; };
 
-  inline __device__ int rt_print_strlen( const char* s )
+  static __forceinline__ __device__ int rt_print_strlen( const char* s )
   {
     const char* p = s;
     while( *p ) ++p;
@@ -224,7 +318,7 @@ namespace optix {
   }
 
   template<typename T>
-  inline __device__ int rt_print_arg( T arg, int off )
+  static __forceinline__ __device__ int rt_print_arg( T arg, int off )
   {
     const int sz = max( 4, (int)sizeof( arg ) );
     const int typedesc = rt_print_t<T>::desc;
@@ -261,7 +355,7 @@ namespace optix {
     return sz;
   }
 
-  inline __device__ int rt_print_active()
+  static __forceinline__ __device__ int rt_print_active()
   {
     int ret;
     asm volatile("call (%0), _rt_print_active, ();" :
@@ -271,7 +365,7 @@ namespace optix {
     return ret;
   }
 
-  inline __device__ int rt_print_start( const char* fmt, int sz )
+  static __forceinline__ __device__ int rt_print_start( const char* fmt, int sz )
   {
     int ret;
     asm volatile("call (%0), _rt_print_start"OPTIX_BITNESS_SUFFIX", (%1, %2);" :

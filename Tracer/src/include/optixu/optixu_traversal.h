@@ -23,7 +23,7 @@
 #ifndef _optixu_optux_traversal_h_
 #define _optixu_optux_traversal_h_
 
-#include <optix.h>
+#include "../optix.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -41,7 +41,10 @@ extern "C" {
   /** 
    * \brief The type of ray query to be performed.
    *
-   * See OptiX Programming Guide for explanation of any vs. closest hit queries.
+   * See OptiX Programming Guide for explanation of any vs. closest hit queries.  Note
+   * that in the case of RTU_QUERY_TYPE_ANY_HIT, the prim_id and t intersection values in
+   * RTUtraversalresult will correspond to the first successful intersection. These values
+   * may not be indicative of the closest intersection, only that there was at least one.
    */
   typedef enum { 
     RTU_QUERY_TYPE_ANY_HIT = 0,  /**< Perform any hit calculation     */

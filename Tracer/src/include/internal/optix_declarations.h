@@ -97,6 +97,7 @@ typedef enum
   RT_OBJECTTYPE_BUFFER,
   RT_OBJECTTYPE_TEXTURE_SAMPLER,
   RT_OBJECTTYPE_OBJECT,
+  /* RT_OBJECTTYPE_PROGRAM - see below for entry */
 
   RT_OBJECTTYPE_MATRIX_FLOAT2x2,
   RT_OBJECTTYPE_MATRIX_FLOAT2x3,
@@ -120,13 +121,17 @@ typedef enum
   RT_OBJECTTYPE_UNSIGNED_INT2,
   RT_OBJECTTYPE_UNSIGNED_INT3,
   RT_OBJECTTYPE_UNSIGNED_INT4,
-  RT_OBJECTTYPE_USER
+  RT_OBJECTTYPE_USER,
+
+  RT_OBJECTTYPE_PROGRAM  /* Added in OptiX 3.0 */
 } RTobjecttype;
 
 typedef enum
 {
   RT_WRAP_REPEAT,
-  RT_WRAP_CLAMP_TO_EDGE
+  RT_WRAP_CLAMP_TO_EDGE,
+  RT_WRAP_MIRROR,
+  RT_WRAP_CLAMP_TO_BORDER
 } RTwrapmode;
 
 typedef enum
@@ -165,11 +170,13 @@ typedef enum
 
 typedef enum
 {
-  RT_BUFFER_GPU_LOCAL            = 0x4
+  RT_BUFFER_GPU_LOCAL            = 0x4,
+  RT_BUFFER_COPY_ON_DIRTY        = 0x8
 } RTbufferflag;
 
 typedef enum
 {
+  RT_EXCEPTION_INDEX_OUT_OF_BOUNDS          = 0x3FB,
   RT_EXCEPTION_STACK_OVERFLOW               = 0x3FC,
   RT_EXCEPTION_BUFFER_INDEX_OUT_OF_BOUNDS   = 0x3FD,
   RT_EXCEPTION_INVALID_RAY                  = 0x3FE,
@@ -182,6 +189,8 @@ typedef enum
 typedef enum
 {
   RT_SUCCESS                           = 0,
+
+  RT_TIMEOUT_CALLBACK                  = 0x100,
 
   RT_ERROR_INVALID_CONTEXT             = 0x500,
   RT_ERROR_INVALID_VALUE               = 0x501,
@@ -219,13 +228,19 @@ typedef enum
   RT_DEVICE_ATTRIBUTE_MAX_HARDWARE_TEXTURE_COUNT,
   RT_DEVICE_ATTRIBUTE_NAME,
   RT_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY,
-  RT_DEVICE_ATTRIBUTE_TOTAL_MEMORY
+  RT_DEVICE_ATTRIBUTE_TOTAL_MEMORY,
+  RT_DEVICE_ATTRIBUTE_TCC_DRIVER,                 /* sizeof(int) */
+  RT_DEVICE_ATTRIBUTE_CUDA_DEVICE_ORDINAL         /* sizeof(int) */
 } RTdeviceattribute;
 
 typedef enum
 {
-  RT_CONTEXT_ATTRIBUTE_MAX_TEXTURE_COUNT,
-  RT_CONTEXT_ATTRIBUTE_AVAILABLE_DEVICE_MEMORY = 0x10000000
+  RT_CONTEXT_ATTRIBUTE_MAX_TEXTURE_COUNT,                    /* sizeof(int)    */
+  RT_CONTEXT_ATTRIBUTE_CPU_NUM_THREADS,                      /* sizeof(int)    */
+  RT_CONTEXT_ATTRIBUTE_USED_HOST_MEMORY,                     /* sizeof(RTsize) */
+  RT_CONTEXT_ATTRIBUTE_GPU_PAGING_ACTIVE,                    /* sizeof(int)    */
+  RT_CONTEXT_ATTRIBUTE_GPU_PAGING_FORCED_OFF,                /* sizeof(int)    */
+  RT_CONTEXT_ATTRIBUTE_AVAILABLE_DEVICE_MEMORY = 0x10000000  /* sizeof(RTsize) */
 } RTcontextattribute;
 
 

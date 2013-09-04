@@ -49,6 +49,7 @@ void myUtilHandleErrorNoExit(RTcontext context, RTresult code, const char* file,
   char s[2048];
   rtContextGetErrorString(context, code, &message);
   sprintf(s, "%s\n(%s:%d)", message, file, line);
+  s[2047]='\0';
   myUtilReportError( s );
 }
 
@@ -56,6 +57,7 @@ void myUtilHandleErrorNoContext(RTresult code, const char* file, int line)
 {
   char s[2048];
   sprintf(s, "Code: %d\n(%s:%d)", code, file, line);
+  s[2047]='\0';
   myUtilReportError( s );
  // exit(1);
 }

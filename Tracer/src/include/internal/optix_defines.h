@@ -52,9 +52,10 @@ namespace rti_internal_typeinfo {
 }
 
 #if defined(__x86_64) || defined(AMD64) || defined(_M_AMD64)
-#define OPTIX_ASM_PTR        "l"
-#define OPTIX_ASM_SIZE_T     "l"
-#define OPTIX_BITNESS_SUFFIX "_64"
+#define OPTIX_ASM_PTR          "l"
+#define OPTIX_ASM_SIZE_T       "l"
+#define OPTIX_ASM_PTR_SIZE_STR "64"
+#define OPTIX_BITNESS_SUFFIX   "_64"
 namespace optix {
 #if defined( _WIN64 )
   typedef unsigned __int64   optix_size_t;
@@ -63,9 +64,10 @@ namespace optix {
 #endif
 }
 #else
-#define OPTIX_ASM_PTR        "r"
-#define OPTIX_ASM_SIZE_T     "r"
-#define OPTIX_BITNESS_SUFFIX ""
+#define OPTIX_ASM_PTR          "r"
+#define OPTIX_ASM_SIZE_T       "r"
+#define OPTIX_ASM_PTR_SIZE_STR "32"
+#define OPTIX_BITNESS_SUFFIX   ""
 namespace optix {
   typedef size_t optix_size_t;
 }

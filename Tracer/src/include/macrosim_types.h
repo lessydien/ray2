@@ -82,20 +82,23 @@ struct __device_builtin__ __align__(8) tag         \
 
 #endif /* !__CUDACC__ && !__CUDABE__ && _WIN32 && !_WIN64 */
 
-#if (NPP_VERSION_MAJOR * 1000 + NPP_VERSION_MINOR * 100 + NPP_VERSION_BUILD < 4200)
+/* Some types didn't exist until CUDA 3.0.  CUDA_VERSION isn't defined while
+* building CUDA code, so we also need to check the CUDART_VERSION value. */
+//#if (CUDA_VERSION < 3000) //|| (CUDART_VERSION < 3000)
+#if (NPP_VERSION_MAJOR * 1000 + NPP_VERSION_MINOR * 100 + NPP_VERSION_BUILD < 4000)
     
-     /*DEVICE_BUILTIN*/
+     *DEVICE_BUILTIN*/
      struct double1
      {
        double x;
        __cuda_assign_operators(double1)
      };
 
-     /*DEVICE_BUILTIN*/
+     *DEVICE_BUILTIN*/
      typedef struct double1 double1;
 
 
-     /*DEVICE_BUILTIN*/
+     *DEVICE_BUILTIN*/
      struct __builtin_align__(16) double2
      {
        double x, y;
@@ -103,27 +106,27 @@ struct __device_builtin__ __align__(8) tag         \
  
      };
 
-     /*DEVICE_BUILTIN*/
+     *DEVICE_BUILTIN*/
      typedef struct double2 double2;
 
-     /*DEVICE_BUILTIN*/
+     *DEVICE_BUILTIN*/
      struct double3
      {
        double x, y, z;
        __cuda_assign_operators(double3)
      };
 
-     /*DEVICE_BUILTIN*/
+     *DEVICE_BUILTIN*/
      typedef struct double3 double3;
 
 
-     /*DEVICE_BUILTIN*/
+     *DEVICE_BUILTIN*/
      struct __builtin_align__(16) double4
      {
        double x, y, z, w;
        __cuda_assign_operators(double4)
      };
-     /*DEVICE_BUILTIN*/
+     *DEVICE_BUILTIN*/
      typedef struct double4 double4;
  #endif
 
@@ -147,14 +150,12 @@ struct double3x3
 *                                                                              *
 *******************************************************************************/
 
-
-
-
-
 /*DEVICE_BUILTIN*/
 typedef struct double4x4 double4x4;
 /*DEVICE_BUILTIN*/
 typedef struct double3x3 double3x3;
+
+typedef struct double3x3 blubb;
 
 /*******************************************************************************
 *                                                                              *
@@ -162,12 +163,8 @@ typedef struct double3x3 double3x3;
 *                                                                              *
 *******************************************************************************/
 
-
 #undef  __cuda_assign_operators
 #undef  __cuda_builtin_vector_align8
-
-
-
 
 /*******************************************************************************
 *                                                                              *

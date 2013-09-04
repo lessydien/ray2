@@ -22,12 +22,13 @@
 #ifndef __optix_optix_datatypes_h__
 #define __optix_optix_datatypes_h__
 
-#include "optix_declarations.h"         // for RT_HOSTDEVICE
-#include <optixu/optixu_vector_types.h> // for float3 
+#include <host_defines.h>               /* for __inline__ */
+#include "../optixu/optixu_vector_types.h"        /* for float3 */
+#include "optix_declarations.h"         /* for RT_HOSTDEVICE */
 
 #ifdef __cplusplus
 namespace optix {
-#endif // __cplusplus
+#endif
 
 #define RT_DEFAULT_MAX 1.e27f
 
@@ -48,7 +49,7 @@ struct Ray {
   __inline__ RT_HOSTDEVICE
   Ray( float3 origin_, float3 direction_, unsigned int ray_type_, float tmin_, float tmax_ = RT_DEFAULT_MAX )
     :origin(origin_),direction(direction_),ray_type(ray_type_),tmin(tmin_),tmax(tmax_){}
-#endif // __cplusplus
+#endif
 
   float3 origin;
   float3 direction;
@@ -71,6 +72,6 @@ Ray make_Ray( float3 origin, float3 direction, unsigned int ray_type, float tmin
 
 #ifdef __cplusplus
 } // namespace
-#endif // __cplusplus
+#endif
 
 #endif /* __optix_optix_datatypes_h__ */

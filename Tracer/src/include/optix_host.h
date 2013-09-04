@@ -70,6 +70,16 @@ typedef struct RTtransform_api          * RTtransform;
 typedef struct RTvariable_api           * RTvariable;
 typedef void                            * RTobject;
 
+/************************************
+ **
+ **    Callback Function Types
+ **
+ ***********************************/
+
+/* Callback signature for use with rtContextSetTimeoutCallback.
+ * Return 1 to ask for abort, 0 to continue. */
+typedef int (*RTtimeoutcallback)(void);
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -192,6 +202,7 @@ extern "C" {
 
   void RTAPI rtContextGetErrorString(RTcontext context, RTresult code, const char** return_string);
 
+  RTresult RTAPI rtContextSetAttribute(RTcontext context, RTcontextattribute attrib, RTsize size, void* p);
   RTresult RTAPI rtContextGetAttribute(RTcontext context, RTcontextattribute attrib, RTsize size, void* p);
 
   RTresult RTAPI rtContextSetDevices  (RTcontext context, unsigned int count, const int* devices);
@@ -200,6 +211,8 @@ extern "C" {
 
   RTresult RTAPI rtContextSetStackSize(RTcontext context, RTsize  stack_size_bytes);
   RTresult RTAPI rtContextGetStackSize(RTcontext context, RTsize* stack_size_bytes);
+
+  RTresult RTAPI rtContextSetTimeoutCallback (RTcontext context, RTtimeoutcallback callback, double min_polling_seconds);
 
   RTresult RTAPI rtContextSetEntryPointCount(RTcontext context, unsigned int  num_entry_points);
   RTresult RTAPI rtContextGetEntryPointCount(RTcontext context, unsigned int* num_entry_points);
@@ -478,6 +491,8 @@ extern "C" {
 
   RTresult RTAPI rtTextureSamplerSetBuffer(RTtexturesampler texturesampler, unsigned int texture_array_idx, unsigned int mip_level, RTbuffer  buffer);
   RTresult RTAPI rtTextureSamplerGetBuffer(RTtexturesampler texturesampler, unsigned int texture_array_idx, unsigned int mip_level, RTbuffer* buffer);
+
+  RTresult RTAPI rtTextureSamplerGetId(RTtexturesampler texturesampler, int *texture_id);
 
 /************************************
  **

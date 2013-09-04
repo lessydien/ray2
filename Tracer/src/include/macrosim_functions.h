@@ -50,25 +50,26 @@
 *                                                                              *
 *                                                                              *
 *******************************************************************************/
+/* Some types didn't exist until CUDA 3.0.  CUDA_VERSION isn't defined while
+* building CUDA code, so we also need to check the CUDART_VERSION value. */
+//#if (CUDA_VERSION < 3000) //|| (CUDART_VERSION < 3000)
+#if (NPP_VERSION_MAJOR * 1000 + NPP_VERSION_MINOR * 100 + NPP_VERSION_BUILD < 4000)
+ static __inline__ __host__ __device__ double1 make_double1(double x)
+ {
+   double1 t; t.x = x; return t;
+ }
 
+ static __inline__ __host__ __device__ double2 make_double2(double x, double y)
+ {
+   double2 t; t.x = x; t.y = y; return t;
+ }
 
+ static __inline__ __host__ __device__ double3 make_double3(double x, double y, double z)
+ {
+   double3 t; t.x = x; t.y = y; t.z = z; return t;
+ }
 
-
-
-// static __inline__ __host__ __device__ double1 make_double1(double x)
-// {
-  // double1 t; t.x = x; return t;
-// }
-
-// static __inline__ __host__ __device__ double2 make_double2(double x, double y)
-// {
-  // double2 t; t.x = x; t.y = y; return t;
-// }
-
-// static __inline__ __host__ __device__ double3 make_double3(double x, double y, double z)
-// {
-  // double3 t; t.x = x; t.y = y; t.z = z; return t;
-// }
+#endif
 
 static __inline__ __host__ __device__ double4x4 make_double4x4(double s11, double s12, double s13, double s14, double s21, double s22, double s23, double s24, double s31, double s32, double s33, double s34, double s41, double s42, double s43, double s44)
 {

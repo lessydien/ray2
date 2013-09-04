@@ -392,6 +392,7 @@ IF(CUDA_FOUND)
 
     # copy dlls in itoms lib folder
     file(GLOB dlls "${CMAKE_CURRENT_SOURCE_DIR}/Tracer/bin${bit_dest}/*.dll")
+	message(STATUS ${dlls})
     POST_BUILD_COPY_FILE_TO_LIB_FOLDER(${target_name} dlls)
 	POST_BUILD_COPY_FILE_TO_LIB_FOLDER(${target_name} GLEW_RUNTIME_LIBRARIES)
 		

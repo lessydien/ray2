@@ -430,7 +430,7 @@ OPTIX_add_sample_executable( ITO-MacroSim
   src/rayGeneration.cu
   src/rayGeneration_PathTracing.cu
   src/differentialRayTracing/rayGenerationDiffRayField.cu
-  src/differentialRayTracing/rayGenerationDiffRayField_Freeform.cu
+  #src/differentialRayTracing/rayGenerationDiffRayField_Freeform.cu
   src/rayGenerationDiffRayField_RayAiming_Holo.cu
   src/rayGenerationDiffRayField_RayAiming_Holo_test.cu
   src/rayGenerationDiffRayField_RayAiming.cu
