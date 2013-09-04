@@ -65,14 +65,43 @@ void TracerThread::init(QString& scene, ito::DataObject* field, ConsoleStream *o
 		this->m_params.mode=SIM_GEOMRAYS_NONSEQ;
 		break;
 	}
-	string l_glassString=guiParams.glassCatalog.toAscii();
+
+    QString glassFile = QDir::toNativeSeparators( guiParams.glassCatalog );
+    glassFile.replace("//","/");
+    strcpy( &(m_params.glassFilePath[0]), glassFile.toAscii().data() );
+
+    QString outFilePath = QDir::toNativeSeparators( guiParams.outputFilePath );
+    outFilePath.replace("//","/");
+    outFilePath.replace( QDir::separator(), "\\" );
+    if (outFilePath.endsWith( "\\" ))
+    {
+        outFilePath = outFilePath.mid(0, outFilePath.length() - 1);
+    }
+    strcpy(&(m_params.outputFilesPath[0]), outFilePath.toAscii().data() );
+
+    QString inFilePath = QDir::toNativeSeparators( guiParams.inputFilePath );
+    inFilePath.replace("//","/");
+    inFilePath.replace( QDir::separator(), "\\" );
+    if (inFilePath.endsWith( "\\" ))
+    {
+        inFilePath = inFilePath.mid(0, inFilePath.length() - 1);
+    }
+    strcpy(&(m_params.inputFilesPath[0]), inFilePath.toAscii().data() );
+
+	/*string l_glassString=guiParams.glassCatalog.toAscii();
 	strcpy(&(this->m_params.glassFilePath[0]), l_glassString.c_str());
 	string l_outFilePathString=guiParams.outputFilePath.toAscii();
 	strcpy(&(this->m_params.outputFilesPath[0]), l_outFilePathString.c_str());
 	string l_inFilePathString=guiParams.inputFilePath.toAscii();
-	strcpy(&(this->m_params.inputFilesPath[0]), l_inFilePathString.c_str());
-	string l_path_to_ptx=guiParams.path_to_ptx.toAscii();
-	strcpy(&(this->m_params.path_to_ptx[0]), l_path_to_ptx.c_str());
+	strcpy(&(this->m_params.inputFilesPath[0]), l_inFilePathString.c_str());*/
+    QString ptxPath = QDir::toNativeSeparators( guiParams.path_to_ptx );
+    ptxPath.replace("//","/");
+    ptxPath.replace( QDir::separator(), "\\" );
+    if (ptxPath.endsWith( "\\" ))
+    {
+        ptxPath = ptxPath.mid(0, ptxPath.length() - 1);
+    }
+	strcpy(&(m_params.path_to_ptx[0]), ptxPath.toAscii().data() );
 }
 
 //void TracerThread::run()
