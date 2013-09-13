@@ -1668,6 +1668,7 @@ fieldError GeometricRayField::convert2Intensity(Field* imagePtr, detParams &oDet
 		return FIELD_ERR;
 	}
 		
+
 	/************************************************************************************************************************** 
 	* the idea in calculating the flux per pixel is as following:
 	* first we create unit vectors along global coordinate axis. 
@@ -1677,39 +1678,22 @@ fieldError GeometricRayField::convert2Intensity(Field* imagePtr, detParams &oDet
 	* floor() of the coefficients of these vectors gives the indices we were looking for                                      
 	****************************************************************************************************************************/
 	double3 scale=l_IntensityImagePtr->getParamsPtr()->scale;
-	double4x4 MTransform=oDetParams.MTransform;
 	long3 nrPixels=l_IntensityImagePtr->getParamsPtr()->nrPixels;
-	// save the offset from the transformation matrix
-	double3 offset=make_double3(MTransform.m14, MTransform.m24, MTransform.m34);
-	// set offset in transformation matrix to zero for rotation of the scaled unit vectors
-	MTransform.m14=0;
-	MTransform.m24=0;
-	MTransform.m34=0;
-
-	// test tilt and MTransform
-	double3 r0=make_double3(sqrt(0.5),sqrt(0.5),0);
-	double3 r1=MTransform*r0;
-	rotateRay(&r0, oDetParams.tilt);
 
 	// create unit vectors
 	double3 t_ez = make_double3(0,0,1);
 	double3 t_ey=make_double3(0,1,0);
 	double3 t_ex=make_double3(1,0,0);
 	// transform unit vectors into local coordinate system of IntensityField
-	t_ez=MTransform*t_ez;
-	t_ey=MTransform*t_ey;
-	t_ex=MTransform*t_ex;
+	rotateRay(&t_ez,oDetParams.tilt);
+	rotateRay(&t_ey,oDetParams.tilt);
+	rotateRay(&t_ex,oDetParams.tilt);
 
 	// the origin of the IntensityField is at the outer edge of the detector rather than at the origin
-	offset=offset-oDetParams.apertureHalfWidth.x*t_ex;//+0.5*l_IntensityImagePtr->getParamsPtr()->scale*t_ex;
-	offset=offset-oDetParams.apertureHalfWidth.y*t_ey;//+0.5*l_IntensityImagePtr->getParamsPtr()->scale*t_ey;
+	double3 offset;
+	offset=oDetParams.root-oDetParams.apertureHalfWidth.x*t_ex+0.5*l_IntensityImagePtr->getParamsPtr()->scale*t_ex;
+	offset=offset-oDetParams.apertureHalfWidth.y*t_ey+0.5*l_IntensityImagePtr->getParamsPtr()->scale*t_ey;
 	offset=offset-0.005*t_ez;//+0.5*l_PhaseSpacePtr->getParamsPtr()->scale*t_ez;
-
-	// we don't scale the vectors here anymore in order to ensure a good condition number of the matrix. Instead we scale the indices later
-	//// scale unit vectors
-	//t_ez = t_ez*scale.z; 
-	//t_ey = t_ey*scale.y; 
-	//t_ex = t_ex*scale.x; 
 
 	short solutionIndex;
 
@@ -1734,14 +1718,19 @@ fieldError GeometricRayField::convert2Intensity(Field* imagePtr, detParams &oDet
 			for (unsigned long long jx=0; jx<this->rayParamsPtr->GPUSubset_width; jx++)
 			{
 				unsigned long long rayListIndex=jx+jy*GPU_SUBSET_WIDTH_MAX;
-				posMinOffset=this->rayList[rayListIndex].position-offset;
-				indexFloat=MatrixInv*posMinOffset;
-				// subtract half a pixel (0.5*scale.x). This way the centre of our pixels do not lie on the edge of the aperture but rather half a pixel inside...
-				// then round to nearest neighbour
-				//index.x=floor((indexFloat.x-0.5*scale.x)/scale.x+0.5);
-				index.x=floor((indexFloat.x)/scale.x);
-				index.y=floor((indexFloat.y)/scale.y);
-				index.z=floor((indexFloat.z)/scale.z);
+				// transform to local coordinate system
+				double3 tmpPos=this->rayList[rayListIndex].position-offset;
+				rotateRayInv(&tmpPos,oDetParams.tilt);
+
+				//
+				//posMinOffset=this->rayList[rayListIndex].position-offset;
+				//indexFloat=MatrixInv*posMinOffset;
+				//// subtract half a pixel (0.5*scale.x). This way the centre of our pixels do not lie on the edge of the aperture but rather half a pixel inside...
+				//// then round to nearest neighbour
+				////index.x=floor((indexFloat.x-0.5*scale.x)/scale.x+0.5);
+				index.x=floor((tmpPos.x)/scale.x);
+				index.y=floor((tmpPos.y)/scale.y);
+				index.z=floor((tmpPos.z)/scale.z);
 				
 				// use this ray only if it is inside our Intensity Field. Otherwise ignore it...
 				if ( ( (index.x<nrPixels.x)&&(index.x>=0) ) && ( (index.y<nrPixels.y)&&(index.y>=0) ) && ( (index.z<nrPixels.z)&&(index.z>=0) ) )
@@ -1795,16 +1784,21 @@ fieldError GeometricRayField::convert2Intensity(Field* imagePtr, detParams &oDet
 			{
 				for (unsigned long long jx=0; jx<this->rayParamsPtr->GPUSubset_width; jx++)
 				{
+
 					unsigned long long rayListIndex=jx+jy*GPU_SUBSET_WIDTH_MAX;
+					// transform to local coordinate system
+					double3 tmpPos=this->rayList[rayListIndex].position-offset;
+					rotateRayInv(&tmpPos,oDetParams.tilt);
+
 					rayStruct rayTest=this->rayList[rayListIndex];
-					posMinOffset=this->rayList[rayListIndex].position-offset;
-					indexFloat=MatrixInv*posMinOffset;
+					//posMinOffset=this->rayList[rayListIndex].position-offset;
+					//indexFloat=MatrixInv*posMinOffset;
 					// subtract half a pixel (0.5*scale.x). This way the centre of our pixels do not lie on the edge of the aperture but rather half a pixel inside...
 					// then round to nearest neighbour
 					//index.x=floor((indexFloat.x-0.5*scale.x)/scale.x+0.5);
-					index.x=floor((indexFloat.x)/scale.x);
-					index.y=floor((indexFloat.y)/scale.y);
-					index.z=floor((indexFloat.z)/scale.z);
+					index.x=floor((tmpPos.x)/scale.x);
+					index.y=floor((tmpPos.y)/scale.y);
+					index.z=floor((tmpPos.z)/scale.z);
 					
 					// use this ray only if it is inside our Intensity Field. Otherwise ignore it...
 					if ( ( (index.x<nrPixels.x)&&(index.x>=0) ) && ( (index.y<nrPixels.y)&&(index.y>=0) ) && ( (index.z<nrPixels.z)&&(index.z>=0) ) )
