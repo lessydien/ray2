@@ -192,31 +192,25 @@ detError Detector::parseXml(pugi::xml_node &det, vector<Detector*> &detVec)
 		std::cout << "error in Detector.parseXml(): root.z is not defined" << std::endl;
 		return DET_ERROR;
 	}
-	if (!l_parser.attrByNameToDouble(det, "tilt.y", this->getDetParamsPtr()->tilt.y))
+	double l_tilt;
+	if (!l_parser.attrByNameToDouble(det, "tilt.y", l_tilt))
 	{
 		std::cout << "error in Detector.parseXml(): tilt.y is not defined" << std::endl;
 		return DET_ERROR;
 	}
-	if (!l_parser.attrByNameToDouble(det, "tilt.z", this->getDetParamsPtr()->tilt.z))
+	this->getDetParamsPtr()->tilt.y=l_tilt/360*2*M_PI;
+	if (!l_parser.attrByNameToDouble(det, "tilt.z", l_tilt))
 	{
 		std::cout << "error in Detector.parseXml(): tilt.z is not defined" << std::endl;
 		return DET_ERROR;
 	}
-	if (!l_parser.attrByNameToDouble(det, "tilt.x", this->getDetParamsPtr()->tilt.x))
+	this->getDetParamsPtr()->tilt.z=l_tilt/360*2*M_PI;
+	if (!l_parser.attrByNameToDouble(det, "tilt.x", l_tilt))
 	{
 		std::cout << "error in Detector.parseXml(): tilt.x is not defined" << std::endl;
 		return DET_ERROR;
 	}
-	if (!l_parser.attrByNameToDouble(det, "tilt.y", this->getDetParamsPtr()->tilt.y))
-	{
-		std::cout << "error in Detector.parseXml(): tilt.y is not defined" << std::endl;
-		return DET_ERROR;
-	}
-	if (!l_parser.attrByNameToDouble(det, "tilt.z", this->getDetParamsPtr()->tilt.z))
-	{
-		std::cout << "error in Detector.parseXml(): tilt.z is not defined" << std::endl;
-		return DET_ERROR;
-	}
+	this->getDetParamsPtr()->tilt.x=l_tilt/360*2*M_PI;
 	if (!l_parser.attrByNameToDouble(det, "apertureHalfWidth.x", this->getDetParamsPtr()->apertureHalfWidth.x))
 	{
 		std::cout << "error in Detector.parseXml(): apertureHalfWidth.x is not defined" << std::endl;
