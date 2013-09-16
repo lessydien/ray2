@@ -26,6 +26,7 @@
 #define MATERIAL_HIT_H
 
 #include "macrosim_types.h"
+#include <vector_types.h>
 
 /* declare class */
 /**

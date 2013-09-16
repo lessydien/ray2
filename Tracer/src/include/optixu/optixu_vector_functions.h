@@ -24,8 +24,8 @@
 
 #include "optixu_vector_types.h"
 #include "macrosim_types.h"
-#include "macrosim_functions.h"
 
+#include "macrosim_functions.h"
 
 #if defined(__cplusplus)
 
@@ -40,10 +40,14 @@
 #    define RT_PULL_IN_VECTOR_FUNCTIONS
 #  endif
 
+/* The same holds for the additional macrosim functions */
+# if defined(__MACROSIM_FUNCTIONS_H__)
+#    define RT_PULL_MACROSIM_IN_VECTOR_FUNCTIONS
+# endif
+
 namespace optix {
 
 #endif /* #if defined (__cplusplus) */
-
 
 
 #include <vector_functions.h>
@@ -87,8 +91,43 @@ RT_DEFINE_HELPER2(longlong)
 RT_DEFINE_HELPER2(ulonglong)
 RT_DEFINE_HELPER2(double)
 
-using ::make_double3;
-using ::make_double4;
+#if (NPP_VERSION_MAJOR * 1000 + NPP_VERSION_MINOR * 100 + NPP_VERSION_BUILD >= 4000)
+    using ::make_double3;
+    using ::make_double4;
+#endif
+
+} /* end namespace optix */
+
+#undef RT_DEFINE_HELPER
+#undef RT_DEFINE_HELPER2
+
+#endif
+
+
+
+/* Pull the global namespace CUDA types in CUDA C into the optix namespace. */
+#if defined(RT_PULL_MACROSIM_IN_VECTOR_FUNCTIONS)
+#define RT_DEFINE_HELPER(type) \
+  using ::make_##type##1; \
+  using ::make_##type##2; \
+  using ::make_##type##3; \
+  using ::make_##type##4;
+
+/* Some types didn't exist until CUDA 3.0.  CUDA_VERSION isn't defined while
+ * building CUDA code, so we also need to check the CUDART_VERSION value. */
+#if (CUDA_VERSION >= 3000) || (CUDART_VERSION >= 3000)
+#define RT_DEFINE_HELPER2(type) RT_DEFINE_HELPER(type)
+#else
+#define RT_DEFINE_HELPER2(type) \
+  using ::make_##type##1; \
+  using ::make_##type##2;
+#endif
+
+namespace optix {
+    #if (NPP_VERSION_MAJOR * 1000 + NPP_VERSION_MINOR * 100 + NPP_VERSION_BUILD < 4000)
+        using ::make_double3;
+        using ::make_double4;
+    #endif
 using ::make_double3x3;
 using ::make_double4x4;
 } /* end namespace optix */

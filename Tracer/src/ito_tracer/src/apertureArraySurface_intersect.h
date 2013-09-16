@@ -74,7 +74,7 @@ inline RT_HOSTDEVICE double intersectRayApertureArraySurface(double3 rayPosition
 {
 	double t = 0;
 	double3x3 test;
-	test=make_double3x3(1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0);
+	test=optix::make_double3x3(1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0);
 
 	double4 test1;
 	test1=make_double4(1,1,1,1);
