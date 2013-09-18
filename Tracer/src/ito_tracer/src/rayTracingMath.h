@@ -27,6 +27,7 @@
 
 #include "internal/optix_declarations.h"  // For RT_HOSTDEVICE
 #include "macrosim_types.h"
+#include <vector_types.h>
 #include <optix_math.h>
 #include "Geometry_Intersect.h"
 #include "GlobalConstants.h"

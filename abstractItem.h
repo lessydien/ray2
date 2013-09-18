@@ -75,7 +75,7 @@ public:
 
 	virtual AbstractItem* getChild(unsigned int index) const
 	{
-		if(index >= m_childs.size()) return NULL;
+		if((int)index >= m_childs.size()) return NULL;
 		return m_childs[index];
 	}
 	int getNumberOfChilds() const { return m_childs.size(); };
