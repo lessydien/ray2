@@ -95,8 +95,8 @@ signals:
 	void finished(bool);
 
 public slots:
-	void runSimulation();
-	void runLayoutMode(RayPlotData *rayPlotData);
+	void runMacroSimRayTrace();
+	void runMacroSimLayoutTrace(RayPlotData *rayPlotData);
 
 };
 

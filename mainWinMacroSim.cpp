@@ -361,6 +361,7 @@ bool MainWinMacroSim::writeSceneToXML()
 	root.setAttribute("glassCatalog", m_guiSimParams.glassCatalog);
 	root.setAttribute("outputFilePath", m_guiSimParams.outputFilePath);
 	root.setAttribute("inputFilePath", m_guiSimParams.inputFilePath);
+	root.setAttribute("ptxPath", m_guiSimParams.path_to_ptx);
 	root.setAttribute("rayTilingWidth", QString::number(m_guiSimParams.subsetWidth));
 	root.setAttribute("rayTilingHeight", QString::number(m_guiSimParams.subsetWidth));
 
@@ -710,13 +711,13 @@ void MainWinMacroSim::startSimulation()
 	//	test=connect(m_pTracer, SIGNAL(percentageCompleted(int)), this, SLOT(tracerThreadUpdate(int)),Qt::QueuedConnection);
 		test=connect(m_pTracer, SIGNAL(finished(bool)), this, SLOT(tracerThreadFinished(bool)),Qt::QueuedConnection);
 		test=connect(m_pTracer, SIGNAL(terminated()), this, SLOT(tracerThreadTerminated()),Qt::QueuedConnection);
-		test=connect(this, SIGNAL(runSimulation()), m_pTracer, SLOT(runSimulation()), Qt::QueuedConnection);
+		test=connect(this, SIGNAL(runMacroSimRayTrace()), m_pTracer, SLOT(runMacroSimRayTrace()), Qt::QueuedConnection);
 		test=connect(this, SIGNAL(terminateSimulation()), m_pTracer, SLOT(terminate()));
 
 		//qDebug() << QThread::currentThreadId();
 
-		//m_pTracer->runSimulation();
-		emit runSimulation();
+		//m_pTracer->runMacroSimRayTrace();
+		emit runMacroSimRayTrace();
 	}
 	else
 		cout << "error in startSimulation(): path to ptx files does not exist at: path/plugins/MacroSim" << endl;
@@ -755,11 +756,11 @@ void MainWinMacroSim::startLayoutMode()
 	test=connect(m_pTracer, SIGNAL(finished(bool)), this, SLOT(tracerThreadFinished(bool)));
 	test=connect(m_pTracer, SIGNAL(terminated()), this, SLOT(tracerThreadTerminated()));
 	test=connect(this, SIGNAL(terminateSimulation()), m_pTracer, SLOT(terminate()));
-	test=connect(this, SIGNAL(runLayoutMode(RayPlotData *)), m_pTracer, SLOT(runLayoutMode(RayPlotData *)), Qt::QueuedConnection);
+	test=connect(this, SIGNAL(runMacroSimLayoutTrace(RayPlotData *)), m_pTracer, SLOT(runMacroSimLayoutTrace(RayPlotData *)), Qt::QueuedConnection);
 
 	test=connect(m_pTracerStatOutStream, SIGNAL(flushStream(QString)), this, SLOT(tracerStreamFlushed(QString)));
 
-	emit runLayoutMode(this->m_pQVTKWidget->getRayPlotData());
+	emit runMacroSimLayoutTrace(this->m_pQVTKWidget->getRayPlotData());
 }
 
 void MainWinMacroSim::tracerThreadTerminated()

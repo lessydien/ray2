@@ -123,8 +123,8 @@ ito::RetVal MacroSim::init(QVector<ito::ParamBase> *paramsMand, QVector<ito::Par
     AlgoWidgetDef *widget = NULL;
     
     //specify filters here, example:
-    filter = new FilterDef(MacroSim::runSimulation, MacroSim::runSimulationParams, "starts a simulation", ito::AddInAlgo::catNone, ito::AddInAlgo::iNotSpecified);
-    m_filterList.insert("runSimulation", filter);
+    filter = new FilterDef(MacroSim::runMacroSimRayTrace, MacroSim::runMacroSimRayTraceParams, "starts a MacroSim-Raytrace", ito::AddInAlgo::catNone, ito::AddInAlgo::iNotSpecified);
+    m_filterList.insert("runMacroSimRayTrace", filter);
     filter = new FilterDef(MacroSim::simConfPointSensor, MacroSim::simConfPointSensorParams, "starts a simulation of a confocal point sensor", ito::AddInAlgo::catNone, ito::AddInAlgo::iNotSpecified);
     m_filterList.insert("simConfPointSensor", filter);
 
@@ -149,11 +149,11 @@ ito::RetVal MacroSim::init(QVector<ito::ParamBase> *paramsMand, QVector<ito::Par
 *
 *	longer description for this filter
 */
-ito::RetVal MacroSim::runSimulation(QVector<ito::ParamBase> *paramsMand, QVector<ito::ParamBase> *paramsOpt, QVector<ito::ParamBase> *paramsOut)
+ito::RetVal MacroSim::runMacroSimRayTrace(QVector<ito::ParamBase> *paramsMand, QVector<ito::ParamBase> *paramsOpt, QVector<ito::ParamBase> *paramsOut)
 {
     ito::RetVal retval = ito::retOk;
     
-	// call to macrosim-runSimulation()
+	// call to macrosim-runMacroSimRayTrace()
 	if ((*paramsMand).size() != 3)
 	{
 		retval = ito::retError;
@@ -176,11 +176,9 @@ ito::RetVal MacroSim::runSimulation(QVector<ito::ParamBase> *paramsMand, QVector
 //	char* sceneChar=new char [l_sceneStr.size()+1];
 //	sceneChar=strcpy(sceneChar,l_sceneStr.c_str());
 
-	MacroSimTracerParams l_simParams;
-
 	MacroSimTracer l_tracer;
 
-	bool ret=l_tracer.runSimulation(l_pSceneChar, &l_pField, &l_fieldParams, l_simParams, NULL, NULL);
+	bool ret=l_tracer.runMacroSimRayTrace(l_pSceneChar, &l_pField, &l_fieldParams, NULL, NULL);
 	double* testVal=static_cast<double*>(l_pField);
 
 	// create data object from l_pField and push it to outVals
@@ -199,7 +197,7 @@ ito::RetVal MacroSim::runSimulation(QVector<ito::ParamBase> *paramsMand, QVector
 *   opt. Params:
 *       - describe the optional parameter here (list)
 */
-ito::RetVal MacroSim::runSimulationParams(QVector<ito::Param> *paramsMand, QVector<ito::Param> *paramsOpt, QVector<ito::Param> *paramsOut)
+ito::RetVal MacroSim::runMacroSimRayTraceParams(QVector<ito::Param> *paramsMand, QVector<ito::Param> *paramsOpt, QVector<ito::Param> *paramsOut)
 {
     ito::RetVal retval = ito::retOk;
     ito::Param param;
@@ -209,7 +207,6 @@ ito::RetVal MacroSim::runSimulationParams(QVector<ito::Param> *paramsMand, QVect
 	paramsMand->clear();
 	paramsMand->append(ito::Param("sceneFile", ito::ParamBase::String, "", "complete filename of the scene prescription file") );
 	paramsMand->append(ito::Param("resultPtr", ito::ParamBase::DObjPtr, NULL, "pointer to the dataObject where the result will be saved") );
-	paramsMand->append(ito::Param("paramPtr", ito::ParamBase::Pointer, NULL, "pointer of type MacroSimTracerParams to the memory where the params of the simulation are stored") );
 
 	paramsOpt->clear();
 
@@ -227,7 +224,7 @@ ito::RetVal MacroSim::simConfPointSensor(QVector<ito::ParamBase> *paramsMand, QV
 {
     ito::RetVal retval = ito::retOk;
     
-	// call to macrosim-runSimulation()
+	// call to macrosim-runMacroSimRayTrace()
 	if ((*paramsMand).size() != 2)
 	{
 		retval = ito::retError;

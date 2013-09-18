@@ -132,7 +132,6 @@ public:
 	unsigned long long launchDim[2];
 };
 
-
 class MacroSimTracerParams
 {
 public:
@@ -162,13 +161,11 @@ public:
 	{
 	}
 
-	bool runSimulation(char *xmlInput, void** fieldOut_ptrptr, ItomFieldParams* fieldOutParams, MacroSimTracerParams &params, void* p2CallbackObject, void (*callbackProgress)(void* p2Object, int progressValue));
-	bool runLayoutMode(char *xmlInput, MacroSimTracerParams &params, void* p2CallbackObject, void (*callbackRayPlotData)(void* p2Object, double* rayPlotData, RayPlotDataParams *params));
+	bool runMacroSimRayTrace(char *xmlInput, void** fieldOut_ptrptr, ItomFieldParams* fieldOutParams, void* p2CallbackObject, void (*callbackProgress)(void* p2Object, int progressValue));
+	bool runMacroSimLayoutTrace(char *xmlInput, void* p2CallbackObject, void (*callbackRayPlotData)(void* p2Object, double* rayPlotData, RayPlotDataParams *params));
 	bool runConfPointSensorSim(ConfPoint_Params &params, double** res_ptrptr);
 	bool checkVisibility(char *objectInput_filename);
 	ostream* getCout();
-
-
 };
 
 #endif

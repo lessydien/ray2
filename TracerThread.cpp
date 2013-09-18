@@ -79,11 +79,11 @@ void TracerThread::init(QString& scene, ito::DataObject* field, ConsoleStream *o
 //{
 //	int i= exec();
 //	int j=2;
-////	runSimulation();
+////	runMacroSimRayTrace();
 ////emit finished();
 //}
 
-void TracerThread::runSimulation()
+void TracerThread::runMacroSimRayTrace()
 {
 	//qDebug() << QThread::currentThreadId();
 	string l_sceneStr=m_scene.toAscii();
@@ -93,7 +93,7 @@ void TracerThread::runSimulation()
 	bool breakCond;
 	void* l_pField=NULL;
 	ItomFieldParams l_fieldParams;
-	bool ret=m_pTracer->runSimulation(sceneChar, &l_pField, &l_fieldParams, m_params, (void*)this, TracerThread::callbackProgressWrapper);
+	bool ret=m_pTracer->runMacroSimRayTrace(sceneChar, &l_pField, &l_fieldParams, (void*)this, TracerThread::callbackProgressWrapper);
 
 	if (ret)
 	{
@@ -128,7 +128,7 @@ void TracerThread::runSimulation()
 				*m_pFieldObject = ito::DataObject(l_fieldParams.nrPixels[2], l_fieldParams.nrPixels[1], l_fieldParams.nrPixels[0], ito::tComplex64);
 				break;
 			default:
-				cout << "error in TracerThread.runSimulation(): MacroSim returned an unknown field type" << endl;
+				cout << "error in TracerThread.runMacroSimRayTrace(): MacroSim returned an unknown field type" << endl;
 				ret=false; // signal error
 				break;
 			}
@@ -143,7 +143,7 @@ void TracerThread::runSimulation()
 	m_pTracer=NULL;
 }
 
-void TracerThread::runLayoutMode(RayPlotData *rayPlotData)
+void TracerThread::runMacroSimLayoutTrace(RayPlotData *rayPlotData)
 {
 	string l_sceneStr=m_scene.toAscii();
 	char* sceneChar=new char [l_sceneStr.size()+1];
@@ -154,7 +154,7 @@ void TracerThread::runLayoutMode(RayPlotData *rayPlotData)
 	// save pointer to rayPlotData
 	this->m_pRayPlotData=rayPlotData;
 
-	bool ret=m_pTracer->runLayoutMode(sceneChar, m_params, (void*)this, TracerThread::callbackRayPlotData);
+	bool ret=m_pTracer->runMacroSimLayoutTrace(sceneChar, (void*)this, TracerThread::callbackRayPlotData);
 
 	// cleanup when we're done
 	delete m_pTracer;

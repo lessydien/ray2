@@ -112,7 +112,7 @@ void initRayField_AsphereTestCPU(FILE *hfileQxy, FILE *hfilePxy, GeometricRayFie
 void initRayField_AsphereTestGPU(RTcontext &context, FILE *hfileQxy, FILE *hfilePxy, GeometricRayField* oGeomRayFieldPtr, double RadiusSourceReference, double zSourceReference, double *MNmn, int width, int height, double lambda);
 bool doTheSimulation(Group *oGrouPtr, RayField *SourceListPtrPtr, bool RunOnCPU);
 //bool createSceneFromXML(Group *oGroupPtr, FILE *hfile, RayField ***sourceListPtr, Detector ***detListPtr);
-bool createSceneFromXML(Group **oGroupPtrPtr, char *sceneChar, Field ***sourceListPtr, long *sourceNumberPtr, Detector ***detListPtr, long *detNumberPtr);
+bool createSceneFromXML(Group **oGroupPtrPtr, char *sceneChar, Field ***sourceListPtr, long *sourceNumberPtr, Detector ***detListPtr, long *detNumberPtr, MacroSimTracerParams &simParams);
 
 
 void wait ()
@@ -221,7 +221,9 @@ int main(int argc, char* argv[])
 	DetectorList=NULL;
 	long sourceNumber, detNumber;
 
-	createSceneFromXML(&l_pGroup, buffer, &SourceList, &sourceNumber, &DetectorList, &detNumber);
+	MacroSimTracerParams l_simParams;
+
+	createSceneFromXML(&l_pGroup, buffer, &SourceList, &sourceNumber, &DetectorList, &detNumber, l_simParams);
 
 //	if (!createSceneFromZemax(&oGroup, hfile, &SourceList, &sourceNumber, &DetectorList, &detNumber, mode))
 //	{
@@ -247,7 +249,7 @@ int main(int argc, char* argv[])
 	xml_node scene =doc.first_child();
 	if (strcmp(scene.name(), "scene") != 0)
 	{
-		cout << "error in MacroSimTracer.runSimulation(): Root element of file is not scene. File is not a valid scene description" << endl;
+		cout << "error in MacroSimTracer.runMacroSimRayTrace(): Root element of file is not scene. File is not a valid scene description" << endl;
 		return false;
 	}
 
@@ -281,12 +283,12 @@ int main(int argc, char* argv[])
 	RayField** RaySourceList=reinterpret_cast<RayField**>(SourceList);
 	if (SIMASS_NO_ERROR != oSimAssPtr->initSimulation(l_pGroup, RaySourceList[0]))
 	{
-		cout << "error in MacroSimTracer.runSimulation(): SimAss.initSimulation() returned an error" << endl;
+		cout << "error in MacroSimTracer.runMacroSimRayTrace(): SimAss.initSimulation() returned an error" << endl;
 		return( false );
 	}
 	if (SIMASS_NO_ERROR != oSimAssPtr->run(l_pGroup, RaySourceList[0], DetectorList))
 	{
-		cout << "error in MacroSimTracer.runSimulation(): SimAss.run() returned an error" << endl;
+		cout << "error in MacroSimTracer.runMacroSimRayTrace(): SimAss.run() returned an error" << endl;
 		return( false );
 	}
 
@@ -336,14 +338,14 @@ int main(int argc, char* argv[])
  *
  * parses the XML and creates an OptiX scene 
  *
- * \param[in] Group *oGroupPtr, FILE *hfile, RayField ***sourceListPtr, long long *sourceNumberPtr, Detector ***detListPtr, long long *detNumberPtr, simMode mode
+ * \param[in] Group *oGroupPtr, FILE *hfile, RayField ***sourceListPtr, long long *sourceNumberPtr, Detector ***detListPtr, long long *detNumberPtr, simMode mode, MacroSimTracerParams &simParams
  * 
  * \return bool
  * \sa 
  * \remarks 
  * \author Mauch
  */
-bool createSceneFromXML(Group **oGroupPtrPtr, char *sceneChar, Field ***sourceListPtr, long *sourceNumberPtr, Detector ***detListPtr, long *detNumberPtr)
+bool createSceneFromXML(Group **oGroupPtrPtr, char *sceneChar, Field ***sourceListPtr, long *sourceNumberPtr, Detector ***detListPtr, long *detNumberPtr, MacroSimTracerParams &simParams)
 {
 
 	cout <<"********************************************" << endl;
@@ -371,6 +373,37 @@ bool createSceneFromXML(Group **oGroupPtrPtr, char *sceneChar, Field ***sourceLi
 		l_mode=SIM_GEOMRAYS_SEQ;
 	if (strcmp(l_pModeString,"NONSEQUENTIAL") == 0)
 		l_mode=SIM_GEOMRAYS_NONSEQ;	
+	simParams.mode=l_mode;
+
+	// read file paths from xml
+	const char* l_pGlassFilePath=l_pParser->attrValByName(scene, "glassCatalog");
+	memcpy(simParams.glassFilePath, l_pGlassFilePath, sizeof(char)*512);
+	const char* l_pOutPath=l_pParser->attrValByName(scene, "outputFilePath");
+	memcpy(simParams.outputFilesPath, l_pOutPath, sizeof(char)*512);
+	const char* l_pInPath=l_pParser->attrValByName(scene, "inputFilePath");
+	memcpy(simParams.inputFilesPath, l_pInPath, sizeof(char)*512);
+	const char* l_pPtxPath=l_pParser->attrValByName(scene, "ptxPath");
+	memcpy(simParams.path_to_ptx, l_pPtxPath, sizeof(char)*512);
+
+	if (!l_pParser->attrByNameToInt(scene, "numCPU", simParams.numCPU))
+	{
+		cout << "error in createSceneFromXML: numCPU is not defined" << endl;
+		return false;
+	}
+	unsigned long l_long;
+	if (!l_pParser->attrByNameToLong(scene, "rayTilingHeight", l_long))
+	{
+		cout << "error in createSceneFromXML: subsetHeight is not defined" << endl;
+		return false;
+	}
+	simParams.subsetHeight=l_long;
+	if (!l_pParser->attrByNameToLong(scene, "rayTilingWidth", l_long))
+	{
+		cout << "error in createSceneFromXML: subsetWidth is not defined" << endl;
+		return false;
+	}
+	simParams.subsetWidth=l_long;
+
 
 	// get all geometryGroups
 	vector<xml_node>* l_pGeometryGroups;
@@ -533,7 +566,7 @@ bool createSceneFromXML(Group **oGroupPtrPtr, char *sceneChar, Field ***sourceLi
 	return true;
 }
 
-bool MacroSimTracer::runSimulation(char *xmlInput, void** fieldOut_ptrptr, ItomFieldParams* fieldOutParams, MacroSimTracerParams &params, void* p2ProgCallbackObject, void (*callbackProgress)(void* p2Object, int progressValue))
+bool MacroSimTracer::runMacroSimRayTrace(char *xmlInput, void** fieldOut_ptrptr, ItomFieldParams* fieldOutParams, void* p2ProgCallbackObject, void (*callbackProgress)(void* p2Object, int progressValue))
 {
 	clock_t start, end;
 	start=clock();
@@ -544,33 +577,37 @@ bool MacroSimTracer::runSimulation(char *xmlInput, void** fieldOut_ptrptr, ItomF
 	DetectorList=NULL;
 	long sourceNumber, detNumber;
 
+	Group* l_pGroup=NULL;
+
+	MacroSimTracerParams l_simParams;
+
+	if (!createSceneFromXML(&l_pGroup, xmlInput, &SourceList, &sourceNumber, &DetectorList, &detNumber, l_simParams))
+	{
+		cout << "error in MacroSimTracer.runMacroSimRayTrace(): createSceneFromXML() returned an error" << endl;
+		return false;
+	}
+
+
 	// init global variables
-	memcpy(FILE_GLASSCATALOG, params.glassFilePath, sizeof(char)*512);
-	memcpy(OUTPUT_FILEPATH, params.outputFilesPath, sizeof(char)*512);
-	memcpy(INPUT_FILEPATH, params.inputFilesPath, sizeof(char)*512);
-	memcpy(PATH_TO_PTX, params.path_to_ptx, sizeof(char)*512);
+	memcpy(FILE_GLASSCATALOG, l_simParams.glassFilePath, sizeof(char)*512);
+	memcpy(OUTPUT_FILEPATH, l_simParams.outputFilesPath, sizeof(char)*512);
+	memcpy(INPUT_FILEPATH, l_simParams.inputFilesPath, sizeof(char)*512);
+	memcpy(PATH_TO_PTX, l_simParams.path_to_ptx, sizeof(char)*512);
 
 //	streambuf* old = cout.rdbuf(pOutBuffer->rdbuf());
 //	cout << "bla" << endl;
-	Group* l_pGroup=NULL;
 
-	if (!createSceneFromXML(&l_pGroup, xmlInput, &SourceList, &sourceNumber, &DetectorList, &detNumber))
+	SourceList[0]->setSubsetHeightMax(l_simParams.subsetHeight);
+	SourceList[0]->setSubsetWidthMax(l_simParams.subsetWidth);
+	if ((l_simParams.subsetHeight==0) || (l_simParams.subsetWidth==0))
 	{
-		cout << "error in MacroSimTracer.runSimulation(): createSceneFromXML() returned an error" << endl;
+		cout << "error in MacroSimTracer.runMacroSimRayTrace(): a subset size of zero is not allowed." << endl;
 		return false;
 	}
-
-	SourceList[0]->setSubsetHeightMax(params.subsetHeight);
-	SourceList[0]->setSubsetWidthMax(params.subsetWidth);
-	if ((params.subsetHeight==0) || (params.subsetWidth==0))
+	SourceList[0]->setNumCPU(l_simParams.numCPU);
+	if (l_simParams.numCPU==0)
 	{
-		cout << "error in MacroSimTracer.runSimulation(): a subset size of zero is not allowed." << endl;
-		return false;
-	}
-	SourceList[0]->setNumCPU(params.numCPU);
-	if (params.numCPU==0)
-	{
-		cout << "error in MacroSimTracer.runSimulation(): at least on CPU core needs to be assigned to tracing." << endl;
+		cout << "error in MacroSimTracer.runMacroSimRayTrace(): at least on CPU core needs to be assigned to tracing." << endl;
 		return false;
 	}
 
@@ -582,7 +619,7 @@ bool MacroSimTracer::runSimulation(char *xmlInput, void** fieldOut_ptrptr, ItomF
 	xml_node scene =doc.first_child();
 	if (strcmp(scene.name(), "scene") != 0)
 	{
-		cout << "error in MacroSimTracer.runSimulation(): Root element of file is not scene. File is not a valid scene description" << endl;
+		cout << "error in MacroSimTracer.runMacroSimRayTrace(): Root element of file is not scene. File is not a valid scene description" << endl;
 		return false;
 	}
 
@@ -636,19 +673,19 @@ bool MacroSimTracer::runSimulation(char *xmlInput, void** fieldOut_ptrptr, ItomF
 	RayField** RaySourceList=reinterpret_cast<RayField**>(SourceList);
 	if (SIMASS_NO_ERROR != oSimAssPtr->initSimulation(l_pGroup, RaySourceList[0]))
 	{
-		cout << "error in MacroSimTracer.runSimulation(): SimAss.initSimulation() returned an error" << endl;
+		cout << "error in MacroSimTracer.runMacroSimRayTrace(): SimAss.initSimulation() returned an error" << endl;
 		return( false );
 	}
 	if (SIMASS_NO_ERROR != oSimAssPtr->run(l_pGroup, RaySourceList[0], DetectorList))
 	{
-		cout << "error in MacroSimTracer.runSimulation(): SimAss.run() returned an error" << endl;
+		cout << "error in MacroSimTracer.runMacroSimRayTrace(): SimAss.run() returned an error" << endl;
 		return( false );
 	}
 
 	// the result of the simulation will be stored in oSimassPtr->fieldPtr. We transfer this to the Itom-gui here...
 	if (FIELD_NO_ERR != oSimAssPtr->getResultFieldPtr()->convert2ItomObject(fieldOut_ptrptr, fieldOutParams))
 	{
-		cout << "error in MacroSimTracer.runSimulation(): field.convert2ItomObject() returned an error" << endl;
+		cout << "error in MacroSimTracer.runMacroSimRayTrace(): field.convert2ItomObject() returned an error" << endl;
 		return( false );
 	}
 
@@ -700,7 +737,7 @@ bool MacroSimTracer::runSimulation(char *xmlInput, void** fieldOut_ptrptr, ItomF
 	return true;
 }
 
-bool MacroSimTracer::runLayoutMode(char *xmlInput, MacroSimTracerParams &params, void* p2CallbackObject, void (*callbackRayPlotData)(void* p2Object, double* rayPlotData, RayPlotDataParams *params))
+bool MacroSimTracer::runMacroSimLayoutTrace(char *xmlInput, void* p2CallbackObject, void (*callbackRayPlotData)(void* p2Object, double* rayPlotData, RayPlotDataParams *params))
 {
 	Field** SourceList;
 	SourceList=NULL;
@@ -708,22 +745,26 @@ bool MacroSimTracer::runLayoutMode(char *xmlInput, MacroSimTracerParams &params,
 	DetectorList=NULL;
 	long sourceNumber, detNumber;
 
-	// init global variables
-	memcpy(FILE_GLASSCATALOG, params.glassFilePath, sizeof(char)*512);
-	memcpy(INPUT_FILEPATH, params.inputFilesPath, sizeof(char)*512);
-	memcpy(OUTPUT_FILEPATH, params.outputFilesPath, sizeof(char)*512);
-	memcpy(PATH_TO_PTX, params.path_to_ptx, sizeof(char)*512);
+	MacroSimTracerParams l_simParams;
 
 	Group* l_pGroup=NULL;
 
-	if (!createSceneFromXML(&l_pGroup, xmlInput, &SourceList, &sourceNumber, &DetectorList, &detNumber))
+	if (!createSceneFromXML(&l_pGroup, xmlInput, &SourceList, &sourceNumber, &DetectorList, &detNumber, l_simParams))
 	{
-		cout << "error in MacroSimTracer.runLayoutMode(): createSceneFromXML() returned an error" << endl;
+		cout << "error in MacroSimTracer.runMacroSimLayoutTrace(): createSceneFromXML() returned an error" << endl;
 		return false;
 	}
 
-	SourceList[0]->setSubsetHeightMax(params.subsetHeight);
-	SourceList[0]->setSubsetWidthMax(params.subsetWidth);
+	// init global variables
+	memcpy(FILE_GLASSCATALOG, l_simParams.glassFilePath, sizeof(char)*512);
+	memcpy(INPUT_FILEPATH, l_simParams.inputFilesPath, sizeof(char)*512);
+	memcpy(OUTPUT_FILEPATH, l_simParams.outputFilesPath, sizeof(char)*512);
+	memcpy(PATH_TO_PTX, l_simParams.path_to_ptx, sizeof(char)*512);
+
+
+
+	SourceList[0]->setSubsetHeightMax(l_simParams.subsetHeight);
+	SourceList[0]->setSubsetWidthMax(l_simParams.subsetWidth);
 
 	// load xml document
 	xml_document doc;
@@ -733,7 +774,7 @@ bool MacroSimTracer::runLayoutMode(char *xmlInput, MacroSimTracerParams &params,
 	xml_node scene =doc.first_child();
 	if (strcmp(scene.name(), "scene") != 0)
 	{
-		cout << "error in MacroSimTracer.runLayoutMode(): Root element of file is not scene. File is not a valid scene description" << endl;
+		cout << "error in MacroSimTracer.runMacroSimLayoutTrace(): Root element of file is not scene. File is not a valid scene description" << endl;
 		return false;
 	}
 
@@ -755,7 +796,7 @@ bool MacroSimTracer::runLayoutMode(char *xmlInput, MacroSimTracerParams &params,
 
 	if ((strcmp(l_pString,"TRUE") == 0))
 	{
-		cout << "warning in MacroSimTracer.runLayoutMode(): GPU acceleration is not implemented for layout mode. continuing on CPU anyways..." << endl;
+		cout << "warning in MacroSimTracer.runMacroSimLayoutTrace(): GPU acceleration is not implemented for layout mode. continuing on CPU anyways..." << endl;
 		oSimAssParamsPtr->RunOnCPU=true;
 	}
 	else
@@ -768,12 +809,12 @@ bool MacroSimTracer::runLayoutMode(char *xmlInput, MacroSimTracerParams &params,
 	RayField** RaySourceList=reinterpret_cast<RayField**>(SourceList);
 	if (SIMASS_NO_ERROR != oSimAssPtr->initSimulation(l_pGroup, RaySourceList[0]))
 	{
-		cout << "error in MacroSimTracer.runLayoutMode(): SimAss.initSimulation() returned an error" << endl;
+		cout << "error in MacroSimTracer.runMacroSimLayoutTrace(): SimAss.initSimulation() returned an error" << endl;
 		return( 1 );
 	}
 	if (SIMASS_NO_ERROR != oSimAssPtr->run(l_pGroup, RaySourceList[0], DetectorList))
 	{
-		cout << "error in MacroSimTracer.runLayoutMode(): SimAss.run() returned an error" << endl;
+		cout << "error in MacroSimTracer.runMacroSimLayoutTrace(): SimAss.run() returned an error" << endl;
 		return( 1 );
 	}
 

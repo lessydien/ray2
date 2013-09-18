@@ -117,8 +117,8 @@ signals:
 //	void signalSceneSelectionChanged(const QModelIndex topLeft);
 	void signalSceneDataChangedFromPropEdit(const QModelIndex &topLeft, const QModelIndex &bottomRight);
 	void terminateSimulation();
-	void runLayoutMode(RayPlotData *rayPlotData);
-	void runSimulation();
+	void runMacroSimLayoutTrace(RayPlotData *rayPlotData);
+	void runMacroSimRayTrace();
 	void simulationFinished(ito::DataObject resultObject);
 
 public slots:

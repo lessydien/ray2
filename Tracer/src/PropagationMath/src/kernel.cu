@@ -1196,13 +1196,11 @@ bool cu_simConfPointRawSig_wrapper(double** ppRawSig, ConfPoint_KernelParams par
 					cudaFree(d_pObjField);
 					cufftDestroy (plan);
 					//thrust::device_free(d_pObjField_thrust);
-					{
-						std::cout << "error in cu_simConfPointRawSig_wrapper: cufftExecZ2Z returned an error " << error << " line: " << __LINE__ << std::endl;
-						return false;
-					}
+					std::cout << "error in cu_simConfPointRawSig_wrapper: cufftExecZ2Z returned an error " << error << " line: " << __LINE__ << std::endl;
+					return false;
 				}
 				// do the summation
-				(*ppRawSig)[jz+jx*params.scanNumber.z+jy*params.scanNumber.x*params.scanNumber.z]=pow(cuCabs(thrust::transform_reduce(d_pObjField_thrust, d_pObjField_thrust+params.n*params.n, unary_op, init, binary_op)),2);
+				//(*ppRawSig)[jz+jx*params.scanNumber.z+jy*params.scanNumber.x*params.scanNumber.z]=pow(cuCabs(thrust::transform_reduce(d_pObjField_thrust, d_pObjField_thrust+params.n*params.n, unary_op, init, binary_op)),2);
 
 			}
 		}
