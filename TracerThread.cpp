@@ -16,6 +16,7 @@
 ************************************************************************/
 
 #include "TracerThread.h"
+#include "macroSim.h"
 #include <cstring>
 #include <iostream>
 #include <sstream>
@@ -126,44 +127,7 @@ void TracerThread::runMacroSimRayTrace()
 
 	if (ret)
 	{
-		if (l_pField)
-		{
-			// copy the resulting field into a dataObject
-			// create new dataObject according to parameters of resulting field
-			cv::Mat *MAT1;
-			switch (l_fieldParams.type)
-			{
-			case INTFIELD:
-				*m_pFieldObject = ito::DataObject(l_fieldParams.nrPixels[1], l_fieldParams.nrPixels[0], ito::tFloat64);
-				MAT1 = (cv::Mat*)(m_pFieldObject->get_mdata()[m_pFieldObject->seekMat(0)]);
-				memcpy(MAT1->ptr(0), l_pField, l_fieldParams.nrPixels[1]*l_fieldParams.nrPixels[0]*sizeof(double));
-				// set data object tags
-				m_pFieldObject->setAxisOffset(0, l_fieldParams.MTransform[3]);//-floorf(l_fieldParams.nrPixels[0]/2)*l_fieldParams.scale[0]);
-				m_pFieldObject->setAxisOffset(1, l_fieldParams.MTransform[7]);//-floorf(l_fieldParams.nrPixels[0]/2)*l_fieldParams.scale[1]);
-		//		m_pFieldObject->setAxisOffset(2, l_fieldParams.MTransform[11]);
-				m_pFieldObject->setAxisScale(0, l_fieldParams.scale[0]);
-				m_pFieldObject->setAxisScale(1, l_fieldParams.scale[1]);
-		//		m_pFieldObject->setAxisScales(2, l_fieldParams.scale[2]);
-				m_pFieldObject->setAxisUnit(0,"mm");
-				m_pFieldObject->setAxisUnit(1,"mm");
-				m_pFieldObject->setTag("wvl", l_fieldParams.lambda);
-				m_pFieldObject->setTag("title", "Intensity Field");
-				m_pFieldObject->setValueDescription("intensity");
-				m_pFieldObject->setValueUnit("a.u.");
-				m_pFieldObject->addToProtocol("Traced with ito macro sim");
-
-				break;
-			case SCALARFIELD:
-				*m_pFieldObject = ito::DataObject(l_fieldParams.nrPixels[2], l_fieldParams.nrPixels[1], l_fieldParams.nrPixels[0], ito::tComplex64);
-				break;
-			default:
-				cout << "error in TracerThread.runMacroSimRayTrace(): MacroSim returned an unknown field type" << endl;
-				ret=false; // signal error
-				break;
-			}
-			delete l_pField;
-			l_pField=NULL;
-		}
+		createDataObjectFromMacroSimResult(l_fieldParams, m_pFieldObject, l_pField);
 	}
 
 	emit finished(ret);

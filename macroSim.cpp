@@ -154,33 +154,32 @@ ito::RetVal MacroSim::runMacroSimRayTrace(QVector<ito::ParamBase> *paramsMand, Q
     ito::RetVal retval = ito::retOk;
     
 	// call to macrosim-runMacroSimRayTrace()
-	if ((*paramsMand).size() != 3)
+	if ((*paramsMand).size() != 2)
 	{
-		retval = ito::retError;
+		retval = ito::RetVal(ito::retError,0,"Error in runMacroSimRayTrace. functions takes exactly two parameter");
 		return retval;
 	}
 	char *l_pSceneChar = (*paramsMand)[0].getVal<char*>();
-	ito::DataObject *l_pDataObject = (*paramsMand)[0].getVal<ito::DataObject*>();
+	ito::DataObject *l_pDataObject = (*paramsMand)[1].getVal<ito::DataObject*>();
+	ito::DataObject *t_pDataObject=new ito::DataObject();
 
 	void* l_pField;
 	ItomFieldParams l_fieldParams;
-
-	MacroSimTracerParams *l_pParams=reinterpret_cast<MacroSimTracerParams*>((*paramsMand)[2].getVal<void*>());
 
 	if ( (l_pSceneChar==NULL) )
 	{
 		retval = ito::retError;
 		return retval;
 	}
-//	string l_sceneStr=m_scene.toAscii();
-//	char* sceneChar=new char [l_sceneStr.size()+1];
-//	sceneChar=strcpy(sceneChar,l_sceneStr.c_str());
 
 	MacroSimTracer l_tracer;
 
 	bool ret=l_tracer.runMacroSimRayTrace(l_pSceneChar, &l_pField, &l_fieldParams, NULL, NULL);
-	double* testVal=static_cast<double*>(l_pField);
-
+	if (ret)
+	{
+		if (createDataObjectFromMacroSimResult(l_fieldParams, t_pDataObject, l_pField))
+			*l_pDataObject=*t_pDataObject;
+	}
 	// create data object from l_pField and push it to outVals
    
     return retval;
@@ -359,3 +358,52 @@ ito::RetVal MacroSim::dialogParams(QVector<ito::Param> *paramsMand, QVector<ito:
 
     return retval;
 }
+
+//----------------------------------------------------------------------------------------------------------------------------------
+/** create an itom dataObject from the result of MacroSim
+*	@param [in]	ItomFieldParams &fieldParams, void *MacroSimResult
+*	@param [in]	ito::DataObject &dataObject
+*
+*/
+bool createDataObjectFromMacroSimResult(ItomFieldParams &fieldParams, ito::DataObject *dataObject, void *MacroSimResult)
+{
+	if (MacroSimResult)
+	{
+		// copy the resulting field into a dataObject
+		// create new dataObject according to parameters of resulting field
+		cv::Mat *MAT1;
+		switch (fieldParams.type)
+		{
+		case INTFIELD:
+			*dataObject = ito::DataObject(fieldParams.nrPixels[1], fieldParams.nrPixels[0], ito::tFloat64);
+			MAT1 = (cv::Mat*)(dataObject->get_mdata()[dataObject->seekMat(0)]);
+			memcpy(MAT1->ptr(0), MacroSimResult, fieldParams.nrPixels[1]*fieldParams.nrPixels[0]*sizeof(double));
+			// set data object tags
+			dataObject->setAxisOffset(0, fieldParams.MTransform[3]);//-floorf(l_fieldParams.nrPixels[0]/2)*l_fieldParams.scale[0]);
+			dataObject->setAxisOffset(1, fieldParams.MTransform[7]);//-floorf(l_fieldParams.nrPixels[0]/2)*l_fieldParams.scale[1]);
+	//		dataObject->setAxisOffset(2, fieldParams.MTransform[11]);
+			dataObject->setAxisScale(0, fieldParams.scale[0]);
+			dataObject->setAxisScale(1, fieldParams.scale[1]);
+	//		dataObject->setAxisScales(2, fieldParams.scale[2]);
+			dataObject->setAxisUnit(0,"mm");
+			dataObject->setAxisUnit(1,"mm");
+			dataObject->setTag("wvl", fieldParams.lambda);
+			dataObject->setTag("title", "Intensity Field");
+			dataObject->setValueDescription("intensity");
+			dataObject->setValueUnit("a.u.");
+			dataObject->addToProtocol("Traced with ito macro sim");
+
+			break;
+		//case SCALARFIELD:
+		//	*dataObject = ito::DataObject(fieldParams.nrPixels[2], fieldParams.nrPixels[1], fieldParams.nrPixels[0], ito::tComplex64);
+		//	break;
+		default:
+			cout << "error in TracerThread.runMacroSimRayTrace(): MacroSim returned a field type, that cannot be converted to itom::dataObject yet..." << endl;
+			return false; // signal error
+			break;
+		}
+	}
+	else
+		return false;
+	return true;
+};

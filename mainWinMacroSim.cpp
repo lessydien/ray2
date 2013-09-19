@@ -361,7 +361,12 @@ bool MainWinMacroSim::writeSceneToXML()
 	root.setAttribute("glassCatalog", m_guiSimParams.glassCatalog);
 	root.setAttribute("outputFilePath", m_guiSimParams.outputFilePath);
 	root.setAttribute("inputFilePath", m_guiSimParams.inputFilePath);
-	root.setAttribute("ptxPath", m_guiSimParams.path_to_ptx);
+	QString path = QCoreApplication::applicationDirPath();
+	QDir l_path_to_ptx(path);
+	if (l_path_to_ptx.cd("plugins\\MacroSim\\ptx"))
+		root.setAttribute("ptxPath", m_guiSimParams.path_to_ptx);
+	else
+		root.setAttribute("ptxPath", "not found");
 	root.setAttribute("rayTilingWidth", QString::number(m_guiSimParams.subsetWidth));
 	root.setAttribute("rayTilingHeight", QString::number(m_guiSimParams.subsetWidth));
 

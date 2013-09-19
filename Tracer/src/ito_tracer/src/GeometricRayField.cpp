@@ -1437,7 +1437,9 @@ fieldError GeometricRayField::doSim(Group &oGroup, simAssParams &params, bool &s
 		return FIELD_ERR;
 	}
 	this->subsetCounter++;
-	Field::callbackProgress(Field::p2ProgCallbackObject, floorf(this->subsetCounter*100/roughNrOfSubsets));
+	// signal simulation progress via callback to gui
+	if ((Field::p2ProgCallbackObject != NULL) && (Field::callbackProgress != NULL))
+		Field::callbackProgress(Field::p2ProgCallbackObject, floorf(this->subsetCounter*100/roughNrOfSubsets));
 
 	// increment x-offset
 	this->getParamsPtr()->launchOffsetX=this->getParamsPtr()->launchOffsetX+this->getParamsPtr()->GPUSubset_width;				

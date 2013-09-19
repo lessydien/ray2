@@ -19,6 +19,9 @@
 #define MACROSIM_H
 
 #include "common/addInInterface.h"
+#include "MacroSimLib.h"
+
+bool createDataObjectFromMacroSimResult(ItomFieldParams &fieldParams, ito::DataObject *dataObject, void *MacroSimResult);
 
 //----------------------------------------------------------------------------------------------------------------------------------
 /** @class MacroSimInterface
@@ -67,7 +70,7 @@ class MacroSim : public ito::AddInAlgo
         static ito::RetVal simConfPointSensor(QVector<ito::ParamBase> *paramsMand, QVector<ito::ParamBase> *paramsOpt, QVector<ito::ParamBase> *paramsOut);
         static ito::RetVal simConfPointSensorParams(QVector<ito::Param> *paramsMand, QVector<ito::Param> *paramsOpt, QVector<ito::Param> *paramsOut);
 
-    private:
+    private:		
 
     public slots:
 		ito::RetVal init(QVector<ito::ParamBase> *paramsMand, QVector<ito::ParamBase> *paramsOpt, ItomSharedSemaphore *waitCond = NULL);
