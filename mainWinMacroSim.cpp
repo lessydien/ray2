@@ -364,9 +364,13 @@ bool MainWinMacroSim::writeSceneToXML()
 	QString path = QCoreApplication::applicationDirPath();
 	QDir l_path_to_ptx(path);
 	if (l_path_to_ptx.cd("plugins\\MacroSim\\ptx"))
-		root.setAttribute("ptxPath", m_guiSimParams.path_to_ptx);
+		path=l_path_to_ptx.absolutePath();
 	else
-		root.setAttribute("ptxPath", "not found");
+	{
+		cout << "error in writeSceneToXML(): pathToPtx not found" << endl;
+		return false;
+	}
+	root.setAttribute("ptxPath", path);
 	root.setAttribute("rayTilingWidth", QString::number(m_guiSimParams.subsetWidth));
 	root.setAttribute("rayTilingHeight", QString::number(m_guiSimParams.subsetWidth));
 

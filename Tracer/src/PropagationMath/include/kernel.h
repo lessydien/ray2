@@ -53,6 +53,7 @@ public:
 double cu_testReduce_wrapper();
 bool cu_simConfPointRawSig_wrapper(double** ppRawSig, ConfPoint_KernelParams params);
 bool cu_simConfPointRawSig_wrapper1(double** ppRawSig, ConfPoint_KernelParams params);
+bool cu_simConfPointRawSig_wrapperTest(double** ppRawSig, ConfPoint_KernelParams params);
 //extern "C" void kernel_wrapper(int *a, int *b);
 bool cu_angularSpectrumScaled_wrapper(cuDoubleComplex* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double Dz, double dx2, double** x2_ptrptr, double** y2_ptrptr);
 //extern "C" bool cu_angularSpectrum_ABCD(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double Dz, double dx2, double* ABCD, double** x2_ptrptr, double** y2_ptrptr);

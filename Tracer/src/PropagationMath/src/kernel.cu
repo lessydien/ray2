@@ -1066,6 +1066,42 @@ double cu_testReduce_wrapper()
 	return 1.0;//outData;
 }
 
+bool cu_simConfPointRawSig_wrapperTest(double** ppRawSig, ConfPoint_KernelParams params)
+{
+   size_t N = 10;
+
+   int * host_raw_ptr=(int*)malloc(N*sizeof(int));
+   for (int i=0;i<N;i++)
+   {
+	   host_raw_ptr[i]=1;
+   }
+
+    // obtain raw pointer to device memory
+    int * raw_ptr;
+    cudaMalloc((void **) &raw_ptr, N * sizeof(int));
+
+	// transfre data to GPU
+	cudaMemcpy(raw_ptr, host_raw_ptr,N*sizeof(int),cudaMemcpyHostToDevice);
+
+
+    // wrap raw pointer with a device_ptr 
+    //thrust::device_ptr<int> dev_ptr = thrust::device_pointer_cast(raw_ptr);
+	thrust::device_ptr<int> dev_ptr(raw_ptr);
+
+
+    // use device_ptr in Thrust algorithms
+//    thrust::fill(dev_ptr, dev_ptr + N, (int) 1);
+
+	int result=thrust::reduce(dev_ptr, dev_ptr+N);
+
+    // free memory
+    cudaFree(raw_ptr);
+
+
+    return true;
+}
+
+
 bool cu_simConfPointRawSig_wrapper(double** ppRawSig, ConfPoint_KernelParams params)
 {
     cudaDeviceProp deviceProp;
@@ -1162,11 +1198,9 @@ bool cu_simConfPointRawSig_wrapper(double** ppRawSig, ConfPoint_KernelParams par
 		std::cout << "error in cu_simConfPointRawSig_wrapper: cufftPlan2d returned an error " << error << " line: " << __LINE__ << std::endl;
 		return false;
 	}
-	unsigned int xGes=10;
-	double x=xGes*100.0/params.n;
 
 	// create a thrust ptr
-	thrust::device_ptr<cuDoubleComplex> d_pObjField_thrust(d_pPupField);
+	thrust::device_ptr<cuDoubleComplex> d_pObjField_thrust=thrust::device_pointer_cast(d_pPupField);
 	squareCuDoubleComplex unary_op;
 	addCuDoubleComplex binary_op;
 	cuDoubleComplex init;
@@ -1200,8 +1234,7 @@ bool cu_simConfPointRawSig_wrapper(double** ppRawSig, ConfPoint_KernelParams par
 					return false;
 				}
 				// do the summation
-				//(*ppRawSig)[jz+jx*params.scanNumber.z+jy*params.scanNumber.x*params.scanNumber.z]=pow(cuCabs(thrust::transform_reduce(d_pObjField_thrust, d_pObjField_thrust+params.n*params.n, unary_op, init, binary_op)),2);
-
+				(*ppRawSig)[jz+jx*params.scanNumber.z+jy*params.scanNumber.x*params.scanNumber.z]=pow(cuCabs(thrust::transform_reduce(d_pObjField_thrust, d_pObjField_thrust+params.n*params.n-1, unary_op, init, binary_op)),2);
 			}
 		}
 	}
@@ -1243,7 +1276,6 @@ bool cu_simConfPointRawSig_wrapper(double** ppRawSig, ConfPoint_KernelParams par
 	cudaFree(d_pPupField);
 	cudaFree(d_pObjField);
 	cufftDestroy (plan);
-	//thrust::device_free(d_pObjField_thrust);
 
 	return true;
 }

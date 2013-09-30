@@ -377,13 +377,39 @@ bool createSceneFromXML(Group **oGroupPtrPtr, char *sceneChar, Field ***sourceLi
 
 	// read file paths from xml
 	const char* l_pGlassFilePath=l_pParser->attrValByName(scene, "glassCatalog");
+	if (!l_pGlassFilePath)
+	{
+		cout << "error in createSceneFromXML: glassCatalog is not defined" << endl;
+		return false;
+	}
 	memcpy(simParams.glassFilePath, l_pGlassFilePath, sizeof(char)*512);
 	const char* l_pOutPath=l_pParser->attrValByName(scene, "outputFilePath");
+	if (!l_pOutPath)
+	{
+		cout << "error in createSceneFromXML: outputFilePath is not defined" << endl;
+		return false;
+	}
 	memcpy(simParams.outputFilesPath, l_pOutPath, sizeof(char)*512);
 	const char* l_pInPath=l_pParser->attrValByName(scene, "inputFilePath");
+	if (!l_pInPath)
+	{
+		cout << "error in createSceneFromXML: inputFilePath is not defined" << endl;
+		return false;
+	}
 	memcpy(simParams.inputFilesPath, l_pInPath, sizeof(char)*512);
 	const char* l_pPtxPath=l_pParser->attrValByName(scene, "ptxPath");
+	if (!l_pPtxPath)
+	{
+		cout << "error in createSceneFromXML: ptxPath is not defined" << endl;
+		return false;
+	}
 	memcpy(simParams.path_to_ptx, l_pPtxPath, sizeof(char)*512);
+
+	// init global variables
+	memcpy(FILE_GLASSCATALOG, simParams.glassFilePath, sizeof(char)*512);
+	memcpy(OUTPUT_FILEPATH, simParams.outputFilesPath, sizeof(char)*512);
+	memcpy(INPUT_FILEPATH, simParams.inputFilesPath, sizeof(char)*512);
+	memcpy(PATH_TO_PTX, simParams.path_to_ptx, sizeof(char)*512);
 
 	if (!l_pParser->attrByNameToInt(scene, "numCPU", simParams.numCPU))
 	{
@@ -587,12 +613,6 @@ bool MacroSimTracer::runMacroSimRayTrace(char *xmlInput, void** fieldOut_ptrptr,
 		return false;
 	}
 
-
-	// init global variables
-	memcpy(FILE_GLASSCATALOG, l_simParams.glassFilePath, sizeof(char)*512);
-	memcpy(OUTPUT_FILEPATH, l_simParams.outputFilesPath, sizeof(char)*512);
-	memcpy(INPUT_FILEPATH, l_simParams.inputFilesPath, sizeof(char)*512);
-	memcpy(PATH_TO_PTX, l_simParams.path_to_ptx, sizeof(char)*512);
 
 //	streambuf* old = cout.rdbuf(pOutBuffer->rdbuf());
 //	cout << "bla" << endl;
