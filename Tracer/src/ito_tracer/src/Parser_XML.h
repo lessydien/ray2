@@ -68,17 +68,17 @@ public:
 	accelType asciiToAccelType(const char* ascii) const;
 	const char* accelTypeToAscii(accelType) const;
 
-	bool attrByNameToDouble(xml_node &root, char* name, double &param) const;
-	bool attrByNameToApertureType(xml_node &root, char* name, ApertureType &param) const;
-	bool attrByNameToInt(xml_node &root, char* name, int &param) const;
-	bool attrByNameToShort(xml_node &root, char* name, short &param) const;
-	bool attrByNameToLong(xml_node &root, char* name, unsigned long &param) const;
-	bool attrByNameToSLong(xml_node &root, char* name, long &param) const;
-	bool attrByNameToRayPosDistrType(xml_node &root, char* name, rayPosDistrType &param) const;
-	bool attrByNameToRayDirDistrType(xml_node &root, char* name, rayDirDistrType &param) const;
-	bool attrByNameToDetOutFormat(xml_node &root, char* name, detOutFormat &param) const;
-	bool attrByNameToBool(xml_node &root, char* name, bool &param) const;
-	bool attrByNameToAccelType(xml_node &root, char* name, accelType &param) const;
+	char* attrByNameToDouble(xml_node &root, char* name, double &param) const;
+	char* attrByNameToApertureType(xml_node &root, char* name, ApertureType &param) const;
+	char* attrByNameToInt(xml_node &root, char* name, int &param) const;
+	char* attrByNameToShort(xml_node &root, char* name, short &param) const;
+	char* attrByNameToLong(xml_node &root, char* name, unsigned long &param) const;
+	char* attrByNameToSLong(xml_node &root, char* name, long &param) const;
+	char* attrByNameToRayPosDistrType(xml_node &root, char* name, rayPosDistrType &param) const;
+	char* attrByNameToRayDirDistrType(xml_node &root, char* name, rayDirDistrType &param) const;
+	char* attrByNameToDetOutFormat(xml_node &root, char* name, detOutFormat &param) const;
+	char* attrByNameToBool(xml_node &root, char* name, bool &param) const;
+	char* attrByNameToAccelType(xml_node &root, char* name, accelType &param) const;
 };
 
 #endif

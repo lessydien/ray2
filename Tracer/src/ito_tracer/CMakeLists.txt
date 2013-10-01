@@ -168,6 +168,8 @@ OPTIX_add_sample_executable( ITO-MacroSim
   src/Coating.cpp
   src/Coating.h
   src/Coating_hit.h
+  src/Coating_NoCoating.cpp
+  src/Coating_NoCoating.h 
   src/differentialRayTracing/Coating_DiffRays.cpp
   src/differentialRayTracing/Coating_DiffRays.h
   src/differentialRayTracing/Coating_DiffRays_hit.h
@@ -289,6 +291,9 @@ OPTIX_add_sample_executable( ITO-MacroSim
   src/Scatter.cpp
   src/Scatter.h
   src/Scatter_hit.h
+  src/Scatter_NoScatter.cpp
+  src/Scatter_NoScatter.h
+  
   src/differentialRayTracing/Scatter_DiffRays.cpp
   src/differentialRayTracing/Scatter_DiffRays.h
   src/differentialRayTracing/Scatter_DiffRays_hit.h

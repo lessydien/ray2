@@ -114,6 +114,7 @@ class Material
 
 	virtual MaterialError processParseResults(MaterialParseParamStruct &parseResults_Mat);
 	virtual MaterialError parseXml(pugi::xml_node &node);
+	virtual bool checkParserError(char *msg);
 };
 
 #endif

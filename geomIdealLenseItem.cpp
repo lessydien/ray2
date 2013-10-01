@@ -16,6 +16,7 @@
 ************************************************************************/
 
 #include "geomIdealLenseItem.h"
+#include "materialIdealLenseItem.h"
 //#include "glut.h"
 
 #include <vtkCellArray.h>
@@ -31,6 +32,9 @@ using namespace macrosim;
 IdealLenseItem::IdealLenseItem(QString name, QObject *parent) :
 	GeometryItem(name, IDEALLENSE, parent)
 {
+	this->m_materialType=MATIDEALLENSE;
+	this->setChild(new MaterialIdealLenseItem());
+
 	// Create a polydata to store everything in
 	m_pPolydata = vtkSmartPointer<vtkPolyData>::New();
   

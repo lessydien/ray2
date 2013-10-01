@@ -46,7 +46,7 @@ bool ScatterFab::createScatInstFromXML(xml_node &node, Scatter* &pScat) const
 	switch (scatType)
 	{
 	case ST_NOSCATTER:
-		pScat=new Scatter();
+		pScat=new Scatter_NoScatter();
 		break;
 	case ST_TORRSPARR1D:
 		pScat=new Scatter_TorranceSparrow1D();
@@ -64,7 +64,7 @@ bool ScatterFab::createScatInstFromXML(xml_node &node, Scatter* &pScat) const
 		pScat=new Scatter_Lambert2D();
 		break;
 	default:
-		pScat=new Scatter();
+		pScat=new Scatter_NoScatter();
 		break;
 	}
 

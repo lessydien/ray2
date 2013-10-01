@@ -62,7 +62,8 @@ CoatingError Coating::processParseResults(MaterialParseParamStruct &parseResults
  */
 CoatingError Coating::parseXml(pugi::xml_node &geometry)
 {
-	return COAT_NO_ERROR;
+	cout << "error in Coating.parseXml(): not implemented yet for given coating type" << endl;
+	return COAT_ERROR;
 }
 
 /**

@@ -54,7 +54,8 @@ detError  DetectorPhaseSpace::parseXml(pugi::xml_node &det, vector<Detector*> &d
 		std::cout << "error in DetectorPhaseSpace.parseXml(): Detector.parseXml()  returned an error." << std::endl;
 		return DET_ERROR;
 	}
-	return DET_NO_ERROR;
+	std::cout << "error in DetectorPhaseSpace.parseXml(): not implemented yet." << std::endl;
+	return DET_ERROR;
 };
 
 /**

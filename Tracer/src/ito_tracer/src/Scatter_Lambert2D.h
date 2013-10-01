@@ -56,8 +56,8 @@ public:
 		impAreaHalfWidth=make_double2(0,0);
 		impAreaRoot=make_double3(0,0,0);
 		impAreaTilt=make_double3(0,0,0);
-		impAreaType=AT_UNKNOWNATYPE;
-		type=ST_NOSCATTER;
+		impAreaType=AT_INFTY;
+		type=ST_LAMBERT2D;
 		TIR=0;
 	}
 	~ScatLambert2D_scatParams()
@@ -91,6 +91,7 @@ class Scatter_Lambert2D: public Scatter
     /* standard constructor */
     Scatter_Lambert2D()
 	{
+		this->fullParamsPtr=new ScatLambert2D_scatParams();
 		reducedParams.TIR=0;
 		/* set ptx path for OptiX calculations */
 		path_to_ptx[512];

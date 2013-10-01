@@ -411,19 +411,19 @@ bool createSceneFromXML(Group **oGroupPtrPtr, char *sceneChar, Field ***sourceLi
 	memcpy(INPUT_FILEPATH, simParams.inputFilesPath, sizeof(char)*512);
 	memcpy(PATH_TO_PTX, simParams.path_to_ptx, sizeof(char)*512);
 
-	if (!l_pParser->attrByNameToInt(scene, "numCPU", simParams.numCPU))
+	if (NULL!=l_pParser->attrByNameToInt(scene, "numCPU", simParams.numCPU))
 	{
 		cout << "error in createSceneFromXML: numCPU is not defined" << endl;
 		return false;
 	}
 	unsigned long l_long;
-	if (!l_pParser->attrByNameToLong(scene, "rayTilingHeight", l_long))
+	if (NULL!=l_pParser->attrByNameToLong(scene, "rayTilingHeight", l_long))
 	{
 		cout << "error in createSceneFromXML: subsetHeight is not defined" << endl;
 		return false;
 	}
 	simParams.subsetHeight=l_long;
-	if (!l_pParser->attrByNameToLong(scene, "rayTilingWidth", l_long))
+	if (NULL!=l_pParser->attrByNameToLong(scene, "rayTilingWidth", l_long))
 	{
 		cout << "error in createSceneFromXML: subsetWidth is not defined" << endl;
 		return false;

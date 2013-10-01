@@ -473,11 +473,8 @@ MaterialError MaterialRefracting::parseXml(pugi::xml_node &material)
 	// if we have a user defined glass we simply take the values of n1 and n2 defined in the prescription file and set no dispersion
 	if (!strcmp(l_glassName,"USERDEFINED"))
 	{
-		if (!l_parser.attrByNameToDouble(material, "n1", this->params.n1))
-		{
-			std::cout << "error in MaterialRefracting.parseXml(): n1 is not defined" << std::endl;
+		if (!this->checkParserError(l_parser.attrByNameToDouble(material, "n1", this->params.n1)))
 			return MAT_ERR;
-		}
 
 		this->glassDispersionParamsPtr->lambdaMax=DOUBLE_MAX;
 		this->glassDispersionParamsPtr->lambdaMin=0;
@@ -535,11 +532,8 @@ MaterialError MaterialRefracting::parseXml(pugi::xml_node &material)
 	// if we have a user defined glass we simply take the values of n1 and n2 defined in the prescription file and set no dispersion
 	if (!strcmp(l_immersionName,"USERDEFINED"))
 	{
-		if (!l_parser.attrByNameToDouble(material, "n2", this->params.n2))
-		{
-			std::cout << "error in MaterialRefracting.parseXml(): n2 is not defined" << std::endl;
+		if (!this->checkParserError(l_parser.attrByNameToDouble(material, "n2", this->params.n2)))
 			return MAT_ERR;
-		}
 
 		this->immersionDispersionParamsPtr->lambdaMax=DOUBLE_MAX;
 		this->immersionDispersionParamsPtr->lambdaMin=0;

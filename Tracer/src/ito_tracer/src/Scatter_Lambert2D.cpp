@@ -34,6 +34,8 @@
 
 ScatterError Scatter_Lambert2D::setFullParams(ScatLambert2D_scatParams* ptrIn)
 {
+	if (this->fullParamsPtr != NULL)
+		delete this->fullParamsPtr;
 	this->fullParamsPtr=ptrIn;
 	return SCAT_NO_ERROR;
 };
@@ -149,5 +151,8 @@ ScatterError Scatter_Lambert2D::processParseResults(MaterialParseParamStruct &pa
  */
 ScatterError Scatter_Lambert2D::parseXml(pugi::xml_node &geometry)
 {
+	Parser_XML l_parser;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "Tis", this->getFullParams()->TIR)))
+		return SCAT_ERROR;
 	return SCAT_NO_ERROR;
 }

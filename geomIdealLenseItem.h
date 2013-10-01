@@ -40,6 +40,8 @@ class IdealLenseItem :
 {
 	Q_OBJECT
 
+	Q_PROPERTY(Abstract_MaterialType materialType DESIGNABLE true USER true); // overwrite materialType-Property of abstractItem, so it can not be changed in propertyEditor of this item
+
 public:
 
 	IdealLenseItem(QString name="IdealLense", QObject *parent=0);

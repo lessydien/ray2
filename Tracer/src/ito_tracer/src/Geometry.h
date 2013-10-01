@@ -141,6 +141,7 @@ class Geometry
     float boundingBox_min[3];
 	char path_to_ptx_boundingBox[512];
 	char path_to_ptx_intersect[512];
+	char name[GEOM_CMT_LENGTH];
 	char comment[GEOM_CMT_LENGTH];
 	simMode mode;
 
@@ -237,6 +238,7 @@ class Geometry
 	virtual geometryError updateCPUSimInstance(double lambda, simMode mode);
 	virtual geometryError processParseResults(GeometryParseParamStruct &parseResults_Geom, int geomID);
 	virtual geometryError parseXml(pugi::xml_node &geometry, simMode l_mode, vector<Geometry*> &geomVec);
+	virtual bool checkParserError(char *msg);
 };
 
 

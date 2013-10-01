@@ -379,21 +379,12 @@ geometryError CadObject::parseXml(pugi::xml_node &geometry, simMode l_mode, vect
 	rotateRay(&l_vec,this->getParamsPtr()->tilt);
 	this->paramsPtr->normal=l_vec;
 	Parser_XML l_parser;
-	if (!l_parser.attrByNameToDouble(geometry, "root.x", this->paramsPtr->root.x))
-	{
-		std::cout << "error in CadObject.parseXml(): root.x is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "root.x", this->paramsPtr->root.x)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "root.y", this->paramsPtr->root.y))
-	{
-		std::cout << "error in CadObject.parseXml(): root.y is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "root.y", this->paramsPtr->root.y)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "root.z", this->paramsPtr->root.z))
-	{
-		std::cout << "error in CadObject.parseXml(): root.z is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "root.z", this->paramsPtr->root.z)))
 		return GEOM_ERR;
-	}
 	const char* l_objFileName=l_parser.attrValByName(geometry, "objFilename");
 	if (l_objFileName==NULL)
 	{

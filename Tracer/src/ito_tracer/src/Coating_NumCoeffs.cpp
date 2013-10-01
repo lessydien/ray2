@@ -170,22 +170,35 @@ CoatingError Coating_NumCoeffs::processParseResults(MaterialParseParamStruct &pa
 CoatingError Coating_NumCoeffs::parseXml(pugi::xml_node &coating)
 {
 	Parser_XML l_parser;
-	// call base class function
-	if (COAT_NO_ERROR != Coating::parseXml(coating))
-	{
-		std::cout << "error in Coating_NumCoeffs.parseXml(): Coating.parseXml() returned an error" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(coating, "tA", this->fullParamsPtr->t)))
 		return COAT_ERROR;
-	}
-	if (!l_parser.attrByNameToDouble(coating, "tA", this->fullParamsPtr->t))
-	{
-		std::cout << "error in Coating_NumCoeffs.parseXml(): transmission coefficient is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(coating, "rA", this->fullParamsPtr->r)))
 		return COAT_ERROR;
-	}
-	if (!l_parser.attrByNameToDouble(coating, "rA", this->fullParamsPtr->r))
-	{
-		std::cout << "error in Coating_NumCoeffs.parseXml(): reflection coefficient is not defined" << std::endl;
-		return COAT_ERROR;
-	}
 
 	return COAT_NO_ERROR;
 }
+
+/**
+ * \detail checks wether parseing was succesfull and assembles the error message if it was not
+ *
+ * returns the coordinates of the minimum corner of the bounding box of the surface
+ *
+ * \param[in] char *msg
+ * 
+ * \return bool
+ * \sa 
+ * \remarks 
+ * \author Mauch
+ */
+bool Coating_NumCoeffs::checkParserError(char *msg)
+{
+	if (msg==NULL)
+		return true;
+	else
+	{
+		cout << "error in Coating_NumCoeffs.parseXML(): " << msg << endl;
+		delete msg;
+		msg=NULL;
+		return false;
+	}
+};

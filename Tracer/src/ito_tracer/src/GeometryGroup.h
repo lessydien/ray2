@@ -170,6 +170,7 @@ class GeometryGroup
 	geometryGroupError createCPUSimInstance(double lambda, simMode mode );
 	geometryGroupError updateCPUSimInstance(double lambda, simMode mode );
 	geometryGroupError parseXml(pugi::xml_node &geomGroup);
+	virtual bool checkParserError(char *msg);
 };
 
 #endif

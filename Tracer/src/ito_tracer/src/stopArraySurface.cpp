@@ -302,44 +302,23 @@ geometryError StopArraySurface::parseXml(pugi::xml_node &geometry, simMode mode,
 	rotateRay(&(this->paramsPtr->normal), this->paramsPtr->tilt);
 
 	double3 l_root;
-	if (!l_parser.attrByNameToDouble(geometry, "root.x", l_root.x))
-	{
-		std::cout << "error in StopArraySurface.parseXml(): root.x is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "root.x", l_root.x)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "root.y", l_root.y))
-	{
-		std::cout << "error in StopArraySurface.parseXml(): root.y is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "root.y", l_root.y)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "root.z", l_root.z))
-	{
-		std::cout << "error in StopArraySurface.parseXml(): root.z is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "root.z", l_root.z)))
 		return GEOM_ERR;
-	}
 	this->paramsPtr->root=l_root;
 
 
-	if (!l_parser.attrByNameToDouble(geometry, "microStopRad.x", this->paramsPtr->microStopRad.x))
-	{
-		std::cout << "error in StopArraySurface.parseXml(): microStopRad.x is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "microStopRad.x", this->paramsPtr->microStopRad.x)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "microStopRad.y", this->paramsPtr->microStopRad.y))
-	{
-		std::cout << "error in StopArraySurface.parseXml(): microAptRad.y is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "microStopRad.y", this->paramsPtr->microStopRad.y)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "microStopPitch.x", this->paramsPtr->microStopPitch.x))
-	{
-		std::cout << "error in StopArraySurface.parseXml(): microStopPitch.x is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "microStopPitch.x", this->paramsPtr->microStopPitch.x)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "microStopPitch.y", this->paramsPtr->microStopPitch.y))
-	{
-		std::cout << "error in StopArraySurface.parseXml(): microStopPitch.y is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "microStopPitch.y", this->paramsPtr->microStopPitch.y)))
 		return GEOM_ERR;
-	}
 
 	const char* str=l_parser.attrValByName(geometry, "microStopType");
 	if (str==NULL)

@@ -49,7 +49,7 @@ bool CoatingFab::createCoatInstFromXML(xml_node &node, Coating* &pCoat) const
 		pCoat=new Coating_NumCoeffs();
 		break;
 	case CT_NOCOATING:
-		pCoat=new Coating();
+		pCoat=new Coating_NoCoating();
 		break;
 	case CT_FRESNELCOEFFS:
 		pCoat=new Coating_FresnelCoeffs();
@@ -58,7 +58,7 @@ bool CoatingFab::createCoatInstFromXML(xml_node &node, Coating* &pCoat) const
 		pCoat=new Coating_DispersiveNumCoeffs();
 		break;
 	default:
-		pCoat=new Coating(); // default is no caoting
+		pCoat=new Coating_NoCoating(); // default is no caoting
 		break;
 	}
 

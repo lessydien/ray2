@@ -405,111 +405,166 @@ accelType Parser_XML::asciiToAccelType(const char* ascii) const
 	return ACCEL_NOACCEL;
 }
 
-bool Parser_XML::attrByNameToDouble(xml_node &root, char* name, double &param) const
+char* Parser_XML::attrByNameToDouble(xml_node &root, char* name, double &param) const
 {
 	const char* str=attrValByName(root, name);
 	if (str==NULL)
-		return false;
+	{
+		char* msg=(char*)malloc(128*sizeof(char));
+		sprintf(msg, "%s is not defined", name);
+		msg[127]='\0';
+		return msg;
+	}
 	param=atof(str);
-	return true;
+	return NULL;
 };
 
-bool Parser_XML::attrByNameToApertureType(xml_node &root, char* name, ApertureType &param) const
+char* Parser_XML::attrByNameToApertureType(xml_node &root, char* name, ApertureType &param) const
 {
 	const char* str=attrValByName(root, name);
 	if (str==NULL)
-		return false;
+	{
+		char* msg=(char*)malloc(128*sizeof(char));
+		sprintf(msg, "%s is not defined", name);
+		msg[127]='\0';
+		return msg;
+	}
 	param=asciiToApertureType(str);	
-	return true;
+	return NULL;
 };
 
-bool Parser_XML::attrByNameToInt(xml_node &root, char* name, int &param) const
+char* Parser_XML::attrByNameToInt(xml_node &root, char* name, int &param) const
 {
 	const char* str=attrValByName(root, name);
 	if (str==NULL)
-		return false;
+	{
+		char* msg=(char*)malloc(128*sizeof(char));
+		sprintf(msg, "%s is not defined", name);
+		msg[127]='\0';
+		return msg;
+	}
 	param=atoi(str);	
-	return true;
+	return NULL;
 };
 
-bool Parser_XML::attrByNameToShort(xml_node &root, char* name, short &param) const
+char* Parser_XML::attrByNameToShort(xml_node &root, char* name, short &param) const
 {
 	const char* str=attrValByName(root, name);
 	if (str==NULL)
-		return false;
+	{
+		char* msg=(char*)malloc(128*sizeof(char));
+		sprintf(msg, "%s is not defined", name);
+		msg[127]='\0';
+		return msg;
+	}
 	int tmp=atoi(str);
 	param=(short)(tmp);	
-	return true;
+	return NULL;
 };
 
-bool Parser_XML::attrByNameToLong(xml_node &root, char* name, unsigned long &param) const
+char* Parser_XML::attrByNameToLong(xml_node &root, char* name, unsigned long &param) const
 {
 	const char* str=attrValByName(root, name);
 	if (str==NULL)
-		return false;
+	{
+		char* msg=(char*)malloc(128*sizeof(char));
+		sprintf(msg, "%s is not defined", name);
+		msg[127]='\0';
+		return msg;
+	}
 	param=atol(str);	
-	return true;
+	return NULL;
 };
 
-bool Parser_XML::attrByNameToSLong(xml_node &root, char* name, long &param) const
+char* Parser_XML::attrByNameToSLong(xml_node &root, char* name, long &param) const
 {
 	const char* str=attrValByName(root, name);
 	if (str==NULL)
-		return false;
+	{
+		char* msg=(char*)malloc(128*sizeof(char));
+		sprintf(msg, "%s is not defined", name);
+		msg[127]='\0';
+		return msg;
+	}
 	param=atol(str);	
-	return true;
+	return NULL;
 };
 
-bool Parser_XML::attrByNameToRayPosDistrType(xml_node &root, char* name, rayPosDistrType &param) const
+char* Parser_XML::attrByNameToRayPosDistrType(xml_node &root, char* name, rayPosDistrType &param) const
 {
 	const char* str=attrValByName(root, name);
 	if (str==NULL)
-		return false;
+	{
+		char* msg=(char*)malloc(128*sizeof(char));
+		sprintf(msg, "%s is not defined", name);
+		msg[127]='\0';
+		return msg;
+	}
 	param=asciiToRayPosDistrType(str);	
-	return true;	
+	return NULL;	
 };
 
-bool Parser_XML::attrByNameToRayDirDistrType(xml_node &root, char* name, rayDirDistrType &param) const
+char* Parser_XML::attrByNameToRayDirDistrType(xml_node &root, char* name, rayDirDistrType &param) const
 {
 	const char* str=attrValByName(root, name);
 	if (str==NULL)
-		return false;
+	{
+		char* msg=(char*)malloc(128*sizeof(char));
+		sprintf(msg, "%s is not defined", name);
+		msg[127]='\0';
+		return msg;
+	}
 	param=asciiToRayDirDistrType(str);	
-	return true;			
+	return NULL;			
 };
 
-bool Parser_XML::attrByNameToDetOutFormat(xml_node &root, char* name, detOutFormat &param) const
+char* Parser_XML::attrByNameToDetOutFormat(xml_node &root, char* name, detOutFormat &param) const
 {
 	const char* str=attrValByName(root, name);
 	if (str==NULL)
-		return false;
+	{
+		char* msg=(char*)malloc(128*sizeof(char));
+		sprintf(msg, "%s is not defined", name);
+		msg[127]='\0';
+		return msg;
+	}
 	param=asciiToDetOutFormat(str);	
-	return true;			
+	return NULL;			
 };
 
-bool Parser_XML::attrByNameToBool(xml_node &root, char* name, bool &param) const
+char* Parser_XML::attrByNameToBool(xml_node &root, char* name, bool &param) const
 {
 	const char* str=attrValByName(root, name);
 	if (str==NULL)
-		return false;
+	{
+		char* msg=(char*)malloc(128*sizeof(char));
+		sprintf(msg, "%s is not defined", name);
+		msg[127]='\0';
+		return msg;
+	}
 	if (!strcmp(str, "true"))
 	{
 		param=true;
-		return true;
+		return NULL;
 	}
 	else
 	{
 		param=false;
-		return true;
+		return NULL;
 	}
-	return false;			
+
 };
 
-bool Parser_XML::attrByNameToAccelType(xml_node &root, char* name, accelType &param) const
+char* Parser_XML::attrByNameToAccelType(xml_node &root, char* name, accelType &param) const
 {
 	const char* str=attrValByName(root, name);
 	if (str==NULL)
-		return false;
+	{
+		char* msg=(char*)malloc(128*sizeof(char));
+		sprintf(msg, "%s is not defined", name);
+		msg[127]='\0';
+		return msg;
+	}
 	param=asciiToAccelType(str);	
-	return true;			
+	return NULL;			
 };

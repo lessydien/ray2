@@ -207,38 +207,20 @@ MaterialError MaterialVolumeScatter::parseXml(pugi::xml_node &material)
 
 	Parser_XML l_parser;
 
-	if (!l_parser.attrByNameToDouble(material, "n1", this->params.n1))
-	{
-		std::cout << "error in MaterialVolumeScatter.parseXml(): n1 is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(material, "n1", this->params.n1)))
 		return MAT_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(material, "n2", this->params.n2))
-	{
-		std::cout << "error in MaterialVolumeScatter.parseXml(): n1 is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(material, "n2", this->params.n2)))
 		return MAT_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(material, "meanFreePath", this->params.meanFreePath))
-	{
-		std::cout << "error in MaterialVolumeScatter.parseXml(): meanFreePath is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(material, "meanFreePath", this->params.meanFreePath)))
 		return MAT_ERR;
-	}
 	double l_g;
-	if (!l_parser.attrByNameToDouble(material, "anisotropyFac", l_g))
-	{
-		std::cout << "error in MaterialVolumeScatter.parseXml(): anisotropyFac is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(material, "anisotropyFac", l_g)))
 		return MAT_ERR;
-	}
 	this->params.g=l_g/360*2*M_PI;
-	if (!l_parser.attrByNameToDouble(material, "absorptionCoeff", this->params.absorptionCoeff))
-	{
-		std::cout << "error in MaterialVolumeScatter.parseXml(): absorptionCoeff is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(material, "absorptionCoeff", this->params.absorptionCoeff)))
 		return MAT_ERR;
-	}
-	if (!l_parser.attrByNameToInt(material, "maxNrBounces", this->params.maxNrBounces))
-	{
-		std::cout << "error in MaterialVolumeScatter.parseXml(): maxNrBounces is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToInt(material, "maxNrBounces", this->params.maxNrBounces)))
 		return MAT_ERR;
-	}
 
 
 	return MAT_NO_ERR;

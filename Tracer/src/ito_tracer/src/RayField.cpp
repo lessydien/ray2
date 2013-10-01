@@ -816,123 +816,60 @@ fieldError RayField::parseXml(pugi::xml_node &field, vector<Field*> &fieldVec)
 		return FIELD_ERR;
 	}
 
-	if (!l_parser.attrByNameToDouble(field, "root.x", this->getParamsPtr()->translation.x))
-	{
-		std::cout << "error in RayField.parseXml(): root.x is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(field, "root.x", this->getParamsPtr()->translation.x)))
 		return FIELD_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(field, "root.y", this->getParamsPtr()->translation.y))
-	{
-		std::cout << "error in RayField.parseXml(): root.y is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(field, "root.y", this->getParamsPtr()->translation.y)))
 		return FIELD_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(field, "root.z", this->getParamsPtr()->translation.z))
-	{
-		std::cout << "error in RayField.parseXml(): root.z is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(field, "root.z", this->getParamsPtr()->translation.z)))
 		return FIELD_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(field, "tilt.x", this->getParamsPtr()->tilt.x))
-	{
-		std::cout << "error in RayField.parseXml(): tilt.x is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(field, "tilt.x", this->getParamsPtr()->tilt.x)))
 		return FIELD_ERR;
-	}
 	this->getParamsPtr()->tilt.x=this->getParamsPtr()->tilt.x/360*2*PI;
-	if (!l_parser.attrByNameToDouble(field, "tilt.y", this->getParamsPtr()->tilt.y))
-	{
-		std::cout << "error in RayField.parseXml(): tilt.y is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(field, "tilt.y", this->getParamsPtr()->tilt.y)))
 		return FIELD_ERR;
-	}
 	this->getParamsPtr()->tilt.y=this->getParamsPtr()->tilt.y/360*2*PI;
-	if (!l_parser.attrByNameToDouble(field, "tilt.z", this->getParamsPtr()->tilt.z))
-	{
-		std::cout << "error in RayField.parseXml(): tilt.z is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(field, "tilt.z", this->getParamsPtr()->tilt.z)))
 		return FIELD_ERR;
-	}
 	this->getParamsPtr()->tilt.z=this->getParamsPtr()->tilt.z/360*2*PI;
-	if (!l_parser.attrByNameToDouble(field, "rayDirection.x", this->getParamsPtr()->rayDirection.x))
-	{
-		std::cout << "error in RayField.parseXml(): rayDirection.x is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(field, "rayDirection.x", this->getParamsPtr()->rayDirection.x)))
 		return FIELD_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(field, "rayDirection.y", this->getParamsPtr()->rayDirection.y))
-	{
-		std::cout << "error in RayField.parseXml(): rayDirection.y is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(field, "rayDirection.y", this->getParamsPtr()->rayDirection.y)))
 		return FIELD_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(field, "rayDirection.z", this->getParamsPtr()->rayDirection.z))
-	{
-		std::cout << "error in RayField.parseXml(): rayDirection.z is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(field, "rayDirection.z", this->getParamsPtr()->rayDirection.z)))
 		return FIELD_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(field, "power", this->getParamsPtr()->flux))
-	{
-		std::cout << "error in RayField.parseXml(): power is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(field, "power", this->getParamsPtr()->flux)))
 		return FIELD_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(field, "coherence", this->getParamsPtr()->coherence))
-	{
-		std::cout << "error in RayField.parseXml(): coherence is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(field, "coherence", this->getParamsPtr()->coherence)))
 		return FIELD_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(field, "alphaMax.x", this->getParamsPtr()->alphaMax.x))
-	{
-		std::cout << "error in RayField.parseXml(): alphaMax.x is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(field, "alphaMax.x", this->getParamsPtr()->alphaMax.x)))
 		return FIELD_ERR;
-	}
 	this->getParamsPtr()->alphaMax.x=this->getParamsPtr()->alphaMax.x/360*2*PI;
-	if (!l_parser.attrByNameToDouble(field, "alphaMax.y", this->getParamsPtr()->alphaMax.y))
-	{
-		std::cout << "error in RayField.parseXml(): alphaMax.y is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(field, "alphaMax.y", this->getParamsPtr()->alphaMax.y)))
 		return FIELD_ERR;
-	}
 	this->getParamsPtr()->alphaMax.y=this->getParamsPtr()->alphaMax.y/360*2*PI;
-	if (!l_parser.attrByNameToDouble(field, "alphaMin.x", this->getParamsPtr()->alphaMin.x))
-	{
-		std::cout << "error in RayField.parseXml(): alphaMin.x is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(field, "alphaMin.x", this->getParamsPtr()->alphaMin.x)))
 		return FIELD_ERR;
-	}
 	this->getParamsPtr()->alphaMin.x=this->getParamsPtr()->alphaMin.x/360*2*PI;
-	if (!l_parser.attrByNameToDouble(field, "alphaMin.y", this->getParamsPtr()->alphaMin.y))
-	{
-		std::cout << "error in RayField.parseXml(): alphaMin.y is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(field, "alphaMin.y", this->getParamsPtr()->alphaMin.y)))
 		return FIELD_ERR;
-	}
 	this->getParamsPtr()->alphaMin.y=this->getParamsPtr()->alphaMin.y/360*2*PI;
 	unsigned long l_val;
-	if (!l_parser.attrByNameToLong(field, "width", l_val))
-	{
-		std::cout << "error in RayField.parseXml(): width is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToLong(field, "width", l_val)))
 		return FIELD_ERR;
-	}
 	this->getParamsPtr()->width=l_val;
-	if (!l_parser.attrByNameToLong(field, "height", l_val))
-	{
-		std::cout << "error in RayField.parseXml(): height is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToLong(field, "height", l_val)))
 		return FIELD_ERR;
-	}
 	this->getParamsPtr()->height=l_val;
-	if (!l_parser.attrByNameToLong(field, "widthLayout", l_val))
-	{
-		std::cout << "error in RayField.parseXml(): widthLayout is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToLong(field, "widthLayout", l_val)))
 		return FIELD_ERR;
-	}
 	this->getParamsPtr()->widthLayout=l_val;
-	if (!l_parser.attrByNameToLong(field, "heightLayout", l_val))
-	{
-		std::cout << "error in RayField.parseXml(): heightLayout is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToLong(field, "heightLayout", l_val)))
 		return FIELD_ERR;
-	}
 	this->getParamsPtr()->heightLayout=l_val;
-	if (!l_parser.attrByNameToRayDirDistrType(field, "rayDirDistrType", this->getParamsPtr()->dirDistrType))
-	{
-		std::cout << "error in RayField.parseXml(): rayDirDistrType is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToRayDirDistrType(field, "rayDirDistrType", this->getParamsPtr()->dirDistrType)))
 		return FIELD_ERR;
-	}
-	if (!l_parser.attrByNameToRayPosDistrType(field, "rayPosDistrType", this->getParamsPtr()->posDistrType))
-	{
-		std::cout << "error in RayField.parseXml(): rayPosDistrType is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToRayPosDistrType(field, "rayPosDistrType", this->getParamsPtr()->posDistrType)))
 		return FIELD_ERR;
-	}
 	double rotX=this->getParamsPtr()->tilt.x;
 	double rotY=this->getParamsPtr()->tilt.y;
 	double rotZ=this->getParamsPtr()->tilt.z;
@@ -944,16 +881,10 @@ fieldError RayField::parseXml(pugi::xml_node &field, vector<Field*> &fieldVec)
 	this->getParamsPtr()->Mrot=Mrot*MrotZ;
 
 	double2 l_aprtHalfWidth;
-	if (!l_parser.attrByNameToDouble(field, "apertureHalfWidth.x", l_aprtHalfWidth.x))
-	{
-		std::cout << "error in RayField.parseXml(): apertureHalfWidth.x is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(field, "apertureHalfWidth.x", l_aprtHalfWidth.x)))
 		return FIELD_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(field, "apertureHalfWidth.y", l_aprtHalfWidth.y))
-	{
-		std::cout << "error in RayField.parseXml(): apertureHalfWidth.y is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(field, "apertureHalfWidth.y", l_aprtHalfWidth.y)))
 		return FIELD_ERR;
-	}
 
 	this->getParamsPtr()->rayPosStart=make_double3(-l_aprtHalfWidth.x,-l_aprtHalfWidth.y,0);
 	this->getParamsPtr()->rayPosEnd=make_double3(l_aprtHalfWidth.x,l_aprtHalfWidth.y,0);
@@ -981,4 +912,29 @@ fieldError RayField::parseXml(pugi::xml_node &field, vector<Field*> &fieldVec)
 
 
 	return FIELD_NO_ERR;
+};
+
+/**
+ * \detail checks wether parseing was succesfull and assembles the error message if it was not
+ *
+ * returns the coordinates of the minimum corner of the bounding box of the surface
+ *
+ * \param[in] char *msg
+ * 
+ * \return bool
+ * \sa 
+ * \remarks 
+ * \author Mauch
+ */
+bool RayField::checkParserError(char *msg)
+{
+	if (msg==NULL)
+		return true;
+	else
+	{
+		cout << "error in RayField.parseXML(): " << msg << endl;
+		delete msg;
+		msg=NULL;
+		return false;
+	}
 };

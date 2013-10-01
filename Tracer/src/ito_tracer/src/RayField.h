@@ -221,6 +221,8 @@ class RayField : public Field
 
 	virtual fieldError doSim(Group &oGroup, simAssParams &params, bool &simDone);
 //	virtual fieldError writeData2File(FILE *hFile_pos, rayDataOutParams outParams);
+
+	virtual bool RayField::checkParserError(char *msg);
 };
 
 #endif

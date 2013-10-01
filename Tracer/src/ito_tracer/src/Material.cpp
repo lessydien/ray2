@@ -486,3 +486,28 @@ MatDispersionParams* Material::getImmersionDispersionParams(void)
 	std::cout << "error in Material.getImmersionDispersionParams(): not defined for the given Material" << std::endl;
 	return NULL;
 };
+
+/**
+ * \detail checks wether parsing was succesfull and assembles the error message if it was not
+ *
+ * returns the coordinates of the minimum corner of the bounding box of the surface
+ *
+ * \param[in] char *msg
+ * 
+ * \return bool
+ * \sa 
+ * \remarks 
+ * \author Mauch
+ */
+bool Material::checkParserError(char *msg)
+{
+	if (msg==NULL)
+		return true;
+	else
+	{
+		cout << "error in Material.parseXML(): " << msg << endl;
+		delete msg;
+		msg=NULL;
+		return false;
+	}
+};

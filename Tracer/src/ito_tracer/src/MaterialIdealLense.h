@@ -118,6 +118,7 @@ class MaterialIdealLense: public Material
 	MatIdealLense_DispersionParams* getDispersionParams(void);
 	MaterialError updateCPUSimInstance(double lambda);
 	MaterialError processParseResults(MaterialParseParamStruct &parseResults_Mat);
+	MaterialError parseXml(pugi::xml_node &geometry);
 };
 
 #endif

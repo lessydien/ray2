@@ -732,11 +732,8 @@ MaterialError MaterialLinearGrating1D::parseXml(pugi::xml_node &material)
 		// if we have a user defined glass we simply take the values of n1 and n2 defined in the prescription file and set no dispersion
 		if (!strcmp(l_glassName,"USERDEFINED"))
 		{
-			if (!l_parser.attrByNameToDouble(material, "n1", this->params.nRefr1))
-			{
-				std::cout << "error in MaterialLinearGrating1D.parseXml(): n1 is not defined" << std::endl;
+			if (!this->checkParserError(l_parser.attrByNameToDouble(material, "n1", this->params.nRefr1)))
 				return MAT_ERR;
-			}
 
 			this->glassDispersionParamsPtr->lambdaMax=DOUBLE_MAX;
 			this->glassDispersionParamsPtr->lambdaMin=0;
@@ -795,11 +792,8 @@ MaterialError MaterialLinearGrating1D::parseXml(pugi::xml_node &material)
 	// if we have a user defined glass we simply take the values of n1 and n2 defined in the prescription file and set no dispersion
 	if (!strcmp(l_immersionName,"USERDEFINED"))
 	{
-		if (!l_parser.attrByNameToDouble(material, "n2", this->params.nRefr2))
-		{
-			std::cout << "error in MaterialLinearGrating1D.parseXml(): n2 is not defined" << std::endl;
+		if (!this->checkParserError(l_parser.attrByNameToDouble(material, "n2", this->params.nRefr2)))
 			return MAT_ERR;
-		}
 
 		this->immersionDispersionParamsPtr->lambdaMax=DOUBLE_MAX;
 		this->immersionDispersionParamsPtr->lambdaMin=0;
@@ -847,72 +841,36 @@ MaterialError MaterialLinearGrating1D::parseXml(pugi::xml_node &material)
 		delete parseResultsGlassPtr;
 	}
 
-	if (!l_parser.attrByNameToDouble(material, "diffAxis.x", this->diffractionParamsPtr->diffAxis.x))
-	{
-		std::cout << "error in MaterialLinearGrating1D.parseXml(): diffAxis.x is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(material, "diffAxis.x", this->diffractionParamsPtr->diffAxis.x)))
 		return MAT_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(material, "diffAxis.y", this->diffractionParamsPtr->diffAxis.y))
-	{
-		std::cout << "error in MaterialLinearGrating1D.parseXml(): diffAxis.y is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(material, "diffAxis.y", this->diffractionParamsPtr->diffAxis.y)))
 		return MAT_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(material, "diffAxis.z", this->diffractionParamsPtr->diffAxis.z))
-	{
-		std::cout << "error in MaterialLinearGrating1D.parseXml(): diffAxis.z is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(material, "diffAxis.z", this->diffractionParamsPtr->diffAxis.z)))
 		return MAT_ERR;
-	}
 
 	// so far we only allow for exactly 9 diffraction orders
 	this->diffractionParamsPtr->nrOrders=9;
 	this->diffractionParamsPtr->diffOrdersPtr=(short*)calloc(this->diffractionParamsPtr->nrOrders,sizeof(short));
 
-	if (!l_parser.attrByNameToShort(material, "diffOrder.x1", this->diffractionParamsPtr->diffOrdersPtr[0]))
-	{
-		std::cout << "error in MaterialLinearGrating1D.parseXml(): diffOrder.x1 is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToShort(material, "diffOrder.x1", this->diffractionParamsPtr->diffOrdersPtr[0])))
 		return MAT_ERR;
-	}
 
-	if (!l_parser.attrByNameToShort(material, "diffOrder.x2", this->diffractionParamsPtr->diffOrdersPtr[1]))
-	{
-		std::cout << "error in MaterialLinearGrating1D.parseXml(): diffOrder.x2 is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToShort(material, "diffOrder.x2", this->diffractionParamsPtr->diffOrdersPtr[1])))
 		return MAT_ERR;
-	}
-	if (!l_parser.attrByNameToShort(material, "diffOrder.x3", this->diffractionParamsPtr->diffOrdersPtr[2]))
-	{
-		std::cout << "error in MaterialLinearGrating1D.parseXml(): diffOrder.x3 is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToShort(material, "diffOrder.x3", this->diffractionParamsPtr->diffOrdersPtr[2])))
 		return MAT_ERR;
-	}
-	if (!l_parser.attrByNameToShort(material, "diffOrder.x4", this->diffractionParamsPtr->diffOrdersPtr[3]))
-	{
-		std::cout << "error in MaterialLinearGrating1D.parseXml(): diffOrder.x4 is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToShort(material, "diffOrder.x4", this->diffractionParamsPtr->diffOrdersPtr[3])))
 		return MAT_ERR;
-	}
-	if (!l_parser.attrByNameToShort(material, "diffOrder.x5", this->diffractionParamsPtr->diffOrdersPtr[4]))
-	{
-		std::cout << "error in MaterialLinearGrating1D.parseXml(): diffOrder.x5 is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToShort(material, "diffOrder.x5", this->diffractionParamsPtr->diffOrdersPtr[4])))
 		return MAT_ERR;
-	}
-	if (!l_parser.attrByNameToShort(material, "diffOrder.x6", this->diffractionParamsPtr->diffOrdersPtr[5]))
-	{
-		std::cout << "error in MaterialLinearGrating1D.parseXml(): diffOrder.x6 is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToShort(material, "diffOrder.x6", this->diffractionParamsPtr->diffOrdersPtr[5])))
 		return MAT_ERR;
-	}
-	if (!l_parser.attrByNameToShort(material, "diffOrder.x7", this->diffractionParamsPtr->diffOrdersPtr[6]))
-	{
-		std::cout << "error in MaterialLinearGrating1D.parseXml(): diffOrder.x7 is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToShort(material, "diffOrder.x7", this->diffractionParamsPtr->diffOrdersPtr[6])))
 		return MAT_ERR;
-	}
-	if (!l_parser.attrByNameToShort(material, "diffOrder.x8", this->diffractionParamsPtr->diffOrdersPtr[7]))
-	{
-		std::cout << "error in MaterialLinearGrating1D.parseXml(): diffOrder.x8 is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToShort(material, "diffOrder.x8", this->diffractionParamsPtr->diffOrdersPtr[7])))
 		return MAT_ERR;
-	}
-	if (!l_parser.attrByNameToShort(material, "diffOrder.x9", this->diffractionParamsPtr->diffOrdersPtr[8]))
-	{
-		std::cout << "error in MaterialLinearGrating1D.parseXml(): diffOrder.x9 is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToShort(material, "diffOrder.x9", this->diffractionParamsPtr->diffOrdersPtr[8])))
 		return MAT_ERR;
-	}
 	// find number of orders that are to be simulated
 	// the orders have to be ordered from -max to plus max. Therefore, if we encounter the second zero, we end
 
@@ -945,56 +903,26 @@ MaterialError MaterialLinearGrating1D::parseXml(pugi::xml_node &material)
 	// if we have a user defined glass we simply take the values of n1 and n2 defined in the prescription file and set no dispersion
 	if (!strcmp(l_DiffFileName,"USERDEFINED"))
 	{
-		if (!l_parser.attrByNameToDouble(material, "diffEff.x1", this->params.eff[0]))
-		{
-			std::cout << "error in MaterialLinearGrating1D.parseXml(): diffEff.x1 is not defined" << std::endl;
+		if (!this->checkParserError(l_parser.attrByNameToDouble(material, "diffEff.x1", this->params.eff[0])))
 			return MAT_ERR;
-		}
-		if (!l_parser.attrByNameToDouble(material, "diffEff.x2", this->params.eff[1]))
-		{
-			std::cout << "error in MaterialLinearGrating1D.parseXml(): diffEff.x2 is not defined" << std::endl;
+		if (!this->checkParserError(l_parser.attrByNameToDouble(material, "diffEff.x2", this->params.eff[1])))
 			return MAT_ERR;
-		}
-		if (!l_parser.attrByNameToDouble(material, "diffEff.x3", this->params.eff[2]))
-		{
-			std::cout << "error in MaterialLinearGrating1D.parseXml(): diffEff.x3 is not defined" << std::endl;
+		if (!this->checkParserError(l_parser.attrByNameToDouble(material, "diffEff.x3", this->params.eff[2])))
 			return MAT_ERR;
-		}
-		if (!l_parser.attrByNameToDouble(material, "diffEff.x4", this->params.eff[3]))
-		{
-			std::cout << "error in MaterialLinearGrating1D.parseXml(): diffEff.x4 is not defined" << std::endl;
+		if (!this->checkParserError(l_parser.attrByNameToDouble(material, "diffEff.x4", this->params.eff[3])))
 			return MAT_ERR;
-		}
-		if (!l_parser.attrByNameToDouble(material, "diffEff.x5", this->params.eff[4]))
-		{
-			std::cout << "error in MaterialLinearGrating1D.parseXml(): diffEff.x5 is not defined" << std::endl;
+		if (!this->checkParserError(l_parser.attrByNameToDouble(material, "diffEff.x5", this->params.eff[4])))
 			return MAT_ERR;
-		}
-		if (!l_parser.attrByNameToDouble(material, "diffEff.x6", this->params.eff[5]))
-		{
-			std::cout << "error in MaterialLinearGrating1D.parseXml(): diffEff.x6 is not defined" << std::endl;
+		if (!this->checkParserError(l_parser.attrByNameToDouble(material, "diffEff.x6", this->params.eff[5])))
 			return MAT_ERR;
-		}
-		if (!l_parser.attrByNameToDouble(material, "diffEff.x7", this->params.eff[6]))
-		{
-			std::cout << "error in MaterialLinearGrating1D.parseXml(): diffEff.x7 is not defined" << std::endl;
+		if (!this->checkParserError(l_parser.attrByNameToDouble(material, "diffEff.x7", this->params.eff[6])))
 			return MAT_ERR;
-		}
-		if (!l_parser.attrByNameToDouble(material, "diffEff.x8", this->params.eff[7]))
-		{
-			std::cout << "error in MaterialLinearGrating1D.parseXml(): diffEff.x8 is not defined" << std::endl;
+		if (!this->checkParserError(l_parser.attrByNameToDouble(material, "diffEff.x8", this->params.eff[7])))
 			return MAT_ERR;
-		}
-		if (!l_parser.attrByNameToDouble(material, "diffEff.x9", this->params.eff[8]))
-		{
-			std::cout << "error in MaterialLinearGrating1D.parseXml(): diffEff.x9 is not defined" << std::endl;
+		if (!this->checkParserError(l_parser.attrByNameToDouble(material, "diffEff.x9", this->params.eff[8])))
 			return MAT_ERR;
-		}
-		if (!l_parser.attrByNameToDouble(material, "gratingPeriod", this->diffractionParamsPtr->g))
-		{
-			std::cout << "error in MaterialLinearGrating1D.parseXml(): gratingPeriod is not defined" << std::endl;
+		if (!this->checkParserError(l_parser.attrByNameToDouble(material, "gratingPeriod", this->diffractionParamsPtr->g)))
 			return MAT_ERR;
-		}
 		this->diffractionParamsPtr->g=this->diffractionParamsPtr->g*1e-3;
 
 		// read efficiencies from zemax

@@ -457,12 +457,34 @@ void Field::setProgressCallback(void* p2CallbackObjectIn, void (*callbackProgres
 fieldError  Field::parseXml(pugi::xml_node &field, vector<Field*> &fieldVec)
 {
 	Parser_XML l_parser;
-	if (!l_parser.attrByNameToDouble(field, "lambda", this->getParamsPtr()->lambda))
-	{
-		std::cout << "error in RayField.parseXml(): lambda is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(field, "lambda", this->getParamsPtr()->lambda)))
 		return FIELD_ERR;
-	}
 
 	this->getParamsPtr()->lambda=this->getParamsPtr()->lambda*1e-6; // in our trace we use lambda in mm. in the gui we give lambda in nm...
 	return FIELD_NO_ERR;
+};
+
+/**
+ * \detail checks wether parseing was succesfull and assembles the error message if it was not
+ *
+ * returns the coordinates of the minimum corner of the bounding box of the surface
+ *
+ * \param[in] char *msg
+ * 
+ * \return bool
+ * \sa 
+ * \remarks 
+ * \author Mauch
+ */
+bool Field::checkParserError(char *msg)
+{
+	if (msg==NULL)
+		return true;
+	else
+	{
+		cout << "error in Field.parseXML(): " << msg << endl;
+		delete msg;
+		msg=NULL;
+		return false;
+	}
 };

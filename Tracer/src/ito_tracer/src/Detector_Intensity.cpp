@@ -236,21 +236,12 @@ detError DetectorIntensity::parseXml(pugi::xml_node &det, vector<Detector*> &det
 
 	Parser_XML l_parser;
 
-	if (!l_parser.attrByNameToLong(det, "detPixel.x", this->getDetParamsPtr()->detPixel.x))
-	{
-		std::cout << "error in Detector.parseXml(): detPixel.x is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToLong(det, "detPixel.x", this->getDetParamsPtr()->detPixel.x)))
 		return DET_ERROR;
-	}
-	if (!l_parser.attrByNameToLong(det, "detPixel.y", this->getDetParamsPtr()->detPixel.y))
-	{
-		std::cout << "error in Detector.parseXml(): detPixel.y is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToLong(det, "detPixel.y", this->getDetParamsPtr()->detPixel.y)))
 		return DET_ERROR;
-	}
-	if (!l_parser.attrByNameToInt(det, "ignoreDepth", this->getDetParamsPtr()->ignoreDepth))
-	{
-		std::cout << "error in Detector.parseXml(): ignoreDepth is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToInt(det, "ignoreDepth", this->getDetParamsPtr()->ignoreDepth)))
 		return DET_ERROR;
-	}
 
 	return DET_NO_ERROR;
 };

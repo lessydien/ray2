@@ -207,83 +207,38 @@ MaterialError MaterialVolumeScatterBox::parseXml(pugi::xml_node &material)
 
 	Parser_XML l_parser;
 
-	if (!l_parser.attrByNameToDouble(material, "n1", this->params.n1))
-	{
-		std::cout << "error in MaterialVolumeScatterBox.parseXml(): n1 is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(material, "n1", this->params.n1)))
 		return MAT_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(material, "n2", this->params.n2))
-	{
-		std::cout << "error in MaterialVolumeScatterBox.parseXml(): n1 is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(material, "n2", this->params.n2)))
 		return MAT_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(material, "meanFreePath", this->params.meanFreePath))
-	{
-		std::cout << "error in MaterialVolumeScatterBox.parseXml(): meanFreePath is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(material, "meanFreePath", this->params.meanFreePath)))
 		return MAT_ERR;
-	}
 	double l_g;
-	if (!l_parser.attrByNameToDouble(material, "anisotropyFac", l_g))
-	{
-		std::cout << "error in MaterialVolumeScatterBox.parseXml(): anisotropyFac is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(material, "anisotropyFac", l_g)))
 		return MAT_ERR;
-	}
 	this->params.g=l_g/360*2*M_PI;
-	if (!l_parser.attrByNameToDouble(material, "absorptionCoeff", this->params.absorptionCoeff))
-	{
-		std::cout << "error in MaterialVolumeScatterBox.parseXml(): absorptionCoeff is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(material, "absorptionCoeff", this->params.absorptionCoeff)))
 		return MAT_ERR;
-	}
-	if (!l_parser.attrByNameToInt(material, "maxNrBounces", this->params.maxNrBounces))
-	{
-		std::cout << "error in MaterialVolumeScatterBox.parseXml(): maxNrBounces is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToInt(material, "maxNrBounces", this->params.maxNrBounces)))
 		return MAT_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(material, "apertureRadius.x", this->params.aprtRadius.x))
-	{
-		std::cout << "error in MaterialVolumeScatterBox.parseXml(): apertureStopRadius.x is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(material, "apertureRadius.x", this->params.aprtRadius.x)))
 		return MAT_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(material, "apertureRadius.y", this->params.aprtRadius.y))
-	{
-		std::cout << "error in MaterialVolumeScatterBox.parseXml(): apertureRadius.y is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(material, "apertureRadius.y", this->params.aprtRadius.y)))
 		return MAT_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(material, "thickness", this->params.thickness))
-	{
-		std::cout << "error in MaterialVolumeScatterBox.parseXml(): thickness is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(material, "thickness", this->params.thickness)))
 		return MAT_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(material, "root.x", this->params.root.x))
-	{
-		std::cout << "error in MaterialVolumeScatterBox.parseXml(): root.x is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(material, "root.x", this->params.root.x)))
 		return MAT_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(material, "root.y", this->params.root.y))
-	{
-		std::cout << "error in MaterialVolumeScatterBox.parseXml(): root.y is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(material, "root.y", this->params.root.y)))
 		return MAT_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(material, "root.z", this->params.root.z))
-	{
-		std::cout << "error in MaterialVolumeScatterBox.parseXml(): root.z is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(material, "root.z", this->params.root.z)))
 		return MAT_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(material, "tilt.x", this->params.tilt.x))
-	{
-		std::cout << "error in MaterialVolumeScatterBox.parseXml(): tilt.x is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(material, "tilt.x", this->params.tilt.x)))
 		return MAT_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(material, "tilt.y", this->params.tilt.y))
-	{
-		std::cout << "error in MaterialVolumeScatterBox.parseXml(): tilt.y is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(material, "tilt.y", this->params.tilt.y)))
 		return MAT_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(material, "tilt.z", this->params.tilt.z))
-	{
-		std::cout << "error in MaterialVolumeScatterBox.parseXml(): tilt.z is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(material, "tilt.z", this->params.tilt.z)))
 		return MAT_ERR;
-	}
 
 
 	return MAT_NO_ERR;

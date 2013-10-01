@@ -303,39 +303,21 @@ geometryError MicroLensArraySurface::parseXml(pugi::xml_node &geometry, simMode 
 	rotateRay(&(this->paramsPtr->normal), this->paramsPtr->tilt);
 
 	double3 l_root;
-	if (!l_parser.attrByNameToDouble(geometry, "root.x", l_root.x))
-	{
-		std::cout << "error in MicroLensArraySurface.parseXml(): root.x is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "root.x", l_root.x)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "root.y", l_root.y))
-	{
-		std::cout << "error in MicroLensArraySurface.parseXml(): root.y is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "root.y", l_root.y)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "root.z", l_root.z))
-	{
-		std::cout << "error in MicroLensArraySurface.parseXml(): root.z is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "root.z", l_root.z)))
 		return GEOM_ERR;
-	}
 	this->paramsPtr->root=l_root;
 
 
-	if (!l_parser.attrByNameToDouble(geometry, "microLensAptRad", this->paramsPtr->microLensAptRad))
-	{
-		std::cout << "error in MicroLensArraySurface.parseXml(): microLensAptRad is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "microLensAptRad", this->paramsPtr->microLensAptRad)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "microLensPitch", this->paramsPtr->microLensPitch))
-	{
-		std::cout << "error in MicroLensArraySurface.parseXml(): microLensPitch is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "microLensPitch", this->paramsPtr->microLensPitch)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "microLensRadius", this->paramsPtr->microLensRadius))
-	{
-		std::cout << "error in MicroLensArraySurface.parseXml(): microLensRadius is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "microLensRadius", this->paramsPtr->microLensRadius)))
 		return GEOM_ERR;
-	}
 
 	const char* str=l_parser.attrValByName(geometry, "microLensAptType");
 	if (str==NULL)

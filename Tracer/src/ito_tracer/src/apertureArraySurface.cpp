@@ -302,44 +302,23 @@ geometryError ApertureArraySurface::parseXml(pugi::xml_node &geometry, simMode m
 	rotateRay(&(this->paramsPtr->normal), this->paramsPtr->tilt);
 
 	double3 l_root;
-	if (!l_parser.attrByNameToDouble(geometry, "root.x", l_root.x))
-	{
-		std::cout << "error in ApertureArraySurface.parseXml(): root.x is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "root.x", l_root.x)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "root.y", l_root.y))
-	{
-		std::cout << "error in ApertureArraySurface.parseXml(): root.y is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "root.y", l_root.y)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "root.z", l_root.z))
-	{
-		std::cout << "error in ApertureArraySurface.parseXml(): root.z is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "root.z", l_root.z)))
 		return GEOM_ERR;
-	}
 	this->paramsPtr->root=l_root;
 
 
-	if (!l_parser.attrByNameToDouble(geometry, "microAptRad.x", this->paramsPtr->microAptRad.x))
-	{
-		std::cout << "error in ApertureArraySurface.parseXml(): microAptRad.x is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "microAptRad.x", this->paramsPtr->microAptRad.x)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "microAptRad.y", this->paramsPtr->microAptRad.y))
-	{
-		std::cout << "error in ApertureArraySurface.parseXml(): microAptRad.y is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "microAptRad.y", this->paramsPtr->microAptRad.y)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "microAptPitch.x", this->paramsPtr->microAptPitch.x))
-	{
-		std::cout << "error in ApertureArraySurface.parseXml(): microAptPitch.x is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "microAptPitch.x", this->paramsPtr->microAptPitch.x)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "microAptPitch.y", this->paramsPtr->microAptPitch.y))
-	{
-		std::cout << "error in ApertureArraySurface.parseXml(): microAptPitch.y is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "microAptPitch.y", this->paramsPtr->microAptPitch.y)))
 		return GEOM_ERR;
-	}
 
 	const char* str=l_parser.attrValByName(geometry, "microAptType");
 	if (str==NULL)

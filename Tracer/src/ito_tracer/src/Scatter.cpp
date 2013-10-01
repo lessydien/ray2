@@ -60,7 +60,8 @@ ScatterError Scatter::processParseResults(MaterialParseParamStruct &parseResults
  */
 ScatterError Scatter::parseXml(pugi::xml_node &geometry)
 {
-	return SCAT_NO_ERROR;
+	cout << "error in Scatter.parseXml(): not implemented yet for given scatter type" << endl;
+	return SCAT_ERROR;
 }
 
 void Scatter::setPathToPtx(char* path)
@@ -131,3 +132,28 @@ void Scatter::hit(gaussBeamRayStruct &ray, gaussBeam_geometricNormal normal)
 	std::cout << "error in Scatter.hit(): hit is not yet implemented for gaussian beamlets for the given scatter. no scatter assumed." << std::endl;
 	// dummy function to be overwritten by child class
 }
+
+/**
+ * \detail checks wether parseing was succesfull and assembles the error message if it was not
+ *
+ * returns the coordinates of the minimum corner of the bounding box of the surface
+ *
+ * \param[in] char *msg
+ * 
+ * \return bool
+ * \sa 
+ * \remarks 
+ * \author Mauch
+ */
+bool Scatter::checkParserError(char *msg)
+{
+	if (msg==NULL)
+		return true;
+	else
+	{
+		cout << "error in Scatter.parseXML(): " << msg << endl;
+		delete msg;
+		msg=NULL;
+		return false;
+	}
+};

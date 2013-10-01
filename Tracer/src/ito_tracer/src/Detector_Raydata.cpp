@@ -194,11 +194,8 @@ detError DetectorRaydata::parseXml(pugi::xml_node &det, vector<Detector*> &detVe
 	Parser_XML l_parser;
 
 	bool l_listAllRays;
-	if (!l_parser.attrByNameToBool(det, "listAllRays", l_listAllRays))
-	{
-		std::cout << "error in Detector.parseXml(): listAllRays is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToBool(det, "listAllRays", l_listAllRays)))
 		return DET_ERROR;
-	}
 	if (l_listAllRays)
 	{
 		this->getDetParamsPtr()->geomID=-1;
@@ -209,11 +206,8 @@ detError DetectorRaydata::parseXml(pugi::xml_node &det, vector<Detector*> &detVe
 		return DET_ERROR;
 	}
 
-	if (!l_parser.attrByNameToBool(det, "reduceData", this->getDetParamsPtr()->reduceData))
-	{
-		std::cout << "error in Detector.parseXml(): reduceData is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToBool(det, "reduceData", this->getDetParamsPtr()->reduceData)))
 		return DET_ERROR;
-	}
 
 	return DET_NO_ERROR;
 };

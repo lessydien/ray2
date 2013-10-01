@@ -328,29 +328,17 @@ geometryError ParabolicSurface::parseXml(pugi::xml_node &geometry, simMode mode,
 
 	this->paramsPtr->orientation=make_double3(0,0,1);
 	rotateRay(&(this->paramsPtr->orientation), this->paramsPtr->tilt);
-	if (!l_parser.attrByNameToDouble(geometry, "radius", this->paramsPtr->curvatureRadius.x))
-	{
-		std::cout << "error in ParabolicSurface.parseXml(): radius is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "radius", this->paramsPtr->curvatureRadius.x)))
 		return GEOM_ERR;
-	}
 	this->paramsPtr->curvatureRadius.y=this->paramsPtr->curvatureRadius.x;
 	double3 l_root;
 
-	if (!l_parser.attrByNameToDouble(geometry, "root.x", l_root.x))
-	{
-		std::cout << "error in ParabolicSurface.parseXml(): root.x is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "root.x", l_root.x)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "root.y", l_root.y))
-	{
-		std::cout << "error in ParabolicSurface.parseXml(): root.y is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "root.y", l_root.y)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "root.z", l_root.z))
-	{
-		std::cout << "error in ParabolicSurface.parseXml(): root.z is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "root.z", l_root.z)))
 		return GEOM_ERR;
-	}
 
 	// zemax gives the vertex of the spherical surface as root. We deal with the centre of the sphere instead...
 	//this->paramsPtr->centre=l_root+this->paramsPtr->orientation*this->paramsPtr->curvatureRadius.x;

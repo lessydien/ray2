@@ -122,6 +122,7 @@ class Coating_NumCoeffs: public Coating
 	bool hit(gaussBeamRayStruct &ray, gaussBeam_geometricNormal normal);
 	CoatingError processParseResults(MaterialParseParamStruct &parseResults_Mat);
 	CoatingError parseXml(pugi::xml_node &geometry);
+	bool checkParserError(char *msg);
 };
 
 #endif

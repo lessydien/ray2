@@ -226,6 +226,8 @@ class Field
 	virtual fieldError  createLayoutInstance();
 
 	virtual fieldError  doSim(Group &oGroup, simAssParams &params, bool &simDone);
+
+	virtual bool checkParserError(char *msg);
 };
 
 #endif

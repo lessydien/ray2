@@ -489,48 +489,24 @@ MaterialError MaterialDOE::parseXml(pugi::xml_node &material)
 
 	Parser_XML l_parser;
 
-	if (!l_parser.attrByNameToDouble(material, "stepHeight", this->params.stepHeight))
-	{
-		std::cout << "error in MaterialDOE.parseXml(): stepHeight is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(material, "stepHeight", this->params.stepHeight)))
 		return MAT_ERR;
-	}
 
-	if (!l_parser.attrByNameToInt(material, "DOEnr", this->params.dOEnr))
-	{
-		std::cout << "error in MaterialDOE.parseXml(): DOEnr is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToInt(material, "DOEnr", this->params.dOEnr)))
 		return MAT_ERR;
-	}
 
-	if (!l_parser.attrByNameToDouble(material, "geomRoot.x", this->params.geomRoot.x))
-	{
-		std::cout << "error in MaterialDOE.parseXml(): geomRoot.x is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(material, "geomRoot.x", this->params.geomRoot.x)))
 		return MAT_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(material, "geomRoot.y", this->params.geomRoot.y))
-	{
-		std::cout << "error in MaterialDOE.parseXml(): geomRoot.y is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(material, "geomRoot.y", this->params.geomRoot.y)))
 		return MAT_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(material, "geomRoot.z", this->params.geomRoot.z))
-	{
-		std::cout << "error in MaterialDOE.parseXml(): geomRoot.z is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(material, "geomRoot.z", this->params.geomRoot.z)))
 		return MAT_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(material, "geomTilt.x", this->params.geomTilt.x))
-	{
-		std::cout << "error in MaterialDOE.parseXml(): geomTilt.x is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(material, "geomTilt.x", this->params.geomTilt.x)))
 		return MAT_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(material, "geomTilt.y", this->params.geomTilt.y))
-	{
-		std::cout << "error in MaterialDOE.parseXml(): geomTilt.y is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(material, "geomTilt.y", this->params.geomTilt.y)))
 		return MAT_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(material, "geomTilt.z", this->params.geomTilt.z))
-	{
-		std::cout << "error in MaterialDOE.parseXml(): geomTilt.z is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(material, "geomTilt.z", this->params.geomTilt.z)))
 		return MAT_ERR;
-	}
 
 	// read DOE efficiencies
 	const char* l_DOEEffsBaseFileName=l_parser.attrValByName(material, "filenameBaseDOEEffs");

@@ -177,58 +177,56 @@ detError Detector::parseXml(pugi::xml_node &det, vector<Detector*> &detVec)
 	//sprintf(this->getDetParamsPtr()->filename, "%s" PATH_SEPARATOR "%s", OUTPUT_FILEPATH, l_fileName);
 	sprintf(this->getDetParamsPtr()->filenamePtr, "%s", l_fileName);
 	//sprintf(this->getDetParamsPtr()->filenamePtr, "%s", "test.txt");
-	if (!l_parser.attrByNameToDouble(det, "root.x", this->getDetParamsPtr()->root.x))
-	{
-		std::cout << "error in Detector.parseXml(): root.x is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(det, "root.x", this->getDetParamsPtr()->root.x)))
 		return DET_ERROR;
-	}
-	if (!l_parser.attrByNameToDouble(det, "root.y", this->getDetParamsPtr()->root.y))
-	{
-		std::cout << "error in Detector.parseXml(): root.y is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(det, "root.y", this->getDetParamsPtr()->root.y)))
 		return DET_ERROR;
-	}
-	if (!l_parser.attrByNameToDouble(det, "root.z", this->getDetParamsPtr()->root.z))
-	{
-		std::cout << "error in Detector.parseXml(): root.z is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(det, "root.z", this->getDetParamsPtr()->root.z)))
 		return DET_ERROR;
-	}
 	double l_tilt;
-	if (!l_parser.attrByNameToDouble(det, "tilt.y", l_tilt))
-	{
-		std::cout << "error in Detector.parseXml(): tilt.y is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(det, "tilt.y", l_tilt)))
 		return DET_ERROR;
-	}
 	this->getDetParamsPtr()->tilt.y=l_tilt/360*2*M_PI;
-	if (!l_parser.attrByNameToDouble(det, "tilt.z", l_tilt))
-	{
-		std::cout << "error in Detector.parseXml(): tilt.z is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(det, "tilt.z", l_tilt)))
 		return DET_ERROR;
-	}
 	this->getDetParamsPtr()->tilt.z=l_tilt/360*2*M_PI;
-	if (!l_parser.attrByNameToDouble(det, "tilt.x", l_tilt))
-	{
-		std::cout << "error in Detector.parseXml(): tilt.x is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(det, "tilt.x", l_tilt)))
 		return DET_ERROR;
-	}
 	this->getDetParamsPtr()->tilt.x=l_tilt/360*2*M_PI;
-	if (!l_parser.attrByNameToDouble(det, "apertureHalfWidth.x", this->getDetParamsPtr()->apertureHalfWidth.x))
-	{
-		std::cout << "error in Detector.parseXml(): apertureHalfWidth.x is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(det, "apertureHalfWidth.x", this->getDetParamsPtr()->apertureHalfWidth.x)))
 		return DET_ERROR;
-	}
-	if (!l_parser.attrByNameToDouble(det, "apertureHalfWidth.y", this->getDetParamsPtr()->apertureHalfWidth.y))
-	{
-		std::cout << "error in Detector.parseXml(): apertureHalfWidth.y is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(det, "apertureHalfWidth.y", this->getDetParamsPtr()->apertureHalfWidth.y)))
 		return DET_ERROR;
-	}
-	if (!l_parser.attrByNameToDetOutFormat(det, "detOutFormat", this->getDetParamsPtr()->outFormat))
-	{
-		std::cout << "error in Detector.parseXml(): detOutFormat is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDetOutFormat(det, "detOutFormat", this->getDetParamsPtr()->outFormat)))
 		return DET_ERROR;
-	}
 	this->getDetParamsPtr()->MTransform=createTransformationMatrix(this->getDetParamsPtr()->tilt, this->getDetParamsPtr()->root);
 	double3 l_vec=make_double3(0,0,1);
 	rotateRay(&l_vec,this->getDetParamsPtr()->tilt);
 	this->getDetParamsPtr()->normal=l_vec;
 	return DET_NO_ERROR;
+};
+
+/**
+ * \detail checks wether parseing was succesfull and assembles the error message if it was not
+ *
+ * returns the coordinates of the minimum corner of the bounding box of the surface
+ *
+ * \param[in] char *msg
+ * 
+ * \return bool
+ * \sa 
+ * \remarks 
+ * \author Mauch
+ */
+bool Detector::checkParserError(char *msg)
+{
+	if (msg==NULL)
+		return true;
+	else
+	{
+		cout << "error in Detector.parseXML(): " << msg << endl;
+		delete msg;
+		msg=NULL;
+		return false;
+	}
 };

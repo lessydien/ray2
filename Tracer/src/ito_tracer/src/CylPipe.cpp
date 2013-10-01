@@ -308,32 +308,17 @@ geometryError CylPipe::parseXml(pugi::xml_node &geometry, simMode l_mode, vector
 	rotateRay(&l_vec,this->getParamsPtr()->tilt);
 	this->paramsPtr->orientation=l_vec;
 	Parser_XML l_parser;
-	if (!l_parser.attrByNameToDouble(geometry, "root.x", this->paramsPtr->root.x))
-	{
-		std::cout << "error in CylPipe.parseXml(): root.x is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "root.x", this->paramsPtr->root.x)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "root.y", this->paramsPtr->root.y))
-	{
-		std::cout << "error in CylPipe.parseXml(): root.y is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "root.y", this->paramsPtr->root.y)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "root.z", this->paramsPtr->root.z))
-	{
-		std::cout << "error in CylPipe.parseXml(): root.z is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "root.z", this->paramsPtr->root.z)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "radius.x", this->paramsPtr->radius.x))
-	{
-		std::cout << "error in CylPipe.parseXml(): radius is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "radius.x", this->paramsPtr->radius.x)))
 		return GEOM_ERR;
-	}
 	this->paramsPtr->radius.y=this->paramsPtr->radius.x;
-	if (!l_parser.attrByNameToDouble(geometry, "thickness", this->paramsPtr->thickness))
-	{
-		std::cout << "error in CylPipe.parseXml(): thickness is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "thickness", this->paramsPtr->thickness)))
 		return GEOM_ERR;
-	}
 	geomVec.push_back(this);
 	return GEOM_NO_ERR;
 

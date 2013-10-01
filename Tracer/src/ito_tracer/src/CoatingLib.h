@@ -29,6 +29,7 @@
 #include "Coating_NumCoeffs.h"
 #include "Coating_DispersiveNumCoeffs.h"
 #include "Coating_FresnelCoeffs.h"
+#include "Coating_NoCoating.h"
 #include "Parser_XML.h"
 
 class CoatingFab

@@ -316,37 +316,19 @@ geometryError ConePipe::parseXml(pugi::xml_node &geometry, simMode l_mode, vecto
 	rotateRay(&l_vec,this->getParamsPtr()->tilt);
 	this->paramsPtr->orientation=l_vec;
 	Parser_XML l_parser;
-	if (!l_parser.attrByNameToDouble(geometry, "root.x", this->paramsPtr->root.x))
-	{
-		std::cout << "error in PlaneSurface.parseXml(): root.x is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "root.x", this->paramsPtr->root.x)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "root.y", this->paramsPtr->root.y))
-	{
-		std::cout << "error in PlaneSurface.parseXml(): root.y is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "root.y", this->paramsPtr->root.y)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "root.z", this->paramsPtr->root.z))
-	{
-		std::cout << "error in PlaneSurface.parseXml(): root.z is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "root.z", this->paramsPtr->root.z)))
 		return GEOM_ERR;
-	}
 	double2 aptRadius2;
-	if (!l_parser.attrByNameToDouble(geometry, "apertureRadius2.x", aptRadius2.x))
-	{
-		std::cout << "error in PlaneSurface.parseXml(): apertureRadius2.x is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "apertureRadius2.x", aptRadius2.x)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "apertureRadius2.y", aptRadius2.y))
-	{
-		std::cout << "error in PlaneSurface.parseXml(): apertureRadius2.y is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "apertureRadius2.y", aptRadius2.y)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "thickness", this->paramsPtr->thickness))
-	{
-		std::cout << "error in PlaneSurface.parseXml(): thickness is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "thickness", this->paramsPtr->thickness)))
 		return GEOM_ERR;
-	}
 	double theta=atan((aptRadius2.x-this->paramsPtr->apertureRadius.x)/this->paramsPtr->thickness);
 	this->paramsPtr->cosTheta.x=cos(theta);
 	this->paramsPtr->cosTheta.y=this->paramsPtr->cosTheta.x;

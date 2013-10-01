@@ -349,3 +349,25 @@ MaterialError MaterialIdealLense::processParseResults(MaterialParseParamStruct &
 	return MAT_NO_ERR;
 }
 
+/**
+ * \detail parseXml 
+ *
+ * sets the parameters of the material according to the given xml node
+ *
+ * \param[in] xml_node &geometry
+ * 
+ * \return geometryError
+ * \sa 
+ * \remarks 
+ * \author Mauch
+ */
+MaterialError MaterialIdealLense::parseXml(pugi::xml_node &geometry)
+{
+	if (!Material::parseXml(geometry))
+	{
+		std::cout << "error in MaterialIdealLense.parseXml(): Material.parseXml() returned an error." << std::endl;
+		return MAT_ERR;
+	}
+
+	return MAT_NO_ERR;
+};

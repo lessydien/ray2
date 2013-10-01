@@ -325,71 +325,32 @@ geometryError AsphericalSurface::parseXml(pugi::xml_node &geometry, simMode l_mo
 	rotateRay(&l_vec,this->getParamsPtr()->tilt);
 	this->paramsPtr->orientation=l_vec;
 	Parser_XML l_parser;
-	if (!l_parser.attrByNameToDouble(geometry, "root.x", this->paramsPtr->vertex.x))
-	{
-		std::cout << "error in PlaneSurface.parseXml(): root.x is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "root.x", this->paramsPtr->vertex.x)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "root.y", this->paramsPtr->vertex.y))
-	{
-		std::cout << "error in PlaneSurface.parseXml(): root.y is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "root.y", this->paramsPtr->vertex.y)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "root.z", this->paramsPtr->vertex.z))
-	{
-		std::cout << "error in PlaneSurface.parseXml(): root.z is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "root.z", this->paramsPtr->vertex.z)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "k", this->paramsPtr->k))
-	{
-		std::cout << "error in PlaneSurface.parseXml(): k is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "k", this->paramsPtr->k)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "c", this->paramsPtr->c))
-	{
-		std::cout << "error in PlaneSurface.parseXml(): c is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "c", this->paramsPtr->c)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "c2", this->paramsPtr->c2))
-	{
-		std::cout << "error in PlaneSurface.parseXml(): c2 is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "c2", this->paramsPtr->c2)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "c4", this->paramsPtr->c4))
-	{
-		std::cout << "error in PlaneSurface.parseXml(): c4 is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "c4", this->paramsPtr->c4)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "c6", this->paramsPtr->c6))
-	{
-		std::cout << "error in PlaneSurface.parseXml(): c6 is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "c6", this->paramsPtr->c6)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "c8", this->paramsPtr->c8))
-	{
-		std::cout << "error in PlaneSurface.parseXml(): c8 is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "c8", this->paramsPtr->c8)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "c10", this->paramsPtr->c10))
-	{
-		std::cout << "error in PlaneSurface.parseXml(): c10 is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "c10", this->paramsPtr->c10)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "c12", this->paramsPtr->c12))
-	{
-		std::cout << "error in PlaneSurface.parseXml(): c12 is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "c12", this->paramsPtr->c12)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "c14", this->paramsPtr->c14))
-	{
-		std::cout << "error in PlaneSurface.parseXml(): c14 is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "c14", this->paramsPtr->c14)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "c16", this->paramsPtr->c16))
-	{
-		std::cout << "error in PlaneSurface.parseXml(): c16 is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "c16", this->paramsPtr->c16)))
 		return GEOM_ERR;
-	}
 	geomVec.push_back(this);
 	return GEOM_NO_ERR;
 }

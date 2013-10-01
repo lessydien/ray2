@@ -741,11 +741,8 @@ geometryGroupError GeometryGroup::createGeometry(unsigned int index)
 geometryGroupError  GeometryGroup::parseXml(pugi::xml_node &geomGroup)
 {
 	Parser_XML l_parser;
-	if (!l_parser.attrByNameToAccelType(geomGroup, "accelType", this->getParamsPtr()->acceleration))
-	{
-		std::cout << "error in RayField.parseXml(): root.x is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToAccelType(geomGroup, "accelType", this->getParamsPtr()->acceleration)))
 		return GEOMGROUP_ERR;
-	}
 
 	return GEOMGROUP_NO_ERR;
 };
@@ -808,4 +805,29 @@ const char* GeometryGroup::accelTypeToTraverserAscii(accelType acceleration) con
 		break;
 	}
 	return ascii;
+};
+
+/**
+ * \detail checks wether parseing was succesfull and assembles the error message if it was not
+ *
+ * returns the coordinates of the minimum corner of the bounding box of the surface
+ *
+ * \param[in] char *msg
+ * 
+ * \return bool
+ * \sa 
+ * \remarks 
+ * \author Mauch
+ */
+bool GeometryGroup::checkParserError(char *msg)
+{
+	if (msg==NULL)
+		return true;
+	else
+	{
+		cout << "error in GeometryGroup.parseXML(): " << msg << endl;
+		delete msg;
+		msg=NULL;
+		return false;
+	}
 };

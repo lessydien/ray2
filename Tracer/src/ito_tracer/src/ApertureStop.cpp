@@ -307,31 +307,16 @@ geometryError ApertureStop::parseXml(pugi::xml_node &geometry, simMode l_mode, v
 	rotateRay(&l_vec,this->getParamsPtr()->tilt);
 	this->paramsPtr->normal=l_vec;
 	Parser_XML l_parser;
-	if (!l_parser.attrByNameToDouble(geometry, "root.x", this->paramsPtr->root.x))
-	{
-		std::cout << "error in PlaneSurface.parseXml(): root.x is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "root.x", this->paramsPtr->root.x)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "root.y", this->paramsPtr->root.y))
-	{
-		std::cout << "error in PlaneSurface.parseXml(): root.y is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "root.y", this->paramsPtr->root.y)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "root.z", this->paramsPtr->root.z))
-	{
-		std::cout << "error in PlaneSurface.parseXml(): root.z is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "root.z", this->paramsPtr->root.z)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "apertureStopRadius.x", this->paramsPtr->apertureStopRadius.x))
-	{
-		std::cout << "error in PlaneSurface.parseXml(): apertureStopRadius.x is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "apertureStopRadius.x", this->paramsPtr->apertureStopRadius.x)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "apertureStopRadius.y", this->paramsPtr->apertureStopRadius.y))
-	{
-		std::cout << "error in PlaneSurface.parseXml(): apertureStopRadius.y is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "apertureStopRadius.y", this->paramsPtr->apertureStopRadius.y)))
 		return GEOM_ERR;
-	}
 
 	geomVec.push_back(this);
 	return GEOM_NO_ERR;

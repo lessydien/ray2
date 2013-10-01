@@ -46,7 +46,8 @@ class VolumeScattererItem :
 
 	Q_PROPERTY(double thickness READ getThickness WRITE setThickness DESIGNABLE true USER true);
 	Q_PROPERTY(bool showRayPaths READ getShowRayPaths WRITE setShowRayPaths DESIGNABLE true USER true);
-	Q_PROPERTY(ApertureType apertureType READ getApertureType DESIGNABLE true USER true);	
+	Q_PROPERTY(ApertureType apertureType READ getApertureType DESIGNABLE true USER true);	// overwrite Property of abstractItem, so it can not be changed in propertyEditor of this item
+	Q_PROPERTY(Abstract_MaterialType materialType DESIGNABLE true USER true); // overwrite materialType-Property of abstractItem, so it can not be changed in propertyEditor of this item
 
 	Q_CLASSINFO("meanFreePath", "decimals=10;");
 	Q_CLASSINFO("thickness", "decimals=10;");

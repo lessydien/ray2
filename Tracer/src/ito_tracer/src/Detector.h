@@ -97,6 +97,8 @@ class Detector
 
 	virtual detError detect2TextFile(FILE* hfile, Field* rayFieldPtr);	
 	virtual detError detect(Field* rayFieldPtr, Field **imagePtrPtr);
+
+	virtual bool checkParserError(char *msg);
 };
 
 #endif

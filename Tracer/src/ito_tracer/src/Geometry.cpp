@@ -66,39 +66,29 @@ geometryError Geometry::processParseResults(GeometryParseParamStruct &parseResul
 geometryError Geometry::parseXml(pugi::xml_node &geometry, simMode l_mode, vector<Geometry*> &geomVec)
 {
 	Parser_XML l_parser;
-	if (!l_parser.attrByNameToDouble(geometry, "tilt.x", this->getParamsPtr()->tilt.x))
+
+	const char* l_pName=l_parser.attrValByName(geometry, "name");
+	if (l_pName)
 	{
-		std::cout << "error in Geometry.parseXml(): tilt.x is not defined" << std::endl;
-		return GEOM_ERR;
+		sprintf(this->name, "%s", l_pName);
+		this->name[GEOM_CMT_LENGTH-1]='\0';
 	}
+
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "tilt.x", this->getParamsPtr()->tilt.x)))
+		return GEOM_ERR;
 	this->getParamsPtr()->tilt.x=this->getParamsPtr()->tilt.x/360*2*PI;
-	if (!l_parser.attrByNameToDouble(geometry, "tilt.y", this->getParamsPtr()->tilt.y))
-	{
-		std::cout << "error in Geometry.parseXml(): tilt.y is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "tilt.y", this->getParamsPtr()->tilt.y)))
 		return GEOM_ERR;
-	}
 	this->getParamsPtr()->tilt.y=this->getParamsPtr()->tilt.y/360*2*PI;
-	if (!l_parser.attrByNameToDouble(geometry, "tilt.z", this->getParamsPtr()->tilt.z))
-	{
-		std::cout << "error in Geometry.parseXml(): tilt.z is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "tilt.z", this->getParamsPtr()->tilt.z)))
 		return GEOM_ERR;
-	}
 	this->getParamsPtr()->tilt.z=this->getParamsPtr()->tilt.z/360*2*PI;
-	if (!l_parser.attrByNameToApertureType(geometry, "apertureType", this->getParamsPtr()->apertureType))
-	{
-		std::cout << "error in Geometry.parseXml(): apertureType is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToApertureType(geometry, "apertureType", this->getParamsPtr()->apertureType)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "apertureRadius.x", this->getParamsPtr()->apertureRadius.x))
-	{
-		std::cout << "error in Geometry.parseXml(): apertureRadius.x is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "apertureRadius.x", this->getParamsPtr()->apertureRadius.x)))
 		return GEOM_ERR;
-	}
-	if (!l_parser.attrByNameToDouble(geometry, "apertureRadius.y", this->getParamsPtr()->apertureRadius.y))
-	{
-		std::cout << "error in Geometry.parseXml(): apertureRadius.y is not defined" << std::endl;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "apertureRadius.y", this->getParamsPtr()->apertureRadius.y)))
 		return GEOM_ERR;
-	}
 	//if (!l_parser.attrByNameToInt(geometry, "geometryID", this->getParamsPtr()->geometryID))
 	//{
 	//	std::cout << "error in Geometry.parseXml(): geometryID is not defined" << std::endl;
@@ -109,7 +99,7 @@ geometryError Geometry::parseXml(pugi::xml_node &geometry, simMode l_mode, vecto
 	l_pMatNodes=l_parser.childsByTagName(geometry,"material");
 	if (l_pMatNodes->size() != 1)
 	{
-		std::cout << "error in Geometry.parseXml(): there must be exactly 1 material attached to each geometry." << std::endl;
+		std::cout << "error in Geometry.parseXml() of Geometry " << this->name << ": there must be exactly 1 material attached to each geometry." << std::endl;
 		return GEOM_ERR;
 	}
 	// create material
@@ -117,7 +107,7 @@ geometryError Geometry::parseXml(pugi::xml_node &geometry, simMode l_mode, vecto
 	Material* l_pMaterial;
 	if (!l_matFab.createMatInstFromXML(l_pMatNodes->at(0),l_pMaterial))
 	{
-		std::cout << "error in Geometry.parseXml(): matFab.createInstFromXML() returned an error." << std::endl;
+		std::cout << "error in Geometry.parseXml() of Geometry " << this->name << ": matFab.createInstFromXML() returned an error." << std::endl;
 		return GEOM_ERR;
 	}
 
@@ -142,6 +132,31 @@ geometryError Geometry::parseXml(pugi::xml_node &geometry, simMode l_mode, vecto
 void Geometry::setBoundingBox_min(float *box_min) 
 {
 	memcpy(&boundingBox_min, box_min, sizeof(boundingBox_min));
+};
+
+/**
+ * \detail checks wether parseing was succesfull and assembles the error message if it was not
+ *
+ * returns the coordinates of the minimum corner of the bounding box of the surface
+ *
+ * \param[in] char *msg
+ * 
+ * \return bool
+ * \sa 
+ * \remarks 
+ * \author Mauch
+ */
+bool Geometry::checkParserError(char *msg)
+{
+	if (msg==NULL)
+		return true;
+	else
+	{
+		cout << "error in Geometry.parseXML() of geometry " << this->name << ": " << msg << endl;
+		delete msg;
+		msg=NULL;
+		return false;
+	}
 };
 
 /**
