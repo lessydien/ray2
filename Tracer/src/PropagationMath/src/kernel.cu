@@ -200,8 +200,8 @@ __global__ void defocField_kernel(cuDoubleComplex* d_pField, ConfPoint_KernelPar
 	// calc coordinates in pupil grid
 	double x=double(xGes)*(s_gridWidth/s_n)-s_gridWidth/2;
 	double y=double(yGes)*(s_gridWidth/s_n)-s_gridWidth/2;
-	double sigmaX=sin(atan(-x/s_f));
-	double sigmaY=sin(atan(-y/s_f));
+	double sigmaX=-x/s_f;//sin(atan(-x/s_f));
+	double sigmaY=-y/s_f;//sin(atan(-y/s_f));
 	double sigmaZ=(1-sigmaX*sigmaX-sigmaY*sigmaY);
 	if (sigmaZ>=0)
 		sigmaZ=sqrt(sigmaZ);
