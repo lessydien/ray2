@@ -455,266 +455,266 @@ bool MicroLensArrayItem::readFromXML(const QDomElement &node)
 
 void MicroLensArrayItem::render(QMatrix4x4 &m, RenderOptions &options)
 {
-	if (this->getRender())
-	{
-		// apply current global transformations
-		loadGlMatrix(m);
-
-		glPushMatrix();
-
-		if (this->m_focus)
-			glColor3f(0.0f,1.0f,0.0f); //green
-		else
-			glColor3f(0.0f,0.0f,1.0f); //blue
-
-		// apply current global transform
-		Vec3d root=this->getRoot();
-		Vec2d aptRadius=this->getApertureRadius();
-		glTranslatef(root.X,root.Y,root.Z);
-		glRotatef(this->getTilt().X,1.0f,0.0f,0.0f);
-		glRotatef(this->getTilt().Y,0.0f,1.0f,0.0f);
-		glRotatef(this->getTilt().Z,0.0f,0.0f,1.0f);
-
-		Vec3f neighbours[8];
-		Vec3f normal=calcNormal(Vec3f(root.X,root.Y,root.Z),&neighbours[0],0);
-
-		if (this->getApertureType()==RECTANGULAR)
-		{
-			// render front face
-			glBegin(GL_QUADS);
-			glNormal3f(normal.X, normal.Y, normal.Z); // this normal holds to all vertices
-			float x=-aptRadius.X;
-			float y=-aptRadius.Y;
-			float z=0;
-			glVertex3f(x,y,z);
-
-			x=-aptRadius.X;
-			y=aptRadius.Y;
-			z=0;
-			glNormal3f(normal.X, normal.Y, normal.Z);
-			glVertex3f(x,y,z);
-
-			x=aptRadius.X;
-			y=aptRadius.Y;
-			z=0;
-			glNormal3f(normal.X, normal.Y, normal.Z);
-			glVertex3f(x,y,z);
-
-			x=aptRadius.X;
-			y=-aptRadius.Y;
-			z=0;
-			glNormal3f(normal.X, normal.Y, normal.Z);
-			glVertex3f(x,y,z);
-
-			glEnd();
-
-			// side face
-			//glBegin(GL_QUAD_STRIP);
-			//glNormal3f(0.0, -1.0, 0.0);
-			//x=-aptRadius.X;
-			//y=-aptRadius.Y;
-			//z=0;
-			//glVertex3f(x,y,z);
-
-			//x=-aptRadius.X;
-			//y=-aptRadius.Y;
-			//z=m_thickness;
-			//glNormal3f(0.0, -1.0, 0.0);
-			//glVertex3f(x,y,z);
-
-			//x=aptRadius.X;
-			//y=-aptRadius.Y;
-			//z=0;
-			//glNormal3f(0.0, -1.0, 0.0);
-			//glVertex3f(x,y,z);
-
-			//x=aptRadius.X;
-			//y=-aptRadius.Y;
-			//z=m_thickness;
-			//glNormal3f(0.0, -1.0, 0.0);
-			//glVertex3f(x,y,z);
-
-			//x=aptRadius.X;
-			//y=aptRadius.Y;
-			//z=0;
-			//glNormal3f(1.0, 0.0, 0.0);
-			//glVertex3f(x,y,z);
-
-			//x=aptRadius.X;
-			//y=aptRadius.Y;
-			//z=m_thickness;
-			//glNormal3f(1.0, 0.0, 0.0);
-			//glVertex3f(x,y,z);
-
-			//x=-aptRadius.X;
-			//y=aptRadius.Y;
-			//z=0;
-			//glNormal3f(0.0, 1.0, 0.0);
-			//glVertex3f(x,y,z);
-
-			//x=-aptRadius.X;
-			//y=aptRadius.Y;
-			//z=m_thickness;
-			//glNormal3f(0.0, 1.0, 0.0);
-			//glVertex3f(x,y,z);
-
-			//x=-aptRadius.X;
-			//y=-aptRadius.Y;
-			//z=0;
-			//glNormal3f(-1.0, 0.0, 0.0);
-			//glVertex3f(x,y,z);
-
-			//x=-aptRadius.X;
-			//y=-aptRadius.Y;
-			//z=m_thickness;
-			//glNormal3f(-1.0, 0.0, 0.0);
-			//glVertex3f(x,y,z);
-
-			//glEnd();
-
-			// back face
-			float sizeX=2*this->getApertureRadius().X;
-			float sizeY=2*this->getApertureRadius().Y;
-
-			float dx=sizeX/(options.m_slicesWidth);
-			float dy=sizeY/(options.m_slicesHeight);
-
-			double x0=-this->getApertureRadius().X;
-			double y0=-this->getApertureRadius().Y;
-
-			unsigned long nrOfQuads=options.m_slicesWidth*options.m_slicesHeight;
-			unsigned long nrOfVertices=(options.m_slicesWidth+1)*(options.m_slicesHeight+1);
-			unsigned long nrOfIndices=4*nrOfQuads;
-
-			GLfloat *vertices=(GLfloat*)malloc(nrOfVertices*3*sizeof(GLfloat));
-			GLfloat *normals=(GLfloat*)malloc(nrOfVertices*3*sizeof(GLfloat));
-			GLuint *indices=(GLuint*)malloc(nrOfIndices*sizeof(GLuint));
-
-			float lensHeightMax;
-			float effectiveAptRadius=min(m_microLensPitch/2,m_microLensAptRad);
-			//if (m_microLensAptType==MICRORECTANGULAR)
-			//{
-			//	float rmax=sqrt(effectiveAptRadius*effectiveAptRadius+effectiveAptRadius*effectiveAptRadius);
-			//	if (rmax>abs(m_microLensRadius))
-			//		lensHeightMax=sqrt(m_microLensRadius*m_microLensRadius-effectiveAptRadius*effectiveAptRadius);
-			//	else
-			//		lensHeightMax=sqrt(m_microLensRadius*m_microLensRadius-rmax*rmax);
-			//}
-			//else
-			//{
-				float rmax=sqrt(effectiveAptRadius*effectiveAptRadius+effectiveAptRadius*effectiveAptRadius);
-				if (rmax>abs(m_microLensRadius))
-					lensHeightMax=sqrt(m_microLensRadius*m_microLensRadius-effectiveAptRadius*effectiveAptRadius);
-				else
-					lensHeightMax=sqrt(m_microLensRadius*m_microLensRadius-rmax*rmax);
+//	if (this->getRender())
+//	{
+//		// apply current global transformations
+//		loadGlMatrix(m);
+//
+//		glPushMatrix();
+//
+//		if (this->m_focus)
+//			glColor3f(0.0f,1.0f,0.0f); //green
+//		else
+//			glColor3f(0.0f,0.0f,1.0f); //blue
+//
+//		// apply current global transform
+//		Vec3d root=this->getRoot();
+//		Vec2d aptRadius=this->getApertureRadius();
+//		glTranslatef(root.X,root.Y,root.Z);
+//		glRotatef(this->getTilt().X,1.0f,0.0f,0.0f);
+//		glRotatef(this->getTilt().Y,0.0f,1.0f,0.0f);
+//		glRotatef(this->getTilt().Z,0.0f,0.0f,1.0f);
+//
+//		Vec3f neighbours[8];
+//		Vec3f normal=calcNormal(Vec3f(root.X,root.Y,root.Z),&neighbours[0],0);
+//
+//		if (this->getApertureType()==RECTANGULAR)
+//		{
+//			// render front face
+//			glBegin(GL_QUADS);
+//			glNormal3f(normal.X, normal.Y, normal.Z); // this normal holds to all vertices
+//			float x=-aptRadius.X;
+//			float y=-aptRadius.Y;
+//			float z=0;
+//			glVertex3f(x,y,z);
+//
+//			x=-aptRadius.X;
+//			y=aptRadius.Y;
+//			z=0;
+//			glNormal3f(normal.X, normal.Y, normal.Z);
+//			glVertex3f(x,y,z);
+//
+//			x=aptRadius.X;
+//			y=aptRadius.Y;
+//			z=0;
+//			glNormal3f(normal.X, normal.Y, normal.Z);
+//			glVertex3f(x,y,z);
+//
+//			x=aptRadius.X;
+//			y=-aptRadius.Y;
+//			z=0;
+//			glNormal3f(normal.X, normal.Y, normal.Z);
+//			glVertex3f(x,y,z);
+//
+//			glEnd();
+//
+//			// side face
+//			//glBegin(GL_QUAD_STRIP);
+//			//glNormal3f(0.0, -1.0, 0.0);
+//			//x=-aptRadius.X;
+//			//y=-aptRadius.Y;
+//			//z=0;
+//			//glVertex3f(x,y,z);
+//
+//			//x=-aptRadius.X;
+//			//y=-aptRadius.Y;
+//			//z=m_thickness;
+//			//glNormal3f(0.0, -1.0, 0.0);
+//			//glVertex3f(x,y,z);
+//
+//			//x=aptRadius.X;
+//			//y=-aptRadius.Y;
+//			//z=0;
+//			//glNormal3f(0.0, -1.0, 0.0);
+//			//glVertex3f(x,y,z);
+//
+//			//x=aptRadius.X;
+//			//y=-aptRadius.Y;
+//			//z=m_thickness;
+//			//glNormal3f(0.0, -1.0, 0.0);
+//			//glVertex3f(x,y,z);
+//
+//			//x=aptRadius.X;
+//			//y=aptRadius.Y;
+//			//z=0;
+//			//glNormal3f(1.0, 0.0, 0.0);
+//			//glVertex3f(x,y,z);
+//
+//			//x=aptRadius.X;
+//			//y=aptRadius.Y;
+//			//z=m_thickness;
+//			//glNormal3f(1.0, 0.0, 0.0);
+//			//glVertex3f(x,y,z);
+//
+//			//x=-aptRadius.X;
+//			//y=aptRadius.Y;
+//			//z=0;
+//			//glNormal3f(0.0, 1.0, 0.0);
+//			//glVertex3f(x,y,z);
+//
+//			//x=-aptRadius.X;
+//			//y=aptRadius.Y;
+//			//z=m_thickness;
+//			//glNormal3f(0.0, 1.0, 0.0);
+//			//glVertex3f(x,y,z);
+//
+//			//x=-aptRadius.X;
+//			//y=-aptRadius.Y;
+//			//z=0;
+//			//glNormal3f(-1.0, 0.0, 0.0);
+//			//glVertex3f(x,y,z);
+//
+//			//x=-aptRadius.X;
+//			//y=-aptRadius.Y;
+//			//z=m_thickness;
+//			//glNormal3f(-1.0, 0.0, 0.0);
+//			//glVertex3f(x,y,z);
+//
+//			//glEnd();
+//
+//			// back face
+//			float sizeX=2*this->getApertureRadius().X;
+//			float sizeY=2*this->getApertureRadius().Y;
+//
+//			float dx=sizeX/(options.m_slicesWidth);
+//			float dy=sizeY/(options.m_slicesHeight);
+//
+//			double x0=-this->getApertureRadius().X;
+//			double y0=-this->getApertureRadius().Y;
+//
+//			unsigned long nrOfQuads=options.m_slicesWidth*options.m_slicesHeight;
+//			unsigned long nrOfVertices=(options.m_slicesWidth+1)*(options.m_slicesHeight+1);
+//			unsigned long nrOfIndices=4*nrOfQuads;
+//
+//			GLfloat *vertices=(GLfloat*)malloc(nrOfVertices*3*sizeof(GLfloat));
+//			GLfloat *normals=(GLfloat*)malloc(nrOfVertices*3*sizeof(GLfloat));
+//			GLuint *indices=(GLuint*)malloc(nrOfIndices*sizeof(GLuint));
+//
+//			float lensHeightMax;
+//			float effectiveAptRadius=min(m_microLensPitch/2,m_microLensAptRad);
+//			//if (m_microLensAptType==MICRORECTANGULAR)
+//			//{
+//			//	float rmax=sqrt(effectiveAptRadius*effectiveAptRadius+effectiveAptRadius*effectiveAptRadius);
+//			//	if (rmax>abs(m_microLensRadius))
+//			//		lensHeightMax=sqrt(m_microLensRadius*m_microLensRadius-effectiveAptRadius*effectiveAptRadius);
+//			//	else
+//			//		lensHeightMax=sqrt(m_microLensRadius*m_microLensRadius-rmax*rmax);
+//			//}
+//			//else
+//			//{
+//				float rmax=sqrt(effectiveAptRadius*effectiveAptRadius+effectiveAptRadius*effectiveAptRadius);
+//				if (rmax>abs(m_microLensRadius))
+//					lensHeightMax=sqrt(m_microLensRadius*m_microLensRadius-effectiveAptRadius*effectiveAptRadius);
+//				else
+//					lensHeightMax=sqrt(m_microLensRadius*m_microLensRadius-rmax*rmax);
+////			}
+//			for (unsigned int iy=0; iy<options.m_slicesHeight+1;iy++)
+//			{
+//				for (unsigned int ix=0; ix<options.m_slicesWidth+1;ix++)
+//				{
+//					//..vertices...
+//					// x-coordinate
+//					x=x0+ix*dx;
+//					vertices[3*ix+iy*(options.m_slicesWidth+1)*3]=x;
+//					// y-coordinate
+//					y=y0+iy*dy;
+//					vertices[3*ix+iy*(options.m_slicesWidth+1)*3+1]=y;
+//					// z-coordinate
+//					float z;
+//					float fac=floorf(x/m_microLensPitch+0.5);
+//					float xloc=x-fac*m_microLensPitch;
+//					fac=floorf(y/m_microLensPitch+0.5);
+//					float yloc=y-fac*m_microLensPitch;
+//					float r; // lateral distance to local centre
+//					if (m_microLensAptType==MICRORECTANGULAR)
+//						r=max(abs(xloc),abs(yloc));
+//					else
+//						r=sqrt(xloc*xloc+yloc*yloc);
+//					//if ( (r>=effectiveAptRadius) || (sqrt(xloc*xloc+yloc*yloc)>=abs(m_microLensRadius)) )
+//					if ( (r>=m_microLensAptRad) || (sqrt(xloc*xloc+yloc*yloc)>=abs(m_microLensRadius)) )
+//					{
+//						vertices[3*ix+iy*(options.m_slicesWidth+1)*3+2]=m_thickness;
+//						normals[3*ix+(options.m_slicesWidth+1)*iy*3]=GLfloat(0.0f);
+//						normals[3*ix+(options.m_slicesWidth+1)*iy*3+1]=GLfloat(0.0f);
+//						normals[3*ix+(options.m_slicesWidth+1)*iy*3+2]=GLfloat(-1.0f);
+//					}
+//					else
+//					{
+//						z=sqrt(m_microLensRadius*m_microLensRadius-xloc*xloc-yloc*yloc);
+//						float l_vecLength=sqrt(xloc*xloc+yloc*yloc+z*z);
+//						normals[3*ix+(options.m_slicesWidth+1)*iy*3]=GLfloat(-xloc/l_vecLength);
+//						normals[3*ix+(options.m_slicesWidth+1)*iy*3+1]=GLfloat(-yloc/l_vecLength);
+//						
+//						if (m_microLensRadius<0)
+//						{
+//							vertices[3*ix+iy*(options.m_slicesWidth+1)*3+2]=z-lensHeightMax+m_thickness;//lensHeightMax;
+//							normals[3*ix+(options.m_slicesWidth+1)*iy*3+2]=GLfloat(-z/l_vecLength);
+//						}
+//						else
+//						{
+//							vertices[3*ix+iy*(options.m_slicesWidth+1)*3+2]=-z+lensHeightMax+m_thickness;//lensHeightMax;
+//							normals[3*ix+(options.m_slicesWidth+1)*iy*3]=GLfloat(xloc/l_vecLength);
+//							normals[3*ix+(options.m_slicesWidth+1)*iy*3+1]=GLfloat(yloc/l_vecLength);
+//
+//							normals[3*ix+(options.m_slicesWidth+1)*iy*3+2]=GLfloat(-z/l_vecLength);
+//						}
+//					}
+//				}
 //			}
-			for (unsigned int iy=0; iy<options.m_slicesHeight+1;iy++)
-			{
-				for (unsigned int ix=0; ix<options.m_slicesWidth+1;ix++)
-				{
-					//..vertices...
-					// x-coordinate
-					x=x0+ix*dx;
-					vertices[3*ix+iy*(options.m_slicesWidth+1)*3]=x;
-					// y-coordinate
-					y=y0+iy*dy;
-					vertices[3*ix+iy*(options.m_slicesWidth+1)*3+1]=y;
-					// z-coordinate
-					float z;
-					float fac=floorf(x/m_microLensPitch+0.5);
-					float xloc=x-fac*m_microLensPitch;
-					fac=floorf(y/m_microLensPitch+0.5);
-					float yloc=y-fac*m_microLensPitch;
-					float r; // lateral distance to local centre
-					if (m_microLensAptType==MICRORECTANGULAR)
-						r=max(abs(xloc),abs(yloc));
-					else
-						r=sqrt(xloc*xloc+yloc*yloc);
-					//if ( (r>=effectiveAptRadius) || (sqrt(xloc*xloc+yloc*yloc)>=abs(m_microLensRadius)) )
-					if ( (r>=m_microLensAptRad) || (sqrt(xloc*xloc+yloc*yloc)>=abs(m_microLensRadius)) )
-					{
-						vertices[3*ix+iy*(options.m_slicesWidth+1)*3+2]=m_thickness;
-						normals[3*ix+(options.m_slicesWidth+1)*iy*3]=GLfloat(0.0f);
-						normals[3*ix+(options.m_slicesWidth+1)*iy*3+1]=GLfloat(0.0f);
-						normals[3*ix+(options.m_slicesWidth+1)*iy*3+2]=GLfloat(-1.0f);
-					}
-					else
-					{
-						z=sqrt(m_microLensRadius*m_microLensRadius-xloc*xloc-yloc*yloc);
-						float l_vecLength=sqrt(xloc*xloc+yloc*yloc+z*z);
-						normals[3*ix+(options.m_slicesWidth+1)*iy*3]=GLfloat(-xloc/l_vecLength);
-						normals[3*ix+(options.m_slicesWidth+1)*iy*3+1]=GLfloat(-yloc/l_vecLength);
-						
-						if (m_microLensRadius<0)
-						{
-							vertices[3*ix+iy*(options.m_slicesWidth+1)*3+2]=z-lensHeightMax+m_thickness;//lensHeightMax;
-							normals[3*ix+(options.m_slicesWidth+1)*iy*3+2]=GLfloat(-z/l_vecLength);
-						}
-						else
-						{
-							vertices[3*ix+iy*(options.m_slicesWidth+1)*3+2]=-z+lensHeightMax+m_thickness;//lensHeightMax;
-							normals[3*ix+(options.m_slicesWidth+1)*iy*3]=GLfloat(xloc/l_vecLength);
-							normals[3*ix+(options.m_slicesWidth+1)*iy*3+1]=GLfloat(yloc/l_vecLength);
-
-							normals[3*ix+(options.m_slicesWidth+1)*iy*3+2]=GLfloat(-z/l_vecLength);
-						}
-					}
-				}
-			}
-
-			// create indices
-			unsigned int yIdx=0;
-			unsigned int xIdx=0;
-			indices[0]=0;
-			unsigned long iQuadY=0;
-			for (unsigned long i=1; i<nrOfIndices; i++)
-			{
-				unsigned long iQuad=i%4;
-				if (iQuad<2)
-					indices[i]=xIdx+iQuad+(options.m_slicesWidth+1)*yIdx;
-				else
-					indices[i]=xIdx+(options.m_slicesWidth+1)*(yIdx+1)-iQuad+3;
-				if (iQuad==3)
-					xIdx++;
-				if ( ((i+1)%((options.m_slicesWidth)*4))==0 )
-				{
-					xIdx=0;
-					yIdx++;
-				}
-
-			}
-
-			glEnableClientState(GL_VERTEX_ARRAY);
-			glEnableClientState(GL_NORMAL_ARRAY);
-
-			glVertexPointer(3, GL_FLOAT, 0, vertices);
-			glNormalPointer(GL_FLOAT, 0, normals);
-
-			glDrawElements(GL_QUADS, nrOfIndices, GL_UNSIGNED_INT, indices);
-
-
-			delete vertices;
-			delete normals;
-			delete indices;
-		}
-		else
-		{
-			//glBegin(GL_TRIANGLE_FAN);
-			//glNormal3f(normal.X, normal.Y, normal.Z); // this normal holds to all vertices
-			//float deltaU=2*PI/options.m_slicesWidth;
-			//double a=this->getApertureRadius().X;
-			//double b=this->getApertureRadius().Y;
-			//glVertex3f(0, 0, 0);
-			//for (int i=0; i<=options.m_slicesWidth; i++)
-			//{
-			//	glNormal3f(normal.X, normal.Y, normal.Z);
-			//	glVertex3f(a*cos(-i*deltaU), b*sin(-i*deltaU), m_thickness);
-			//}
-			//glEnd();
-		}
-
-		glPopMatrix();
-	}
+//
+//			// create indices
+//			unsigned int yIdx=0;
+//			unsigned int xIdx=0;
+//			indices[0]=0;
+//			unsigned long iQuadY=0;
+//			for (unsigned long i=1; i<nrOfIndices; i++)
+//			{
+//				unsigned long iQuad=i%4;
+//				if (iQuad<2)
+//					indices[i]=xIdx+iQuad+(options.m_slicesWidth+1)*yIdx;
+//				else
+//					indices[i]=xIdx+(options.m_slicesWidth+1)*(yIdx+1)-iQuad+3;
+//				if (iQuad==3)
+//					xIdx++;
+//				if ( ((i+1)%((options.m_slicesWidth)*4))==0 )
+//				{
+//					xIdx=0;
+//					yIdx++;
+//				}
+//
+//			}
+//
+//			glEnableClientState(GL_VERTEX_ARRAY);
+//			glEnableClientState(GL_NORMAL_ARRAY);
+//
+//			glVertexPointer(3, GL_FLOAT, 0, vertices);
+//			glNormalPointer(GL_FLOAT, 0, normals);
+//
+//			glDrawElements(GL_QUADS, nrOfIndices, GL_UNSIGNED_INT, indices);
+//
+//
+//			delete vertices;
+//			delete normals;
+//			delete indices;
+//		}
+//		else
+//		{
+//			//glBegin(GL_TRIANGLE_FAN);
+//			//glNormal3f(normal.X, normal.Y, normal.Z); // this normal holds to all vertices
+//			//float deltaU=2*PI/options.m_slicesWidth;
+//			//double a=this->getApertureRadius().X;
+//			//double b=this->getApertureRadius().Y;
+//			//glVertex3f(0, 0, 0);
+//			//for (int i=0; i<=options.m_slicesWidth; i++)
+//			//{
+//			//	glNormal3f(normal.X, normal.Y, normal.Z);
+//			//	glVertex3f(a*cos(-i*deltaU), b*sin(-i*deltaU), m_thickness);
+//			//}
+//			//glEnd();
+//		}
+//
+//		glPopMatrix();
+//	}
 }
 
 Vec3f MicroLensArrayItem::calcNormal(Vec3f vertex, Vec3f* neighbours, int nr)

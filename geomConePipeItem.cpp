@@ -82,85 +82,85 @@ bool ConePipeItem::readFromXML(const QDomElement &node)
 
 void ConePipeItem::render(QMatrix4x4 &m, RenderOptions &options)
 {
-	if (this->getRender())
-	{
-		// apply current global transformations
-		loadGlMatrix(m);
+	//if (this->getRender())
+	//{
+	//	// apply current global transformations
+	//	loadGlMatrix(m);
 
-		glPushMatrix();
+	//	glPushMatrix();
 
-		if (this->m_focus)
-			glColor3f(0.0f,1.0f,0.0f); //green
-		else
-			glColor3f(0.0f,0.0f,1.0f); //blue
+	//	if (this->m_focus)
+	//		glColor3f(0.0f,1.0f,0.0f); //green
+	//	else
+	//		glColor3f(0.0f,0.0f,1.0f); //blue
 
-		// apply current global transform
-		glTranslatef(this->getRoot().X,this->getRoot().Y,this->getRoot().Z);
-		glRotatef(this->getTilt().X,1.0f,0.0f,0.0f);
-		glRotatef(this->getTilt().Y,0.0f,1.0f,0.0f);
-		glRotatef(this->getTilt().Z,0.0f,0.0f,1.0f);
+	//	// apply current global transform
+	//	glTranslatef(this->getRoot().X,this->getRoot().Y,this->getRoot().Z);
+	//	glRotatef(this->getTilt().X,1.0f,0.0f,0.0f);
+	//	glRotatef(this->getTilt().Y,0.0f,1.0f,0.0f);
+	//	glRotatef(this->getTilt().Z,0.0f,0.0f,1.0f);
 
-		double deltaU=2*PI/(options.m_slicesWidth);
-		double deltaV=this->getThickness();
-		Vec2d r1=this->getApertureRadius();
-		Vec2d r2=this->getApertureRadius2();
+	//	double deltaU=2*PI/(options.m_slicesWidth);
+	//	double deltaV=this->getThickness();
+	//	Vec2d r1=this->getApertureRadius();
+	//	Vec2d r2=this->getApertureRadius2();
 
 
-		if ( (r2.X>0) && (r2.Y>0) )
-		{
-			Vec3f neighbours[8];
+	//	if ( (r2.X>0) && (r2.Y>0) )
+	//	{
+	//		Vec3f neighbours[8];
 
-			glBegin(GL_TRIANGLE_STRIP);
-			float x, y, z;
-			x=r1.X*cos(0*deltaU);
-			y=r1.Y*sin(0*deltaU);
-			z=0;
-			Vec3f normal=calcNormal(Vec3f(x,y,z), &neighbours[0], 0);
-			glNormal3f(normal.X, normal.Y, normal.Z);
-			glVertex3f(x, y,z);
+	//		glBegin(GL_TRIANGLE_STRIP);
+	//		float x, y, z;
+	//		x=r1.X*cos(0*deltaU);
+	//		y=r1.Y*sin(0*deltaU);
+	//		z=0;
+	//		Vec3f normal=calcNormal(Vec3f(x,y,z), &neighbours[0], 0);
+	//		glNormal3f(normal.X, normal.Y, normal.Z);
+	//		glVertex3f(x, y,z);
 
-			x=r2.X*cos(0*deltaU);
-			y=r2.Y*sin(0*deltaU);
-			z=deltaV;
-			normal=calcNormal(Vec3f(x,y,z), &neighbours[0], 0);
-			glNormal3f(normal.X, normal.Y, normal.Z);
-			glVertex3f(x, y, z);
+	//		x=r2.X*cos(0*deltaU);
+	//		y=r2.Y*sin(0*deltaU);
+	//		z=deltaV;
+	//		normal=calcNormal(Vec3f(x,y,z), &neighbours[0], 0);
+	//		glNormal3f(normal.X, normal.Y, normal.Z);
+	//		glVertex3f(x, y, z);
 
-			x=r1.X*cos((0+1)*deltaU);
-			y=r1.Y*sin((0+1)*deltaU);
-			z=0;
-			normal=calcNormal(Vec3f(x,y,z), &neighbours[0], 0);
-			glNormal3f(normal.X, normal.Y, normal.Z);
-			glVertex3f(x, y, z);
+	//		x=r1.X*cos((0+1)*deltaU);
+	//		y=r1.Y*sin((0+1)*deltaU);
+	//		z=0;
+	//		normal=calcNormal(Vec3f(x,y,z), &neighbours[0], 0);
+	//		glNormal3f(normal.X, normal.Y, normal.Z);
+	//		glVertex3f(x, y, z);
 
-			x=r2.X*cos((0+1)*deltaU);
-			y=r2.Y*sin((0+1)*deltaU);
-			z=deltaV;
-			normal=calcNormal(Vec3f(x,y,z), &neighbours[0], 0);
-			glNormal3f(normal.X, normal.Y, normal.Z);
-			glVertex3f(x, y, z);
+	//		x=r2.X*cos((0+1)*deltaU);
+	//		y=r2.Y*sin((0+1)*deltaU);
+	//		z=deltaV;
+	//		normal=calcNormal(Vec3f(x,y,z), &neighbours[0], 0);
+	//		glNormal3f(normal.X, normal.Y, normal.Z);
+	//		glVertex3f(x, y, z);
 
-			for (int iu=1; iu<options.m_slicesWidth; iu++)
-			{
-				x=r1.X*cos((iu+1)*deltaU);
-				y=r1.X*sin((iu+1)*deltaU);
-				z=0;
-				normal=calcNormal(Vec3f(x,y,z), &neighbours[0], 0);
-				glNormal3f(normal.X, normal.Y, normal.Z);
-				glVertex3f(x, y, z);
+	//		for (int iu=1; iu<options.m_slicesWidth; iu++)
+	//		{
+	//			x=r1.X*cos((iu+1)*deltaU);
+	//			y=r1.X*sin((iu+1)*deltaU);
+	//			z=0;
+	//			normal=calcNormal(Vec3f(x,y,z), &neighbours[0], 0);
+	//			glNormal3f(normal.X, normal.Y, normal.Z);
+	//			glVertex3f(x, y, z);
 
-				x=r2.Y*cos((iu+1)*deltaU);
-				y=r2.Y*sin((iu+1)*deltaU);
-				z=deltaV;
-				normal=calcNormal(Vec3f(x,y,z), &neighbours[0], 0);
-				glNormal3f(normal.X, normal.Y, normal.Z);
-				glVertex3f(x, y, z);
-			}
-			glEnd();
-		}
+	//			x=r2.Y*cos((iu+1)*deltaU);
+	//			y=r2.Y*sin((iu+1)*deltaU);
+	//			z=deltaV;
+	//			normal=calcNormal(Vec3f(x,y,z), &neighbours[0], 0);
+	//			glNormal3f(normal.X, normal.Y, normal.Z);
+	//			glVertex3f(x, y, z);
+	//		}
+	//		glEnd();
+	//	}
 
-		glPopMatrix();
-	}
+	//	glPopMatrix();
+	//}
 }
 
 Vec3f ConePipeItem::calcNormal(Vec3f vertex, Vec3f* neighbours, int nr)

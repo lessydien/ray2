@@ -64,117 +64,117 @@ bool DetectorIntensityItem::readFromXML(const QDomElement &node)
 
 void DetectorIntensityItem::render(QMatrix4x4 &m, RenderOptions &options)
 {
-	if (this->getRender() )//&& this->getResultFieldPtr())
-	{
-		// apply current global transformations
-		loadGlMatrix(m);
+	//if (this->getRender() )//&& this->getResultFieldPtr())
+	//{
+	//	// apply current global transformations
+	//	loadGlMatrix(m);
 
-		glPushMatrix();
+	//	glPushMatrix();
 
-		// apply current global transform
-		Vec3d root=this->getRoot();
-		glTranslatef(root.X,root.Y,root.Z);
-		glRotatef(this->getTilt().X,1.0f,0.0f,0.0f);
-		glRotatef(this->getTilt().Y,0.0f,1.0f,0.0f);
-		glRotatef(this->getTilt().Z,0.0f,0.0f,1.0f);
+	//	// apply current global transform
+	//	Vec3d root=this->getRoot();
+	//	glTranslatef(root.X,root.Y,root.Z);
+	//	glRotatef(this->getTilt().X,1.0f,0.0f,0.0f);
+	//	glRotatef(this->getTilt().Y,0.0f,1.0f,0.0f);
+	//	glRotatef(this->getTilt().Z,0.0f,0.0f,1.0f);
 
-		renderIntensityField(this->getResultField(), options);
+	//	renderIntensityField(this->getResultField(), options);
 
-		glPopMatrix();
-	}
+	//	glPopMatrix();
+	//}
 
-	//	// create vertices of our field
-	//	int sizeX=256;//(this->getResultFieldPtr())->getSize()[0];
-	//	int sizeY=256;//(this->getResultFieldPtr())->getSize()[1];
-	//	// we do not render line fields
-	//	if ( (sizeX>1) && (sizeY>1) )
-	//	{
-	//		unsigned long nrOfQuads=(sizeX-1)*(sizeY-1);
-	//		unsigned long nrOfIndices=4*nrOfQuads;
+	////	// create vertices of our field
+	////	int sizeX=256;//(this->getResultFieldPtr())->getSize()[0];
+	////	int sizeY=256;//(this->getResultFieldPtr())->getSize()[1];
+	////	// we do not render line fields
+	////	if ( (sizeX>1) && (sizeY>1) )
+	////	{
+	////		unsigned long nrOfQuads=(sizeX-1)*(sizeY-1);
+	////		unsigned long nrOfIndices=4*nrOfQuads;
 
-	//		GLfloat *vertices=(GLfloat*)malloc(sizeX*sizeY*3*sizeof(GLfloat));
-	//		GLfloat *colors=(GLfloat*)malloc(sizeX*sizeY*3*sizeof(GLfloat));
-	//		GLfloat *normals=(GLfloat*)malloc(sizeX*sizeY*3*sizeof(GLfloat));
-	//		GLuint *indices=(GLuint*)malloc(nrOfIndices*sizeof(GLuint));
+	////		GLfloat *vertices=(GLfloat*)malloc(sizeX*sizeY*3*sizeof(GLfloat));
+	////		GLfloat *colors=(GLfloat*)malloc(sizeX*sizeY*3*sizeof(GLfloat));
+	////		GLfloat *normals=(GLfloat*)malloc(sizeX*sizeY*3*sizeof(GLfloat));
+	////		GLuint *indices=(GLuint*)malloc(nrOfIndices*sizeof(GLuint));
 
-	//		float dx=30;//float(this->getResultFieldPtr()->getAxisScales(0));
-	//		float dy=30;//float(this->getResultFieldPtr()->getAxisScales(1));
+	////		float dx=30;//float(this->getResultFieldPtr()->getAxisScales(0));
+	////		float dy=30;//float(this->getResultFieldPtr()->getAxisScales(1));
 
-	//		float x0=0;//float(this->getResultFieldPtr()->getAxisOffset(0));
-	//		float y0=0;//float(this->getResultFieldPtr()->getAxisOffset(1));
-	//	
-	//		// apply current global transformations
-	//		loadGlMatrix(m);
+	////		float x0=0;//float(this->getResultFieldPtr()->getAxisOffset(0));
+	////		float y0=0;//float(this->getResultFieldPtr()->getAxisOffset(1));
+	////	
+	////		// apply current global transformations
+	////		loadGlMatrix(m);
 
-	//		glPushMatrix();
+	////		glPushMatrix();
 
-	//		// apply current global transform
-	//		Vec3d root=this->getRoot();
-	//		glTranslatef(root.X,root.Y,root.Z);
-	//		glRotatef(this->getTilt().X,1.0f,0.0f,0.0f);
-	//		glRotatef(this->getTilt().Y,0.0f,1.0f,0.0f);
-	//		glRotatef(this->getTilt().Z,0.0f,0.0f,1.0f);
+	////		// apply current global transform
+	////		Vec3d root=this->getRoot();
+	////		glTranslatef(root.X,root.Y,root.Z);
+	////		glRotatef(this->getTilt().X,1.0f,0.0f,0.0f);
+	////		glRotatef(this->getTilt().Y,0.0f,1.0f,0.0f);
+	////		glRotatef(this->getTilt().Z,0.0f,0.0f,1.0f);
 
-	//		for (int iy=0; iy<sizeY; iy++)
-	//		{
-	//			for (int ix=0; ix<sizeX; ix++)
-	//			{
-	//				//..vertices...
-	//				// x-coordinate
-	//				vertices[3*ix+iy*sizeX*3]=x0+ix*dx;
-	//				// y-coordinate
-	//				vertices[3*ix+iy*sizeX*3+1]=y0+iy*dy;
-	//				// z-coordinate
-	//				vertices[3*ix+iy*sizeX*3+2]=0;
-	//				//..normals...
-	//				normals[3*ix+iy*sizeX*3]=0.0f;
-	//				normals[3*ix+iy*sizeX*3+1]=0.0f;
-	//				normals[3*ix+iy*sizeX*3+2]=-1.0f;
-	//				//..colors...
-	//				colors[3*ix+iy*sizeX*3]=1.0f;
-	//				colors[3*ix+iy*sizeX*3+1]=0.0f;
-	//				colors[3*ix+iy*sizeX*3+2]=0.0f;
-	//			}
-	//		}
+	////		for (int iy=0; iy<sizeY; iy++)
+	////		{
+	////			for (int ix=0; ix<sizeX; ix++)
+	////			{
+	////				//..vertices...
+	////				// x-coordinate
+	////				vertices[3*ix+iy*sizeX*3]=x0+ix*dx;
+	////				// y-coordinate
+	////				vertices[3*ix+iy*sizeX*3+1]=y0+iy*dy;
+	////				// z-coordinate
+	////				vertices[3*ix+iy*sizeX*3+2]=0;
+	////				//..normals...
+	////				normals[3*ix+iy*sizeX*3]=0.0f;
+	////				normals[3*ix+iy*sizeX*3+1]=0.0f;
+	////				normals[3*ix+iy*sizeX*3+2]=-1.0f;
+	////				//..colors...
+	////				colors[3*ix+iy*sizeX*3]=1.0f;
+	////				colors[3*ix+iy*sizeX*3+1]=0.0f;
+	////				colors[3*ix+iy*sizeX*3+2]=0.0f;
+	////			}
+	////		}
 
-	//		// create indices
-	//		unsigned int yIdx=0;
-	//		unsigned int xIdx=0;
-	//		indices[0]=0;
-	//		for (unsigned long i=1; i<nrOfIndices; i++)
-	//		{
-	//			unsigned int iQuad=i%4;
-	//			if (iQuad<2)
-	//				indices[i]=xIdx+iQuad+sizeX*yIdx;
-	//			else
-	//				indices[i]=xIdx+sizeX*(yIdx+1)-iQuad+3;
-	//			if (iQuad==3)
-	//				xIdx++;
-	//			if ( ((i+1)%((sizeX-1)*4))==0 )
-	//			{
-	//				xIdx=0;
-	//				yIdx++;
-	//			}
-	//		}
+	////		// create indices
+	////		unsigned int yIdx=0;
+	////		unsigned int xIdx=0;
+	////		indices[0]=0;
+	////		for (unsigned long i=1; i<nrOfIndices; i++)
+	////		{
+	////			unsigned int iQuad=i%4;
+	////			if (iQuad<2)
+	////				indices[i]=xIdx+iQuad+sizeX*yIdx;
+	////			else
+	////				indices[i]=xIdx+sizeX*(yIdx+1)-iQuad+3;
+	////			if (iQuad==3)
+	////				xIdx++;
+	////			if ( ((i+1)%((sizeX-1)*4))==0 )
+	////			{
+	////				xIdx=0;
+	////				yIdx++;
+	////			}
+	////		}
 
-	////		GLfloat colors[][3]={{1.0, 0.0, 0.0}, {1.0, 0.0, 0.0}, {1.0, 0.0, 0.0}, {1.0, 0.0, 0.0}};
-	////		GLfloat normals[][3]={{0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f}};
+	//////		GLfloat colors[][3]={{1.0, 0.0, 0.0}, {1.0, 0.0, 0.0}, {1.0, 0.0, 0.0}, {1.0, 0.0, 0.0}};
+	//////		GLfloat normals[][3]={{0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f}};
 
-	//		glEnableClientState(GL_COLOR_ARRAY);
-	//		glEnableClientState(GL_VERTEX_ARRAY);
-	//		glEnableClientState(GL_NORMAL_ARRAY);
+	////		glEnableClientState(GL_COLOR_ARRAY);
+	////		glEnableClientState(GL_VERTEX_ARRAY);
+	////		glEnableClientState(GL_NORMAL_ARRAY);
 
-	//		glVertexPointer(3, GL_FLOAT, 0, vertices);
-	//		glColorPointer(3, GL_FLOAT, 0, colors);
-	//		glNormalPointer(GL_FLOAT, 0, normals);
+	////		glVertexPointer(3, GL_FLOAT, 0, vertices);
+	////		glColorPointer(3, GL_FLOAT, 0, colors);
+	////		glNormalPointer(GL_FLOAT, 0, normals);
 
-	//		glDrawElements(GL_QUADS, nrOfIndices, GL_UNSIGNED_INT, indices);
+	////		glDrawElements(GL_QUADS, nrOfIndices, GL_UNSIGNED_INT, indices);
 
-	//		delete vertices;
-	//		delete colors;
-	//		delete normals;
-	//		delete indices;
+	////		delete vertices;
+	////		delete colors;
+	////		delete normals;
+	////		delete indices;
 
-	//		glPopMatrix();
-	//	}
+	////		glPopMatrix();
+	////	}
 }

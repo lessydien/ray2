@@ -132,52 +132,52 @@ void CadObjectItem::setObjFilename(const QString in)
 
 void CadObjectItem::render(QMatrix4x4 &m, RenderOptions &options)
 {
-	if (m_objFileLoaded)
-	{
-		if (this->getRender())
-		{
-			// apply current global transformations
-			loadGlMatrix(m);
+	//if (m_objFileLoaded)
+	//{
+	//	if (this->getRender())
+	//	{
+	//		// apply current global transformations
+	//		loadGlMatrix(m);
 
-			glPushMatrix();
+	//		glPushMatrix();
 
-			if (this->m_focus)
-				glColor3f(0.0f,1.0f,0.0f); //green
-			else
-				glColor3f(0.0f,0.0f,1.0f); //blue
+	//		if (this->m_focus)
+	//			glColor3f(0.0f,1.0f,0.0f); //green
+	//		else
+	//			glColor3f(0.0f,0.0f,1.0f); //blue
 
-			int vertSize=model->getCompiledVertexSize();
-			int vertCount=model->getCompiledVertexCount();
-			int normSize=model->getNormalSize();
-			int normCount=model->getNormalCount();
-			int indCount=model->getIndexCount();
-			int test=model->getPositionCount();
+	//		int vertSize=model->getCompiledVertexSize();
+	//		int vertCount=model->getCompiledVertexCount();
+	//		int normSize=model->getNormalSize();
+	//		int normCount=model->getNormalCount();
+	//		int indCount=model->getIndexCount();
+	//		int test=model->getPositionCount();
 
-			glEnableClientState(GL_VERTEX_ARRAY);
-			GLfloat *vertices=(GLfloat*)malloc(vertSize*vertCount*sizeof(GLfloat));
-			memcpy(vertices, model->getCompiledVertices(), vertSize*vertCount*sizeof(GLfloat));
-			glVertexPointer(3, GL_FLOAT, vertSize, vertices);
+	//		glEnableClientState(GL_VERTEX_ARRAY);
+	//		GLfloat *vertices=(GLfloat*)malloc(vertSize*vertCount*sizeof(GLfloat));
+	//		memcpy(vertices, model->getCompiledVertices(), vertSize*vertCount*sizeof(GLfloat));
+	//		glVertexPointer(3, GL_FLOAT, vertSize, vertices);
 
-			GLfloat *normals=(GLfloat*)malloc(normSize*normCount*sizeof(GLfloat));
-			if (model->hasNormals())
-			{
-				memcpy(normals, model->getNormals(), normSize*normCount*sizeof(GLfloat));
-				glEnableClientState(GL_NORMAL_ARRAY);
-				glNormalPointer(GL_FLOAT, vertSize, normals);
-			}
+	//		GLfloat *normals=(GLfloat*)malloc(normSize*normCount*sizeof(GLfloat));
+	//		if (model->hasNormals())
+	//		{
+	//			memcpy(normals, model->getNormals(), normSize*normCount*sizeof(GLfloat));
+	//			glEnableClientState(GL_NORMAL_ARRAY);
+	//			glNormalPointer(GL_FLOAT, vertSize, normals);
+	//		}
 
-			GLuint *indices=(GLuint*)malloc(indCount*sizeof(GLuint));
-			memcpy(indices, model->getCompiledIndices(), indCount*sizeof(GLuint)); 
+	//		GLuint *indices=(GLuint*)malloc(indCount*sizeof(GLuint));
+	//		memcpy(indices, model->getCompiledIndices(), indCount*sizeof(GLuint)); 
 
-			glDrawElements(GL_TRIANGLES, indCount, GL_UNSIGNED_INT, indices);
+	//		glDrawElements(GL_TRIANGLES, indCount, GL_UNSIGNED_INT, indices);
 
-			delete vertices;
-			delete normals;
-			delete indices;
+	//		delete vertices;
+	//		delete normals;
+	//		delete indices;
 
-			glPopMatrix();
-		}
-	}
+	//		glPopMatrix();
+	//	}
+	//}
 }
 
 Vec3f CadObjectItem::calcNormal(Vec3f vertex, Vec3f* neighbours, int nr)

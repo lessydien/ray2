@@ -18,7 +18,7 @@
 #ifndef ABSTRACTITEM
 #define ABSTRACTITEM
 
-#include "GL/glew.h"
+//#include "GL/glew.h"
 #include <qobject.h>
 #include <qlist.h>
 #include <QDomElement>

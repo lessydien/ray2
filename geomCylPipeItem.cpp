@@ -81,81 +81,81 @@ bool CylPipeItem::readFromXML(const QDomElement &node)
 
 void CylPipeItem::render(QMatrix4x4 &m, RenderOptions &options)
 {
-	if (this->getRender())
-	{
-		// apply current global transformations
-		loadGlMatrix(m);
+	//if (this->getRender())
+	//{
+	//	// apply current global transformations
+	//	loadGlMatrix(m);
 
-		glPushMatrix();
+	//	glPushMatrix();
 
-		if (this->m_focus)
-			glColor3f(0.0f,1.0f,0.0f); //green
-		else
-			glColor3f(0.0f,0.0f,1.0f); //blue
+	//	if (this->m_focus)
+	//		glColor3f(0.0f,1.0f,0.0f); //green
+	//	else
+	//		glColor3f(0.0f,0.0f,1.0f); //blue
 
-		// apply current global transform
-		glTranslatef(this->getRoot().X,this->getRoot().Y,this->getRoot().Z);
-		glRotatef(this->getTilt().X,1.0f,0.0f,0.0f);
-		glRotatef(this->getTilt().Y,0.0f,1.0f,0.0f);
-		glRotatef(this->getTilt().Z,0.0f,0.0f,1.0f);
+	//	// apply current global transform
+	//	glTranslatef(this->getRoot().X,this->getRoot().Y,this->getRoot().Z);
+	//	glRotatef(this->getTilt().X,1.0f,0.0f,0.0f);
+	//	glRotatef(this->getTilt().Y,0.0f,1.0f,0.0f);
+	//	glRotatef(this->getTilt().Z,0.0f,0.0f,1.0f);
 
-		double deltaU=2*PI/(options.m_slicesWidth);
-		double deltaV=this->getThickness();
-		double r=this->getRadius();
+	//	double deltaU=2*PI/(options.m_slicesWidth);
+	//	double deltaV=this->getThickness();
+	//	double r=this->getRadius();
 
-		Vec3f neighbours[8];
-	
-		glBegin(GL_TRIANGLE_STRIP);
-		float x=r*cos(0*deltaU);
-		float y=r*sin(0*deltaU);
-		float z=0;
-		Vec3f normal=calcNormal(Vec3f(x,y,z),&neighbours[0],0);
-		glNormal3f(normal.X, normal.Y, normal.Z);
-		glVertex3f(x, y ,z);
+	//	Vec3f neighbours[8];
+	//
+	//	glBegin(GL_TRIANGLE_STRIP);
+	//	float x=r*cos(0*deltaU);
+	//	float y=r*sin(0*deltaU);
+	//	float z=0;
+	//	Vec3f normal=calcNormal(Vec3f(x,y,z),&neighbours[0],0);
+	//	glNormal3f(normal.X, normal.Y, normal.Z);
+	//	glVertex3f(x, y ,z);
 
-		x=r*cos(0*deltaU);
-		y=r*sin(0*deltaU);
-		z=deltaV;
-		normal=calcNormal(Vec3f(x,y,z),&neighbours[0],0);
-		glNormal3f(normal.X, normal.Y, normal.Z);
-		glVertex3f(x, y, z);
+	//	x=r*cos(0*deltaU);
+	//	y=r*sin(0*deltaU);
+	//	z=deltaV;
+	//	normal=calcNormal(Vec3f(x,y,z),&neighbours[0],0);
+	//	glNormal3f(normal.X, normal.Y, normal.Z);
+	//	glVertex3f(x, y, z);
 
-		x=r*cos((0+1)*deltaU);
-		y=r*sin((0+1)*deltaU);
-		z=0;
-		normal=calcNormal(Vec3f(x,y,z),&neighbours[0],0);
-		glNormal3f(normal.X, normal.Y, normal.Z);
-		glVertex3f(x, y, z);
+	//	x=r*cos((0+1)*deltaU);
+	//	y=r*sin((0+1)*deltaU);
+	//	z=0;
+	//	normal=calcNormal(Vec3f(x,y,z),&neighbours[0],0);
+	//	glNormal3f(normal.X, normal.Y, normal.Z);
+	//	glVertex3f(x, y, z);
 
-		x=r*cos((0+1)*deltaU);
-		y=r*sin((0+1)*deltaU) ;
-		z=deltaV;
-		normal=calcNormal(Vec3f(x,y,z),&neighbours[0],0);
-		glNormal3f(normal.X, normal.Y, normal.Z);
-		glVertex3f(x, y, z);
+	//	x=r*cos((0+1)*deltaU);
+	//	y=r*sin((0+1)*deltaU) ;
+	//	z=deltaV;
+	//	normal=calcNormal(Vec3f(x,y,z),&neighbours[0],0);
+	//	glNormal3f(normal.X, normal.Y, normal.Z);
+	//	glVertex3f(x, y, z);
 
-		for (int iu=1; iu<options.m_slicesWidth; iu++)
-		{
-			x=r*cos((iu+1)*deltaU);
-			y=r*sin((iu+1)*deltaU);
-			z=0;
-			normal=calcNormal(Vec3f(x,y,z),&neighbours[0],0);
-			glNormal3f(normal.X, normal.Y, normal.Z);
-			glVertex3f(x, y, z);
+	//	for (int iu=1; iu<options.m_slicesWidth; iu++)
+	//	{
+	//		x=r*cos((iu+1)*deltaU);
+	//		y=r*sin((iu+1)*deltaU);
+	//		z=0;
+	//		normal=calcNormal(Vec3f(x,y,z),&neighbours[0],0);
+	//		glNormal3f(normal.X, normal.Y, normal.Z);
+	//		glVertex3f(x, y, z);
 
-			x=r*cos((iu+1)*deltaU);
-			y=r*sin((iu+1)*deltaU);
-			z=deltaV;
-			normal=calcNormal(Vec3f(x,y,z),&neighbours[0],0);
-			glNormal3f(normal.X, normal.Y, normal.Z);
-			glVertex3f(x, y, z);
-		}
-		glEnd();
+	//		x=r*cos((iu+1)*deltaU);
+	//		y=r*sin((iu+1)*deltaU);
+	//		z=deltaV;
+	//		normal=calcNormal(Vec3f(x,y,z),&neighbours[0],0);
+	//		glNormal3f(normal.X, normal.Y, normal.Z);
+	//		glVertex3f(x, y, z);
+	//	}
+	//	glEnd();
 
 
 
-		glPopMatrix();
-	}
+	//	glPopMatrix();
+	//}
 
 }
 

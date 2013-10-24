@@ -68,19 +68,19 @@ bool ScalarSphericalFieldItem::readFromXML(const QDomElement &node)
 
 void ScalarSphericalFieldItem::render(QMatrix4x4 &m, RenderOptions &options)
 {
-	if (this->getRender())
-	{
-		loadGlMatrix(m);
+	//if (this->getRender())
+	//{
+	//	loadGlMatrix(m);
 
-		glPushMatrix();
+	//	glPushMatrix();
 
-		glColor3f(1.0f, 0.0f, 0.0f);
+	//	glColor3f(1.0f, 0.0f, 0.0f);
 
-		glTranslatef(this->getRoot().X, this->getRoot().Y, this->getRoot().Z);
-		glRotatef(this->getTilt().X,1.0f,0.0f,0.0f);
-		glRotatef(this->getTilt().Y,0.0f,1.0f,0.0f);
-		glRotatef(this->getTilt().Z,0.0f,0.0f,1.0f);
+	//	glTranslatef(this->getRoot().X, this->getRoot().Y, this->getRoot().Z);
+	//	glRotatef(this->getTilt().X,1.0f,0.0f,0.0f);
+	//	glRotatef(this->getTilt().Y,0.0f,1.0f,0.0f);
+	//	glRotatef(this->getTilt().Z,0.0f,0.0f,1.0f);
 
-		renderSemiSphere(this->getApertureHalfWidth().X, this->getRadius().X, m_numApt.X, options);
-	}
+	//	renderSemiSphere(this->getApertureHalfWidth().X, this->getRadius().X, m_numApt.X, options);
+	//}
 };

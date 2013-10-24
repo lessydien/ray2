@@ -70,77 +70,77 @@ bool ApertureStopItem::readFromXML(const QDomElement &node)
 
 void ApertureStopItem::render(QMatrix4x4 &m, RenderOptions &options)
 {
-	if (this->getRender())
-	{
-		// apply current global transformations
-		loadGlMatrix(m);
+	//if (this->getRender())
+	//{
+	//	// apply current global transformations
+	//	loadGlMatrix(m);
 
-		glPushMatrix();
+	//	glPushMatrix();
 
-		if (this->m_focus)
-			glColor3f(0.0f,1.0f,0.0f); //green
-		else
-			glColor3f(0.0f,0.0f,1.0f); //blue
+	//	if (this->m_focus)
+	//		glColor3f(0.0f,1.0f,0.0f); //green
+	//	else
+	//		glColor3f(0.0f,0.0f,1.0f); //blue
 
-		// apply current global transform
-		Vec3d root=this->getRoot();
-		glTranslatef(root.X,root.Y,root.Z);
-		glRotatef(this->getTilt().X,1.0f,0.0f,0.0f);
-		glRotatef(this->getTilt().Y,0.0f,1.0f,0.0f);
-		glRotatef(this->getTilt().Z,0.0f,0.0f,1.0f);
+	//	// apply current global transform
+	//	Vec3d root=this->getRoot();
+	//	glTranslatef(root.X,root.Y,root.Z);
+	//	glRotatef(this->getTilt().X,1.0f,0.0f,0.0f);
+	//	glRotatef(this->getTilt().Y,0.0f,1.0f,0.0f);
+	//	glRotatef(this->getTilt().Z,0.0f,0.0f,1.0f);
 
-		Vec2d ar=this->getApertureRadius();
-		Vec2d asr=this->getApertureStopRadius();
+	//	Vec2d ar=this->getApertureRadius();
+	//	Vec2d asr=this->getApertureStopRadius();
 
-		Vec3f neighbours[8];
-		Vec3f normal=calcNormal(Vec3f(root.X,root.Y,root.Z),&neighbours[0],0);
-	
-		if ( (asr.X<ar.X) && (asr.Y<ar.Y))
-		{
+	//	Vec3f neighbours[8];
+	//	Vec3f normal=calcNormal(Vec3f(root.X,root.Y,root.Z),&neighbours[0],0);
+	//
+	//	if ( (asr.X<ar.X) && (asr.Y<ar.Y))
+	//	{
 
-			if (this->getApertureType()==RECTANGULAR)
-			{
-				glBegin(GL_QUAD_STRIP);
-				glNormal3f(-normal.X, -normal.Y, -normal.Z); // this normal holds to all vertices
-				glVertex3f(-ar.X, ar.Y, 0);
-				glVertex3f(-asr.X, asr.Y, 0);
-				glVertex3f(+ar.X, ar.Y, 0);
-				glVertex3f(+asr.X, asr.Y, 0);
-			
-				glVertex3f(ar.X, -ar.Y, 0);
-				glVertex3f(asr.X, -asr.Y, 0);
+	//		if (this->getApertureType()==RECTANGULAR)
+	//		{
+	//			glBegin(GL_QUAD_STRIP);
+	//			glNormal3f(-normal.X, -normal.Y, -normal.Z); // this normal holds to all vertices
+	//			glVertex3f(-ar.X, ar.Y, 0);
+	//			glVertex3f(-asr.X, asr.Y, 0);
+	//			glVertex3f(+ar.X, ar.Y, 0);
+	//			glVertex3f(+asr.X, asr.Y, 0);
+	//		
+	//			glVertex3f(ar.X, -ar.Y, 0);
+	//			glVertex3f(asr.X, -asr.Y, 0);
 
-				glVertex3f(-ar.X, -ar.Y,0);
-				glVertex3f(-asr.X, -asr.Y, 0);
-			
-				glVertex3f(-ar.X, ar.Y,0);
-				glVertex3f(-asr.X, asr.Y,0);
-			
-			
+	//			glVertex3f(-ar.X, -ar.Y,0);
+	//			glVertex3f(-asr.X, -asr.Y, 0);
+	//		
+	//			glVertex3f(-ar.X, ar.Y,0);
+	//			glVertex3f(-asr.X, asr.Y,0);
+	//		
+	//		
 
-				glEnd();
-			}
-			else
-			{
-				double deltaU=2*PI/options.m_slicesWidth;
-				double deltaV=2*PI/options.m_slicesWidth;
+	//			glEnd();
+	//		}
+	//		else
+	//		{
+	//			double deltaU=2*PI/options.m_slicesWidth;
+	//			double deltaV=2*PI/options.m_slicesWidth;
 
-				glBegin(GL_TRIANGLE_STRIP);
-				glNormal3f(normal.X, normal.Y, normal.Z); // this normal holds to all vertices
-				for (int i=0; i<options.m_slicesWidth;i++)
-				//for (int i=0; i<2;i++)
-				{
-					glVertex3f(asr.X*cos(-i*deltaU), asr.Y*sin(-i*deltaU), 0);
-					glVertex3f(ar.X*cos(-i*deltaU), ar.Y*sin(-i*deltaU), 0);
-					glVertex3f(asr.X*cos(-(i+1)*deltaU), asr.Y*sin(-(i+1)*deltaU), 0);
-					glVertex3f(ar.X*cos(-(i+1)*deltaU), ar.Y*sin(-(i+1)*deltaU), 0);
-				}
-				glEnd();
-			}
-		}
+	//			glBegin(GL_TRIANGLE_STRIP);
+	//			glNormal3f(normal.X, normal.Y, normal.Z); // this normal holds to all vertices
+	//			for (int i=0; i<options.m_slicesWidth;i++)
+	//			//for (int i=0; i<2;i++)
+	//			{
+	//				glVertex3f(asr.X*cos(-i*deltaU), asr.Y*sin(-i*deltaU), 0);
+	//				glVertex3f(ar.X*cos(-i*deltaU), ar.Y*sin(-i*deltaU), 0);
+	//				glVertex3f(asr.X*cos(-(i+1)*deltaU), asr.Y*sin(-(i+1)*deltaU), 0);
+	//				glVertex3f(ar.X*cos(-(i+1)*deltaU), ar.Y*sin(-(i+1)*deltaU), 0);
+	//			}
+	//			glEnd();
+	//		}
+	//	}
 
-		glPopMatrix();
-	}
+	//	glPopMatrix();
+	//}
 }
 
 Vec3f ApertureStopItem::calcNormal(Vec3f vertex, Vec3f* neighbours, int nr)

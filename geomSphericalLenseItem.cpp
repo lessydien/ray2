@@ -411,290 +411,290 @@ bool SphericalLenseItem::readFromXML(const QDomElement &node)
 
 void SphericalLenseItem::render(QMatrix4x4 &m, RenderOptions &options)
 {
-	if (this->getRender())
-	{
-		loadGlMatrix(m);
+	//if (this->getRender())
+	//{
+	//	loadGlMatrix(m);
 
-		glPushMatrix();
+	//	glPushMatrix();
 
-		if (this->m_focus)
-			glColor4f(0.0f,1.0f,0.0f,0.6f); //green
-		else
-			glColor4f(0.0f,0.0f,1.0f,0.6f); //blue
+	//	if (this->m_focus)
+	//		glColor4f(0.0f,1.0f,0.0f,0.6f); //green
+	//	else
+	//		glColor4f(0.0f,0.0f,1.0f,0.6f); //blue
 
-		// apply current global transform
-		glTranslatef(this->getRoot().X,this->getRoot().Y,this->getRoot().Z);
-		glRotatef(this->getTilt().X,1.0f,0.0f,0.0f);
-		glRotatef(this->getTilt().Y,0.0f,1.0f,0.0f);
-		glRotatef(this->getTilt().Z,0.0f,0.0f,1.0f);
+	//	// apply current global transform
+	//	glTranslatef(this->getRoot().X,this->getRoot().Y,this->getRoot().Z);
+	//	glRotatef(this->getTilt().X,1.0f,0.0f,0.0f);
+	//	glRotatef(this->getTilt().Y,0.0f,1.0f,0.0f);
+	//	glRotatef(this->getTilt().Z,0.0f,0.0f,1.0f);
 
-		if (this->getApertureType() == RECTANGULAR)
-		{
-			// ??????????
-		}
-		else
-		{
-			// front face
-			double ar=this->getApertureRadius().X;
-			double r=-this->getRadius1();
+	//	if (this->getApertureType() == RECTANGULAR)
+	//	{
+	//		// ??????????
+	//	}
+	//	else
+	//	{
+	//		// front face
+	//		double ar=this->getApertureRadius().X;
+	//		double r=-this->getRadius1();
 
-			// thickness gives the distance of the middle points of the spherical side faces
-			// the sidewall has to be longer or shorter than that according to the sign of the radius of curvature...
-			double deltaZ1=abs(r)-sqrt(r*r-ar*ar);
+	//		// thickness gives the distance of the middle points of the spherical side faces
+	//		// the sidewall has to be longer or shorter than that according to the sign of the radius of curvature...
+	//		double deltaZ1=abs(r)-sqrt(r*r-ar*ar);
 
-			// radius=0 marks radius of infinity...
-			if (r==0)
-			{
-				r=std::numeric_limits<double>::max();
-				deltaZ1=0;
-			}
+	//		// radius=0 marks radius of infinity...
+	//		if (r==0)
+	//		{
+	//			r=std::numeric_limits<double>::max();
+	//			deltaZ1=0;
+	//		}
 
-			double deltaU=2*PI/(options.m_slicesWidth);
-			double deltaV;
+	//		double deltaU=2*PI/(options.m_slicesWidth);
+	//		double deltaV;
 
-			if (ar>=abs(r))
-			{
-				// if aperture is bigger than radius, we need to draw the full semi-sphere
-				deltaV=PI/2/options.m_slicesHeight;
-				deltaZ1=r;
-			}
-			else
-				// if not, we only draw part of the hemi-sphere 
-				deltaV=asin(ar/r)/options.m_slicesHeight;
+	//		if (ar>=abs(r))
+	//		{
+	//			// if aperture is bigger than radius, we need to draw the full semi-sphere
+	//			deltaV=PI/2/options.m_slicesHeight;
+	//			deltaZ1=r;
+	//		}
+	//		else
+	//			// if not, we only draw part of the hemi-sphere 
+	//			deltaV=asin(ar/r)/options.m_slicesHeight;
 
-			// the sign of the extra length of the side face depends on the sign of the radius of curvature
-			if (r<0)
-				deltaZ1=-deltaZ1;
+	//		// the sign of the extra length of the side face depends on the sign of the radius of curvature
+	//		if (r<0)
+	//			deltaZ1=-deltaZ1;
 
-			if (ar>=abs(r))
-				// if aperture is bigger than radius, we need to draw the full semi-sphere
-				deltaV=PI/2/options.m_slicesHeight;
-			else
-				// if not, we only draw part of the hemi-sphere
-				deltaV=asin(ar/r)/options.m_slicesHeight;
+	//		if (ar>=abs(r))
+	//			// if aperture is bigger than radius, we need to draw the full semi-sphere
+	//			deltaV=PI/2/options.m_slicesHeight;
+	//		else
+	//			// if not, we only draw part of the hemi-sphere
+	//			deltaV=asin(ar/r)/options.m_slicesHeight;
 
-			//for (float phi=0; phi <= PI/2; phi+=factor)
-			for (int iv=0; iv<options.m_slicesHeight; iv++)
-			{
-				Vec3f neighbours[8];
+	//		//for (float phi=0; phi <= PI/2; phi+=factor)
+	//		for (int iv=0; iv<options.m_slicesHeight; iv++)
+	//		{
+	//			Vec3f neighbours[8];
 
-				double phi=0+iv*deltaV;
-				glBegin(GL_TRIANGLE_STRIP);
+	//			double phi=0+iv*deltaV;
+	//			glBegin(GL_TRIANGLE_STRIP);
 
-				float x=r*sin(phi)*cos(0.0f);
-				float y=r*sin(phi)*sin(0.0f);
-				float z=r*cos(phi)-r;
-				// set vertex and normal
-				Vec3f normal=calcNormal(Vec3f(x,y,z), &neighbours[0], 0);
-				glNormal3f(normal.X, normal.Y, normal.Z);
-				glVertex3f(x,y,z);
-				//glVertex3f(x,y,z);
+	//			float x=r*sin(phi)*cos(0.0f);
+	//			float y=r*sin(phi)*sin(0.0f);
+	//			float z=r*cos(phi)-r;
+	//			// set vertex and normal
+	//			Vec3f normal=calcNormal(Vec3f(x,y,z), &neighbours[0], 0);
+	//			glNormal3f(normal.X, normal.Y, normal.Z);
+	//			glVertex3f(x,y,z);
+	//			//glVertex3f(x,y,z);
 
-				x=r*sin(phi+deltaV)*cos(0.0f);
-				y=r*sin(phi+deltaV)*sin(0.0f);
-				z=r*cos(phi+deltaV)-r;
-				// set vertex and normal
-				normal=calcNormal(Vec3f(x,y,z), &neighbours[0], 0);
-				glNormal3f(normal.X, normal.Y, normal.Z);
-				glVertex3f(x,y,z);
+	//			x=r*sin(phi+deltaV)*cos(0.0f);
+	//			y=r*sin(phi+deltaV)*sin(0.0f);
+	//			z=r*cos(phi+deltaV)-r;
+	//			// set vertex and normal
+	//			normal=calcNormal(Vec3f(x,y,z), &neighbours[0], 0);
+	//			glNormal3f(normal.X, normal.Y, normal.Z);
+	//			glVertex3f(x,y,z);
 
-				x=r*sin(phi)*cos(deltaU);
-				y=r*sin(phi)*sin(deltaU);
-				z=r*cos(phi)-r;
-				// set vertex and normal
-				normal=calcNormal(Vec3f(x,y,z), &neighbours[0], 0);
-				glNormal3f(normal.X, normal.Y, normal.Z);
-				glVertex3f(x,y,z);
+	//			x=r*sin(phi)*cos(deltaU);
+	//			y=r*sin(phi)*sin(deltaU);
+	//			z=r*cos(phi)-r;
+	//			// set vertex and normal
+	//			normal=calcNormal(Vec3f(x,y,z), &neighbours[0], 0);
+	//			glNormal3f(normal.X, normal.Y, normal.Z);
+	//			glVertex3f(x,y,z);
 
-				x=r*sin(phi+deltaV)*cos(deltaU);
-				y=r*sin(phi+deltaV)*sin(deltaU);
-				z=r*cos(phi+deltaV)-r;
-				// set vertex and normal
-				normal=calcNormal(Vec3f(x,y,z), &neighbours[0], 0);
-				glNormal3f(normal.X, normal.Y, normal.Z);
-				glVertex3f(x,y,z);
+	//			x=r*sin(phi+deltaV)*cos(deltaU);
+	//			y=r*sin(phi+deltaV)*sin(deltaU);
+	//			z=r*cos(phi+deltaV)-r;
+	//			// set vertex and normal
+	//			normal=calcNormal(Vec3f(x,y,z), &neighbours[0], 0);
+	//			glNormal3f(normal.X, normal.Y, normal.Z);
+	//			glVertex3f(x,y,z);
 
-				//for (float theta=factor; theta <= 2*PI; theta+= factor)
-				for (int iu=1; iu<=options.m_slicesWidth; iu++)
-				{
-					double theta=0+iu*deltaU;
-					x=r*sin(phi)*cos(theta);
-					y=r*sin(phi)*sin(theta);
-					z=r*cos(phi)-r;
-					// set vertex and normal
-					normal=calcNormal(Vec3f(x,y,z), &neighbours[0], 0);
-					glNormal3f(normal.X, normal.Y, normal.Z);
-					glVertex3f(x, y, z);
+	//			//for (float theta=factor; theta <= 2*PI; theta+= factor)
+	//			for (int iu=1; iu<=options.m_slicesWidth; iu++)
+	//			{
+	//				double theta=0+iu*deltaU;
+	//				x=r*sin(phi)*cos(theta);
+	//				y=r*sin(phi)*sin(theta);
+	//				z=r*cos(phi)-r;
+	//				// set vertex and normal
+	//				normal=calcNormal(Vec3f(x,y,z), &neighbours[0], 0);
+	//				glNormal3f(normal.X, normal.Y, normal.Z);
+	//				glVertex3f(x, y, z);
 
-					x=r*sin(phi+deltaV)*cos(theta);
-					y=r*sin(phi+deltaV)*sin(theta);
-					z=r*cos(phi+deltaV)-r;
-					// set vertex and normal
-					normal=calcNormal(Vec3f(x,y,z), &neighbours[0], 0);
-					glNormal3f(normal.X, normal.Y, normal.Z);
-					glVertex3f(x, y, z);
-				}
+	//				x=r*sin(phi+deltaV)*cos(theta);
+	//				y=r*sin(phi+deltaV)*sin(theta);
+	//				z=r*cos(phi+deltaV)-r;
+	//				// set vertex and normal
+	//				normal=calcNormal(Vec3f(x,y,z), &neighbours[0], 0);
+	//				glNormal3f(normal.X, normal.Y, normal.Z);
+	//				glVertex3f(x, y, z);
+	//			}
 
 
-				glEnd();
-			}
+	//			glEnd();
+	//		}
 
-			// back face
-			r=-this->getRadius2();
-			ar=this->getApertureRadius2().X;
+	//		// back face
+	//		r=-this->getRadius2();
+	//		ar=this->getApertureRadius2().X;
 
-			// thickness gives the distance of the middle points of the spherical side faces
-			// the sidewall has to be longer or shorter than that according to the sign of the radius of curvature...
-			double deltaZ2=abs(r)-sqrt(r*r-ar*ar);
+	//		// thickness gives the distance of the middle points of the spherical side faces
+	//		// the sidewall has to be longer or shorter than that according to the sign of the radius of curvature...
+	//		double deltaZ2=abs(r)-sqrt(r*r-ar*ar);
 
-			// radius=0 marks radius of infinity...
-			if (r==0)
-			{
-				r=std::numeric_limits<double>::max();
-				deltaZ2=0;
-			}
+	//		// radius=0 marks radius of infinity...
+	//		if (r==0)
+	//		{
+	//			r=std::numeric_limits<double>::max();
+	//			deltaZ2=0;
+	//		}
 
-			if (ar>=abs(r))
-			{
-				// if aperture is bigger than radius, we need to draw the full semi-sphere
-				deltaV=PI/2/options.m_slicesHeight;
-				deltaZ2=r;
-			}
-			else
-				// if not, we only draw part of the hemi-sphere 
-				deltaV=asin(ar/r)/options.m_slicesHeight;
+	//		if (ar>=abs(r))
+	//		{
+	//			// if aperture is bigger than radius, we need to draw the full semi-sphere
+	//			deltaV=PI/2/options.m_slicesHeight;
+	//			deltaZ2=r;
+	//		}
+	//		else
+	//			// if not, we only draw part of the hemi-sphere 
+	//			deltaV=asin(ar/r)/options.m_slicesHeight;
 
-			// the sign of the extra length of the side face depends on the sign of the radius of curvature
-			if (r>0)
-				deltaZ2=-deltaZ2;
+	//		// the sign of the extra length of the side face depends on the sign of the radius of curvature
+	//		if (r>0)
+	//			deltaZ2=-deltaZ2;
 
-			for (int iv=0; iv<options.m_slicesHeight; iv++)
-			//for (int iv=0; iv<1; iv++)
-			{
-				Vec3f neighbours[8];
+	//		for (int iv=0; iv<options.m_slicesHeight; iv++)
+	//		//for (int iv=0; iv<1; iv++)
+	//		{
+	//			Vec3f neighbours[8];
 
-				double phi=0+iv*deltaV;
-				glBegin(GL_TRIANGLE_STRIP);
-				float x=r*sin(phi)*cos(0.0f);
-				float y=r*sin(phi)*sin(0.0f);
-				float z=r*cos(phi)-r+this->getThickness();
-				// set vertex and normal
-				Vec3f normal=calcNormalBack(Vec3f(x,y,z));
-				glNormal3f(normal.X, normal.Y, normal.Z);
-				glVertex3f(x,y,z);
+	//			double phi=0+iv*deltaV;
+	//			glBegin(GL_TRIANGLE_STRIP);
+	//			float x=r*sin(phi)*cos(0.0f);
+	//			float y=r*sin(phi)*sin(0.0f);
+	//			float z=r*cos(phi)-r+this->getThickness();
+	//			// set vertex and normal
+	//			Vec3f normal=calcNormalBack(Vec3f(x,y,z));
+	//			glNormal3f(normal.X, normal.Y, normal.Z);
+	//			glVertex3f(x,y,z);
 
-				x=r*sin(phi+deltaV)*cos(0.0f);
-				y=r*sin(phi+deltaV)*sin(0.0f);
-				z=r*cos(phi+deltaV)-r+this->getThickness();
-				// set vertex and normal
-				normal=calcNormalBack(Vec3f(x,y,z));
-				glNormal3f(normal.X, normal.Y, normal.Z);
-				glVertex3f(x,y,z);
+	//			x=r*sin(phi+deltaV)*cos(0.0f);
+	//			y=r*sin(phi+deltaV)*sin(0.0f);
+	//			z=r*cos(phi+deltaV)-r+this->getThickness();
+	//			// set vertex and normal
+	//			normal=calcNormalBack(Vec3f(x,y,z));
+	//			glNormal3f(normal.X, normal.Y, normal.Z);
+	//			glVertex3f(x,y,z);
 
-				x=r*sin(phi)*cos(deltaU);
-				y=r*sin(phi)*sin(deltaU);
-				z=r*cos(phi)-r+this->getThickness();
-				// set vertex and normal
-				normal=calcNormalBack(Vec3f(x,y,z));
-				glNormal3f(normal.X, normal.Y, normal.Z);
-				glVertex3f(x,y,z);
+	//			x=r*sin(phi)*cos(deltaU);
+	//			y=r*sin(phi)*sin(deltaU);
+	//			z=r*cos(phi)-r+this->getThickness();
+	//			// set vertex and normal
+	//			normal=calcNormalBack(Vec3f(x,y,z));
+	//			glNormal3f(normal.X, normal.Y, normal.Z);
+	//			glVertex3f(x,y,z);
 
-				x=r*sin(phi+deltaV)*cos(deltaU);
-				y=r*sin(phi+deltaV)*sin(deltaU);
-				z=r*cos(phi+deltaV)-r+this->getThickness();
-				// set vertex and normal
-				normal=calcNormalBack(Vec3f(x,y,z));
-				glNormal3f(normal.X, normal.Y, normal.Z);
-				glVertex3f(x,y,z);
+	//			x=r*sin(phi+deltaV)*cos(deltaU);
+	//			y=r*sin(phi+deltaV)*sin(deltaU);
+	//			z=r*cos(phi+deltaV)-r+this->getThickness();
+	//			// set vertex and normal
+	//			normal=calcNormalBack(Vec3f(x,y,z));
+	//			glNormal3f(normal.X, normal.Y, normal.Z);
+	//			glVertex3f(x,y,z);
 
-				for (int iu=1; iu<=options.m_slicesWidth; iu++)
-				//for (int iu=1; iu<=1; iu++)
-				{
-					double theta=0+iu*deltaU;
-					x=r*sin(phi)*cos(theta);
-					y=r*sin(phi)*sin(theta);
-					z=r*cos(phi)-r+this->getThickness();
-					// set vertex and normal
-					normal=calcNormalBack(Vec3f(x,y,z));
-					glNormal3f(normal.X, normal.Y, normal.Z);
-					glVertex3f(x, y, z);
+	//			for (int iu=1; iu<=options.m_slicesWidth; iu++)
+	//			//for (int iu=1; iu<=1; iu++)
+	//			{
+	//				double theta=0+iu*deltaU;
+	//				x=r*sin(phi)*cos(theta);
+	//				y=r*sin(phi)*sin(theta);
+	//				z=r*cos(phi)-r+this->getThickness();
+	//				// set vertex and normal
+	//				normal=calcNormalBack(Vec3f(x,y,z));
+	//				glNormal3f(normal.X, normal.Y, normal.Z);
+	//				glVertex3f(x, y, z);
 
-					x=r*sin(phi+deltaV)*cos(theta);
-					y=r*sin(phi+deltaV)*sin(theta);
-					z=r*cos(phi+deltaV)-r+this->getThickness();
-					// set vertex and normal
-					normal=calcNormalBack(Vec3f(x,y,z));
-					glNormal3f(normal.X, normal.Y, normal.Z);
-					glVertex3f(x, y, z);
-				}
+	//				x=r*sin(phi+deltaV)*cos(theta);
+	//				y=r*sin(phi+deltaV)*sin(theta);
+	//				z=r*cos(phi+deltaV)-r+this->getThickness();
+	//				// set vertex and normal
+	//				normal=calcNormalBack(Vec3f(x,y,z));
+	//				glNormal3f(normal.X, normal.Y, normal.Z);
+	//				glVertex3f(x, y, z);
+	//			}
 
-				glEnd();
-			}
+	//			glEnd();
+	//		}
 
-			// side face
-			deltaU=2*PI/(options.m_slicesWidth);
-			deltaV=this->getThickness()+deltaZ2;
-			Vec2d r1=this->getApertureRadius();
-			Vec2d r2=this->getApertureRadius2();
+	//		// side face
+	//		deltaU=2*PI/(options.m_slicesWidth);
+	//		deltaV=this->getThickness()+deltaZ2;
+	//		Vec2d r1=this->getApertureRadius();
+	//		Vec2d r2=this->getApertureRadius2();
 
-			if ( (r2.X>0) && (r2.Y>0) )
-			{
-				Vec3f neighbours[8];
+	//		if ( (r2.X>0) && (r2.Y>0) )
+	//		{
+	//			Vec3f neighbours[8];
 
-				glBegin(GL_TRIANGLE_STRIP);
+	//			glBegin(GL_TRIANGLE_STRIP);
 
-				float x, y, z;
-				x=r2.X*cos(0*deltaU);
-				y=r2.Y*sin(0*deltaU);
-				z=deltaV;
-				Vec3f normal=calcNormalSide(Vec3f(x,y,z));
-				glNormal3f(normal.X, normal.Y, normal.Z);
-				glVertex3f(x, y, z);
+	//			float x, y, z;
+	//			x=r2.X*cos(0*deltaU);
+	//			y=r2.Y*sin(0*deltaU);
+	//			z=deltaV;
+	//			Vec3f normal=calcNormalSide(Vec3f(x,y,z));
+	//			glNormal3f(normal.X, normal.Y, normal.Z);
+	//			glVertex3f(x, y, z);
 
-				x=r1.X*cos(0*deltaU);
-				y=r1.Y*sin(0*deltaU);
-				z=-deltaZ1;
-				normal=calcNormalSide(Vec3f(x,y,z));
-				glNormal3f(normal.X, normal.Y, normal.Z);
-				glVertex3f(x, y, z);
+	//			x=r1.X*cos(0*deltaU);
+	//			y=r1.Y*sin(0*deltaU);
+	//			z=-deltaZ1;
+	//			normal=calcNormalSide(Vec3f(x,y,z));
+	//			glNormal3f(normal.X, normal.Y, normal.Z);
+	//			glVertex3f(x, y, z);
 
-				x=r2.X*cos((0+1)*deltaU);
-				y=r2.Y*sin((0+1)*deltaU);
-				z=deltaV;
-				normal=calcNormalSide(Vec3f(x,y,z));
-				glNormal3f(normal.X, normal.Y, normal.Z);
-				glVertex3f(x, y, z);
+	//			x=r2.X*cos((0+1)*deltaU);
+	//			y=r2.Y*sin((0+1)*deltaU);
+	//			z=deltaV;
+	//			normal=calcNormalSide(Vec3f(x,y,z));
+	//			glNormal3f(normal.X, normal.Y, normal.Z);
+	//			glVertex3f(x, y, z);
 
-				x=r1.X*cos((0+1)*deltaU);
-				y=r1.Y*sin((0+1)*deltaU);
-				z=-deltaZ1;
-				normal=calcNormalSide(Vec3f(x,y,z));
-				glNormal3f(normal.X, normal.Y, normal.Z);
-				glVertex3f(x, y, z);
+	//			x=r1.X*cos((0+1)*deltaU);
+	//			y=r1.Y*sin((0+1)*deltaU);
+	//			z=-deltaZ1;
+	//			normal=calcNormalSide(Vec3f(x,y,z));
+	//			glNormal3f(normal.X, normal.Y, normal.Z);
+	//			glVertex3f(x, y, z);
 
-				for (int iu=1; iu<options.m_slicesWidth; iu++)
-				{
-					x=r2.Y*cos((iu+1)*deltaU);
-					y=r2.Y*sin((iu+1)*deltaU);
-					z=deltaV;
-					normal=calcNormalSide(Vec3f(x,y,z));
-					glNormal3f(normal.X, normal.Y, normal.Z);
-					glVertex3f(x, y, z);
+	//			for (int iu=1; iu<options.m_slicesWidth; iu++)
+	//			{
+	//				x=r2.Y*cos((iu+1)*deltaU);
+	//				y=r2.Y*sin((iu+1)*deltaU);
+	//				z=deltaV;
+	//				normal=calcNormalSide(Vec3f(x,y,z));
+	//				glNormal3f(normal.X, normal.Y, normal.Z);
+	//				glVertex3f(x, y, z);
 
-					x=r1.X*cos((iu+1)*deltaU);
-					y=r1.X*sin((iu+1)*deltaU);
-					z=-deltaZ1;
-					normal=calcNormalSide(Vec3f(x,y,z));
-					glNormal3f(normal.X, normal.Y, normal.Z);
-					glVertex3f(x, y, z);
-				}
-				glEnd();
+	//				x=r1.X*cos((iu+1)*deltaU);
+	//				y=r1.X*sin((iu+1)*deltaU);
+	//				z=-deltaZ1;
+	//				normal=calcNormalSide(Vec3f(x,y,z));
+	//				glNormal3f(normal.X, normal.Y, normal.Z);
+	//				glVertex3f(x, y, z);
+	//			}
+	//			glEnd();
 
-			}
-		}
+	//		}
+	//	}
 
-		glPopMatrix();
-	}
+	//	glPopMatrix();
+	//}
 }
 
 Vec3f SphericalLenseItem::calcNormal(Vec3f vertex, Vec3f* neighbours, int nr)

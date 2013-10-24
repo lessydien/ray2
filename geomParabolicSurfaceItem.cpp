@@ -78,33 +78,33 @@ bool ParabolicSurfaceItem::readFromXML(const QDomElement &node)
 
 void ParabolicSurfaceItem::render(QMatrix4x4 &m, RenderOptions &options)
 {
-	if (this->getRender())
-	{
-		loadGlMatrix(m);
+	//if (this->getRender())
+	//{
+	//	loadGlMatrix(m);
 
-		glPushMatrix();
+	//	glPushMatrix();
 
-		if (this->m_focus)
-			glColor3f(0.0f,1.0f,0.0f); //green
-		else
-			glColor3f(0.0f,0.0f,1.0f); //blue
+	//	if (this->m_focus)
+	//		glColor3f(0.0f,1.0f,0.0f); //green
+	//	else
+	//		glColor3f(0.0f,0.0f,1.0f); //blue
 
-		glTranslatef(this->getRoot().X,this->getRoot().Y,this->getRoot().Z);
-		glRotatef(this->getTilt().X,1.0f,0.0f,0.0f);
-		glRotatef(this->getTilt().Y,0.0f,1.0f,0.0f);
-		glRotatef(this->getTilt().Z,0.0f,0.0f,1.0f);
+	//	glTranslatef(this->getRoot().X,this->getRoot().Y,this->getRoot().Z);
+	//	glRotatef(this->getTilt().X,1.0f,0.0f,0.0f);
+	//	glRotatef(this->getTilt().Y,0.0f,1.0f,0.0f);
+	//	glRotatef(this->getTilt().Z,0.0f,0.0f,1.0f);
 
-		if (this->getApertureType()==RECTANGULAR)
-		{
-			// ?????????????
-		}
-		else
-		{
-			renderSemiSphere(this->getApertureRadius().X, this->getRadius(), 1, options);
-		}
+	//	if (this->getApertureType()==RECTANGULAR)
+	//	{
+	//		// ?????????????
+	//	}
+	//	else
+	//	{
+	//		renderSemiSphere(this->getApertureRadius().X, this->getRadius(), 1, options);
+	//	}
 
-		glPopMatrix();
-	}
+	//	glPopMatrix();
+	//}
 };
 
 Vec3f ParabolicSurfaceItem::calcNormal(Vec3f vertex, Vec3f* neighbours, int nr)

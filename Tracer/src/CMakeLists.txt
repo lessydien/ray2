@@ -178,7 +178,7 @@ include_directories( ${MacroSim_INCLUDE}/optixu
 					 "${CMAKE_CURRENT_SOURCE_DIR}/nvcommon/include"
 					 "${CMAKE_CURRENT_SOURCE_DIR}/nvcommon/nvModel/include")
 
-include(FindSUtilGLUT)
+#include(FindSUtilGLUT)
 
 set(SAMPLES_CUDA_DIR ${CMAKE_CURRENT_SOURCE_DIR}/cuda)
 
