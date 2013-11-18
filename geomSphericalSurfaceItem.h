@@ -65,10 +65,10 @@ public:
 	Vec3f calcNormal(Vec3f vertex, Vec3f* neighbours, int nr);
 	Vec3f calcNormal(Vec3f vertex);
 	void renderVtk(vtkSmartPointer<vtkRenderer> renderer);
-	void updateVtk();
-
+	
 
 private:
+	void updateVtk();
 
 //	MaterialItem::MaterialType m_materialType;
 	double m_radius;

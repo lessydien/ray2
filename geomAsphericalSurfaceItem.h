@@ -23,6 +23,10 @@
 #include "QPropertyEditor/CustomTypes.h"
 #include "GeometryItem.h"
 
+#include <vtkPolyData.h>
+#include <vtkPolyDataMapper.h>
+
+
 using namespace macrosim;
 
 namespace macrosim 
@@ -68,34 +72,44 @@ public:
 
 	// functions for property editor
 	double getK() const {return m_k;};
-	void setK(const double in) {m_k=in; emit itemChanged(m_index, m_index);};
-	void setC(const double in) {m_c=in; emit itemChanged(m_index, m_index);};
+	void setK(const double in) {m_k=in; this->updateVtk(); emit itemChanged(m_index, m_index);};
+	void setC(const double in) {m_c=in; this->updateVtk(); emit itemChanged(m_index, m_index);};
 	double getC() const {return m_c;};
-	void setC2(const double in) {m_c2=in; emit itemChanged(m_index, m_index);};
+	void setC2(const double in) {m_c2=in; this->updateVtk(); emit itemChanged(m_index, m_index);};
 	double getC2() const {return m_c2;};
-	void setC4(const double in) {m_c4=in; emit itemChanged(m_index, m_index);};
+	void setC4(const double in) {m_c4=in; this->updateVtk(); emit itemChanged(m_index, m_index);};
 	double getC4() const {return m_c4;};
-	void setC6(const double in) {m_c6=in; emit itemChanged(m_index, m_index);};
+	void setC6(const double in) {m_c6=in; this->updateVtk(); emit itemChanged(m_index, m_index);};
 	double getC6() const {return m_c6;};
-	void setC8(const double in) {m_c8=in; emit itemChanged(m_index, m_index);};
+	void setC8(const double in) {m_c8=in; this->updateVtk(); emit itemChanged(m_index, m_index);};
 	double getC8() const {return m_c8;};
-	void setC10(const double in) {m_c10=in; emit itemChanged(m_index, m_index);};
+	void setC10(const double in) {m_c10=in; this->updateVtk(); emit itemChanged(m_index, m_index);};
 	double getC10() const {return m_c10;};
-	void setC12(const double in) {m_c12=in; emit itemChanged(m_index, m_index);};
+	void setC12(const double in) {m_c12=in; this->updateVtk(); emit itemChanged(m_index, m_index);};
 	double getC12() const {return m_c12;};
-	void setC14(const double in) {m_c14=in; emit itemChanged(m_index, m_index);};
+	void setC14(const double in) {m_c14=in; this->updateVtk(); emit itemChanged(m_index, m_index);};
 	double getC14() const {return m_c14;};
-	void setC16(const double in) {m_c16=in; emit itemChanged(m_index, m_index);};
+	void setC16(const double in) {m_c16=in; this->updateVtk(); emit itemChanged(m_index, m_index);};
 	double getC16() const {return m_c16;};
+
+	//Vec3f calcNormal(Vec3f vertex);
 
 	bool writeToXML(QDomDocument &document, QDomElement &root) const;
 	bool readFromXML(const QDomElement &node);
-	void render(QMatrix4x4 &m, RenderOptions &options);
 
+	Vec3f calcNormal(Vec3f vertex);
+	void render(QMatrix4x4 &m, RenderOptions &options);
+	void renderVtk(vtkSmartPointer<vtkRenderer> renderer);
+	
 //	MaterialItem::MaterialType getMaterial() const {return m_materialType;};
 //	void setMaterial(const MaterialItem::MaterialType type) {m_materialType=type;};
 
 private:
+	void updateVtk();
+	double calcZ(double r);
+
+	vtkSmartPointer<vtkPolyData> m_pPolydata;
+	vtkSmartPointer<vtkPolyDataMapper> m_pMapper;
 
 //	MaterialItem::MaterialType m_materialType;
 	double m_k; // concic constant

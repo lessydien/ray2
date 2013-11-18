@@ -144,7 +144,6 @@ void SphericalSurfaceItem::renderVtk(vtkSmartPointer<vtkRenderer> renderer)
 
 void SphericalSurfaceItem::updateVtk()
 {
-
 	vtkSmartPointer<vtkPoints> points =  vtkSmartPointer<vtkPoints>::New();
 	vtkSmartPointer<vtkDoubleArray> pointNormalsArray =  vtkSmartPointer<vtkDoubleArray>::New();
 	pointNormalsArray->SetNumberOfComponents(3); //3d normals (ie x,y,z)
