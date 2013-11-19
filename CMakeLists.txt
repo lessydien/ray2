@@ -181,6 +181,8 @@ IF(CUDA_FOUND)
         ${CMAKE_CURRENT_SOURCE_DIR}/geomPlaneSurfaceItem.h
         ${CMAKE_CURRENT_SOURCE_DIR}/geomParabolicSurfaceItem.h
         ${CMAKE_CURRENT_SOURCE_DIR}/geomRayFieldItem.h
+		${CMAKE_CURRENT_SOURCE_DIR}/diffRayFieldItem.h
+		${CMAKE_CURRENT_SOURCE_DIR}/diffRayField_RayAiming_Item.h
         ${CMAKE_CURRENT_SOURCE_DIR}/geomSphericalLenseItem.h
         ${CMAKE_CURRENT_SOURCE_DIR}/geomSphericalSurfaceItem.h
 		${CMAKE_CURRENT_SOURCE_DIR}/geomApertureArrayItem.h
@@ -296,6 +298,8 @@ IF(CUDA_FOUND)
         ${CMAKE_CURRENT_SOURCE_DIR}/geomPlaneSurfaceItem.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/geomParabolicSurfaceItem.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/geomRayFieldItem.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/diffRayFieldItem.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/diffRayField_RayAiming_Item.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/geomSphericalLenseItem.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/geomSphericalSurfaceItem.cpp
 		${CMAKE_CURRENT_SOURCE_DIR}/geomApertureArrayItem.cpp

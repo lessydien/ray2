@@ -15,52 +15,46 @@
     along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************/
 
-#ifndef FIELDITEMLIB
-#define FIELDITEMLIB
+#ifndef DIFFRAYFIELDRAYAIMINGITEM
+#define DIFFRAYFIELDRAYAIMINGITEM
 
-#include "geomRayFieldItem.h"
-#include "diffRayFieldItem.h"
-#include "intensityFieldItem.h"
-#include "scalarFieldItem.h"
-#include "scalarGaussianFieldItem.h"
-#include "scalarPlaneFieldItem.h"
-#include "scalarSphericalFieldItem.h"
-#include "scalarUserFieldItem.h"
-#include "pathIntTissueFieldItem.h"
+#include <qicon.h>
+
+#include "QPropertyEditor/CustomTypes.h"
+#include "rayFieldItem.h"
 
 using namespace macrosim;
 
 namespace macrosim 
 {
 
-/** @class FieldItemLib
+/** @class DiffRayField_RayAiming_Item
 *   @brief class for visualizing objects from MacroSim
 *   
 *   The AddInModel supplies a widget showing the available objects from MacroSim with their name, filename, version and so on.
 */
-class FieldItemLib 
+class DiffRayField_RayAiming_Item :
+	public RayFieldItem
 {
+	Q_OBJECT
 
 public:
 
-	FieldItemLib(void)
-	{
-	};
-	~FieldItemLib(void)
-	{
-	};
+	DiffRayField_RayAiming_Item(QString name="DiffRayField_RayAiming", QObject *parent=0);
+	~DiffRayField_RayAiming_Item(void);
 
-	FieldItem* createField(FieldItem::FieldType type);
+	// functions for property editor
+	bool signalDataChanged();
 
-	//QString apertureTypeToString(const FieldItem::ApertureType type) const;
-	//ApertureType stringToApertureType(const QString str) const;
-	QString fieldTypeToString(const FieldItem::FieldType type) const;
-	FieldItem::FieldType stringToFieldType(const QString str) const;
-	QList<AbstractItem*> fillLibrary() const;
+	bool writeToXML(QDomDocument &document, QDomElement &root) const;
+	bool readFromXML(const QDomElement &node);
+	void render(QMatrix4x4 &m, RenderOptions &options);
+	void renderVtk(vtkSmartPointer<vtkRenderer> renderer);
 
 private:
 
-};
+}; // class DiffRayField_RayAiming_Item
+
 
 }; //namespace macrosim
 
