@@ -146,18 +146,18 @@ MaterialError MaterialDiffracting::calcRefrIndices(double lambda)
 /**
  * \detail createOptiXInstance
  *
- * \param[in] RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda
+ * \param[in] RTcontext context, RTgeometryinstance &instance, int index, TraceMode mode, double lambda
  * 
  * \return MaterialError
  * \sa 
  * \remarks we have a seperate .cu file for each combination of material, scatter and coating. Therefore we set the path to that ptx file that corresponds to the combination present in the current instance
  * \author Mauch
  */
-MaterialError MaterialDiffracting::createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda)
+MaterialError MaterialDiffracting::createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda)
 {
 	lambda_old=lambda; // when creating the OptiXInstance we need to do this
 
-	if (MAT_NO_ERR != Material::createOptiXInstance(context, instance, index, mode, lambda) )
+	if (MAT_NO_ERR != Material::createOptiXInstance(context, instance, index, simParams, lambda) )
 	{
 		std::cout << "error in MaterialDiffracting.createOptiXInstance(): Material.creatOptiXInstance() returned an error" << std::endl;
 		return MAT_ERR;
@@ -185,14 +185,14 @@ MaterialError MaterialDiffracting::createOptiXInstance(RTcontext context, RTgeom
 /**
  * \detail updateOptiXInstance 
  *
- * \param[in] RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda
+ * \param[in] RTcontext context, RTgeometryinstance &instance, int index, TraceMode mode, double lambda
  * 
  * \return MaterialError
  * \sa 
  * \remarks 
  * \author Mauch
  */
-MaterialError MaterialDiffracting::updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda)
+MaterialError MaterialDiffracting::updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda)
 {
 	if ( (this->update)||(this->lambda_old!=lambda) )
 	{
@@ -219,7 +219,7 @@ MaterialError MaterialDiffracting::updateOptiXInstance(RTcontext context, RTgeom
 		this->update=false;
 	}
 
-	if (MAT_NO_ERR != Material::updateOptiXInstance(context, instance, index, mode, lambda) )
+	if (MAT_NO_ERR != Material::updateOptiXInstance(context, instance, index, simParams, lambda) )
 	{
 		std::cout << "error in MaterialDiffracting.updateOptiXInstance(): Material.updateOptiXInstance() returned an error" << std::endl;
 		return MAT_ERR;
@@ -351,7 +351,7 @@ void MaterialDiffracting::setImmersionDispersionParams(MatDiffracting_Dispersion
 /**
  * \detail createCPUSimInstance 
  *
- * \param[in] RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda
+ * \param[in] RTcontext context, RTgeometryinstance &instance, int index, TraceMode mode, double lambda
  * 
  * \return MaterialError
  * \sa 

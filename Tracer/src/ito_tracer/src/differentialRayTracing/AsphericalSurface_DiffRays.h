@@ -156,8 +156,8 @@ class AsphericalSurface_DiffRays : public AsphericalSurface
 
 	double intersect(diffRayStruct *ray);
 	geometryError hit(diffRayStruct &ray, double t);
-	geometryError createOptixInstance( RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda );
-	geometryError updateOptixInstance( RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda );
+	geometryError createOptixInstance( RTcontext &context, RTgeometrygroup &geometrygroup, int index, SimParams simParams, double lambda );
+	geometryError updateOptixInstance( RTcontext &context, RTgeometrygroup &geometrygroup, int index, SimParams simParams, double lambda );
 
 };
 

@@ -110,8 +110,8 @@ class MaterialRefracting_DiffRays: public MaterialRefracting
 
 //	void setParams(MatRefracting_params params);
 //	MatRefracting_params getParams(void);
- //   MaterialError createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda);
-	//MaterialError updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda);
+ //   MaterialError createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda);
+	//MaterialError updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda);
 	//MaterialError createCPUSimInstance(double lambda);
 //	double calcSourceImmersion(double lambda);
 //	void setPathToPtx(char* path);

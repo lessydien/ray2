@@ -96,9 +96,9 @@ void MaterialIdealLense::hit(gaussBeamRayStruct &ray, gaussBeam_geometricNormal 
  * \remarks not implemented yet
  * \author Mauch
  */
-MaterialError MaterialIdealLense::createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda)
+MaterialError MaterialIdealLense::createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda)
 {
-	if (MAT_NO_ERR != Material::createOptiXInstance(context, instance, index, mode, lambda) )
+	if (MAT_NO_ERR != Material::createOptiXInstance(context, instance, index, simParams, lambda) )
 	{
 		std::cout << "error in MaterialIdealLense.createOptiXInstance(): Material.creatOptiXInstance() returned an error" << std::endl;
 		return MAT_ERR;
@@ -126,14 +126,14 @@ MaterialError MaterialIdealLense::createOptiXInstance(RTcontext context, RTgeome
 /**
  * \detail updateOptiXInstance 
  *
- * \param[in] RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda
+ * \param[in] RTcontext context, RTgeometryinstance &instance, int index, TraceMode mode, double lambda
  * 
  * \return MaterialError
  * \sa 
  * \remarks 
  * \author Mauch
  */
-MaterialError MaterialIdealLense::updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda)
+MaterialError MaterialIdealLense::updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda)
 {
 
 	if  ( (this->update==true)||(this->lambda_old!=lambda) )
@@ -155,7 +155,7 @@ MaterialError MaterialIdealLense::updateOptiXInstance(RTcontext context, RTgeome
 		this->update=false;
 	}
 
-	if (MAT_NO_ERR != Material::updateOptiXInstance(context, instance, index, mode, lambda) )
+	if (MAT_NO_ERR != Material::updateOptiXInstance(context, instance, index, simParams, lambda) )
 	{
 		std::cout << "error in MaterialIdealLense.updateOptiXInstance(): Material.updateOptiXInstance() returned an error" << std::endl;
 		return MAT_ERR;
@@ -167,7 +167,7 @@ MaterialError MaterialIdealLense::updateOptiXInstance(RTcontext context, RTgeome
 /**
  * \detail updateCPUSimInstance 
  *
- * \param[in] RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda
+ * \param[in] RTcontext context, RTgeometryinstance &instance, int index, TraceMode mode, double lambda
  * 
  * \return MaterialError
  * \sa 
@@ -296,7 +296,7 @@ MaterialError MaterialIdealLense::calcFocalLength(double lambda)
 /**
  * \detail createCPUSimInstance 
  *
- * \param[in] RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda
+ * \param[in] RTcontext context, RTgeometryinstance &instance, int index, TraceMode mode, double lambda
  * 
  * \return MaterialError
  * \sa 

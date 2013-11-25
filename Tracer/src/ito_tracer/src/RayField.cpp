@@ -598,7 +598,7 @@ fieldError RayField::initSimulation(Group &oGroup, simAssParams &params)
 			std::cout <<"error in RayField.createOptixInstance(): create CPUSimInstance() returned an error." << std::endl;
 			return FIELD_ERR;
 		}
-		if (GROUP_NO_ERR != oGroup.createCPUSimInstance(this->getParamsPtr()->lambda, params.mode) )
+		if (GROUP_NO_ERR != oGroup.createCPUSimInstance(this->getParamsPtr()->lambda, params.simParams) )
 		{
 			std::cout << "error in RayField.initSimulation(): group.createCPUSimInstance() returned an error" << std::endl;
 			return FIELD_ERR;
@@ -612,7 +612,7 @@ fieldError RayField::initSimulation(Group &oGroup, simAssParams &params)
 			return FIELD_ERR;
 		}
 		// convert geometry to GPU code
-		if ( GROUP_NO_ERR != oGroup.createOptixInstance(context, params.mode, this->getParamsPtr()->lambda) )
+		if ( GROUP_NO_ERR != oGroup.createOptixInstance(context, params.simParams, this->getParamsPtr()->lambda) )
 		{
 			std::cout << "error in RayField.initSimulation(): group.createOptixInstance returned an error" << std::endl;
 			return ( FIELD_ERR );
@@ -645,7 +645,7 @@ fieldError RayField::initLayout(Group &oGroup, simAssParams &params)
 {
 	tracedRayNr=0;
 	this->createLayoutInstance();
-	if (GROUP_NO_ERR != oGroup.createCPUSimInstance(this->getParamsPtr()->lambda, params.mode) )
+	if (GROUP_NO_ERR != oGroup.createCPUSimInstance(this->getParamsPtr()->lambda, params.simParams) )
 	{
 		std::cout << "error in RayField.initSimulation(): group.createCPUSimInstance() returned an error" << std::endl;
 		return FIELD_ERR;

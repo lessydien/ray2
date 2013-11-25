@@ -121,14 +121,14 @@ gaussBeamRayStruct* GaussBeamRayField::getRayList(void)
 /**
  * \detail createOptixInstance 
  *
- * \param[in] RTcontext &context, simMode mode, double lambda
+ * \param[in] RTcontext &context, TraceMode mode, double lambda
  * 
  * \return fieldError
  * \sa 
  * \remarks 
  * \author Mauch
  */
-fieldError GaussBeamRayField::createOptixInstance(RTcontext &context, simMode mode, double lambda)
+fieldError GaussBeamRayField::createOptixInstance(RTcontext &context, SimParams simParams, double lambda)
 {
 //    RTvariable radiance_ray_type;
     RTvariable epsilon;

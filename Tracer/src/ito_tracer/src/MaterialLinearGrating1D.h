@@ -163,8 +163,8 @@ class MaterialLinearGrating1D: public Material
 	void setParams(MatLinearGrating1D_params paramsIn);
 	MatLinearGrating1D_params getParams(void);
 
-    MaterialError createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda);
-	MaterialError updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda);
+    MaterialError createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda);
+	MaterialError updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda);
 	MaterialError createCPUSimInstance(double lambda);
 	MaterialError updateCPUSimInstance(double lambda);
 //	void setPathToPtx(char* path);

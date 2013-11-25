@@ -80,7 +80,7 @@ class GeometryGroup
   protected:
     Geometry** geometryList;
 	unsigned int geometryListLength;
-	simMode mode;
+	TraceMode mode;
 	geometryGroupError findClosestGeometry();
 	geomGroupParams *paramsPtr;
 	bool update;
@@ -158,17 +158,17 @@ class GeometryGroup
 	int getGeometryListLength( void );
 	geometryGroupError setGeometry(Geometry* oGeometry, unsigned int index);
 	Geometry* getGeometry(unsigned int index);
-    geometryGroupError createOptixInstance(RTcontext &context, RTgroup &group, unsigned int  index, simMode mode, double lambda);
-	geometryGroupError createOptixInstance(RTcontext &context, RTselector &selector, unsigned int index, simMode mode, double lambda);
-    geometryGroupError updateOptixInstance(RTcontext &context, RTgroup &group, unsigned int  index, simMode mode, double lambda);
-	geometryGroupError updateOptixInstance(RTcontext &context, RTselector &selector, unsigned int index, simMode mode, double lambda);
+    geometryGroupError createOptixInstance(RTcontext &context, RTgroup &group, unsigned int  index, SimParams simParams, double lambda);
+	geometryGroupError createOptixInstance(RTcontext &context, RTselector &selector, unsigned int index, SimParams simParams, double lambda);
+    geometryGroupError updateOptixInstance(RTcontext &context, RTgroup &group, unsigned int  index, SimParams simParams, double lambda);
+	geometryGroupError updateOptixInstance(RTcontext &context, RTselector &selector, unsigned int index, SimParams simParams, double lambda);
 	geometryGroupError trace(rayStruct &ray);
 	geometryGroupError trace(diffRayStruct &ray);
 	geometryGroupError trace(gaussBeamRayStruct &ray);
 	geometryGroupError setGeometryListLength(unsigned int length);
 	geometryGroupError createGeometry(unsigned int index);
-	geometryGroupError createCPUSimInstance(double lambda, simMode mode );
-	geometryGroupError updateCPUSimInstance(double lambda, simMode mode );
+	geometryGroupError createCPUSimInstance(double lambda, SimParams simParams );
+	geometryGroupError updateCPUSimInstance(double lambda, SimParams simParams );
 	geometryGroupError parseXml(pugi::xml_node &geomGroup);
 	virtual bool checkParserError(char *msg);
 };

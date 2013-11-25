@@ -107,8 +107,8 @@ class MaterialIdealLense: public Material
 
 	void setParams(MatIdealLense_params params);
 	MatIdealLense_params getParams(void);
-    MaterialError createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda);
-	MaterialError updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda);
+    MaterialError createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda);
+	MaterialError updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda);
 	MaterialError createCPUSimInstance(double lambda);
 //	void setPathToPtx(char* path);
 //	char* getPathToPtx(void);

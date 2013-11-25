@@ -25,7 +25,6 @@
 rtDeclareVariable(float3, boxmin, , );
 rtDeclareVariable(float3, boxmax, , );
 rtDeclareVariable(optix::Ray, ray, rtCurrentRay, );
-//rtDeclareVariable(simMode, mode, , );
 rtDeclareVariable(diffRayStruct, prd, rtPayload, ); // get per-ray-data structure
 rtDeclareVariable(SphericalSurface_DiffRays_ReducedParams, params, , ); // centre of spherical surface
 //rtDeclareVariable(int, materialListLength, , ); 
@@ -42,9 +41,6 @@ __forceinline__ __device__ Mat_DiffRays_hitParams calcHitParams(double t)
 RT_PROGRAM void intersect(int)
 { 
 	double t;
-	// we only calculate the intersection in nonsequential mode or if the current geometry is the next to intersect in "sequential mode"
-//	if ( (mode==SIM_GEOMRAYS_NONSEQ) || (prd.currentGeometryID==params.geometryID-1) )
-//	{
 		// if the radius is zero in both direction we use the plane surface intersection instead
 		if ( (params.curvatureRadius.x==0) && (params.curvatureRadius.y==0) )
 		{
@@ -70,7 +66,6 @@ RT_PROGRAM void intersect(int)
 			// call any hit function of the respective material
 			rtReportIntersection( 0 );
 		}
-//	}
 }
 
 RT_PROGRAM void bounds (int, float result[6])

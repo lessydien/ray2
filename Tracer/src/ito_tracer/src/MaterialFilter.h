@@ -101,8 +101,8 @@ class MaterialFilter: public Material
 	void setParams(MatFilter_params params);
 	MatFilter_params getParams(void);
 
-    MaterialError createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda);
-	MaterialError updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda);
+    MaterialError createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda);
+	MaterialError updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda);
 	MaterialError createCPUSimInstance(double lambda);
 	MaterialError updateCPUSimInstance(double lambda);
 //	void setPathToPtx(char* path);

@@ -254,16 +254,16 @@ geometryError VolumeScattererBox::hit(gaussBeamRayStruct &ray, gaussBeam_t t)
  *
  * we create an OptiX instance of the surface and the materials attached to it
  *
- * \param[in] RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda
+ * \param[in] RTcontext &context, RTgeometrygroup &geometrygroup, int index, TraceMode mode, double lambda
  * 
  * \return geometryError
  * \sa 
  * \remarks 
  * \author Mauch
  */
-geometryError VolumeScattererBox::createOptixInstance( RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda )
+geometryError VolumeScattererBox::createOptixInstance( RTcontext &context, RTgeometrygroup &geometrygroup, int index, SimParams simParams, double lambda )
 {
-	if (GEOM_NO_ERR != Geometry::createOptixInstance(context, geometrygroup, index, mode, lambda) )
+	if (GEOM_NO_ERR != Geometry::createOptixInstance(context, geometrygroup, index, simParams, lambda) )
 	{
 		std::cout <<"error in VolumeScattererBox.createOptixInstance(): Geometry.creatOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << std::endl;
 		return GEOM_ERR;
@@ -280,18 +280,18 @@ geometryError VolumeScattererBox::createOptixInstance( RTcontext &context, RTgeo
  *
  * instead of destroying the OptiX instance of the surface we can change some of its parameters and update it and the materials attached to it
  *
- * \param[in] RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda
+ * \param[in] RTcontext &context, RTgeometrygroup &geometrygroup, int index, TraceMode mode, double lambda
  * 
  * \return geometryError
  * \sa 
  * \remarks maybe we should include means to update only those parameters that have changed instead of updating all parameters at once...
  * \author Mauch
  */
-geometryError VolumeScattererBox::updateOptixInstance( RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda )
+geometryError VolumeScattererBox::updateOptixInstance( RTcontext &context, RTgeometrygroup &geometrygroup, int index, SimParams simParams, double lambda )
 {
 	if (this->update)
 	{
-		if (GEOM_NO_ERR != this->updateOptixInstance(context, geometrygroup, index, mode, lambda) )
+		if (GEOM_NO_ERR != this->updateOptixInstance(context, geometrygroup, index, simParams, lambda) )
 		{
 			std::cout <<"error in VolumeScattererBox.updateOptixInstance(): Geometry.updateOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << std::endl;
 			return GEOM_ERR;
@@ -330,7 +330,7 @@ geometryError VolumeScattererBox::processParseResults(GeometryParseParamStruct &
 	return GEOM_NO_ERR;
 }
 
-geometryError VolumeScattererBox::parseXml(pugi::xml_node &geometry, simMode l_mode, vector<Geometry*> &geomVec)
+geometryError VolumeScattererBox::parseXml(pugi::xml_node &geometry, TraceMode l_mode, vector<Geometry*> &geomVec)
 {
 	// parse base class
 	if (GEOM_NO_ERR!=Geometry::parseXml(geometry,l_mode, geomVec))

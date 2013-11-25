@@ -154,9 +154,9 @@ private:
 //	geometryError hit(diffRayStruct &ray, double t);
 	geometryError hit(gaussBeamRayStruct &ray, gaussBeam_t t);
 	geometryError processParseResults(GeometryParseParamStruct &parseResults_Geom, int geomID);
-	geometryError parseXml(pugi::xml_node &geometry, simMode l_mode, vector<Geometry*> &geomVec);
-	geometryError createOptixInstance( RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda );
-	geometryError updateOptixInstance( RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda );
+	geometryError parseXml(pugi::xml_node &geometry, TraceMode l_mode, vector<Geometry*> &geomVec);
+	geometryError createOptixInstance( RTcontext &context, RTgeometrygroup &geometrygroup, int index, SimParams simParams, double lambda );
+	geometryError updateOptixInstance( RTcontext &context, RTgeometrygroup &geometrygroup, int index, SimParams simParams, double lambda );
 };
 
 #endif

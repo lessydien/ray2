@@ -51,10 +51,10 @@
 #include <stdlib.h>
 #include <iostream>
 
-bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseResults, RayField ***sourceListPtr, long *sourceNumberPtr, Detector ***detListPtr, long *detNumberPtr, simMode mode);
-bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseResults, RayField ***sourceListPtr, long *sourceNumberPtr, Detector ***detListPtr, long *detNumberPtr, simMode mode);
-bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseResults, RayField ***sourceListPtr, long *sourceNumberPtr, Detector ***detListPtr, long *detNumberPtr, simMode mode);
-bool createSceneFromZemax(Group *oGroupPtr, FILE *hfile, RayField ***rayFieldPtrPtr, long *sourceNumberPtr, Detector ***detPtrPtr, long *detNumberPtr, simMode mode);
+bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseResults, RayField ***sourceListPtr, long *sourceNumberPtr, Detector ***detListPtr, long *detNumberPtr, TraceMode mode);
+bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseResults, RayField ***sourceListPtr, long *sourceNumberPtr, Detector ***detListPtr, long *detNumberPtr, TraceMode mode);
+bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseResults, RayField ***sourceListPtr, long *sourceNumberPtr, Detector ***detListPtr, long *detNumberPtr, TraceMode mode);
+bool createSceneFromZemax(Group *oGroupPtr, FILE *hfile, RayField ***rayFieldPtrPtr, long *sourceNumberPtr, Detector ***detPtrPtr, long *detNumberPtr, TraceMode mode);
 
 /**
  * \detail parseImpArea_Material 

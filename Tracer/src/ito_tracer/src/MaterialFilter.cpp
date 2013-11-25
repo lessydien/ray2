@@ -188,7 +188,7 @@ MatFilter_DispersionParams* MaterialFilter::getDispersionParams(void)
 /**
  * \detail updateCPUSimInstance 
  *
- * \param[in] RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda
+ * \param[in] RTcontext context, RTgeometryinstance &instance, int index, TraceMode mode, double lambda
  * 
  * \return MaterialError
  * \sa 
@@ -248,16 +248,16 @@ MaterialError MaterialFilter::calcFilter(double lambda)
 /**
  * \detail createOptiXInstance
  *
- * \param[in] RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda
+ * \param[in] RTcontext context, RTgeometryinstance &instance, int index, TraceMode mode, double lambda
  * 
  * \return MaterialError
  * \sa 
  * \remarks we have a seperate .cu file for each combination of material, scatter and coating. Therefore we set the path to that ptx file that corresponds to the combination present in the current instance
  * \author Mauch
  */
-MaterialError MaterialFilter::createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda)
+MaterialError MaterialFilter::createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda)
 {
-	if (MAT_NO_ERR != Material::createOptiXInstance(context, instance, index, mode, lambda) )
+	if (MAT_NO_ERR != Material::createOptiXInstance(context, instance, index, simParams, lambda) )
 	{
 		std::cout << "error in MaterialFilter.createOptiXInstance(): Material.creatOptiXInstance() returned an error" << std::endl;
 		return MAT_ERR;
@@ -284,14 +284,14 @@ MaterialError MaterialFilter::createOptiXInstance(RTcontext context, RTgeometryi
 /**
  * \detail updateOptiXInstance
  *
- * \param[in] RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda
+ * \param[in] RTcontext context, RTgeometryinstance &instance, int index, TraceMode mode, double lambda
  * 
  * \return MaterialError
  * \sa 
  * \remarks 
  * \author Mauch
  */
-MaterialError MaterialFilter::updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda)
+MaterialError MaterialFilter::updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda)
 {
 	if ( (this->update)||(this->lambda_old!=lambda) )
 	{
@@ -310,7 +310,7 @@ MaterialError MaterialFilter::updateOptiXInstance(RTcontext context, RTgeometryi
 		this->update=false;
 	}
 
-	if (MAT_NO_ERR != Material::updateOptiXInstance(context, instance, index, mode, lambda) )
+	if (MAT_NO_ERR != Material::updateOptiXInstance(context, instance, index, simParams, lambda) )
 	{
 		std::cout << "error in MaterialFilter.updateOptiXInstance(): Material.updateOptiXInstance() returned an error" << std::endl;
 		return MAT_ERR;

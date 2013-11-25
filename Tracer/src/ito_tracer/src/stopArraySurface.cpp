@@ -222,16 +222,16 @@ geometryError StopArraySurface::reduceParams(void)
  *
  * we create an OptiX instance of the surface and the materials attached to it
  *
- * \param[in] RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda
+ * \param[in] RTcontext &context, RTgeometrygroup &geometrygroup, int index, TraceMode mode, double lambda
  * 
  * \return geometryError
  * \sa 
  * \remarks 
  * \author Mauch
  */
-geometryError StopArraySurface::createOptixInstance( RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda )
+geometryError StopArraySurface::createOptixInstance( RTcontext &context, RTgeometrygroup &geometrygroup, int index, SimParams simParams, double lambda )
 {
-	if (GEOM_NO_ERR != Geometry::createOptixInstance(context, geometrygroup, index, mode, lambda) )
+	if (GEOM_NO_ERR != Geometry::createOptixInstance(context, geometrygroup, index, simParams, lambda) )
 	{
 		std::cout <<"error in StopArraySurface.createOptixInstance(): Geometry.creatOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << std::endl;
 		return GEOM_ERR;
@@ -248,18 +248,18 @@ geometryError StopArraySurface::createOptixInstance( RTcontext &context, RTgeome
  *
  * instead of destroying the OptiX instance of the surface we can change some of its parameters and update it and the materials attached to it
  *
- * \param[in] RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda
+ * \param[in] RTcontext &context, RTgeometrygroup &geometrygroup, int index, TraceMode mode, double lambda
  * 
  * \return geometryError
  * \sa 
  * \remarks maybe we should include means to update only those parameters that have changed instead of updating all parameters at once...
  * \author Mauch
  */
-geometryError StopArraySurface::updateOptixInstance( RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda )
+geometryError StopArraySurface::updateOptixInstance( RTcontext &context, RTgeometrygroup &geometrygroup, int index, SimParams simParams, double lambda )
 {
 	if (this->update)
 	{
-		if (GEOM_NO_ERR != this->updateOptixInstance(context, geometrygroup, index, mode, lambda) )
+		if (GEOM_NO_ERR != this->updateOptixInstance(context, geometrygroup, index, simParams, lambda) )
 		{
 			std::cout <<"error in StopArraySurface.updateOptixInstance(): Geometry.updateOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << std::endl;
 			return GEOM_ERR;
@@ -287,7 +287,7 @@ geometryError StopArraySurface::updateOptixInstance( RTcontext &context, RTgeome
  * \remarks 
  * \author Mauch
  */
-geometryError StopArraySurface::parseXml(pugi::xml_node &geometry, simMode mode, vector<Geometry*> &geomVec)
+geometryError StopArraySurface::parseXml(pugi::xml_node &geometry, TraceMode mode, vector<Geometry*> &geomVec)
 {
 	Parser_XML l_parser;
 

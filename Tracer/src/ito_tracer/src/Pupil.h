@@ -106,12 +106,12 @@ class Pupil
 	}
 	void setPathToPtx(char* path);
 	char* getPathToPtx(void);
-	PupilError createPupilAimProgramPtx(RTcontext context, simMode mode);
+	PupilError createPupilAimProgramPtx(RTcontext context, TraceMode mode);
 
-//    virtual PupilError createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda);
+//    virtual PupilError createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda);
 	virtual PupilError createCPUSimInstance(double lambda);
 	virtual PupilError updateCPUSimInstance(double lambda);
-//    virtual PupilError updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda);
+//    virtual PupilError updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda);
 	virtual void aim(rayStruct &ray, unsigned long long iX, unsigned long long iY);
 	virtual void setFullParamsPtr(pupilParams *params);
 	virtual pupilParams* getFullParamsPtr(void);

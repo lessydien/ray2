@@ -88,7 +88,7 @@ class Pupil_RayAim_FarField: public Pupil
 	{
 		//delete path_to_ptx;
 	}
-//    PupilError createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda);
+//    PupilError createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda);
 	PupilError updateCPUSimInstance(double lambda);
 	PupilError createCPUSimInstance(double lambda);
 	void setPathToPtx(char* path);

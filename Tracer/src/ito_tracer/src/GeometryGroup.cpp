@@ -331,14 +331,14 @@ geometryGroupError findClosestGeometry( void )
 /**
  * \detail createOptixInstance
  *
- * \param[in] RTcontext &context, RTgroup &OptiX_group, unsigned int index, simMode mode, double lambda
+ * \param[in] RTcontext &context, RTgroup &OptiX_group, unsigned int index, TraceMode mode, double lambda
  * 
  * \return geometryGroupError
  * \sa 
  * \remarks 
  * \author Mauch
  */
-geometryGroupError GeometryGroup::createOptixInstance(RTcontext &context, RTgroup &OptiX_group, unsigned int index, simMode mode, double lambda)
+geometryGroupError GeometryGroup::createOptixInstance(RTcontext &context, RTgroup &OptiX_group, unsigned int index, SimParams simParams, double lambda)
 {
 
 	/* check wether any geometry is present */
@@ -397,7 +397,7 @@ geometryGroupError GeometryGroup::createOptixInstance(RTcontext &context, RTgrou
 		unsigned int i;
 		for (i=0; i<geometryListLength; i++)
 		{
-			if (GEOM_NO_ERR != geometryList[i]->createOptixInstance(context, OptiX_geometrygroup, i, mode, lambda))
+			if (GEOM_NO_ERR != geometryList[i]->createOptixInstance(context, OptiX_geometrygroup, i, simParams, lambda))
 			{
 				std::cout << "error in GeometryGroup.createOptixInstance: geometryList[i]->createOptiXInstance returned an error at index:" << i << std::endl;
 				return GEOMGROUP_ERR;
@@ -415,14 +415,14 @@ geometryGroupError GeometryGroup::createOptixInstance(RTcontext &context, RTgrou
 /**
  * \detail createOptixInstance
  *
- * \param[in] RTcontext &context, RTselector &selector, unsigned int index, simMode mode, double lambda
+ * \param[in] RTcontext &context, RTselector &selector, unsigned int index, TraceMode mode, double lambda
  * 
  * \return geometryGroupError
  * \sa 
  * \remarks for sequential scenes
  * \author Mauch
  */
-geometryGroupError GeometryGroup::createOptixInstance(RTcontext &context, RTselector &selector, unsigned int index, simMode mode, double lambda)
+geometryGroupError GeometryGroup::createOptixInstance(RTcontext &context, RTselector &selector, unsigned int index, SimParams simParams, double lambda)
 {
 	float				m[16]; // transformation matrix in homogenous coordinates
 
@@ -477,7 +477,7 @@ geometryGroupError GeometryGroup::createOptixInstance(RTcontext &context, RTsele
 		if (!RT_CHECK_ERROR_NOEXIT( rtSelectorSetChild( selector, i, OptiX_geometrygroup ), context ))
 			return GEOMGROUP_ERR;
 		// create OptiX geometry inside OptiX_geometrygroup at index 0
-		if ( GEOM_NO_ERR != geometryList[i]->createOptixInstance(context, OptiX_geometrygroup, 0, mode, lambda) )
+		if ( GEOM_NO_ERR != geometryList[i]->createOptixInstance(context, OptiX_geometrygroup, 0, simParams, lambda) )
 		{
 			std::cout << "error in GeometryGroup.createOptixInstance: geometryList[i]->createOptixInstance returned an error at index:" << i << std::endl;
 			return GEOMGROUP_ERR;
@@ -489,14 +489,14 @@ geometryGroupError GeometryGroup::createOptixInstance(RTcontext &context, RTsele
 /**
  * \detail updateOptixInstance
  *
- * \param[in] RTcontext &context, RTgroup &OptiX_group, unsigned int index, simMode mode, double lambda
+ * \param[in] RTcontext &context, RTgroup &OptiX_group, unsigned int index, TraceMode mode, double lambda
  * 
  * \return geometryGroupError
  * \sa 
  * \remarks 
  * \author Mauch
  */
-geometryGroupError GeometryGroup::updateOptixInstance(RTcontext &context, RTgroup &OptiX_group, unsigned int index, simMode mode, double lambda)
+geometryGroupError GeometryGroup::updateOptixInstance(RTcontext &context, RTgroup &OptiX_group, unsigned int index, SimParams simParams, double lambda)
 {
 //	RTacceleration		acceleration;
 //    RTtransform			transforms;
@@ -543,7 +543,7 @@ geometryGroupError GeometryGroup::updateOptixInstance(RTcontext &context, RTgrou
 		unsigned int i;
 		for (i=0; i<geometryListLength; i++)
 		{
-			this->geometryList[i]->updateOptixInstance(context, OptiX_geometrygroup, i, mode, lambda);
+			this->geometryList[i]->updateOptixInstance(context, OptiX_geometrygroup, i, simParams, lambda);
 		}
 
 		/* connect OptiX_geometrygroup to OptiX_group */
@@ -555,14 +555,14 @@ geometryGroupError GeometryGroup::updateOptixInstance(RTcontext &context, RTgrou
 /**
  * \detail updateOptixInstance
  *
- * \param[in] RTcontext &context, RTselector &selector, unsigned int index, simMode mode, double lambda
+ * \param[in] RTcontext &context, RTselector &selector, unsigned int index, TraceMode mode, double lambda
  * 
  * \return geometryGroupError
  * \sa 
  * \remarks for sequential scenes
  * \author Mauch
  */
-geometryGroupError GeometryGroup::updateOptixInstance(RTcontext &context, RTselector &selector, unsigned int index, simMode mode, double lambda)
+geometryGroupError GeometryGroup::updateOptixInstance(RTcontext &context, RTselector &selector, unsigned int index, SimParams simParams, double lambda)
 {
 //	RTacceleration		acceleration;
 //    RTtransform			transforms;
@@ -608,7 +608,7 @@ geometryGroupError GeometryGroup::updateOptixInstance(RTcontext &context, RTsele
 		/* connect OptiX_geometrygroup to OptiX_group */
 //		RT_CHECK_ERROR_NOEXIT( rtSelectorSetChild( selector, i, OptiX_geometrygroup ) );
 		// create OptiX geometry inside OptiX_geometrygroup at index 0
-		geometryList[i]->updateOptixInstance(context, OptiX_geometrygroup, 0, mode, lambda);
+		geometryList[i]->updateOptixInstance(context, OptiX_geometrygroup, 0, simParams, lambda);
 	}
 	return GEOMGROUP_NO_ERR;
 };
@@ -616,14 +616,14 @@ geometryGroupError GeometryGroup::updateOptixInstance(RTcontext &context, RTsele
 /**
  * \detail createCPUSimInstance
  *
- * \param[in] double lambda, simMode mode 
+ * \param[in] double lambda, TraceMode mode 
  * 
  * \return geometryGroupError
  * \sa 
  * \remarks
  * \author Mauch
  */
-geometryGroupError GeometryGroup::createCPUSimInstance(double lambda, simMode mode )
+geometryGroupError GeometryGroup::createCPUSimInstance(double lambda, SimParams simParams )
 {
 	/* check wether any geometry is present */
 	if (this->geometryListLength==0)
@@ -631,12 +631,12 @@ geometryGroupError GeometryGroup::createCPUSimInstance(double lambda, simMode mo
 		std::cout << "error in GeometryGroup.createCPUSimInstance(): no geometries attached to group" << std::endl;
 		return GEOMGROUP_NOGEOM_ERR;
 	}
-	this->mode=mode;
+	this->mode=simParams.traceMode;
 	/* create Instances of geometryGroups */
 	unsigned int i;
 	for (i=0; i<geometryListLength; i++)
 	{
-		if ( GEOM_NO_ERR != geometryList[i]->createCPUSimInstance(lambda, mode) )
+		if ( GEOM_NO_ERR != geometryList[i]->createCPUSimInstance(lambda, simParams) )
 		{
 			std::cout << "error in GeometryGroup.createCPUSimInstance(): geometry.createCPUSimInstance() returned an error at index:" << i << std::endl;
 			return GEOMGROUP_ERR;
@@ -648,14 +648,14 @@ geometryGroupError GeometryGroup::createCPUSimInstance(double lambda, simMode mo
 /**
  * \detail updateCPUSimInstance
  *
- * \param[in] double lambda, simMode mode 
+ * \param[in] double lambda, TraceMode mode 
  * 
  * \return geometryGroupError
  * \sa 
  * \remarks
  * \author Mauch
  */
-geometryGroupError GeometryGroup::updateCPUSimInstance(double lambda, simMode mode )
+geometryGroupError GeometryGroup::updateCPUSimInstance(double lambda, SimParams simParams )
 {
 	/* check wether any geometry is present */
 	if (this->geometryListLength==0)
@@ -663,12 +663,12 @@ geometryGroupError GeometryGroup::updateCPUSimInstance(double lambda, simMode mo
 		std::cout << "error in GeometryGroup.updateCPUSimInstance(): no geometries attached to group" << std::endl;
 		return GEOMGROUP_NOGEOM_ERR;
 	}
-	this->mode=mode;
+	this->mode=simParams.traceMode;
 	/* create Instances of geometryGroups */
 	unsigned int i;
 	for (i=0; i<geometryListLength; i++)
 	{
-		if ( GEOM_NO_ERR != geometryList[i]->updateCPUSimInstance(lambda, mode) )
+		if ( GEOM_NO_ERR != geometryList[i]->updateCPUSimInstance(lambda, simParams) )
 		{
 			std::cout << "error in GeometryGroup.updateCPUSimInstance(): geometry.updateCPUSimInstance() returned an error at index:" << i << std::endl;
 			return GEOMGROUP_ERR;

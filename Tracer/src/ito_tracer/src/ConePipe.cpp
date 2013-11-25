@@ -222,17 +222,17 @@ geometryError ConePipe::reduceParams(void)
  *
  * we create an OptiX instance of the surface and the materials attached to it
  *
- * \param[in] RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda
+ * \param[in] RTcontext &context, RTgeometrygroup &geometrygroup, int index, TraceMode mode, double lambda
  * 
  * \return geometryError
  * \sa 
  * \remarks 
  * \author Mauch
  */
-geometryError ConePipe::createOptixInstance( RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda )
+geometryError ConePipe::createOptixInstance( RTcontext &context, RTgeometrygroup &geometrygroup, int index, SimParams simParams, double lambda )
 {
 
-	if (GEOM_NO_ERR != Geometry::createOptixInstance(context, geometrygroup, index, mode, lambda) )
+	if (GEOM_NO_ERR != Geometry::createOptixInstance(context, geometrygroup, index, simParams, lambda) )
 	{
 		std::cout <<"error in ConePipe.createOptixInstance(): Geometry.creatOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << std::endl;
 		return GEOM_ERR;
@@ -249,19 +249,19 @@ geometryError ConePipe::createOptixInstance( RTcontext &context, RTgeometrygroup
  *
  * instead of destroying the OptiX instance of the surface we can change some of its parameters and update it and the materials attached to it
  *
- * \param[in] RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda
+ * \param[in] RTcontext &context, RTgeometrygroup &geometrygroup, int index, TraceMode mode, double lambda
  * 
  * \return geometryError
  * \sa 
  * \remarks maybe we should include means to update only those parameters that have changed instead of updating all parameters at once...
  * \author Mauch
  */
-geometryError ConePipe::updateOptixInstance( RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda )
+geometryError ConePipe::updateOptixInstance( RTcontext &context, RTgeometrygroup &geometrygroup, int index, SimParams simParams, double lambda )
 {
 
 	if (this->update)
 	{
-		if (GEOM_NO_ERR != Geometry::updateOptixInstance(context, geometrygroup, index, mode, lambda))
+		if (GEOM_NO_ERR != Geometry::updateOptixInstance(context, geometrygroup, index, simParams, lambda))
 		{
 			std::cout <<"error in ConePipe.updateOptixInstance(): materialList[i] returned an error at geometry: " << this->getParamsPtr()->geometryID << std::endl;
 			return GEOM_ERR;
@@ -304,7 +304,7 @@ geometryError ConePipe::processParseResults(GeometryParseParamStruct &parseResul
 	return GEOM_NO_ERR;
 };
 
-geometryError ConePipe::parseXml(pugi::xml_node &geometry, simMode l_mode, vector<Geometry*> &geomVec)
+geometryError ConePipe::parseXml(pugi::xml_node &geometry, TraceMode l_mode, vector<Geometry*> &geomVec)
 {
 	// parse base class
 	if (GEOM_NO_ERR!=Geometry::parseXml(geometry,l_mode, geomVec))

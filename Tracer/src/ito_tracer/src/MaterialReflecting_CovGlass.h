@@ -69,8 +69,8 @@ class MaterialReflecting_CovGlass: public Material
 //		delete path_to_ptx;
 	}
 
-    MaterialError createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda);
-	MaterialError updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda);
+    MaterialError createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda);
+	MaterialError updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda);
 	void hit(rayStruct &ray, Mat_hitParams hitParams, double t_hit, int geometryID);
 	void hit(gaussBeamRayStruct &ray, gaussBeam_geometricNormal normal, int geometryID);
 	MaterialError processParseResults(MaterialParseParamStruct &parseResults_Mat, DetectorParseParamStruct &parseResults_Det);

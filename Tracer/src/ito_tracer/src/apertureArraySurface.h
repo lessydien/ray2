@@ -145,9 +145,9 @@ class ApertureArraySurface : public virtual Geometry
 //	gaussBeam_t intersect(gaussBeamRayStruct *ray);
 	geometryError hit(rayStruct &ray, double t);
 //	geometryError hit(gaussBeamRayStruct &ray, gaussBeam_t t);
-	geometryError createOptixInstance( RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda );
-	geometryError updateOptixInstance( RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda );
-	geometryError parseXml(pugi::xml_node &geometry, simMode l_mode, vector<Geometry*> &geomVec);
+	geometryError createOptixInstance( RTcontext &context, RTgeometrygroup &geometrygroup, int index, SimParams simParams, double lambda );
+	geometryError updateOptixInstance( RTcontext &context, RTgeometrygroup &geometrygroup, int index, SimParams simParams, double lambda );
+	geometryError parseXml(pugi::xml_node &geometry, TraceMode l_mode, vector<Geometry*> &geomVec);
 };
 
 #endif

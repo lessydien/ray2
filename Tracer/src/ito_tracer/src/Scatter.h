@@ -125,7 +125,7 @@ class Scatter
 	}
 	virtual void setPathToPtx(char* path);
 	virtual char* getPathToPtx(void);
-//    virtual ScatterError createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda);
+//    virtual ScatterError createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda);
 	virtual ScatterError createCPUSimInstance(double lambda);
 	virtual ScatterError createOptiXInstance(double lambda, char** path_to_ptx_in);
 	virtual ScatterError setParams2Program( RTcontext context, RTprogram *closest_hit_programPtr, RTvariable *l_scatterParamsPtr);

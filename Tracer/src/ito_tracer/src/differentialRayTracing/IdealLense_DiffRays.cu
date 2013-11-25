@@ -28,7 +28,6 @@ rtDeclareVariable(optix::Ray, ray, rtCurrentRay, );
 rtDeclareVariable(diffRayStruct, prd, rtPayload, ); // get per-ray-data structure
 rtDeclareVariable(IdealLense_DiffRays_ReducedParams, params, , ); // normal vector to surface. i.e. part of the definition of the plane surface geometry
 //rtDeclareVariable(int, materialListLength, , ); 
-//rtDeclareVariable(simMode, mode, , );
 // variables that are communicate to the hit program via the attribute mechanism
 rtDeclareVariable(Mat_DiffRays_hitParams, hitParams, attribute hitParams, ); // normal to the geometry at the hit-point. at a plane surface this will simply be the normal of the definition of the plane surface
 rtDeclareVariable(double, t_hit, attribute t_hit, ); 
@@ -43,9 +42,6 @@ __forceinline__ __device__ Mat_DiffRays_hitParams calcHitParams(double t)
 /* calc intersection of ray with geometry */
 RT_PROGRAM void intersect(int)
 {
-  // we only calculate the intersection in nonsequential mode or if the current geometry is the next to intersect in "sequential mode"
-//  if ( (mode==SIM_GEOMRAYS_NONSEQ) || (prd.currentGeometryID==params.geometryID-1) )
-//  {
 	  double t=intersectRayIdealLense_DiffRays(prd.position, prd.direction, params);
 	  // check wether intersection lies within valid interval of t_hit
 	  if( rtPotentialIntersection( (float)t ) ) 
@@ -58,7 +54,6 @@ RT_PROGRAM void intersect(int)
 		// call any hit function of the respective material
 		rtReportIntersection( 0 );
 	  }
-//  }
 }
 
 RT_PROGRAM void bounds (int, float result[6])

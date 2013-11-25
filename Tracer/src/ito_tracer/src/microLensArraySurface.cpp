@@ -223,16 +223,16 @@ geometryError MicroLensArraySurface::reduceParams(void)
  *
  * we create an OptiX instance of the surface and the materials attached to it
  *
- * \param[in] RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda
+ * \param[in] RTcontext &context, RTgeometrygroup &geometrygroup, int index, TraceMode mode, double lambda
  * 
  * \return geometryError
  * \sa 
  * \remarks 
  * \author Mauch
  */
-geometryError MicroLensArraySurface::createOptixInstance( RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda )
+geometryError MicroLensArraySurface::createOptixInstance( RTcontext &context, RTgeometrygroup &geometrygroup, int index, SimParams simParams, double lambda )
 {
-	if (GEOM_NO_ERR != Geometry::createOptixInstance(context, geometrygroup, index, mode, lambda) )
+	if (GEOM_NO_ERR != Geometry::createOptixInstance(context, geometrygroup, index, simParams, lambda) )
 	{
 		std::cout <<"error in MicroLensArraySurface.createOptixInstance(): Geometry.creatOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << std::endl;
 		return GEOM_ERR;
@@ -249,18 +249,18 @@ geometryError MicroLensArraySurface::createOptixInstance( RTcontext &context, RT
  *
  * instead of destroying the OptiX instance of the surface we can change some of its parameters and update it and the materials attached to it
  *
- * \param[in] RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda
+ * \param[in] RTcontext &context, RTgeometrygroup &geometrygroup, int index, TraceMode mode, double lambda
  * 
  * \return geometryError
  * \sa 
  * \remarks maybe we should include means to update only those parameters that have changed instead of updating all parameters at once...
  * \author Mauch
  */
-geometryError MicroLensArraySurface::updateOptixInstance( RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda )
+geometryError MicroLensArraySurface::updateOptixInstance( RTcontext &context, RTgeometrygroup &geometrygroup, int index, SimParams simParams, double lambda )
 {
 	if (this->update)
 	{
-		if (GEOM_NO_ERR != this->updateOptixInstance(context, geometrygroup, index, mode, lambda) )
+		if (GEOM_NO_ERR != this->updateOptixInstance(context, geometrygroup, index, simParams, lambda) )
 		{
 			std::cout <<"error in MicroLensArraySurface.updateOptixInstance(): Geometry.updateOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << std::endl;
 			return GEOM_ERR;
@@ -288,7 +288,7 @@ geometryError MicroLensArraySurface::updateOptixInstance( RTcontext &context, RT
  * \remarks 
  * \author Mauch
  */
-geometryError MicroLensArraySurface::parseXml(pugi::xml_node &geometry, simMode mode, vector<Geometry*> &geomVec)
+geometryError MicroLensArraySurface::parseXml(pugi::xml_node &geometry, TraceMode mode, vector<Geometry*> &geomVec)
 {
 	Parser_XML l_parser;
 

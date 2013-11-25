@@ -25,7 +25,6 @@
 rtDeclareVariable(float3, boxmin, , );
 rtDeclareVariable(float3, boxmax, , );
 rtDeclareVariable(optix::Ray, ray, rtCurrentRay, );
-//rtDeclareVariable(simMode, mode, , );
 rtDeclareVariable(rayStruct, prd, rtPayload, ); // get per-ray-data structure
 rtDeclareVariable(MicroLensArraySurface_ReducedParams, params, , ); // centre of spherical surface
 //rtDeclareVariable(int, materialListLength, , ); 

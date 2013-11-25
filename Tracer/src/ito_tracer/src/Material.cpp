@@ -144,7 +144,7 @@ char* Material::getPathToPtx(void)
  * \remarks 
  * \author Mauch
  */
-MaterialError Material::createMaterialHitProgramPtx(RTcontext context, simMode mode)
+MaterialError Material::createMaterialHitProgramPtx(RTcontext context, TraceMode mode)
 {
 	if ( (mode==SIM_DIFFRAYS_NONSEQ) || (mode==SIM_DIFFRAYS_SEQ) )
 		strcat(this->path_to_ptx, "_DiffRays");
@@ -161,14 +161,14 @@ MaterialError Material::createMaterialHitProgramPtx(RTcontext context, simMode m
 /**
  * \detail createOptiXInstance 
  *
- * \param[in] RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda
+ * \param[in] RTcontext context, RTgeometryinstance &instance, int index, TraceMode mode, double lambda
  * 
  * \return MaterialError
  * \sa 
  * \remarks 
  * \author Mauch
  */
-MaterialError Material::createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda)
+MaterialError Material::createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda)
 {
 	// create simulation instance of scatter
 	if (SCAT_NO_ERROR != this->getScatter()->createOptiXInstance(lambda, &(this->path_to_ptx)) )
@@ -183,7 +183,7 @@ MaterialError Material::createOptiXInstance(RTcontext context, RTgeometryinstanc
 		return MAT_ERR;
 	}
 
-	if (MAT_NO_ERR != createMaterialHitProgramPtx(context, mode))
+	if (MAT_NO_ERR != createMaterialHitProgramPtx(context, simParams.traceMode))
 	{
 		std::cout << "error in Material.createOptiXInstance(): createMaterialHitProgramPtx() returned an error" << std::endl;
 		return MAT_ERR;
@@ -213,14 +213,14 @@ MaterialError Material::createOptiXInstance(RTcontext context, RTgeometryinstanc
 /**
  * \detail updateOptiXInstance 
  *
- * \param[in] RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda
+ * \param[in] RTcontext context, RTgeometryinstance &instance, int index, TraceMode mode, double lambda
  * 
  * \return MaterialError
  * \sa 
  * \remarks 
  * \author Mauch
  */
-MaterialError Material::updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda)
+MaterialError Material::updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda)
 {
 	if ( (this->getCoating()->update)||(this->lambda_old!=lambda) )
 	{
@@ -258,7 +258,7 @@ MaterialError Material::updateOptiXInstance(RTcontext context, RTgeometryinstanc
 /**
  * \detail createCPUSimInstance 
  *
- * \param[in] RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda
+ * \param[in] RTcontext context, RTgeometryinstance &instance, int index, TraceMode mode, double lambda
  * 
  * \return MaterialError
  * \sa 
@@ -286,7 +286,7 @@ MaterialError Material::createCPUSimInstance(double lambda)
 /**
  * \detail updateCPUSimInstance 
  *
- * \param[in] RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda
+ * \param[in] RTcontext context, RTgeometryinstance &instance, int index, TraceMode mode, double lambda
  * 
  * \return MaterialError
  * \sa 

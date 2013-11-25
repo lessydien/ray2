@@ -120,7 +120,7 @@ class Coating_DispersiveNumCoeffs: public Coating
 	Coating_DispersiveNumCoeffs_FullParams* getFullParams(void);
 	Coating_DispersiveNumCoeffs_ReducedParams* getReducedParams(void);
 //	char* getPathToPtx(void);
-//    virtual CoatingError createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda);
+//    virtual CoatingError createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda);
 	CoatingError createCPUSimInstance(double lambda);
 	CoatingError setParams2Program( RTcontext context, RTprogram *closest_hit_programPtr, RTvariable *l_scatterParamsPtr);
 	bool hit(rayStruct &ray, Mat_hitParams hitParams);

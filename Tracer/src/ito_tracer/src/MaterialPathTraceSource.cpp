@@ -66,16 +66,16 @@ void MaterialPathTraceSource::hit(rayStruct &ray, Mat_hitParams hitParams, doubl
 /**
  * \detail createOptiXInstance
  *
- * \param[in] RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda
+ * \param[in] RTcontext context, RTgeometryinstance &instance, int index, TraceMode mode, double lambda
  * 
  * \return MaterialError
  * \sa 
  * \remarks we have a seperate .cu file for each combination of material, scatter and coating. Therefore we set the path to that ptx file that corresponds to the combination present in the current instance
  * \author Mauch
  */
-MaterialError MaterialPathTraceSource::createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda)
+MaterialError MaterialPathTraceSource::createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda)
 {
-	if (MAT_NO_ERR != Material::createOptiXInstance(context, instance, index, mode, lambda) )
+	if (MAT_NO_ERR != Material::createOptiXInstance(context, instance, index, simParams, lambda) )
 	{
 		std::cout << "error in MaterialPathTraceSource.createOptiXInstance(): Material.creatOptiXInstance() returned an error" << std::endl;
 		return MAT_ERR;
@@ -92,14 +92,14 @@ MaterialError MaterialPathTraceSource::createOptiXInstance(RTcontext context, RT
 /**
  * \detail updateOptiXInstance 
  *
- * \param[in] RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda
+ * \param[in] RTcontext context, RTgeometryinstance &instance, int index, TraceMode mode, double lambda
  * 
  * \return MaterialError
  * \sa 
  * \remarks 
  * \author Mauch
  */
-MaterialError MaterialPathTraceSource::updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda)
+MaterialError MaterialPathTraceSource::updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda)
 {
 	if (this->update)
 	{
@@ -111,7 +111,7 @@ MaterialError MaterialPathTraceSource::updateOptiXInstance(RTcontext context, RT
 
 		this->update=false;
 	}
-	if (MAT_NO_ERR != Material::updateOptiXInstance(context, instance, index, mode, lambda) )
+	if (MAT_NO_ERR != Material::updateOptiXInstance(context, instance, index, simParams, lambda) )
 	{
 		std::cout << "error in MaterialLinearGrating1D.updateOptiXInstance(): Material.updateOptiXInstance() returned an error" << std::endl;
 		return MAT_ERR;

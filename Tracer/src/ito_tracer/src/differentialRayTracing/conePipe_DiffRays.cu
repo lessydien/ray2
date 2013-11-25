@@ -30,7 +30,6 @@ rtDeclareVariable(ConePipe_DiffRays_ReducedParams, params, , ); // normal vector
 //rtDeclareVariable(int, materialListLength, , ); 
 // variables that are communicate to the hit program via the attribute mechanism
 rtDeclareVariable(Mat_DiffRays_hitParams, hitParams, attribute hitParams, ); // normal to the geometry at the hit-point. at a plane surface this will simply be the normal of the definition of the plane surface
-//rtDeclareVariable(simMode, mode, , );
 rtDeclareVariable(double, t_hit, attribute t_hit, ); 
 rtDeclareVariable(int,               geometryID, attribute geometryID , );
 
@@ -44,9 +43,6 @@ __forceinline__ __device__ Mat_DiffRays_hitParams calcHitParams(double t)
 RT_PROGRAM void intersect(int)
 {
   double t;
-  // we only calculate the intersection in nonsequential mode or if the current geometry is the next to intersect in "sequential mode"
-//  if ( (mode==SIM_GEOMRAYS_NONSEQ) || (prd.currentGeometryID==params.geometryID-1) )
-//  {
 	  t = intersectRayConePipe(prd.position, prd.direction, params);
 
 	  // check wether intersection lies within valid interval of t_hit
@@ -60,7 +56,6 @@ RT_PROGRAM void intersect(int)
 		// call any hit function of the respective material
 		rtReportIntersection( 0 );
 	  }
-//  }
 }
 
 RT_PROGRAM void bounds (int, float result[6])

@@ -124,7 +124,7 @@ class Coating
 	virtual CoatingError setFullParams(Coating_FullParams* ptrIn);
 	virtual Coating_FullParams* getFullParams(void);
 	virtual Coating_ReducedParams* getReducedParams(void);
-//    virtual CoatingError createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda);
+//    virtual CoatingError createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda);
 	virtual CoatingError createCPUSimInstance(double lambda);
 	virtual CoatingError createOptiXInstance(double lambda, char** path_to_ptx_in);
 	virtual CoatingError setParams2Program( RTcontext context, RTprogram *closest_hit_programPtr, RTvariable *l_scatterParamsPtr);

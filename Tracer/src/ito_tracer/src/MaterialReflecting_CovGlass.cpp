@@ -91,16 +91,16 @@ void MaterialReflecting_CovGlass::hit(gaussBeamRayStruct &ray, gaussBeam_geometr
 /**
  * \detail createOptiXInstance
  *
- * \param[in] RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda
+ * \param[in] RTcontext context, RTgeometryinstance &instance, int index, TraceMode mode, double lambda
  * 
  * \return MaterialError
  * \sa 
  * \remarks we have a seperate .cu file for each combination of material, scatter and coating. Therefore we set the path to that ptx file that corresponds to the combination present in the current instance
  * \author Mauch
  */
-MaterialError MaterialReflecting_CovGlass::createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda)
+MaterialError MaterialReflecting_CovGlass::createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda)
 {
-	if (MAT_NO_ERR != Material::createOptiXInstance(context, instance, index, mode, lambda) )
+	if (MAT_NO_ERR != Material::createOptiXInstance(context, instance, index, simParams, lambda) )
 	{
 		std::cout << "error in MaterialReflecting_CovGlass.createOptiXInstance(): Material.creatOptiXInstance() returned an error" << std::endl;
 		return MAT_ERR;
@@ -117,14 +117,14 @@ MaterialError MaterialReflecting_CovGlass::createOptiXInstance(RTcontext context
 /**
  * \detail updateOptiXInstance 
  *
- * \param[in] RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda
+ * \param[in] RTcontext context, RTgeometryinstance &instance, int index, TraceMode mode, double lambda
  * 
  * \return MaterialError
  * \sa 
  * \remarks 
  * \author Mauch
  */
-MaterialError MaterialReflecting_CovGlass::updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda)
+MaterialError MaterialReflecting_CovGlass::updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda)
 {
 	if (this->update)
 	{
@@ -136,7 +136,7 @@ MaterialError MaterialReflecting_CovGlass::updateOptiXInstance(RTcontext context
 
 	}
 
-	if (MAT_NO_ERR != Material::updateOptiXInstance(context, instance, index, mode, lambda) )
+	if (MAT_NO_ERR != Material::updateOptiXInstance(context, instance, index, simParams, lambda) )
 	{
 		std::cout << "error in MaterialReflecting_CovGlass.updateOptiXInstance(): Material.updateOptiXInstance() returned an error" << std::endl;
 		return MAT_ERR;

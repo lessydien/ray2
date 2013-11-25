@@ -92,7 +92,7 @@ char* Pupil::getPathToPtx(void)
  * \remarks 
  * \author Mauch
  */
-PupilError Pupil::createPupilAimProgramPtx(RTcontext context, simMode mode)
+PupilError Pupil::createPupilAimProgramPtx(RTcontext context, TraceMode mode)
 {
 	//if ( (mode==SIM_DIFFRAYS_NONSEQ) || (mode==SIM_DIFFRAYS_SEQ) )
 	//	strcat(this->path_to_ptx, "_DiffRays");
@@ -106,14 +106,14 @@ PupilError Pupil::createPupilAimProgramPtx(RTcontext context, simMode mode)
 /**
  * \detail createOptiXInstance 
  *
- * \param[in] RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda
+ * \param[in] RTcontext context, RTgeometryinstance &instance, int index, TraceMode mode, double lambda
  * 
  * \return PupilError
  * \sa 
  * \remarks 
  * \author Mauch
  */
-//PupilError Pupil::createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda)
+//PupilError Pupil::createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda)
 //{
 //	std::cout << "error in Pupil.createOptiXInstance(): not defined for the given Pupil" << std::endl;
 //	return PupilError;
@@ -122,14 +122,14 @@ PupilError Pupil::createPupilAimProgramPtx(RTcontext context, simMode mode)
 /**
  * \detail updateOptiXInstance 
  *
- * \param[in] RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda
+ * \param[in] RTcontext context, RTgeometryinstance &instance, int index, TraceMode mode, double lambda
  * 
  * \return PupilError
  * \sa 
  * \remarks 
  * \author Mauch
  */
-//PupilError Pupil::updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda)
+//PupilError Pupil::updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda)
 //{
 //	std::cout << "error in Pupil.updateOptiXInstance(): not defined for the given Pupil" << std::endl;
 //	return PupilError;
@@ -138,7 +138,7 @@ PupilError Pupil::createPupilAimProgramPtx(RTcontext context, simMode mode)
 /**
  * \detail createCPUSimInstance 
  *
- * \param[in] RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda
+ * \param[in] RTcontext context, RTgeometryinstance &instance, int index, TraceMode mode, double lambda
  * 
  * \return PupilError
  * \sa 
@@ -154,7 +154,7 @@ PupilError Pupil::createCPUSimInstance(double lambda)
 /**
  * \detail updateCPUSimInstance 
  *
- * \param[in] RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda
+ * \param[in] RTcontext context, RTgeometryinstance &instance, int index, TraceMode mode, double lambda
  * 
  * \return PupilError
  * \sa 

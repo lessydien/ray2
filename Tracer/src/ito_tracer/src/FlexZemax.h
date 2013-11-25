@@ -312,7 +312,7 @@ parserError parseDOEFile(parseDOEResultStruct** parseResultsDOEPtrPtr, FILE *hfi
 parserError parseMicroSimGratingData(ParseGratingResultStruct** parseResultsGratingPtrPtr, FILE *hfile);
 parserError parseZemaxGlassCatalogOld(parseGlassResultStruct** parseResultsGlassPtrPtr, FILE *hfile, char *glassName);
 parserError parseZemaxGlassCatalog(parseGlassResultStruct** parseResultsGlassPtrPtr, FILE *hfile, const char *glassName);
-parserError parseZemaxPrescr(parseResultStruct** parseResultsTest,  FILE *hfile, simMode mode);
+parserError parseZemaxPrescr(parseResultStruct** parseResultsTest,  FILE *hfile, TraceMode mode);
 parserError initSurfaceStruct(ZemaxParamStruct* surface);
 void initGeomParseFlags(void);
 bool checkObjectDefinition(ZemaxParamStruct *objectPtr);

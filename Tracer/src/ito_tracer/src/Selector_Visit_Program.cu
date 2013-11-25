@@ -24,7 +24,6 @@
 
 rtDeclareVariable(optix::Ray, ray, rtCurrentRay, );
 rtDeclareVariable(rayStruct, prd, rtPayload, ); // get per-ray-data structure
-//rtDeclareVariable(simMode, mode, , );
 
 
 RT_PROGRAM void visit_program(void)

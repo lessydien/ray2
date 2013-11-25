@@ -151,7 +151,7 @@ fieldError ScalarPlaneField::initSimulation(Group &oGroup, simAssParams &params)
 			std::cout <<"error in ScalarPlaneField.createOptixInstance(): create CPUSimInstance() returned an error." << std::endl;
 			return FIELD_ERR;
 		}
-		if (GROUP_NO_ERR != oGroup.createCPUSimInstance(this->getParamsPtr()->lambda, params.mode) )
+		if (GROUP_NO_ERR != oGroup.createCPUSimInstance(this->getParamsPtr()->lambda, params.simParams) )
 		{
 			std::cout << "error in RayField.initSimulation(): group.createCPUSimInstance() returned an error" << std::endl;
 			return FIELD_ERR;

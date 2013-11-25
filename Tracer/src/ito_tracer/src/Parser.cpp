@@ -31,14 +31,14 @@
  *
  * parses the prescription files and creates an OptiX scene 
  *
- * \param[in] Group *oGroupPtr, FILE *hfile, RayField ***sourceListPtr, long long *sourceNumberPtr, Detector ***detListPtr, long long *detNumberPtr, simMode mode
+ * \param[in] Group *oGroupPtr, FILE *hfile, RayField ***sourceListPtr, long long *sourceNumberPtr, Detector ***detListPtr, long long *detNumberPtr, TraceMode mode
  * 
  * \return bool
  * \sa 
  * \remarks 
  * \author Mauch
  */
-bool createSceneFromZemax(Group *oGroupPtr, FILE *hfile, RayField ***sourceListPtr, long *sourceNumberPtr, Detector ***detListPtr, long *detNumberPtr, simMode mode)
+bool createSceneFromZemax(Group *oGroupPtr, FILE *hfile, RayField ***sourceListPtr, long *sourceNumberPtr, Detector ***detListPtr, long *detNumberPtr, TraceMode mode)
 {
 
 	std::cout <<"********************************************" << std::endl;
@@ -179,14 +179,14 @@ bool createSceneFromZemax(Group *oGroupPtr, FILE *hfile, RayField ***sourceListP
  *
  * parses the prescription files and creates an OptiX scene for geometric raytracing
  *
- * \param[in] Group *oGroupPtr, parseResultStruct* parseResults, RayField ***sourceListPtr, long long *sourceNumberPtr, Detector ***detListPtr, long long *detNumberPtr, simMode mode
+ * \param[in] Group *oGroupPtr, parseResultStruct* parseResults, RayField ***sourceListPtr, long long *sourceNumberPtr, Detector ***detListPtr, long long *detNumberPtr, TraceMode mode
  * 
  * \return bool
  * \sa 
  * \remarks 
  * \author Mauch
  */
-bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseResults, RayField ***sourceListPtr, long *sourceNumberPtr, Detector ***detListPtr, long *detNumberPtr, simMode mode)
+bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseResults, RayField ***sourceListPtr, long *sourceNumberPtr, Detector ***detListPtr, long *detNumberPtr, TraceMode mode)
 {
 	/* output the geometry-data for debugging purpose */
 	/* get handle to parser-debug file */
@@ -1070,14 +1070,14 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
  *
  * parses the prescription files and creates an OptiX scene for differential raytracing
  *
- * \param[in] Group *oGroupPtr, parseResultStruct* parseResults, RayField ***sourceListPtr, long long *sourceNumberPtr, Detector ***detListPtr, long long *detNumberPtr, simMode mode
+ * \param[in] Group *oGroupPtr, parseResultStruct* parseResults, RayField ***sourceListPtr, long long *sourceNumberPtr, Detector ***detListPtr, long long *detNumberPtr, TraceMode mode
  * 
  * \return bool
  * \sa 
  * \remarks 
  * \author Mauch
  */
-bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseResults, RayField ***sourceListPtr, long *sourceNumberPtr, Detector ***detListPtr, long *detNumberPtr, simMode mode)
+bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseResults, RayField ***sourceListPtr, long *sourceNumberPtr, Detector ***detListPtr, long *detNumberPtr, TraceMode mode)
 {
 	/* output the geometry-data for debugging purpose */
 	/* get handle to parser-debug file */
@@ -1849,14 +1849,14 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
  *
  * parses the prescription files and creates an OptiX scene for geometric raytracing
  *
- * \param[in] Group *oGroupPtr, parseResultStruct* parseResults, RayField ***sourceListPtr, long long *sourceNumberPtr, Detector ***detListPtr, long long *detNumberPtr, simMode mode
+ * \param[in] Group *oGroupPtr, parseResultStruct* parseResults, RayField ***sourceListPtr, long long *sourceNumberPtr, Detector ***detListPtr, long long *detNumberPtr, TraceMode mode
  * 
  * \return bool
  * \sa 
  * \remarks 
  * \author Mauch
  */
-bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseResults, RayField ***sourceListPtr, long *sourceNumberPtr, Detector ***detListPtr, long *detNumberPtr, simMode mode)
+bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseResults, RayField ***sourceListPtr, long *sourceNumberPtr, Detector ***detListPtr, long *detNumberPtr, TraceMode mode)
 {
 	/* output the geometry-data for debugging purpose */
 	/* get handle to parser-debug file */

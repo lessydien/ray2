@@ -305,14 +305,14 @@ MaterialError MaterialLinearGrating1D::calcDiffEffs(double lambda)
 /**
  * \detail createOptiXInstance
  *
- * \param[in] RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda
+ * \param[in] RTcontext context, RTgeometryinstance &instance, int index, TraceMode mode, double lambda
  * 
  * \return MaterialError
  * \sa 
  * \remarks we have a seperate .cu file for each combination of material, scatter and coating. Therefore we set the path to that ptx file that corresponds to the combination present in the current instance
  * \author Mauch
  */
-MaterialError MaterialLinearGrating1D::createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda)
+MaterialError MaterialLinearGrating1D::createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda)
 {
 	// calc the refractive indices at current wavelength
 	if (MAT_NO_ERR != calcRefrIndices(lambda))
@@ -327,7 +327,7 @@ MaterialError MaterialLinearGrating1D::createOptiXInstance(RTcontext context, RT
 		return MAT_ERR;
 	}
 
-	if (MAT_NO_ERR != Material::createOptiXInstance(context, instance, index, mode, lambda) )
+	if (MAT_NO_ERR != Material::createOptiXInstance(context, instance, index, simParams, lambda) )
 	{
 		std::cout << "error in MaterialLinearGrating1D.createOptiXInstance(): Material.creatOptiXInstance() returned an error" << std::endl;
 		return MAT_ERR;
@@ -347,14 +347,14 @@ MaterialError MaterialLinearGrating1D::createOptiXInstance(RTcontext context, RT
 /**
  * \detail updateOptiXInstance 
  *
- * \param[in] RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda
+ * \param[in] RTcontext context, RTgeometryinstance &instance, int index, TraceMode mode, double lambda
  * 
  * \return MaterialError
  * \sa 
  * \remarks 
  * \author Mauch
  */
-MaterialError MaterialLinearGrating1D::updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda)
+MaterialError MaterialLinearGrating1D::updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda)
 {
 	if ( (this->update)||(this->lambda_old!=lambda) )
 	{
@@ -373,7 +373,7 @@ MaterialError MaterialLinearGrating1D::updateOptiXInstance(RTcontext context, RT
 		this->update=false;
 	}
 
-	if (MAT_NO_ERR != Material::updateOptiXInstance(context, instance, index, mode, lambda) )
+	if (MAT_NO_ERR != Material::updateOptiXInstance(context, instance, index, simParams, lambda) )
 	{
 		std::cout << "error in MaterialLinearGrating1D.updateOptiXInstance(): Material.updateOptiXInstance() returned an error" << std::endl;
 		return MAT_ERR;
@@ -385,7 +385,7 @@ MaterialError MaterialLinearGrating1D::updateOptiXInstance(RTcontext context, RT
 /**
  * \detail createCPUSimInstance 
  *
- * \param[in] RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda
+ * \param[in] RTcontext context, RTgeometryinstance &instance, int index, TraceMode mode, double lambda
  * 
  * \return MaterialError
  * \sa 

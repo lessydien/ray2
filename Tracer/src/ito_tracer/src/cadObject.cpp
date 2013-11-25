@@ -183,14 +183,14 @@ geometryError CadObject::hit(rayStruct &ray, double t)
  *
  * we create an OptiX instance of the surface and the materials attached to it
  *
- * \param[in] RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda
+ * \param[in] RTcontext &context, RTgeometrygroup &geometrygroup, int index, TraceMode mode, double lambda
  * 
  * \return geometryError
  * \sa 
  * \remarks 
  * \author Mauch
  */
-geometryError CadObject::createOptixInstance( RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda )
+geometryError CadObject::createOptixInstance( RTcontext &context, RTgeometrygroup &geometrygroup, int index, SimParams simParams, double lambda )
 {
 	// CAD objects are placed in their own geometryGroup
 	this->reduceParams();
@@ -290,7 +290,7 @@ geometryError CadObject::createOptixInstance( RTcontext &context, RTgeometrygrou
 	int i;
 	for (i=0; i<materialListLength; i++)
 	{
-		if (MAT_NO_ERR != this->materialList[i]->createOptiXInstance(context, instance, i, mode, lambda) )
+		if (MAT_NO_ERR != this->materialList[i]->createOptiXInstance(context, instance, i, simParams, lambda) )
 		{
 			std::cout <<"error in Geometry.createOptixInstance(): materialList[i]->createOptiXInstance() returned an error at index:" << i << " at geometry: " << this->getParamsPtr()->geometryID << std::endl;
 			return GEOM_ERR;
@@ -317,18 +317,18 @@ geometryError CadObject::createOptixInstance( RTcontext &context, RTgeometrygrou
  *
  * instead of destroying the OptiX instance of the surface we can change some of its parameters and update it and the materials attached to it
  *
- * \param[in] RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda
+ * \param[in] RTcontext &context, RTgeometrygroup &geometrygroup, int index, TraceMode mode, double lambda
  * 
  * \return geometryError
  * \sa 
  * \remarks maybe we should include means to update only those parameters that have changed instead of updating all parameters at once...
  * \author Mauch
  */
-geometryError CadObject::updateOptixInstance( RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda )
+geometryError CadObject::updateOptixInstance( RTcontext &context, RTgeometrygroup &geometrygroup, int index, SimParams simParams, double lambda )
 {
 	if (this->update)
 	{
-		if (GEOM_NO_ERR != this->updateOptixInstance(context, geometrygroup, index, mode, lambda) )
+		if (GEOM_NO_ERR != this->updateOptixInstance(context, geometrygroup, index, simParams, lambda) )
 		{
 			std::cout <<"error in CadObject.updateOptixInstance(): Geometry.updateOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << std::endl;
 			return GEOM_ERR;
@@ -367,7 +367,7 @@ geometryError CadObject::processParseResults(GeometryParseParamStruct &parseResu
 	return GEOM_NO_ERR;
 }
 
-geometryError CadObject::parseXml(pugi::xml_node &geometry, simMode l_mode, vector<Geometry*> &geomVec)
+geometryError CadObject::parseXml(pugi::xml_node &geometry, TraceMode l_mode, vector<Geometry*> &geomVec)
 {
 	// parse base class
 	if (GEOM_NO_ERR!=Geometry::parseXml(geometry,l_mode, geomVec))

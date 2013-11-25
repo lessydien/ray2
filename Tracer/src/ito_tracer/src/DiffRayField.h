@@ -53,7 +53,7 @@ class diffRayFieldParams : public rayFieldParams
 {
 public:
 	//long2 nrRayDirections;
-	double epsilon; //!> short distance that diff rays moved from cuastic
+	double epsilon; //!> short distance that diff rays moved from caustic
 };
 
 /* declare class */

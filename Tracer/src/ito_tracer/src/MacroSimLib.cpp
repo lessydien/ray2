@@ -180,7 +180,7 @@ int main(int argc, char* argv[])
 //	}
 	
 	// decide wether we want to do sequential or nonsequential simulations
-//	simMode mode=SIM_GEOMRAYS_NONSEQ;
+//	TraceMode mode=SIM_GEOMRAYS_NONSEQ;
 	char inFile[512];
 	sprintf(inFile, "%s" PATH_SEPARATOR "%s", INPUT_FILEPATH,"MacroSimDoubleGaussSeq_Timing.xml");
 
@@ -267,9 +267,9 @@ int main(int argc, char* argv[])
 	const char* l_pString=l_parser.attrValByName(scene, "mode");
 
 	if (strcmp(l_pString,"SEQUENTIAL") == 0)
-		oSimAssParamsPtr->mode=SIM_GEOMRAYS_SEQ;
+		oSimAssParamsPtr->simParams.traceMode=SIM_GEOMRAYS_SEQ;
 	if (strcmp(l_pString,"NONSEQUENTIAL") == 0)
-		oSimAssParamsPtr->mode=SIM_GEOMRAYS_NONSEQ;	
+		oSimAssParamsPtr->simParams.traceMode=SIM_GEOMRAYS_NONSEQ;	
 
 	l_pString=l_parser.attrValByName(scene, "GPUacceleration");
 
@@ -338,7 +338,7 @@ int main(int argc, char* argv[])
  *
  * parses the XML and creates an OptiX scene 
  *
- * \param[in] Group *oGroupPtr, FILE *hfile, RayField ***sourceListPtr, long long *sourceNumberPtr, Detector ***detListPtr, long long *detNumberPtr, simMode mode, MacroSimTracerParams &simParams
+ * \param[in] Group *oGroupPtr, FILE *hfile, RayField ***sourceListPtr, long long *sourceNumberPtr, Detector ***detListPtr, long long *detNumberPtr, TraceMode mode, MacroSimTracerParams &simParams
  * 
  * \return bool
  * \sa 
@@ -366,7 +366,7 @@ bool createSceneFromXML(Group **oGroupPtrPtr, char *sceneChar, Field ***sourceLi
 	Parser_XML* l_pParser=new Parser_XML();
 	
 	// read simulation mode from xml file
-	simMode l_mode;
+	TraceMode l_mode;
 	const char* l_pModeString=l_pParser->attrValByName(scene, "mode");
 
 	if (strcmp(l_pModeString,"SEQUENTIAL") == 0)
@@ -674,9 +674,9 @@ bool MacroSimTracer::runMacroSimRayTrace(char *xmlInput, void** fieldOut_ptrptr,
 	const char* l_pString=l_parser.attrValByName(scene, "mode");
 
 	if (strcmp(l_pString,"SEQUENTIAL") == 0)
-		oSimAssParamsPtr->mode=SIM_GEOMRAYS_SEQ;
+		oSimAssParamsPtr->simParams.traceMode=SIM_GEOMRAYS_SEQ;
 	if (strcmp(l_pString,"NONSEQUENTIAL") == 0)
-		oSimAssParamsPtr->mode=SIM_GEOMRAYS_NONSEQ;	
+		oSimAssParamsPtr->simParams.traceMode=SIM_GEOMRAYS_NONSEQ;	
 
 	l_pString=l_parser.attrValByName(scene, "GPUacceleration");
 
@@ -808,9 +808,9 @@ bool MacroSimTracer::runMacroSimLayoutTrace(char *xmlInput, void* p2CallbackObje
 	const char* l_pString=l_parser.attrValByName(scene, "mode");
 
 	if (strcmp(l_pString,"SEQUENTIAL") == 0)
-		oSimAssParamsPtr->mode=SIM_GEOMRAYS_SEQ;
+		oSimAssParamsPtr->simParams.traceMode=SIM_GEOMRAYS_SEQ;
 	if (strcmp(l_pString,"NONSEQUENTIAL") == 0)
-		oSimAssParamsPtr->mode=SIM_GEOMRAYS_NONSEQ;	
+		oSimAssParamsPtr->simParams.traceMode=SIM_GEOMRAYS_NONSEQ;	
 
 	l_pString=l_parser.attrValByName(scene, "GPUacceleration");
 

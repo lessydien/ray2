@@ -94,7 +94,12 @@ typedef enum
   SIM_GAUSSBEAMRAYS_SEQ,
   SIM_DIFFRAYS_NONSEQ,
   SIM_DIFFRAYS_SEQ
-} simMode;
+} TraceMode;
+
+typedef struct
+{
+	TraceMode traceMode;
+} SimParams;
 
 /* declare class */
 /**
@@ -115,7 +120,7 @@ class simAssParams
 {
 public:
   bool RunOnCPU;
-  simMode mode;
+  SimParams simParams;
 };
 
 class RayPlotDataParams
@@ -148,7 +153,7 @@ public:
 	char inputFilesPath[512];
 	char outputFilesPath[512];
 	char path_to_ptx[512];
-	simMode mode;
+	TraceMode mode;
 };
 
 class MacroSimTracer

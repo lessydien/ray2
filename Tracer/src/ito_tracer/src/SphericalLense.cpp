@@ -49,7 +49,7 @@
  * \remarks 
  * \author Mauch
  */
-geometryError SphericalLense::parseXml(pugi::xml_node &geometry, simMode l_mode, vector<Geometry*> &geomVec)
+geometryError SphericalLense::parseXml(pugi::xml_node &geometry, TraceMode l_mode, vector<Geometry*> &geomVec)
 {
 	Parser_XML l_parser;
 

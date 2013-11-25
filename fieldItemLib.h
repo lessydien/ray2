@@ -19,7 +19,8 @@
 #define FIELDITEMLIB
 
 #include "geomRayFieldItem.h"
-#include "diffRayFieldItem.h"
+//#include "diffRayFieldItem.h"
+//#include "diffRayField_RayAiming_Item.h"
 #include "intensityFieldItem.h"
 #include "scalarFieldItem.h"
 #include "scalarGaussianFieldItem.h"

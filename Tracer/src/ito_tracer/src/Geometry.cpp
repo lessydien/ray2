@@ -63,7 +63,7 @@ geometryError Geometry::processParseResults(GeometryParseParamStruct &parseResul
  * \remarks 
  * \author Mauch
  */
-geometryError Geometry::parseXml(pugi::xml_node &geometry, simMode l_mode, vector<Geometry*> &geomVec)
+geometryError Geometry::parseXml(pugi::xml_node &geometry, TraceMode l_mode, vector<Geometry*> &geomVec)
 {
 	Parser_XML l_parser;
 
@@ -351,14 +351,14 @@ geometryError Geometry::createOptixBoundingBox(RTcontext &context, RTgeometry &g
  *
  * calculates the reduced params of the surface and the materials attached to it from the full parameter set for the given simulation parameters
  *
- * \param[in] double lambda, simMode mode
+ * \param[in] double lambda, TraceMode mode
  * 
  * \return geometryError
  * \sa 
  * \remarks 
  * \author Mauch
  */
-geometryError Geometry::createCPUSimInstance(double lambda, simMode mode )
+geometryError Geometry::createCPUSimInstance(double lambda, SimParams simParams )
 {
 	this->reduceParams();
 	/* check wether any material is present */
@@ -367,7 +367,7 @@ geometryError Geometry::createCPUSimInstance(double lambda, simMode mode )
 		std::cout << "error in Geometry.createCPUInstance(): no material attached to surface at geometry:" << this->getParamsPtr()->geometryID << std::endl;
 		return GEOM_NOMATERIAL_ERR;
 	}
-	this->mode=mode;
+	this->mode=simParams.traceMode;
 	/* create instances of material */
 	int i;
 	for (i=0; i<materialListLength; i++)
@@ -402,14 +402,14 @@ geometryError Geometry::reduceParams(void)
  *
  * updates the reduced params of the surface and the materials attached to it from the full parameter set for the given simulation parameters
  *
- * \param[in] double lambda, simMode mode
+ * \param[in] double lambda, TraceMode mode
  * 
  * \return geometryError
  * \sa 
  * \remarks 
  * \author Mauch
  */
-geometryError Geometry::updateCPUSimInstance(double lambda, simMode mode )
+geometryError Geometry::updateCPUSimInstance(double lambda, SimParams simParams )
 {
 	/* check wether any material is present */
 	if (this->materialListLength==0)
@@ -417,7 +417,7 @@ geometryError Geometry::updateCPUSimInstance(double lambda, simMode mode )
 		std::cout << "error in Geometry.updateCPUSimInstance(): no material attached to surface at geometry:" << this->getParamsPtr()->geometryID << std::endl;
 		return GEOM_NOMATERIAL_ERR;
 	}
-	this->mode=mode;
+	this->mode=simParams.traceMode;
 	/* create instances of material */
 	int i;
 	for (i=0; i<materialListLength; i++)
@@ -502,14 +502,14 @@ Material* Geometry::getMaterial(int index)
  *
  * we create an OptiX instance of the surface and the materials attached to it
  *
- * \param[in] RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda
+ * \param[in] RTcontext &context, RTgeometrygroup &geometrygroup, int index, TraceMode mode, double lambda
  * 
  * \return geometryError
  * \sa 
  * \remarks 
  * \author Mauch
  */
-geometryError Geometry::createOptixInstance(RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda)
+geometryError Geometry::createOptixInstance(RTcontext &context, RTgeometrygroup &geometrygroup, int index, SimParams simParams, double lambda)
 {
 	this->reduceParams();
 	/* check wether any material is present */
@@ -534,7 +534,7 @@ geometryError Geometry::createOptixInstance(RTcontext &context, RTgeometrygroup 
 	int i;
 	for (i=0; i<materialListLength; i++)
 	{
-		if (MAT_NO_ERR != this->materialList[i]->createOptiXInstance(context, instance, i, mode, lambda) )
+		if (MAT_NO_ERR != this->materialList[i]->createOptiXInstance(context, instance, i, simParams, lambda) )
 		{
 			std::cout <<"error in Geometry.createOptixInstance(): materialList[i]->createOptiXInstance() returned an error at index:" << i << " at geometry: " << this->getParamsPtr()->geometryID << std::endl;
 			return GEOM_ERR;
@@ -551,7 +551,7 @@ geometryError Geometry::createOptixInstance(RTcontext &context, RTgeometrygroup 
 	//if ( !RT_CHECK_ERROR_NOEXIT( rtGeometryInstanceDeclareVariable( instance, "materialListLength", &l_materialListLength ), context) )
 	//	return GEOM_ERR;
 
-	//if ( !RT_CHECK_ERROR_NOEXIT( rtVariableSetUserData(l_mode, sizeof(simMode), &mode), context) )
+	//if ( !RT_CHECK_ERROR_NOEXIT( rtVariableSetUserData(l_mode, sizeof(traceMode), &mode), context) )
 	//	return GEOM_ERR;
 	if ( !RT_CHECK_ERROR_NOEXIT( rtVariableSet1i(geometryID, this->getParamsPtr()->geometryID), context) )
 		return GEOM_ERR;
@@ -584,14 +584,14 @@ geometryError Geometry::createOptixInstance(RTcontext &context, RTgeometrygroup 
  *
  * instead of destroying the OptiX instance of the surface we can change some of its parameters and update it and the materials attached to it
  *
- * \param[in] RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda
+ * \param[in] RTcontext &context, RTgeometrygroup &geometrygroup, int index, TraceMode mode, double lambda
  * 
  * \return geometryError
  * \sa 
  * \remarks maybe we should include means to update only those parameters that have changed instead of updating all parameters at once...
  * \author Mauch
  */
-geometryError Geometry::updateOptixInstance(RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda)
+geometryError Geometry::updateOptixInstance(RTcontext &context, RTgeometrygroup &geometrygroup, int index, SimParams simParams, double lambda)
 {
 	if (this->update)
 	{
@@ -607,7 +607,7 @@ geometryError Geometry::updateOptixInstance(RTcontext &context, RTgeometrygroup 
 		int i;
 		for (i=0; i<materialListLength; i++)
 		{
-			if (MAT_NO_ERR != this->materialList[i]->updateOptiXInstance(context, instance, i, mode, lambda) )
+			if (MAT_NO_ERR != this->materialList[i]->updateOptiXInstance(context, instance, i, simParams, lambda) )
 			{
 				std::cout <<"error in PlaneSurface.updateOptixInstance(): materialList[i] returned an error at index:" << i << " at geometry: " << this->getParamsPtr()->geometryID << std::endl;
 				return GEOM_ERR;
@@ -622,7 +622,7 @@ geometryError Geometry::updateOptixInstance(RTcontext &context, RTgeometrygroup 
 		if (!RT_CHECK_ERROR_NOEXIT( rtGeometryInstanceQueryVariable( instance, "materialListLength", &l_materialListLength ), context ) )
 			return GEOM_ERR;
 
-		if (!RT_CHECK_ERROR_NOEXIT( rtVariableSetUserData(l_mode, sizeof(simMode), &mode), context ) )
+		if (!RT_CHECK_ERROR_NOEXIT( rtVariableSetUserData(l_mode, sizeof(TraceMode), &mode), context ) )
 			return GEOM_ERR;
 		if (!RT_CHECK_ERROR_NOEXIT( rtVariableSet1i(geometryID, this->getParamsPtr()->geometryID), context ) )
 			return GEOM_ERR;

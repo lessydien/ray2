@@ -4834,7 +4834,7 @@ double scale2m=0.001;
 double scale2mm=1;
 double scale2um=1000;
 
-simMode l_mode;
+TraceMode l_mode;
 
 // flags to check wether all geometry parameters were defined
 	bool geomParseFlag_ObjName=false;
@@ -10935,7 +10935,7 @@ parserError parseZemaxGlassCatalog(parseGlassResultStruct** parseResultsGlassPtr
 	return PARSER_NO_ERR;
 }	
 
-parserError parseZemaxPrescr(parseResultStruct** parseResultsGeometry,  FILE *hfile, simMode mode)
+parserError parseZemaxPrescr(parseResultStruct** parseResultsGeometry,  FILE *hfile, TraceMode mode)
 {
 	char filepath[512];
 	sprintf(filepath, "%s" PATH_SEPARATOR "%s", OUTPUT_FILEPATH, "prescriptionNonSeqLexOut.txt");

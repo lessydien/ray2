@@ -124,7 +124,7 @@ PupilError Pupil_RayAim_FarField::reduceParams(void)
 /**
  * \detail createCPUSimInstance 
  *
- * \param[in] double lambda, simMode mode
+ * \param[in] double lambda, TraceMode mode
  * 
  * \return PupilError
  * \sa 
@@ -157,7 +157,7 @@ PupilError Pupil_RayAim_FarField::createCPUSimInstance(double lambda)
 /**
  * \detail updateCPUSimInstance 
  *
- * \param[in] double lambda, simMode mode
+ * \param[in] double lambda, TraceMode mode
  * 
  * \return PupilError
  * \sa 

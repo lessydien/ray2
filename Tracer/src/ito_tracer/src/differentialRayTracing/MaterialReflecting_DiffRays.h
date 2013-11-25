@@ -67,8 +67,8 @@ class MaterialReflecting_DiffRays: public MaterialReflecting
 //		delete path_to_ptx;
 	}
 
- //   MaterialError createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda);
-	//MaterialError updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda);
+ //   MaterialError createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda);
+	//MaterialError updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda);
 	//MaterialError createCPUSimInstance(double lambda);
 //	void setPathToPtx(char* path);
 //	char* getPathToPtx(void);

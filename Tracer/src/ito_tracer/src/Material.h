@@ -93,16 +93,16 @@ class Material
 	}
 	void setPathToPtx(char* path);
 	MaterialError setCoating(Coating* ptrIn);
-	MaterialError createMaterialHitProgramPtx(RTcontext context, simMode mode);
+	MaterialError createMaterialHitProgramPtx(RTcontext context, TraceMode mode);
 	Coating* getCoating(void);
 	MaterialError setScatter(Scatter* ptrIn);
 	Scatter* getScatter(void);
 	char* getPathToPtx(void);
 
-    virtual MaterialError createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda);
+    virtual MaterialError createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda);
 	virtual MaterialError createCPUSimInstance(double lambda);
 	virtual MaterialError updateCPUSimInstance(double lambda);
-    virtual MaterialError updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda);
+    virtual MaterialError updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda);
 	virtual double calcSourceImmersion(double lambda);
 	virtual void hit(rayStruct &ray,Mat_hitParams hitParams, double t_hit, int geometryID);
 	virtual void hit(diffRayStruct &ray, Mat_DiffRays_hitParams hitParams, double t_hit, int geometryID);

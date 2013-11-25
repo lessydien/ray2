@@ -115,7 +115,7 @@ class Coating_NumCoeffs: public Coating
 	CoatingError setFullParams(Coating_NumCoeffs_FullParams* ptrIn);
 	Coating_NumCoeffs_FullParams* getFullParams(void);
 	Coating_NumCoeffs_ReducedParams* getReducedParams(void);
-//    virtual CoatingError createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda);
+//    virtual CoatingError createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda);
 	CoatingError createCPUSimInstance(double lambda);
 	CoatingError setParams2Program( RTcontext context, RTprogram *closest_hit_programPtr, RTvariable *l_scatterParamsPtr);
 	bool hit(rayStruct &ray, Mat_hitParams hitParams);

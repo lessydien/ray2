@@ -59,7 +59,7 @@ class Group
     char path_to_ptx_visit[512];
 	int geometryGroupListLength;
 	GeometryGroup** geometryGroupList;
-	simMode mode;
+	TraceMode mode;
 	groupError findClosestGeometryGroup();
 
 	/* OptiX variables */
@@ -106,11 +106,11 @@ class Group
 	int getGeometryGroupListLength( void );
 	groupError setGeometryGroup(GeometryGroup* oGeometryGroup, int index);
 	GeometryGroup* getGeometryGroup(int index);
-	groupError createOptixInstance(RTcontext &context, simMode mode, double lambda);
-	groupError updateOptixInstance(RTcontext &context, simMode mode, double lambda);
+	groupError createOptixInstance(RTcontext &context, SimParams simParams, double lambda);
+	groupError updateOptixInstance(RTcontext &context, SimParams simParams, double lambda);
 	groupError createGeometryGroup(int index);
-	groupError createCPUSimInstance(double lambda, simMode mode );
-	groupError updateCPUSimInstance(double lambda, simMode mode );
+	groupError createCPUSimInstance(double lambda, SimParams simParams );
+	groupError updateCPUSimInstance(double lambda, SimParams simParams );
 };
 
 #endif

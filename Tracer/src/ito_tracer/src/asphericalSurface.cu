@@ -28,7 +28,6 @@ rtDeclareVariable(AsphericalSurface_ReducedParams, params, , );
 //rtDeclareVariable(int, materialListLength, , ); 
 rtDeclareVariable(optix::Ray, ray, rtCurrentRay, );
 rtDeclareVariable(rayStruct, prd, rtPayload, ); // get per-ray-data structure
-//rtDeclareVariable(simMode, mode, , );
 // variables that are communicated to the hit program via the attribute-mechanism
 rtDeclareVariable(Mat_hitParams, hitParams, attribute hitParams, ); 
 rtDeclareVariable(double, t_hit, attribute t_hit, ); 
@@ -42,10 +41,6 @@ __forceinline__ __device__ Mat_hitParams calcHitParams(double t)
 
 RT_PROGRAM void intersect(int)
 {
-	// we only calculate the intersection in nonsequential mode or if the current geometry is the next to intersect in "sequential mode"
-	//(ray.currentGeometryID==this->geometryID)
-//	if ( ((mode==SIM_GEOMRAYS_SEQ)&&(mode==SIM_DIFFRAYS_SEQ)&&(prd.currentGeometryID == params.geometryID-1)) || ((mode==SIM_GEOMRAYS_NONSEQ)&&(prd.currentGeometryID != params.geometryID)) )
-//	{
 		double t =  intersectRayAsphere(prd.position, prd.direction, params);
     	// check whether intersection is within valid interval of t
 		if( rtPotentialIntersection( (float)t ))
@@ -60,7 +55,6 @@ RT_PROGRAM void intersect(int)
 			rtReportIntersection( 0 );
 			
 		}
-//	}
 
 }
 

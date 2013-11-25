@@ -48,9 +48,10 @@ void myUtilHandleErrorNoExit(RTcontext context, RTresult code, const char* file,
   const char* message;
   char s[2048];
   rtContextGetErrorString(context, code, &message);
-  sprintf(s, "%s\n(%s:%d)", message, file, line);
-  s[2047]='\0';
-  myUtilReportError( s );
+  std::cout << "OptiX Error: " << message << " in " << file << "in line " << line << std::endl;
+//  sprintf(s, "%s\n(%s:%d)", message, file, line);
+//  s[2047]='\0';
+//  myUtilReportError( message );
 }
 
 void myUtilHandleErrorNoContext(RTresult code, const char* file, int line)

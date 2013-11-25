@@ -72,8 +72,8 @@ class MaterialVolumeScatter: public Material
 
 	void setParams(MatVolumeScatter_params params);
 	MatVolumeScatter_params getParams(void);
-    MaterialError createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda);
-	MaterialError updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda);
+    MaterialError createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda);
+	MaterialError updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda);
 	MaterialError createCPUSimInstance(double lambda);
 	void hit(rayStruct &ray, Mat_hitParams hitParams, double t_hit, int geometryID);
 	MaterialError parseXml(pugi::xml_node &geometry);	

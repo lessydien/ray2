@@ -74,8 +74,8 @@ class MaterialIdealLense_DiffRays : public MaterialIdealLense
 //		delete path_to_ptx;
 	}
 
- //   MaterialError createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda);
-	//MaterialError updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda);
+ //   MaterialError createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda);
+	//MaterialError updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda);
 	//MaterialError createCPUSimInstance(double lambda);
 	void hit(diffRayStruct &ray, Mat_DiffRays_hitParams hitParams, double t_hit, int geometryID);
 //	MaterialError updateCPUSimInstance(double lambda);

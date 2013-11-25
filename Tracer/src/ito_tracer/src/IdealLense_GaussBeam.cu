@@ -30,7 +30,6 @@ rtDeclareVariable(IdealLense_ReducedParams, params, , ); // normal vector to sur
 // variables that are communicate to the hit program via the attribute mechanism
 rtDeclareVariable(gaussBeam_geometricNormal, geometric_normal, attribute geometric_normal, ); // normal to the geometry at the hit-point. at a plane surface this will simply be the normal of the definition of the plane surface
 rtDeclareVariable(gaussBeam_t, t_hit, attribute t_hit, );
-//rtDeclareVariable(simMode, mode, , );
 rtDeclareVariable(int,               geometryID, attribute geometryID , );
 
 /* calc normal to surface at intersection point */

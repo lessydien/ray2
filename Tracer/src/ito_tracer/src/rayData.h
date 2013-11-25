@@ -193,6 +193,6 @@ typedef struct
 //  SIM_GAUSSBEAMRAYS_SEQ,
 //  SIM_DIFFRAYS_NONSEQ,
 //  SIM_DIFFRAYS_SEQ
-//} simMode;
+//} traceMode;
 
 #endif

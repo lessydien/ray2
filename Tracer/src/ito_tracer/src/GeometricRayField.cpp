@@ -850,7 +850,7 @@ fieldError GeometricRayField::initCPUSubset()
 					// transform raydirection into global coordinate system
 //					rayData.direction=this->rayParamsPtr->Mrot*rayData.direction;
 
-					rayData.currentSeed=(uint)BRandom(x);
+					rayData.currentSeed=x_l[4];//(uint)BRandom(x);
 					this->setRay(rayData,(unsigned long long)(jx+iy*GPU_SUBSET_WIDTH_MAX));
 				}// end for
 } // end omp
@@ -1693,8 +1693,8 @@ fieldError GeometricRayField::convert2Intensity(Field* imagePtr, detParams &oDet
 
 	// the origin of the IntensityField is at the outer edge of the detector rather than at the origin
 	double3 offset;
-	offset=oDetParams.root-oDetParams.apertureHalfWidth.x*t_ex+0.5*l_IntensityImagePtr->getParamsPtr()->scale*t_ex;
-	offset=offset-oDetParams.apertureHalfWidth.y*t_ey+0.5*l_IntensityImagePtr->getParamsPtr()->scale*t_ey;
+	offset=oDetParams.root-oDetParams.apertureHalfWidth.x*t_ex;//+0.5*l_IntensityImagePtr->getParamsPtr()->scale*t_ex;
+	offset=offset-oDetParams.apertureHalfWidth.y*t_ey;//+0.5*l_IntensityImagePtr->getParamsPtr()->scale*t_ey;
 	offset=offset-0.005*t_ez;//+0.5*l_PhaseSpacePtr->getParamsPtr()->scale*t_ez;
 
 	short solutionIndex;
@@ -1708,12 +1708,20 @@ fieldError GeometricRayField::convert2Intensity(Field* imagePtr, detParams &oDet
 	}
 	double3x3 MatrixInv=inv(Matrix);
 
+	unsigned long long hitNr=0;
+
 	double3 posMinOffset;
 	double3 indexFloat;
 	long3 index;
 	if (this->rayParamsPtr->coherence==1) // sum coherently
 	{
 		complex<double> i_compl=complex<double>(0,1); // define complex number "i"
+
+				//double phi1=2*PI/this->rayList[0].lambda*20;
+				//complex<double> l_U1=complex<double>(this->rayList[0].flux*cos(phi1),this->rayList[0].flux*sin(phi1));
+				//double phi2=2*PI/this->rayList[0].lambda*20.02;
+				//complex<double> l_U2=complex<double>(this->rayList[0].flux*cos(phi2),this->rayList[0].flux*sin(phi2));
+				//l_IntensityImagePtr->getComplexAmplPtr()[0]=l_U1+l_U2;
 
 		for (unsigned long long jy=0; jy<this->rayParamsPtr->GPUSubset_height; jy++)
 		{
@@ -1733,15 +1741,17 @@ fieldError GeometricRayField::convert2Intensity(Field* imagePtr, detParams &oDet
 				index.x=floor((tmpPos.x)/scale.x);
 				index.y=floor((tmpPos.y)/scale.y);
 				index.z=floor((tmpPos.z)/scale.z);
-				
+
+
 				// use this ray only if it is inside our Intensity Field. Otherwise ignore it...
 				if ( ( (index.x<nrPixels.x)&&(index.x>=0) ) && ( (index.y<nrPixels.y)&&(index.y>=0) ) && ( (index.z<nrPixels.z)&&(index.z>=0) ) )
 				{
 					// use this ray only if it agrees with the ignoreDepth
-					if ( this->rayList[jx].depth > oDetParams.ignoreDepth )
+					if ( this->rayList[rayListIndex].depth > oDetParams.ignoreDepth )
 					{
-						double phi=2*PI/this->rayList[jx].lambda*this->rayList[jx].opl;
-						complex<double> l_U=complex<double>(this->rayList[jx].flux*cos(phi),this->rayList[jx].flux*sin(phi));
+						hitNr++;
+						double phi=2*PI/this->rayList[rayListIndex].lambda*this->rayList[rayListIndex].opl;
+						complex<double> l_U=complex<double>(this->rayList[rayListIndex].flux*cos(phi),this->rayList[rayListIndex].flux*sin(phi));
 						l_IntensityImagePtr->getComplexAmplPtr()[index.x+index.y*nrPixels.x+index.z*nrPixels.x*nrPixels.y]=l_IntensityImagePtr->getComplexAmplPtr()[index.x+index.y*nrPixels.x+index.z*nrPixels.x*nrPixels.y]+l_U; // create a complex amplitude from the rays flux and opl and sum them coherently
 					}
 				}
@@ -1780,8 +1790,7 @@ fieldError GeometricRayField::convert2Intensity(Field* imagePtr, detParams &oDet
 	{
 		if (this->rayParamsPtr->coherence == 0)// sum incoherently
 		{
-			unsigned long long hitNr=0;
-
+			
 			for (unsigned long long jy=0; jy<this->rayParamsPtr->GPUSubset_height; jy++)
 			{
 				for (unsigned long long jx=0; jx<this->rayParamsPtr->GPUSubset_width; jx++)
@@ -1835,7 +1844,6 @@ fieldError GeometricRayField::convert2Intensity(Field* imagePtr, detParams &oDet
 			//	//	std::cout <<  "ray number " << j << " did not hit target." << "x: " << rayList[j].position.x << ";y: " << rayList[j].position.y << "z: " << rayList[j].position.z << ";geometryID " << rayList[j].currentGeometryID << std::endl;
 			//	//}
 			//}
-			std::cout << " " << hitNr << " out of " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays in target" << std::endl;
 		}
 		else
 		{
@@ -1849,6 +1857,8 @@ fieldError GeometricRayField::convert2Intensity(Field* imagePtr, detParams &oDet
 	msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
 	msecs_Tracing=msecs_Tracing+msecs;
 	std::cout << " " << msecs <<"ms to process " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays." << std::endl;
+
+	std::cout << " " << hitNr << " out of " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays in target" << std::endl;
 
 	return FIELD_NO_ERR;
 };

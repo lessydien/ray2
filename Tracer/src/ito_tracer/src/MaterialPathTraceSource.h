@@ -68,8 +68,8 @@ class MaterialPathTraceSource: public Material
 //		delete path_to_ptx;
 	}
 
-    MaterialError createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda);
-	MaterialError updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, simMode mode, double lambda);
+    MaterialError createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda);
+	MaterialError updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda);
 	void setParams(MatPathTraceSource_params params);
 	MatPathTraceSource_params getParams(void);
 	void hit(rayStruct &ray, Mat_hitParams hitParams, double t_hit, int geometryID);

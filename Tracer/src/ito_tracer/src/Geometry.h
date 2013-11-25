@@ -143,7 +143,7 @@ class Geometry
 	char path_to_ptx_intersect[512];
 	char name[GEOM_CMT_LENGTH];
 	char comment[GEOM_CMT_LENGTH];
-	simMode mode;
+	TraceMode mode;
 
 	Geometry_Params *paramsPtr;
 	Geometry_ReducedParams *reducedParamsPtr;
@@ -223,8 +223,8 @@ class Geometry
 	geometryError setComment(char *ptrIn);
 	char *getComment(void);
 	
-	virtual geometryError createOptixInstance(RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda);
-	virtual geometryError updateOptixInstance(RTcontext &context, RTgeometrygroup &geometrygroup, int index, simMode mode, double lambda);
+	virtual geometryError createOptixInstance(RTcontext &context, RTgeometrygroup &geometrygroup, int index, SimParams simParams, double lambda);
+	virtual geometryError updateOptixInstance(RTcontext &context, RTgeometrygroup &geometrygroup, int index, SimParams simParams, double lambda);
     //virtual geometryError  trace(rayStruct &ray);
 	virtual double intersect(rayStruct *ray);
 	virtual double intersect(diffRayStruct *ray);
@@ -234,10 +234,10 @@ class Geometry
 	virtual geometryError hit(gaussBeamRayStruct &ray, gaussBeam_t t);
 	virtual Geometry_Params* getParamsPtr(void);
 	virtual geometryError setParams(Geometry_Params *params);
-	virtual geometryError createCPUSimInstance(double lambda, simMode mode);
-	virtual geometryError updateCPUSimInstance(double lambda, simMode mode);
+	virtual geometryError createCPUSimInstance(double lambda, SimParams simParams);
+	virtual geometryError updateCPUSimInstance(double lambda, SimParams simParams);
 	virtual geometryError processParseResults(GeometryParseParamStruct &parseResults_Geom, int geomID);
-	virtual geometryError parseXml(pugi::xml_node &geometry, simMode l_mode, vector<Geometry*> &geomVec);
+	virtual geometryError parseXml(pugi::xml_node &geometry, TraceMode l_mode, vector<Geometry*> &geomVec);
 	virtual bool checkParserError(char *msg);
 };
 

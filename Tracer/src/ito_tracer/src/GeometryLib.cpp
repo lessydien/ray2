@@ -28,7 +28,7 @@
 
 using namespace std;
 
-bool GeometryFab::createGeomInstFromXML(xml_node &geomNode, simMode l_mode, vector<Geometry*> &geomVec) const
+bool GeometryFab::createGeomInstFromXML(xml_node &geomNode, TraceMode l_mode, vector<Geometry*> &geomVec) const
 {	
 	Geometry* l_pGeometry=NULL;
 	Parser_XML l_parser;

@@ -79,7 +79,7 @@ class GaussBeamRayField : public RayField
 
 	void createCPUSimInstance(double lambda);
 
-    fieldError createOptixInstance(RTcontext &context, simMode mode, double lambda);
+    fieldError createOptixInstance(RTcontext &context, SimParams simParams, double lambda);
 
 	fieldError traceScene(Group &oGroup);
 

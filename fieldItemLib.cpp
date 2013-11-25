@@ -28,9 +28,12 @@ FieldItem* FieldItemLib::createField(FieldItem::FieldType type)
 		case FieldItem::GEOMRAYFIELD:
 			l_pItem=new GeomRayFieldItem();
 			break;
-		case FieldItem::DIFFRAYFIELD:
-			l_pItem=new DiffRayFieldItem();
-			break;
+		//case FieldItem::DIFFRAYFIELD:
+		//	l_pItem=new DiffRayFieldItem();
+		//	break;
+		//case FieldItem::DIFFRAYFIELDRAYAIM:
+		//	l_pItem=new DiffRayField_RayAiming_Item();
+		//	break;
 		case FieldItem::INTENSITYFIELD:
 			l_pItem=new IntensityFieldItem();
 			break;
@@ -68,6 +71,9 @@ QString FieldItemLib::fieldTypeToString(const FieldItem::FieldType type) const
 	case FieldItem::DIFFRAYFIELD:
 		str="DIFFRAYFIELD";
 		break;
+	case FieldItem::DIFFRAYFIELDRAYAIM:
+		str="DIFFRAYFIELDRAYAIM";
+		break;
 	case FieldItem::INTENSITYFIELD:
 		str="INTENSITYFIELD";
 		break;
@@ -101,6 +107,8 @@ FieldItem::FieldType FieldItemLib::stringToFieldType(const QString str) const
 		return FieldItem::GEOMRAYFIELD;
 	if (!str.compare("DIFFRAYFIELD") )
 		return FieldItem::DIFFRAYFIELD;
+	if (!str.compare("DIFFRAYFIELDRAYAIM") )
+		return FieldItem::DIFFRAYFIELDRAYAIM;
 	if (!str.compare("SCALARPLANEWAVE") )
 		return FieldItem::SCALARPLANEWAVE;
 	if (!str.compare("SCALARSPHERICALWAVE") )
@@ -121,7 +129,8 @@ QList<AbstractItem*> FieldItemLib::fillLibrary() const
 {
 	QList<AbstractItem*> l_list;
 	l_list.append(new GeomRayFieldItem());
-	l_list.append(new DiffRayFieldItem());
+	//l_list.append(new DiffRayFieldItem());
+	//l_list.append(new DiffRayField_RayAiming_Item());
 	//l_list.append(new IntensityFieldItem());
 	//l_list.append(new ScalarPlaneFieldItem());
 	//l_list.append(new ScalarSphericalFieldItem());

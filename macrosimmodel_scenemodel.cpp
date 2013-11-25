@@ -638,6 +638,19 @@ QModelIndex SceneModel::getBaseIndex(const QModelIndex &index)
 	}
 }
 
+DetectorItem* SceneModel::getDetectorItem() const
+{
+	for(unsigned int i=0;i<m_data.size();i++)
+	{
+		if(m_data[i]->getObjectType() == AbstractItem::DETECTOR)
+		{
+			// if one of the childs of our model equals the child we are looking for, we return an invalid index to signal that the child is in top level
+			return reinterpret_cast<DetectorItem*>(m_data[i]);
+		}		
+	}
+	return NULL;
+}
+
 void SceneModel::changeItemData(const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
 	MaterialItemLib l_matLib;

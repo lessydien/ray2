@@ -1921,13 +1921,37 @@ fieldError DiffRayField_RayAiming::processParseResults(FieldParseParamStruct &pa
  * \remarks 
  * \author Mauch
  */
-fieldError  DiffRayField_RayAiming::parseXml(pugi::xml_node &det, vector<Field*> &fieldVec)
+fieldError  DiffRayField_RayAiming::parseXml(pugi::xml_node &field, vector<Field*> &fieldVec)
 {
 	// call base class function
-	if (DET_NO_ERROR != DiffRayField::parseXml(det, fieldVec))
+	if (DET_NO_ERROR != DiffRayField::parseXml(field, fieldVec))
 	{
 		std::cout << "error in DiffRayField_RayAiming.parseXml(): DiffRayField.parseXml()  returned an error." << std::endl;
 		return FIELD_ERR;
 	}
+
+	Parser_XML l_parser;
+
+	if (!this->checkParserError(l_parser.attrByNameToDouble(field, "detRoot.x", this->getParamsPtr()->oDetParams.root.x)))
+		return FIELD_ERR;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(field, "detRoot.y", this->getParamsPtr()->oDetParams.root.y)))
+		return FIELD_ERR;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(field, "detRoot.z", this->getParamsPtr()->oDetParams.root.z)))
+		return FIELD_ERR;
+	if (!this->checkParserError(l_parser.attrByNameToLong(field, "detPixel.x", this->getParamsPtr()->oDetParams.detPixel.x)))
+		return FIELD_ERR;
+	if (!this->checkParserError(l_parser.attrByNameToLong(field, "detPixel.y", this->getParamsPtr()->oDetParams.detPixel.y)))
+		return FIELD_ERR;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(field, "detTilt.x", this->getParamsPtr()->oDetParams.tilt.x)))
+		return FIELD_ERR;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(field, "detTilt.y", this->getParamsPtr()->oDetParams.tilt.y)))
+		return FIELD_ERR;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(field, "detTilt.z", this->getParamsPtr()->oDetParams.tilt.z)))
+		return FIELD_ERR;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(field, "detApertureHalfWidth.x", this->getParamsPtr()->oDetParams.apertureHalfWidth.x)))
+		return FIELD_ERR;
+	if (!this->checkParserError(l_parser.attrByNameToDouble(field, "detApertureHalfWidth.y", this->getParamsPtr()->oDetParams.apertureHalfWidth.y)))
+		return FIELD_ERR;
+
 	return FIELD_NO_ERR;
 };

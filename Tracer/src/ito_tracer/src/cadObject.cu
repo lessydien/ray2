@@ -28,7 +28,6 @@ rtDeclareVariable(optix::Ray, ray, rtCurrentRay, );
 rtDeclareVariable(rayStruct, prd, rtPayload, ); // get per-ray-data structure
 rtDeclareVariable(CadObject_ReducedParams, params, , ); // normal vector to surface. i.e. part of the definition of the plane surface geometry
 //rtDeclareVariable(int, materialListLength, , ); 
-//rtDeclareVariable(simMode, mode, , );
 // variables that are communicate to the hit program via the attribute mechanism
 rtDeclareVariable(Mat_hitParams, hitParams, attribute hitParams, ); // normal to the geometry at the hit-point. at a plane surface this will simply be the normal of the definition of the plane surface
 rtDeclareVariable(double, t_hit, attribute t_hit, ); 

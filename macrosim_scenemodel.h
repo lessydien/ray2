@@ -22,6 +22,7 @@
 #include <qlist.h>
 #include "common/sharedStructures.h"
 #include "abstractItem.h"
+#include "detectorItem.h"
 
 #include <vtkSmartPointer.h>
 #include <vtkRenderer.h>
@@ -56,6 +57,7 @@ public:
 	void clearModel(void);
 //	AbstractItem* getItem(int index) {return m_data.at(index);};
 	AbstractItem* getItem(const QModelIndex &index) const;
+	DetectorItem* getDetectorItem() const;
 	void signalDataChange(const QModelIndex &topLeft, const QModelIndex &bottomRight);
 	QModelIndex getRootIndex(const QModelIndex &index);
 	QModelIndex getBaseIndex(const QModelIndex &index);
