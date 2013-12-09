@@ -112,18 +112,14 @@ struct __device_builtin__ __align__(8) tag         \
      typedef struct double4 double4;
  #endif
 
-/*DEVICE_BUILTIN*/
 struct double4x4
 {
 	double m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, m34, m41, m42, m43, m44;
-	__cuda_assign_operators(double4x4)
 };
 
-/*DEVICE_BUILTIN*/
 struct double3x3
 {
 	double m11, m12, m13, m21, m22, m23, m31, m32, m33;
-	__cuda_assign_operators(double3x3)
 };
 
 /*******************************************************************************
@@ -132,12 +128,9 @@ struct double3x3
 *                                                                              *
 *******************************************************************************/
 
-/*DEVICE_BUILTIN*/
 typedef struct double4x4 double4x4;
-/*DEVICE_BUILTIN*/
 typedef struct double3x3 double3x3;
 
-typedef struct double3x3 blubb;
 
 /*******************************************************************************
 *                                                                              *
