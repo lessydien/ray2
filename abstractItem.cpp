@@ -116,7 +116,7 @@ void AbstractItem::setRenderOptions(RenderOptions options)
 	switch (options.m_renderMode)
 	{
 	case RENDER_TRANSPARENCY:
-		if (this->m_childs.size() == 1)
+		if (this->m_childs.size() == 1) // geometries have on child
 			m_pActor->GetProperty()->SetOpacity(this->getChild(0)->getTransparency());
 		else
 			m_pActor->GetProperty()->SetOpacity(1.0);

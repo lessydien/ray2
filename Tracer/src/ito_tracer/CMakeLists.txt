@@ -64,6 +64,8 @@ OPTIX_add_sample_executable( ITO-MacroSim
   src/RayField.h
   src/GeometricRayField.cpp
   src/GeometricRayField.h
+  src/GeometricRayField_PseudoBandwidth.cpp
+  src/GeometricRayField_PseudoBandwidth.h
   src/PathTracingRayField.cpp
   src/PathTracingRayField.h
   src/PathIntTissueRayField.cpp
@@ -122,6 +124,8 @@ OPTIX_add_sample_executable( ITO-MacroSim
   src/Detector_PhaseSpace.h
   src/Detector_Intensity.cpp
   src/Detector_Intensity.h
+  src/Detector_VolumeIntensity.cpp
+  src/Detector_VolumeIntensity.h
   src/Detector_Raydata.cpp
   src/Detector_Raydata.h
   src/DetectorParams.h
@@ -276,6 +280,9 @@ OPTIX_add_sample_executable( ITO-MacroSim
   src/MaterialAbsorbing.cpp
   src/MaterialAbsorbing.h
   src/MaterialAbsorbing_hit.h
+  src/MaterialVolumeAbsorbing.cpp
+  src/MaterialVolumeAbsorbing.h
+  src/MaterialVolumeAbsorbing_hit.h
   src/differentialRayTracing/MaterialAbsorbing_DiffRays.cpp
   src/differentialRayTracing/MaterialAbsorbing_DiffRays.h
   src/differentialRayTracing/MaterialAbsorbing_DiffRays_hit.h

@@ -19,6 +19,7 @@
 #define DETECTORITEMLIB
 
 #include "detectorIntensityItem.h"
+#include "detectorVolumeIntensityItem.h"
 #include "detectorFieldItem.h"
 #include "detectorRayDataItem.h"
 

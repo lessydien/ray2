@@ -240,8 +240,8 @@ detError DetectorPhaseSpace::detect(Field* rayFieldPtr, Field **imagePtrPtr)
 detError DetectorPhaseSpace::processParseResults(DetectorParseParamStruct &parseResults_Det)
 {
 	//this->detParamsPtr=new detPhaseSpaceParams;
-	this->detParamsPtr->apertureHalfWidth=parseResults_Det.apertureHalfWidth;
-	this->detParamsPtr->detPixel=parseResults_Det.detPixel;
+//	this->detParamsPtr->apertureHalfWidth=parseResults_Det.apertureHalfWidth;
+//	this->detParamsPtr->detPixel=parseResults_Det.detPixel;
 	this->detParamsPtr->normal=parseResults_Det.normal;
 	this->detParamsPtr->root=parseResults_Det.root;
 //	this->detParamsPtr->rotNormal=parseResults_Det.rotNormal;

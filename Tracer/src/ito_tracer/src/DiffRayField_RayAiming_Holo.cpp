@@ -2082,8 +2082,8 @@ fieldError DiffRayField_RayAiming_Holo::processParseResults(FieldParseParamStruc
 	this->rayParamsPtr->importanceAreaTilt=parseResults_Src.importanceAreaTilt;
 	this->rayParamsPtr->importanceAreaApertureType=parseResults_Src.importanceAreaApertureType;
 	this->rayParamsPtr->epsilon=10*this->rayParamsPtr->lambda;//parseResults_Src.epsilon;
-	this->rayParamsPtr->oDetParams.apertureHalfWidth=make_double2(0.25,0.006);//parseResults_Det.apertureHalfWidth;//
-	this->rayParamsPtr->oDetParams.detPixel=parseResults_Det.detPixel;
+//	this->rayParamsPtr->oDetParams.apertureHalfWidth=make_double2(0.25,0.006);//parseResults_Det.apertureHalfWidth;//
+//	this->rayParamsPtr->oDetParams.detPixel=parseResults_Det.detPixel;
 	this->rayParamsPtr->oDetParams.MTransform=createTransformationMatrix(parseResults_Det.tilt, parseResults_Det.root);
 	this->rayParamsPtr->oDetParams.tilt=parseResults_Det.tilt;
 	this->rayParamsPtr->oDetParams.normal=parseResults_Det.normal;

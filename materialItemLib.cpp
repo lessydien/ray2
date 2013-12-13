@@ -61,6 +61,9 @@ MaterialItem* MaterialItemLib::createMaterial(MaterialItem::MaterialType type)
 		case MaterialItem::VOLUMESCATTER:
 			l_pItem=new MaterialVolumeScatterItem();
 			break;
+		case MaterialItem::VOLUMEABSORBING:
+			l_pItem=new MaterialVolumeAbsorbingItem();
+			break;
 		default:
 			break;
 		}
@@ -93,6 +96,8 @@ MaterialItem::MaterialType MaterialItemLib::stringToMaterialType(const QString s
 		return MaterialItem::PATHTRACESOURCE;
 	if (!str.compare("VOLUMESCATTER"))
 		return MaterialItem::VOLUMESCATTER;
+	if (!str.compare("VOLUMEABSORBING"))
+		return MaterialItem::VOLUMEABSORBING;
 	if (!str.compare("VOLUMESCATTERBOX"))
 		return MaterialItem::VOLUMESCATTER;
 
@@ -136,6 +141,9 @@ QString MaterialItemLib::materialTypeToString(const MaterialItem::MaterialType t
 		break;
 	case MaterialItem::VOLUMESCATTER:
 		str = "VOLUMESCATTER";
+		break;
+	case MaterialItem::VOLUMEABSORBING:
+		str = "VOLUMEABSORBING";
 		break;
 	default:
 		break;
@@ -266,6 +274,9 @@ MaterialItem::MaterialType MaterialItemLib::abstractMatTypeToMatType(const Abstr
 	case AbstractItem::VOLUMESCATTER:
 		typeOut = MaterialItem::VOLUMESCATTER;
 		break;
+	case AbstractItem::VOLUMEABSORBING:
+		typeOut = MaterialItem::VOLUMEABSORBING;
+		break;
 	default:
 		break;
 	}
@@ -309,6 +320,9 @@ AbstractItem::Abstract_MaterialType MaterialItemLib::matTypeToAbstractMatType(co
 		break;
 	case MaterialItem::VOLUMESCATTER:
 		typeOut = AbstractItem::VOLUMESCATTER;
+		break;
+	case MaterialItem::VOLUMEABSORBING:
+		typeOut = AbstractItem::VOLUMEABSORBING;
 		break;
 	default:
 		break;

@@ -32,6 +32,23 @@ set(CMAKE_MODULE_PATH
   ${CMAKE_MODULE_PATH}
   )
   
+#on MSVC enable build using OpenMP for compiling
+if(MSVC)
+	ADD_DEFINITIONS(/MP)
+
+	# set some optimization compiler flags
+	# i.e.:
+	#   - Ox full optimization (replaces standard O2 set by cmake)
+	#	- Oi enable intrinsic functions
+	#	- Ot favor fast code
+	#	- Oy omit frame pointers
+	#	- GL whole program optimization
+	# 	- GT fibre safe optimization
+	#	- openmp enable openmp support, isn't enabled globally here as it breaks opencv
+	SET ( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Oi /Ot /Oy /GL /openmp" )
+    SET ( CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /LTCG")
+endif (MSVC)  
+  
 # Adds a postfix for debug-built libraries
 SET (CMAKE_DEBUG_POSTFIX "d" CACHE STRING "Adds a postfix for debug-built libraries.")  
 

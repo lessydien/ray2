@@ -15,41 +15,42 @@
     along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************/
 
-#include "materialAbsorbingItem.h"
+#include "materialVolumeAbsorbingItem.h"
 
 using namespace macrosim;
 
-MaterialAbsorbingItem::MaterialAbsorbingItem(QString name, QObject *parent) :
-	MaterialItem(ABSORBING, name, parent)
+MaterialVolumeAbsorbingItem::MaterialVolumeAbsorbingItem(QString name, QObject *parent) :
+	MaterialItem(VOLUMEABSORBING, name, parent),
+		m_absorbCoeff(0)
 {
 }
 
-MaterialAbsorbingItem::~MaterialAbsorbingItem(void) 
+MaterialVolumeAbsorbingItem::~MaterialVolumeAbsorbingItem(void) 
 {
 	m_childs.clear();
 }
 
-bool MaterialAbsorbingItem::writeToXML(QDomDocument &document, QDomElement &root) const
+bool MaterialVolumeAbsorbingItem::writeToXML(QDomDocument &document, QDomElement &root) const
 {
 	QDomElement material = document.createElement("material");
-	material.setAttribute("materialType", "ABSORBING");
+	material.setAttribute("materialType", "VOLUMEABSORBING");
 	// write parameters inherited from base class
 	if (!MaterialItem::writeToXML(document, material))
 		return false;
 
-//	QModelIndex l_index=this->getModelIndex();
-//	QModelIndex l_parentIndex=l_index.parent();
-//	AbstractItem* l_pItem=reinterpret_cast<AbstractItem*>(l_parentIndex.internalPointer());
+	material.setAttribute("absorbCoeff", QString::number(m_absorbCoeff));
 
 	root.appendChild(material);
 
 	return true;
 }
 
-bool MaterialAbsorbingItem::readFromXML(const QDomElement &node)
+bool MaterialVolumeAbsorbingItem::readFromXML(const QDomElement &node)
 {
 	if (!MaterialItem::readFromXML(node))
 		return false;
+
+	m_absorbCoeff=node.attribute("absorbCoeff").toDouble();
 
 	return true;
 }

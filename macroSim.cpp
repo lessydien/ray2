@@ -369,22 +369,29 @@ bool createDataObjectFromMacroSimResult(ItomFieldParams &fieldParams, ito::DataO
 {
 	if (MacroSimResult)
 	{
+		double *l_ptr=static_cast<double*>(MacroSimResult);
 		// copy the resulting field into a dataObject
 		// create new dataObject according to parameters of resulting field
 		cv::Mat *MAT1;
 		switch (fieldParams.type)
 		{
 		case INTFIELD:
-			*dataObject = ito::DataObject(fieldParams.nrPixels[1], fieldParams.nrPixels[0], ito::tFloat64);
-			MAT1 = (cv::Mat*)(dataObject->get_mdata()[dataObject->seekMat(0)]);
-			memcpy(MAT1->ptr(0), MacroSimResult, fieldParams.nrPixels[1]*fieldParams.nrPixels[0]*sizeof(double));
+			//*dataObject = ito::DataObject(fieldParams.nrPixels[1], fieldParams.nrPixels[0], ito::tFloat64);
+			*dataObject = ito::DataObject(fieldParams.nrPixels[2], fieldParams.nrPixels[1], fieldParams.nrPixels[0], ito::tFloat64);
+			for (unsigned int jz=0; jz<fieldParams.nrPixels[2]; jz++)
+			{
+				size_t planeID=dataObject->seekMat(jz);
+				MAT1 = (cv::Mat*)(dataObject->get_mdata()[dataObject->seekMat(jz)]);
+				//memcpy(MAT1->ptr(0), MacroSimResult, fieldParams.nrPixels[1]*fieldParams.nrPixels[0]*sizeof(double));
+				memcpy(MAT1->ptr(0), l_ptr+jz*fieldParams.nrPixels[0]*fieldParams.nrPixels[1], fieldParams.nrPixels[1]*fieldParams.nrPixels[0]*sizeof(double));
+			}
 			// set data object tags
 			dataObject->setAxisOffset(0, fieldParams.MTransform[3]);//-floorf(l_fieldParams.nrPixels[0]/2)*l_fieldParams.scale[0]);
 			dataObject->setAxisOffset(1, fieldParams.MTransform[7]);//-floorf(l_fieldParams.nrPixels[0]/2)*l_fieldParams.scale[1]);
-	//		dataObject->setAxisOffset(2, fieldParams.MTransform[11]);
+			dataObject->setAxisOffset(2, fieldParams.MTransform[11]);
 			dataObject->setAxisScale(0, fieldParams.scale[0]);
 			dataObject->setAxisScale(1, fieldParams.scale[1]);
-	//		dataObject->setAxisScales(2, fieldParams.scale[2]);
+			dataObject->setAxisScale(2, fieldParams.scale[2]);
 			dataObject->setAxisUnit(0,"mm");
 			dataObject->setAxisUnit(1,"mm");
 			dataObject->setTag("wvl", fieldParams.lambda);

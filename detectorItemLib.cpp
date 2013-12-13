@@ -28,6 +28,9 @@ DetectorItem* DetectorItemLib::createDetector(DetectorItem::DetType type)
 		case DetectorItem::INTENSITY:
 			l_pItem=new DetectorIntensityItem();
 			break;
+		case DetectorItem::VOLUMEINTENSITY:
+			l_pItem=new DetectorVolumeIntensityItem();
+			break;
 		case DetectorItem::RAYDATA:
 			l_pItem=new DetectorRayDataItem();
 			break;
@@ -47,6 +50,9 @@ QString DetectorItemLib::detTypeToString(const DetectorItem::DetType type) const
 	{
 	case DetectorItem::INTENSITY:
 		str="INTENSITY";
+		break;
+	case DetectorItem::VOLUMEINTENSITY:
+		str="VOLUMEINTENSITY";
 		break;
 	case DetectorItem::RAYDATA:
 		str="RAYDATA";
@@ -96,6 +102,8 @@ DetectorItem::DetType DetectorItemLib::stringToDetType(const QString str) const
 		return DetectorItem::UNDEFINED;
 	if (!str.compare("INTENSITY") )
 		return DetectorItem::INTENSITY;
+	if (!str.compare("VOLUMEINTENSITY") )
+		return DetectorItem::VOLUMEINTENSITY;
 	if (!str.compare("RAYDATA") )
 		return DetectorItem::RAYDATA;
 	if (!str.compare("FIELD") )
@@ -110,5 +118,6 @@ QList<AbstractItem*> DetectorItemLib::fillLibrary() const
 	l_list.append(new DetectorIntensityItem());
 	l_list.append(new DetectorFieldItem());
 	l_list.append(new DetectorRayDataItem());
+	l_list.append(new DetectorVolumeIntensityItem());
 	return l_list;
 }

@@ -38,6 +38,7 @@
 #include "MaterialPathTraceSource.h"
 #include "MaterialVolumeScatter.h"
 #include "MaterialVolumeScatterBox.h"
+#include "MaterialVolumeAbsorbing.h"
 #include "Parser_XML.h"
 
 class MaterialFab

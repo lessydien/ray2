@@ -202,8 +202,8 @@ detError DetectorField::detect(Field* fieldPtr, Field **imagePtrPtr)
 detError DetectorField::processParseResults(DetectorParseParamStruct &parseResults_Det)
 {
 	//this->detParamsPtr=new detFieldParams;
-	this->detParamsPtr->apertureHalfWidth=make_double2(0.25,0.006);//parseResults_Det.apertureHalfWidth;
-	this->detParamsPtr->detPixel=parseResults_Det.detPixel;
+//	this->detParamsPtr->apertureHalfWidth=make_double2(0.25,0.006);//parseResults_Det.apertureHalfWidth;
+//	this->detParamsPtr->detPixel=parseResults_Det.detPixel;
 	this->detParamsPtr->normal=parseResults_Det.normal;
 	this->detParamsPtr->root=make_double3(0.25,0.018,11.4551040);//parseResults_Det.root;
 	this->detParamsPtr->tilt=parseResults_Det.tilt;

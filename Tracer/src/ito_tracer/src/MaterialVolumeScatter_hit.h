@@ -81,14 +81,14 @@ inline RT_HOSTDEVICE bool hitVolumeScatter(rayStruct &ray, Mat_hitParams hitPara
 	double l_t=0;
 	bool l_surfaceHit=true;
 	// if the ray already was inside the volumscatterer
-	if (ray.currentGeometryID == VOLSCATTER_REFRIDX)
+	if (ray.currentGeometryID == VOLSCATTER_GEOMID)
 	{
 		uint32_t x1[5];
 		RandomInit(ray.currentSeed, x1); // seed random generator
 		for (unsigned int i=0; i<50; ++i) // in principle, this should be an endless loop, we inserted a maximum number of iterations for performance reasons
 		{
 			// randomly generate free path until next scatter
-			// the idea is to generate a random distance betwen zero and 10 times the mean free path
+			// the idea is to generate a random distance between zero and 20 times the mean free path
 			// then, the probability of this distance is compared to a random number between 0 and 1
 			l_t=Random(x1)*params.meanFreePath*20;
 			double l_prob=exp(-l_t/params.meanFreePath);
@@ -111,9 +111,11 @@ inline RT_HOSTDEVICE bool hitVolumeScatter(rayStruct &ray, Mat_hitParams hitPara
 			l_tilt.y=(Random(x1)-0.5)*2*params.g;
 			l_tilt.z=(Random(x1)-0.5)*2*params.g;
 			rotateRay(&ray.direction, l_tilt);
-
+			t_hit=l_t;
 			l_surfaceHit=false;
 		}
+		// take absorption into account (LambertBeer)
+		ray.flux=ray.flux*exp(-params.absorptionCoeff*t_hit);
 		ray.currentSeed=x1[4]; // save seed for next round
 	}
 	if (l_surfaceHit) // if we have a surface hit
@@ -142,12 +144,14 @@ inline RT_HOSTDEVICE bool hitVolumeScatter(rayStruct &ray, Mat_hitParams hitPara
 				// some error mechanism
 				return 0;
 			}
-			if ( ray.currentGeometryID==VOLSCATTER_REFRIDX)
+			if ( ray.currentGeometryID==VOLSCATTER_GEOMID)
 				ray.currentGeometryID=geomID; // signal that the ray is on the surface of geometry
 			else
-				ray.currentGeometryID=VOLSCATTER_REFRIDX; // signal that the ray is inside the volum scatterer
+				ray.currentGeometryID=VOLSCATTER_GEOMID; // signal that the ray is inside the volum scatterer
 		}
 	}
+
+
 	return 1;
 }
 

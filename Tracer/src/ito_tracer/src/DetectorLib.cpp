@@ -61,6 +61,9 @@ bool DetectorFab::createDetInstFromXML(xml_node &detNode, vector<Detector*> &det
 	case DET_INTENSITY:
 		l_pDetector=new DetectorIntensity();
 		break;
+	case DET_VOLUMEINTENSITY:
+		l_pDetector=new DetectorVolumeIntensity();
+		break;
 	case DET_PHASESPACE:
 		l_pDetector=new DetectorPhaseSpace();
 		break;

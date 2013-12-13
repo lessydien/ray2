@@ -71,7 +71,7 @@ class DetectorItem :
 public:
 
 	enum DetOutFormat {MAT, TEXT};
-	enum DetType{INTENSITY, FIELD, RAYDATA, UNDEFINED};
+	enum DetType{INTENSITY, VOLUMEINTENSITY, FIELD, RAYDATA, UNDEFINED};
 
 	DetectorItem(QString name="name", DetType type=UNDEFINED, QObject *parent=0);
 	~DetectorItem(void);

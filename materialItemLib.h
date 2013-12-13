@@ -30,6 +30,7 @@
 #include "materialRefractingItem.h"
 #include "materialDOEItem.h"
 #include "materialVolumeScatterItem.h"
+#include "materialVolumeAbsorbingItem.h"
 //#include "materialAbsorbingItem.h"
 //#include "geometryItem.h"
 

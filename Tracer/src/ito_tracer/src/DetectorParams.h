@@ -42,6 +42,7 @@ typedef enum
   DET_RAYDATA_GLOBAL,
   DET_RAYDATA_RED_GLOBAL,
   DET_INTENSITY,
+  DET_VOLUMEINTENSITY,
   DET_PHASESPACE,
   DET_FIELD,
   DET_UNKNOWN
@@ -91,8 +92,8 @@ class detParams
 {
 public:
 
-  ulong2 detPixel;
-  double2 apertureHalfWidth;
+  ulong3 detPixel;
+  double3 apertureHalfWidth;
 //  double rotNormal;
   double3 tilt;
   double3 root;

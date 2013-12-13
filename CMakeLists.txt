@@ -72,6 +72,23 @@ IF(CUDA_FOUND)
 		SET(Tracer_PTX_DIR "Tracer/build64/lib/ptx")
         SET(bit_dest "")
     endif ( CMAKE_SIZEOF_VOID_P EQUAL 4 )
+	
+	#on MSVC enable build using OpenMP for compiling
+	if(MSVC)
+		ADD_DEFINITIONS(/MP)
+
+		# set some optimization compiler flags
+		# i.e.:
+		#   - Ox full optimization (replaces standard O2 set by cmake)
+		#	- Oi enable intrinsic functions
+		#	- Ot favor fast code
+		#	- Oy omit frame pointers
+		#	- GL whole program optimization
+		# 	- GT fibre safe optimization
+		#	- openmp enable openmp support, isn't enabled globally here as it breaks opencv
+		SET ( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Oi /Ot /Oy /GL /openmp" )
+		SET ( CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /LTCG")
+	endif (MSVC)	
 
 	set(PTX_DIR ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_PTX_DIR} CACHE PATH "Path to where the samples look for the PTX code.")
 	
@@ -159,6 +176,7 @@ IF(CUDA_FOUND)
         ${CMAKE_CURRENT_SOURCE_DIR}/consoleStream.h
         ${CMAKE_CURRENT_SOURCE_DIR}/detectorFieldItem.h
         ${CMAKE_CURRENT_SOURCE_DIR}/detectorIntensityItem.h
+		${CMAKE_CURRENT_SOURCE_DIR}/detectorVolumeIntensityItem.h
         ${CMAKE_CURRENT_SOURCE_DIR}/detectorItem.h
         ${CMAKE_CURRENT_SOURCE_DIR}/detectorItemLib.h
         ${CMAKE_CURRENT_SOURCE_DIR}/detectorLibraryContainer.h
@@ -181,6 +199,7 @@ IF(CUDA_FOUND)
         ${CMAKE_CURRENT_SOURCE_DIR}/geomPlaneSurfaceItem.h
         ${CMAKE_CURRENT_SOURCE_DIR}/geomParabolicSurfaceItem.h
         ${CMAKE_CURRENT_SOURCE_DIR}/geomRayFieldItem.h
+		${CMAKE_CURRENT_SOURCE_DIR}/geomRayFieldItem_PseudoBandwidth.h
 		${CMAKE_CURRENT_SOURCE_DIR}/diffRayFieldItem.h
 		${CMAKE_CURRENT_SOURCE_DIR}/diffRayField_RayAiming_Item.h
         ${CMAKE_CURRENT_SOURCE_DIR}/geomSphericalLenseItem.h
@@ -195,6 +214,7 @@ IF(CUDA_FOUND)
         ${CMAKE_CURRENT_SOURCE_DIR}/macrosim_scenemodel.h
         ${CMAKE_CURRENT_SOURCE_DIR}/mainWinMacroSim.h
         ${CMAKE_CURRENT_SOURCE_DIR}/materialAbsorbingItem.h
+		${CMAKE_CURRENT_SOURCE_DIR}/materialVolumeAbsorbingItem.h
         ${CMAKE_CURRENT_SOURCE_DIR}/materialDiffractingItem.h
         ${CMAKE_CURRENT_SOURCE_DIR}/materialFilterItem.h
         ${CMAKE_CURRENT_SOURCE_DIR}/materialIdealLenseItem.h
@@ -276,6 +296,7 @@ IF(CUDA_FOUND)
         ${CMAKE_CURRENT_SOURCE_DIR}/consoleStream.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/detectorFieldItem.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/detectorIntensityItem.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/detectorVolumeIntensityItem.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/detectorItem.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/detectorItemLib.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/detectorLibraryContainer.cpp
@@ -298,6 +319,7 @@ IF(CUDA_FOUND)
         ${CMAKE_CURRENT_SOURCE_DIR}/geomPlaneSurfaceItem.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/geomParabolicSurfaceItem.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/geomRayFieldItem.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/geomRayFieldItem_PseudoBandwidth.cpp
 		${CMAKE_CURRENT_SOURCE_DIR}/diffRayFieldItem.cpp
 		${CMAKE_CURRENT_SOURCE_DIR}/diffRayField_RayAiming_Item.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/geomSphericalLenseItem.cpp
@@ -312,6 +334,7 @@ IF(CUDA_FOUND)
         ${CMAKE_CURRENT_SOURCE_DIR}/macrosimmodel_scenemodel.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/mainWinMacroSim.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/materialAbsorbinglItem.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/materialVolumeAbsorbingItem.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/materialDiffractingItem.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/materialFilterItem.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/materialIdealLenseItem.cpp

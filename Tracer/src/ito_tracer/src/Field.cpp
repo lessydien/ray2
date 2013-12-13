@@ -461,6 +461,9 @@ fieldError  Field::parseXml(pugi::xml_node &field, vector<Field*> &fieldVec)
 		return FIELD_ERR;
 
 	this->getParamsPtr()->lambda=this->getParamsPtr()->lambda*1e-6; // in our trace we use lambda in mm. in the gui we give lambda in nm...
+
+	this->getParamsPtr()->pseudoBandwidth=0;
+	this->getParamsPtr()->nrPseudoLambdas=1;
 	return FIELD_NO_ERR;
 };
 

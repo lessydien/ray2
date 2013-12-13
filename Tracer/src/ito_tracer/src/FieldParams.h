@@ -122,6 +122,8 @@ public:
 	double3 scale; // physical size of voxel in each dimension
 	axesUnits units;
 	double lambda;
+	double pseudoBandwidth; //!> kind of the bandwidth of a broadband source in mm
+	int nrPseudoLambdas; //!> sampling of pseudo bandwidth
 	metric_unit unitLambda;
 
 	/* standard constructor */

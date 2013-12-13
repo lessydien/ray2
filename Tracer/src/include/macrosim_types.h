@@ -69,46 +69,33 @@ struct __device_builtin__ __align__(8) tag         \
 //#if (CUDA_VERSION < 3000) //|| (CUDART_VERSION < 3000)
 #if (NPP_VERSION_MAJOR * 1000 + NPP_VERSION_MINOR * 100 + NPP_VERSION_BUILD < 4000)
     
-     *DEVICE_BUILTIN*/
      struct double1
      {
        double x;
-       __cuda_assign_operators(double1)
      };
 
-     *DEVICE_BUILTIN*/
      typedef struct double1 double1;
 
 
-     *DEVICE_BUILTIN*/
      struct __builtin_align__(16) double2
      {
        double x, y;
-       __cuda_assign_operators(double2);
- 
      };
 
-     *DEVICE_BUILTIN*/
      typedef struct double2 double2;
 
-     *DEVICE_BUILTIN*/
      struct double3
      {
        double x, y, z;
-       __cuda_assign_operators(double3)
      };
 
-     *DEVICE_BUILTIN*/
      typedef struct double3 double3;
 
 
-     *DEVICE_BUILTIN*/
      struct __builtin_align__(16) double4
      {
        double x, y, z, w;
-       __cuda_assign_operators(double4)
      };
-     *DEVICE_BUILTIN*/
      typedef struct double4 double4;
  #endif
 

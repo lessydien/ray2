@@ -186,6 +186,9 @@ fieldType Parser_XML::asciiToFieldType(const char* ascii) const
 	if (!strcmp(ascii, "GEOMRAYFIELD"))
 		return GEOMRAYFIELD;
 
+	if (!strcmp(ascii, "GEOMRAYFIELD_PSEUDOBANDWIDTH"))
+		return GEOMRAYFIELD_PSEUDOBANDWIDTH;
+
 	if (!strcmp(ascii, "DIFFRAYFIELD"))
 		return DIFFRAYFIELD;
 
@@ -354,6 +357,8 @@ MaterialType Parser_XML::asciiToMaterialType(const char* ascii) const
 		return MT_VOLUMESCATTER;
 	if (!strcmp(ascii,"VOLUMESCATTERBOX"))
 		return MT_VOLUMESCATTERBOX;
+	if (!strcmp(ascii,"VOLUMEABSORBING"))
+		return MT_VOLUMEABSORB;
 
 	cout << "error in Parser_XML.asciiToMaterialType: unknown material type: "  << ascii << endl;
 	return MT_UNKNOWNMATERIAL;
@@ -375,6 +380,9 @@ detType Parser_XML::asciiToDetectorType(const char* ascii) const
 
 	if (!strcmp(ascii, "INTENSITY"))
 		return DET_INTENSITY;
+	
+	if (!strcmp(ascii, "VOLUMEINTENSITY"))
+		return DET_VOLUMEINTENSITY;
 
 	if (!strcmp(ascii, "PHASESPACE"))
 		return DET_PHASESPACE;

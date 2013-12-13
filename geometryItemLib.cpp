@@ -243,6 +243,8 @@ GeometryItem::Abstract_MaterialType GeometryItemLib::stringToGeomMatType(const Q
 		return GeometryItem::DOE;
 	if (!str.compare("VOLUMESCATTER"))
 		return GeometryItem::VOLUMESCATTER;
+	if (!str.compare("VOLUMEABSORBING"))
+		return GeometryItem::VOLUMEABSORBING;
 
 	return GeometryItem::ABSORBING;
 }

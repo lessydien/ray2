@@ -30,6 +30,7 @@
 #include "Detector_Intensity.h"
 #include "Detector_Field.h"
 #include "Detector_PhaseSpace.h"
+#include "Detector_VolumeIntensity.h"
 #include "Parser_XML.h"
 
 class DetectorFab

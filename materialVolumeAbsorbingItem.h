@@ -15,8 +15,8 @@
     along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************/
 
-#ifndef MATERIALABSORBINGITEM
-#define MATERIALABSORBINGITEM
+#ifndef MATERIALVOLUMEABSORBINGINGITEM
+#define MATERIALVOLUMEABSORBINGINGITEM
 
 #include <qicon.h>
 
@@ -27,26 +27,34 @@
 namespace macrosim 
 {
 
-/** @class MaterialItem
+/** @class MaterialVolumeAbsorbingItem
 *   @brief class for visualizing objects from MacroSim
 *   
 *   The AddInModel supplies a widget showing the available objects from MacroSim with their name, filename, version and so on.
 */
-class MaterialAbsorbingItem :
+class MaterialVolumeAbsorbingItem :
 	public MaterialItem
 {
 	Q_OBJECT
+		Q_PROPERTY(double asorbCoeff READ getAbsorbCoeff WRITE setAbsorbCoeff DESIGNABLE true USER true);	
 
 public:
 	
-	MaterialAbsorbingItem(QString name="MaterialAbsorbing", QObject *parent=0);
-	~MaterialAbsorbingItem(void);
+	MaterialVolumeAbsorbingItem(QString name="MaterialVolumeAbsorbing", QObject *parent=0);
+	~MaterialVolumeAbsorbingItem(void);
+
+	// functions for property editor
+	const double getAbsorbCoeff()  {return m_absorbCoeff;};
+	void setAbsorbCoeff(const double in) {m_absorbCoeff=in;};
+
 
 	bool writeToXML(QDomDocument &document, QDomElement &root) const ;
 	bool readFromXML(const QDomElement &node);
 
-private:
+	double getTransparency() {return 0.5;};
 
+private:
+	double m_absorbCoeff;
 };
 
 }; //namespace macrosim

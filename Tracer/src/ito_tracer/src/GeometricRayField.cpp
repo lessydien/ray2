@@ -1695,7 +1695,7 @@ fieldError GeometricRayField::convert2Intensity(Field* imagePtr, detParams &oDet
 	double3 offset;
 	offset=oDetParams.root-oDetParams.apertureHalfWidth.x*t_ex;//+0.5*l_IntensityImagePtr->getParamsPtr()->scale*t_ex;
 	offset=offset-oDetParams.apertureHalfWidth.y*t_ey;//+0.5*l_IntensityImagePtr->getParamsPtr()->scale*t_ey;
-	offset=offset-0.005*t_ez;//+0.5*l_PhaseSpacePtr->getParamsPtr()->scale*t_ez;
+	offset=offset-oDetParams.apertureHalfWidth.z*t_ez;//+0.5*l_PhaseSpacePtr->getParamsPtr()->scale*t_ez;
 
 	short solutionIndex;
 
@@ -1744,15 +1744,19 @@ fieldError GeometricRayField::convert2Intensity(Field* imagePtr, detParams &oDet
 
 
 				// use this ray only if it is inside our Intensity Field. Otherwise ignore it...
-				if ( ( (index.x<nrPixels.x)&&(index.x>=0) ) && ( (index.y<nrPixels.y)&&(index.y>=0) ) && ( (index.z<nrPixels.z)&&(index.z>=0) ) )
+				if ( ( (index.x<nrPixels.x)&&(index.x>=0) ) && ( (index.y<nrPixels.y)&&(index.y>=0) )  && ( (index.z<nrPixels.z)&&(index.z>=0) ) )
 				{
 					// use this ray only if it agrees with the ignoreDepth
 					if ( this->rayList[rayListIndex].depth > oDetParams.ignoreDepth )
 					{
 						hitNr++;
-						double phi=2*PI/this->rayList[rayListIndex].lambda*this->rayList[rayListIndex].opl;
-						complex<double> l_U=complex<double>(this->rayList[rayListIndex].flux*cos(phi),this->rayList[rayListIndex].flux*sin(phi));
-						l_IntensityImagePtr->getComplexAmplPtr()[index.x+index.y*nrPixels.x+index.z*nrPixels.x*nrPixels.y]=l_IntensityImagePtr->getComplexAmplPtr()[index.x+index.y*nrPixels.x+index.z*nrPixels.x*nrPixels.y]+l_U; // create a complex amplitude from the rays flux and opl and sum them coherently
+						for (unsigned long long jWvl=0; jWvl<this->rayParamsPtr->nrPseudoLambdas; jWvl++)
+						{
+							double wvl=(this->rayList[rayListIndex].lambda-this->rayParamsPtr->pseudoBandwidth/2+this->rayParamsPtr->pseudoBandwidth/this->rayParamsPtr->nrPseudoLambdas*jWvl);
+							double phi=2*PI/wvl*this->rayList[rayListIndex].opl;
+							complex<double> l_U=complex<double>(this->rayList[rayListIndex].flux*cos(phi),this->rayList[rayListIndex].flux*sin(phi));
+							l_IntensityImagePtr->getComplexAmplPtr()[index.x+index.y*nrPixels.x+index.z*nrPixels.x*nrPixels.y]=l_IntensityImagePtr->getComplexAmplPtr()[index.x+index.y*nrPixels.x+index.z*nrPixels.x*nrPixels.y]+l_U; // create a complex amplitude from the rays flux and opl and sum them coherently
+						}
 					}
 				}
 			}
@@ -1818,7 +1822,7 @@ fieldError GeometricRayField::convert2Intensity(Field* imagePtr, detParams &oDet
 						if ( this->rayList[rayListIndex].depth > oDetParams.ignoreDepth )
 						{
 							hitNr++;
-							(l_IntensityImagePtr->getIntensityPtr())[index.x+index.y*nrPixels.x+index.z*nrPixels.x*nrPixels.y]+=this->rayList[rayListIndex].flux;
+							(l_IntensityImagePtr->getIntensityPtr())[index.x+index.y*nrPixels.x+index.z*nrPixels.x*nrPixels.y]+=this->rayList[rayListIndex].flux;								
 						}
 					}
 				}
@@ -2230,10 +2234,11 @@ fieldError GeometricRayField::processParseResults(FieldParseParamStruct &parseRe
  * \remarks 
  * \author Mauch
  */
-fieldError  GeometricRayField::parseXml(pugi::xml_node &det, vector<Field*> &fieldVec)
+fieldError  GeometricRayField::parseXml(pugi::xml_node &field, vector<Field*> &fieldVec)
 {
+	Parser_XML l_parser;
 	// call base class function
-	if (FIELD_NO_ERR != RayField::parseXml(det, fieldVec))
+	if (FIELD_NO_ERR != RayField::parseXml(field, fieldVec))
 	{
 		std::cout << "error in GeometricRayField.parseXml(): RayField.parseXml()  returned an error." << std::endl;
 		return FIELD_ERR;

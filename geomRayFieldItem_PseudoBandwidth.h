@@ -15,39 +15,52 @@
     along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************/
 
-#ifndef MATERIALABSORBINGITEM
-#define MATERIALABSORBINGITEM
+#ifndef GEOMRAYFIELDITEM_PSEUDOBANDWIDTH
+#define GEOMRAYFIELDITEM_PSEUDOBANDWIDTH
 
 #include <qicon.h>
 
 #include "QPropertyEditor/CustomTypes.h"
-#include "MaterialItem.h"
+#include "rayFieldItem.h"
 
+using namespace macrosim;
 
 namespace macrosim 
 {
 
-/** @class MaterialItem
+/** @class FieldItem
 *   @brief class for visualizing objects from MacroSim
 *   
 *   The AddInModel supplies a widget showing the available objects from MacroSim with their name, filename, version and so on.
 */
-class MaterialAbsorbingItem :
-	public MaterialItem
+class GeomRayFieldItem_PseudoBandwidth :
+	public RayFieldItem
 {
 	Q_OBJECT
-
+		Q_PROPERTY(double PseudoBandwidth READ getPseudoBandwidth WRITE setPseudoBandwidth DESIGNABLE true USER true);
+		Q_PROPERTY(int nrPseudoLambdas READ getNrPseudoLambdas WRITE setNrPseudoLambdas DESIGNABLE true USER true);
 public:
-	
-	MaterialAbsorbingItem(QString name="MaterialAbsorbing", QObject *parent=0);
-	~MaterialAbsorbingItem(void);
 
-	bool writeToXML(QDomDocument &document, QDomElement &root) const ;
+	GeomRayFieldItem_PseudoBandwidth(QString name="GeomRayField_PseudoBandwidth", QObject *parent=0);
+	~GeomRayFieldItem_PseudoBandwidth(void);
+
+	// functions for property editor
+	double getPseudoBandwidth() const {return m_pseudoBandwidth;}
+	void setPseudoBandwidth(const double in) {m_pseudoBandwidth=in;};
+	int getNrPseudoLambdas() const {return m_nrPseudoLambdas;}
+	void setNrPseudoLambdas(const int in) {m_nrPseudoLambdas=in;};
+
+	bool writeToXML(QDomDocument &document, QDomElement &root) const;
 	bool readFromXML(const QDomElement &node);
+	void render(QMatrix4x4 &m, RenderOptions &options);
+	void renderVtk(vtkSmartPointer<vtkRenderer> renderer);
 
 private:
+	double m_pseudoBandwidth;
+	int m_nrPseudoLambdas;
 
-};
+}; // class RayFieldItem
+
 
 }; //namespace macrosim
 

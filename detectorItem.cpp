@@ -24,7 +24,8 @@ DetectorItem::DetectorItem(QString name, DetType type, QObject *parent) :
 	AbstractItem(DETECTOR, name, parent),
 	m_detType(type),
 	m_root(Vec3d(0,0,0)),
-	m_tilt(Vec3d(0,0,0))
+	m_tilt(Vec3d(0,0,0)),
+	m_detOutFormat(TEXT)
 {
 }
 

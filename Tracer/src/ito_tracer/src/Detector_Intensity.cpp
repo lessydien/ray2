@@ -113,7 +113,7 @@ detError DetectorIntensity::detect2TextFile(FILE* hFile, RayField* rayFieldPtr)
  * \remarks 
  * \author Mauch
  */
-detError DetectorIntensity::detect(Field* rayFieldPtr, Field **imagePtrPtr)
+detError DetectorIntensity::detect(Field* fieldPtr, Field **imagePtrPtr)
 {
 	// check wether there is already an image
 	if (*imagePtrPtr != NULL)
@@ -121,7 +121,7 @@ detError DetectorIntensity::detect(Field* rayFieldPtr, Field **imagePtrPtr)
 		// if the params of the image do not agree with the params of the Detector we have to raise an error
 		if ( ((*imagePtrPtr)->getParamsPtr()->nrPixels.x != this->detParamsPtr->detPixel.x)
 			|| ((*imagePtrPtr)->getParamsPtr()->nrPixels.y != this->detParamsPtr->detPixel.y)
-			|| ((*imagePtrPtr)->getParamsPtr()->nrPixels.z != 1)
+			|| ((*imagePtrPtr)->getParamsPtr()->nrPixels.z != fieldPtr->getParamsPtr()->nrPseudoLambdas) // we code spectral information in the z-index of the resulting field
 			|| ((*imagePtrPtr)->getParamsPtr()->MTransform.m11 != this->detParamsPtr->MTransform.m11)
 			|| ((*imagePtrPtr)->getParamsPtr()->MTransform.m12 != this->detParamsPtr->MTransform.m12)
 			|| ((*imagePtrPtr)->getParamsPtr()->MTransform.m13 != this->detParamsPtr->MTransform.m13)
@@ -140,9 +140,9 @@ detError DetectorIntensity::detect(Field* rayFieldPtr, Field **imagePtrPtr)
 		// create new Intensity Field
 		fieldParams imageParams;
 		imageParams.MTransform=this->detParamsPtr->MTransform;
-		imageParams.lambda=rayFieldPtr->getParamsPtr()->lambda;
-		//imageParams.nrPixels=make_long3(this->detParamsPtr->apertureHalfWidth.x, this->detParamsPtr->apertureHalfWidth.y ,1);
-		imageParams.nrPixels=make_long3(this->detParamsPtr->detPixel.x, this->detParamsPtr->detPixel.y ,1);
+		imageParams.lambda=fieldPtr->getParamsPtr()->lambda;
+		//imageParams.nrPixels=make_long3(this->detParamsPtr->detPixel.x, this->detParamsPtr->detPixel.y ,1);
+		imageParams.nrPixels=make_long3(this->detParamsPtr->detPixel.x, this->detParamsPtr->detPixel.y , fieldPtr->getParamsPtr()->nrPseudoLambdas);
 		if (imageParams.nrPixels.x<1)
 		{
 			std::cout << "error in DetectorIntensity.detect: pixel number smaller than 1 in x is not allowed" << std::endl;
@@ -164,14 +164,14 @@ detError DetectorIntensity::detect(Field* rayFieldPtr, Field **imagePtrPtr)
 		}
 		else
 		{
-			if (imageParams.nrPixels.z!=1)
+			if (imageParams.nrPixels.z!=fieldPtr->getParamsPtr()->nrPseudoLambdas)
 			{
 				// 3 dimensional IntensityFields are not implemented yet !!!
-				imageParams.scale.z=0.02/(imageParams.nrPixels.z); // we calculate a 2dimensional field here anyway
+				imageParams.scale.z=0.02; // we calculate a field that is 2D in space here anyway
 				std::cout << "error in DetectorIntensity.detect: 3dimensional fields are not implemented yet" << std::endl;
 				return DET_ERROR;
 			}
-			imageParams.scale.z=0.02; // we calculate a 2dimensional field here anyway
+			imageParams.scale.z=fieldPtr->getParamsPtr()->pseudoBandwidth/fieldPtr->getParamsPtr()->nrPseudoLambdas; // calc spectral scaling
 		}
 		imageParams.units.x=metric_mm;
 		imageParams.units.y=metric_mm;
@@ -179,7 +179,7 @@ detError DetectorIntensity::detect(Field* rayFieldPtr, Field **imagePtrPtr)
 		imageParams.unitLambda=metric_mm;
 		*imagePtrPtr=new IntensityField(imageParams);
 	}
-	if ( FIELD_NO_ERR != rayFieldPtr->convert2Intensity(*imagePtrPtr, *(this->detParamsPtr)) )
+	if ( FIELD_NO_ERR != fieldPtr->convert2Intensity(*imagePtrPtr, *(this->detParamsPtr)) )
 	{
 		std::cout << "error in Detector_Intensity.detect(): convert2Intensity() returned an error" << std::endl;
 		return DET_ERROR;
@@ -203,8 +203,8 @@ detError DetectorIntensity::detect(Field* rayFieldPtr, Field **imagePtrPtr)
 detError DetectorIntensity::processParseResults(DetectorParseParamStruct &parseResults_Det)
 {
 	//this->detParamsPtr=new detIntensityParams;
-	this->detParamsPtr->apertureHalfWidth=parseResults_Det.apertureHalfWidth;//make_double2(0.5,0.5);//
-	this->detParamsPtr->detPixel=parseResults_Det.detPixel;
+//	this->detParamsPtr->apertureHalfWidth=parseResults_Det.apertureHalfWidth;//make_double2(0.5,0.5);//
+//	this->detParamsPtr->detPixel=parseResults_Det.detPixel;
 	this->detParamsPtr->normal=parseResults_Det.normal;
 	this->detParamsPtr->root=parseResults_Det.root;
 //	this->detParamsPtr->rotNormal=parseResults_Det.rotNormal;
