@@ -107,18 +107,12 @@ fieldError GeometricRayField_PseudoBandwidth::convert2Intensity(Field* imagePtr,
 
 	unsigned long long hitNr=0;
 
-	double3 posMinOffset;
+//	double3 posMinOffset;
 	double3 indexFloat;
 	long3 index;
 	if (this->rayParamsPtr->coherence==1) // sum coherently
 	{
 		complex<double> i_compl=complex<double>(0,1); // define complex number "i"
-
-				//double phi1=2*PI/this->rayList[0].lambda*20;
-				//complex<double> l_U1=complex<double>(this->rayList[0].flux*cos(phi1),this->rayList[0].flux*sin(phi1));
-				//double phi2=2*PI/this->rayList[0].lambda*20.02;
-				//complex<double> l_U2=complex<double>(this->rayList[0].flux*cos(phi2),this->rayList[0].flux*sin(phi2));
-				//l_IntensityImagePtr->getComplexAmplPtr()[0]=l_U1+l_U2;
 
 		for (unsigned long long jy=0; jy<this->rayParamsPtr->GPUSubset_height; jy++)
 		{
@@ -129,12 +123,6 @@ fieldError GeometricRayField_PseudoBandwidth::convert2Intensity(Field* imagePtr,
 				double3 tmpPos=this->rayList[rayListIndex].position-offset;
 				rotateRayInv(&tmpPos,oDetParams.tilt);
 
-				//
-				//posMinOffset=this->rayList[rayListIndex].position-offset;
-				//indexFloat=MatrixInv*posMinOffset;
-				//// subtract half a pixel (0.5*scale.x). This way the centre of our pixels do not lie on the edge of the aperture but rather half a pixel inside...
-				//// then round to nearest neighbour
-				////index.x=floor((indexFloat.x-0.5*scale.x)/scale.x+0.5);
 				index.x=floor((tmpPos.x)/scale.x);
 				index.y=floor((tmpPos.y)/scale.y);
 				index.z=floor((tmpPos.z)/0.02);
@@ -147,14 +135,32 @@ fieldError GeometricRayField_PseudoBandwidth::convert2Intensity(Field* imagePtr,
 					if ( this->rayList[rayListIndex].depth > oDetParams.ignoreDepth )
 					{
 						hitNr++;
-						for (unsigned long long jWvl=0; jWvl<this->rayParamsPtr->nrPseudoLambdas; jWvl++)
+
+						omp_set_num_threads(numCPU);
+
+#pragma omp parallel default(shared) //shared(threadCounter)
+{
+		#pragma omp for schedule(dynamic, 10)
+						for (signed long long jWvl=0; jWvl<this->rayParamsPtr->nrPseudoLambdas; jWvl++)
 						{
 							double wvl=(this->rayList[rayListIndex].lambda-this->rayParamsPtr->pseudoBandwidth/2+this->rayParamsPtr->pseudoBandwidth/this->rayParamsPtr->nrPseudoLambdas*jWvl);
-							double phi=2*PI/wvl*this->rayList[rayListIndex].opl;
+							double phi=std::fmod(2*PI/wvl*this->rayList[rayListIndex].opl,2*M_PI);
+							// we want to compute the field value at the centre of the pixel. Therefore we need to make som corrections in case the ray doesn't hit the Pixel at its centre
+							// calc vector from differential ray to centre of pixel
+							double3 PixelOffset=tmpPos-(index.x*t_ex+index.y*t_ey+index.z*t_ez);
+							// calc projection of this vector onto the ray direction
+							// calc ray direction on local coordinate system of detector
+							double3 l_rayDir=this->rayList[rayListIndex].direction;
+							rotateRayInv(&l_rayDir,oDetParams.tilt);
+							double dz=dot(l_rayDir,PixelOffset);
+							// calc additional phase at centre of pixel from linear approximation to local wavefront
+							phi=phi+dz*2*M_PI/this->rayList[rayListIndex].lambda;
+
 							complex<double> l_U=complex<double>(this->rayList[rayListIndex].flux*cos(phi),this->rayList[rayListIndex].flux*sin(phi));
 							//l_IntensityImagePtr->getComplexAmplPtr()[index.x+index.y*nrPixels.x+index.z*nrPixels.x*nrPixels.y]=l_IntensityImagePtr->getComplexAmplPtr()[index.x+index.y*nrPixels.x+index.z*nrPixels.x*nrPixels.y]+l_U; // create a complex amplitude from the rays flux and opl and sum them coherently
 							l_IntensityImagePtr->getComplexAmplPtr()[index.x+index.y*nrPixels.x+jWvl*nrPixels.x*nrPixels.y]=l_IntensityImagePtr->getComplexAmplPtr()[index.x+index.y*nrPixels.x+jWvl*nrPixels.x*nrPixels.y]+l_U; // create a complex amplitude from the rays flux and opl and sum them coherently
 						}
+}
 					}
 				}
 			}
@@ -175,18 +181,25 @@ fieldError GeometricRayField_PseudoBandwidth::convert2Intensity(Field* imagePtr,
 		//		l_IntensityImagePtr->getComplexAmplPtr()[index.x+index.y*nrPixels.x+index.z*nrPixels.x*nrPixels.y]=l_IntensityImagePtr->getComplexAmplPtr()[index.x+index.y*nrPixels.x+index.z*nrPixels.x*nrPixels.y]+this->rayList[j].flux*c_exp(l_exp); // create a complex amplitude from the rays flux and opl and sum them coherently
 		//	}
 		//}
+						omp_set_num_threads(numCPU);
+
+#pragma omp parallel default(shared) //shared(threadCounter)
+{
+		#pragma omp for schedule(dynamic, 10)
+
 		// loop through the pixels and calc intensity from complex amplitudes
-		for (unsigned long long jx=0;jx<nrPixels.x;jx++)
+		for (signed long long jx=0;jx<nrPixels.x;jx++)
 		{
-			for (unsigned long long jy=0;jy<nrPixels.y;jy++)
+			for (signed long long jy=0;jy<nrPixels.y;jy++)
 			{
-				for (unsigned long long jz=0;jz<nrPixels.z;jz++)
+				for (signed long long jWvl=0; jWvl<this->rayParamsPtr->nrPseudoLambdas; jWvl++)
 				{
 					// intensity is square of modulus of complex amplitude
-					(l_IntensityImagePtr->getIntensityPtr())[jx+jy*nrPixels.x+jz*nrPixels.x*nrPixels.y]=pow(abs(l_IntensityImagePtr->getComplexAmplPtr()[jx+jy*nrPixels.x+jz*nrPixels.x*nrPixels.y]),2);
+					(l_IntensityImagePtr->getIntensityPtr())[jx+jy*nrPixels.x+jWvl*nrPixels.x*nrPixels.y]=pow(abs(l_IntensityImagePtr->getComplexAmplPtr()[jx+jy*nrPixels.x+jWvl*nrPixels.x*nrPixels.y]),2);
 				}
 			}
 		}
+}
 	}
 	else 
 	{

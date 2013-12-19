@@ -58,7 +58,7 @@ __forceinline__ __device__ void idealLenseCoatNumCoeffsDiffRays_closestHit_devic
   hitIdealLense_DiffRays(prd, hitParams, params, t_hit, geometryID, coat_reflected);
   
   if ( (prd.depth>max_depth) || (prd.flux<min_flux) )
-	  prd.running=false;  
+	  prd.running=false; 
 }
 
 /********************************************************************************/

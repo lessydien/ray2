@@ -63,7 +63,7 @@ __forceinline__ __device__ void absorbingScatDoubleCauchy1DCoatNumCoeffs_closest
   hitDoubleCauchy1D(prd, hitParams, scatterParams);
   
   if ( (prd.depth>max_depth) || (prd.flux<min_flux) )
-	  prd.running=false;  
+	  prd.running=false; 
 }
 
 /********************************************************************************/

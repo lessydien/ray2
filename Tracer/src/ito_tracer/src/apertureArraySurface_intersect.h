@@ -72,42 +72,36 @@ class ApertureArraySurface_ReducedParams : public Geometry_ReducedParams
  */
 inline RT_HOSTDEVICE double intersectRayApertureArraySurface(double3 rayPosition, double3 rayDirection, ApertureArraySurface_ReducedParams params)
 {
-	double t = 0;
-	double3x3 test;
-	test=optix::make_double3x3(1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0);
 
-	double4 test1;
-	test1=make_double4(1,1,1,1);
+	double t = intersectRayPlane(rayPosition, rayDirection, params.root, params.normal);
 
-	//double t = intersectRayPlane(rayPosition, rayDirection, params.root, params.normal);
+	// check aperture
+	if ( !checkAperture(params.root, params.tilt, rayPosition+t*rayDirection, params.apertureType, params.apertureRadius) )
+	{
+		return 0;
+	}
+	else
+	{
+		// position on micro lens array surface in local coordinate system 
+		double3 tmpPos=rayPosition+t*rayDirection-params.root;
+		rotateRayInv(&tmpPos,params.tilt);
+		double3 tmpDir=rayDirection;
+		rotateRayInv(&tmpDir,params.tilt);
 
-	//// check aperture
-	//if ( !checkAperture(params.root, params.tilt, rayPosition+t*rayDirection, params.apertureType, params.apertureRadius) )
-	//{
-	//	return 0;
-	//}
-	//else
-	//{
-	//	// position on micro lens array surface in local coordinate system 
-	//	double3 tmpPos=rayPosition+t*rayDirection-params.root;
-	//	rotateRayInv(&tmpPos,params.tilt);
-	//	double3 tmpDir=rayDirection;
-	//	rotateRayInv(&tmpDir,params.tilt);
+		// see in which subaperture we are
+		double fac=floor(tmpPos.x/params.microAptPitch.x+0.5);
+		double3 microAptCentre;
+		microAptCentre.x=fac*params.microAptPitch.x;
+		fac=floor(tmpPos.y/params.microAptPitch.y+0.5);
+		microAptCentre.y=fac*params.microAptPitch.y;
+		microAptCentre.z=0;
 
-	//	// see in which subaperture we are
-	//	double fac=floor(tmpPos.x/params.microAptPitch.x+0.5);
-	//	double3 microAptCentre;
-	//	microAptCentre.x=fac*params.microAptPitch.x;
-	//	fac=floor(tmpPos.y/params.microAptPitch.y+0.5);
-	//	microAptCentre.y=fac*params.microAptPitch.y;
-	//	microAptCentre.z=0;
-
-	//	//**********************************************
-	//	// check wether this intersection is inside the aperture
-	//	//**********************************************
-	//	if ( checkAperture(microAptCentre, make_double3(0,0,0), tmpPos, params.microAptType, params.microAptRad) )
-	//		return 0;				
-	//}
+		//**********************************************
+		// check wether this intersection is inside the aperture
+		//**********************************************
+		if ( checkAperture(microAptCentre, make_double3(0,0,0), tmpPos, params.microAptType, params.microAptRad) )
+			return 0;				
+	}
 
 	return t;
 }

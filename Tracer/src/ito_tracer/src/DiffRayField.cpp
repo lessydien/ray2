@@ -1541,7 +1541,7 @@ fieldError DiffRayField::convert2ScalarField(Field* imagePtr, detParams &oDetPar
 			// calc projection of this vector onto the ray direction
 			double dz=dot(this->rayList[jx].direction,PixelOffset);
 			// calc additional phase at centre of pixel from linear approximation to local wavefront
-			phi=phi+dz*this->rayList[jx].lambda;
+			phi=phi+dz*2*M_PI/this->rayList[jx].lambda;
 			// calc projection of this vector onto main directions of local wavefront
 			double dx=dot(this->rayList[jx].mainDirX,PixelOffset);
 			double dy=dot(this->rayList[jx].mainDirY,PixelOffset);

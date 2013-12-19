@@ -66,7 +66,6 @@ __forceinline__ __device__ void refractingDiffRays_closestHit_device( Mat_DiffRa
     rtPrintf("ray stopped in hitRefracting!!");
     prd.running=false; // stop ray
   }
-  
 }
 
 /********************************************************************************/

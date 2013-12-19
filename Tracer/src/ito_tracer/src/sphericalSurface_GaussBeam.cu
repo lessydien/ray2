@@ -22,8 +22,6 @@
 #include "rayData.h"
 #include "SphericalSurface_Intersect.h"
 
-rtDeclareVariable(float3, boxmin, , );
-rtDeclareVariable(float3, boxmax, , );
 rtDeclareVariable(optix::Ray, ray, rtCurrentRay, );
 rtDeclareVariable(gaussBeamRayStruct, prd, rtPayload, ); // get per-ray-data structure
 rtDeclareVariable(SphericalSurface_ReducedParams, params, , ); // centre of spherical surface
@@ -118,5 +116,5 @@ RT_PROGRAM void intersect(int)
 RT_PROGRAM void bounds (int, float result[6])
 {
   optix::Aabb* aabb = (optix::Aabb*)result;
-  aabb->set(boxmin, boxmax);
+  aabb->set(make_float3(0,0,0), make_float3(0,0,0));
 }

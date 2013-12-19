@@ -328,20 +328,19 @@ geometryError Geometry::createOptixBoundingBox(RTcontext &context, RTgeometry &g
     RTvariable box_min_var;
     RTvariable box_max_var;
 	//char* path_to_ptx;
-
-    //sprintf( path_to_ptx, "%s" PATH_SEPARATOR "%s", PATH_TO_PTX, "ITO-MacroSim_generated_boundingBox.cu.ptx" );
+	sprintf( this->path_to_ptx_intersect, "%s" PATH_SEPARATOR "%s", PATH_TO_PTX, "ITO-MacroSim_generated_boundingBox.cu.ptx" );
 	if ( !RT_CHECK_ERROR_NOEXIT( rtProgramCreateFromPTXFile( context, this->path_to_ptx_boundingBox, "bounds", &geometry_bounding_box_program ), context) )
 		return GEOM_ERR;
 	if ( !RT_CHECK_ERROR_NOEXIT( rtGeometrySetBoundingBoxProgram( geometry, geometry_bounding_box_program ), context) )
 		return GEOM_ERR;
-	if ( !RT_CHECK_ERROR_NOEXIT( rtGeometryDeclareVariable( geometry, "boxmin", &box_min_var ), context) )
-		return GEOM_ERR;
-	if ( !RT_CHECK_ERROR_NOEXIT( rtGeometryDeclareVariable( geometry, "boxmax", &box_max_var ), context) )
-		return GEOM_ERR;
-	if ( !RT_CHECK_ERROR_NOEXIT( rtVariableSet3fv( box_min_var, this->boundingBox_min ), context) )
-		return GEOM_ERR;
-	if ( !RT_CHECK_ERROR_NOEXIT( rtVariableSet3fv( box_max_var, this->boundingBox_max ), context) )
-		return GEOM_ERR;
+//	if ( !RT_CHECK_ERROR_NOEXIT( rtGeometryDeclareVariable( geometry, "boxmin", &box_min_var ), context) )
+//		return GEOM_ERR;
+//	if ( !RT_CHECK_ERROR_NOEXIT( rtGeometryDeclareVariable( geometry, "boxmax", &box_max_var ), context) )
+//		return GEOM_ERR;
+//	if ( !RT_CHECK_ERROR_NOEXIT( rtVariableSet3fv( box_min_var, this->boundingBox_min ), context) )
+//		return GEOM_ERR;
+//	if ( !RT_CHECK_ERROR_NOEXIT( rtVariableSet3fv( box_max_var, this->boundingBox_max ), context) )
+//		return GEOM_ERR;
 
 	return GEOM_NO_ERR;
 };

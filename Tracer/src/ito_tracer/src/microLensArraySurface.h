@@ -91,7 +91,7 @@ class MicroLensArraySurface : public virtual Geometry
 	  materialList = NULL;
 	  materialListLength = 0;
 	  sprintf( this->path_to_ptx_intersect, "%s" PATH_SEPARATOR "%s", PATH_TO_PTX, "ITO-MacroSim_generated_MicroLensArraySurface.cu.ptx" );
-	  sprintf( this->path_to_ptx_boundingBox, "%s" PATH_SEPARATOR "%s", PATH_TO_PTX, "ITO-MacroSim_generated_boundingBox.cu.ptx" );
+	  sprintf( this->path_to_ptx_boundingBox, "%s" PATH_SEPARATOR "%s", PATH_TO_PTX, "ITO-MacroSim_generated_MicroLensArraySurface.cu.ptx" );
 	  type=GEOM_SPHERICALSURF;
 	}
     /* Constructor with known list length */
@@ -107,7 +107,7 @@ class MicroLensArraySurface : public virtual Geometry
 	  }
 	  materialListLength = length;
 	  sprintf( this->path_to_ptx_intersect, "%s" PATH_SEPARATOR "%s", PATH_TO_PTX, "ITO-MacroSim_generated_MicroLensArraySurface.cu.ptx" );
-	  sprintf( this->path_to_ptx_boundingBox, "%s" PATH_SEPARATOR "%s", PATH_TO_PTX, "ITO-MacroSim_generated_boundingBox.cu.ptx" );
+	  sprintf( this->path_to_ptx_boundingBox, "%s" PATH_SEPARATOR "%s", PATH_TO_PTX, "ITO-MacroSim_generated_MicroLensArraySurface.cu.ptx" );
 	  type=GEOM_SPHERICALSURF;
 	}
 	/* Destruktor */

@@ -106,7 +106,7 @@ class AsphericalSurface_DiffRays : public AsphericalSurface
 	  materialListLength = 0;
 	  type=GEOM_ASPHERICALSURF;
 	  sprintf( this->path_to_ptx_intersect, "%s" PATH_SEPARATOR "%s", PATH_TO_PTX, "ITO-MacroSim_generated_AsphericalSurface_DiffRays.cu.ptx" );
-	  sprintf( this->path_to_ptx_boundingBox, "%s" PATH_SEPARATOR "%s", PATH_TO_PTX, "ITO-MacroSim_generated_boundingBox.cu.ptx" );
+	  sprintf( this->path_to_ptx_boundingBox, "%s" PATH_SEPARATOR "%s", PATH_TO_PTX, "ITO-MacroSim_generated_AsphericalSurface_DiffRays.cu.ptx" );
 	}
     /* Constructor with known list length */
     AsphericalSurface_DiffRays(int length)
@@ -123,7 +123,7 @@ class AsphericalSurface_DiffRays : public AsphericalSurface
 	  materialListLength = length;
 	  type=GEOM_ASPHERICALSURF;
 	  sprintf( this->path_to_ptx_intersect, "%s" PATH_SEPARATOR "%s", PATH_TO_PTX, "ITO-MacroSim_generated_AsphericalSurface_DiffRays.cu.ptx" );
-	  sprintf( this->path_to_ptx_boundingBox, "%s" PATH_SEPARATOR "%s", PATH_TO_PTX, "ITO-MacroSim_generated_boundingBox.cu.ptx" );
+	  sprintf( this->path_to_ptx_boundingBox, "%s" PATH_SEPARATOR "%s", PATH_TO_PTX, "ITO-MacroSim_generated_AsphericalSurface_DiffRays.cu.ptx" );
 	}
 	/* Destruktor */
 	~AsphericalSurface_DiffRays()

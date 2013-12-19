@@ -59,6 +59,7 @@ __forceinline__ __device__ void diffractingDiffRays_closestHit_device( Mat_DiffR
 
   if ( (prd.depth>max_depth) || (prd.flux<min_flux) )
 	  prd.running=false;  
+
 }
 
 /********************************************************************************/

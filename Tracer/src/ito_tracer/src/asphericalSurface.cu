@@ -22,8 +22,6 @@
 #include "rayData.h"
 #include "AsphericalSurface_Intersect.h"
 
-rtDeclareVariable(float3, boxmin, , );
-rtDeclareVariable(float3, boxmax, , );
 rtDeclareVariable(AsphericalSurface_ReducedParams, params, , ); 
 //rtDeclareVariable(int, materialListLength, , ); 
 rtDeclareVariable(optix::Ray, ray, rtCurrentRay, );
@@ -61,5 +59,7 @@ RT_PROGRAM void intersect(int)
 RT_PROGRAM void bounds (int, float result[6])
 {
   optix::Aabb* aabb = (optix::Aabb*)result;
-  aabb->set(boxmin, boxmax);
+  float3 maxBox=make_float3(0,0,0);
+  float3 minBox=make_float3(0,0,0);
+  aabb->set(minBox, maxBox);
 }

@@ -22,8 +22,6 @@
 #include "rayData.h"
 #include "CylLenseSurface_Intersect.h"
 
-rtDeclareVariable(float3, boxmin, , );
-rtDeclareVariable(float3, boxmax, , );
 rtDeclareVariable(optix::Ray, ray, rtCurrentRay, );
 rtDeclareVariable(rayStruct, prd, rtPayload, ); // get per-ray-data structure
 rtDeclareVariable(CylLenseSurface_ReducedParams, params, , ); // normal vector to surface. i.e. part of the definition of the plane surface geometry
@@ -61,5 +59,13 @@ RT_PROGRAM void intersect(int)
 RT_PROGRAM void bounds (int, float result[6])
 {
   optix::Aabb* aabb = (optix::Aabb*)result;
-  aabb->set(boxmin, boxmax);
+  double3 l_ex=make_double3(1,0,0);
+  rotateRay(&l_ex,params.tilt);
+  double3 l_ey=make_double3(0,1,0);
+  rotateRay(&l_ey,params.tilt);
+  // sag of lens
+  double lensSag=copy_sign( (double)1.0, params.radius )*abs(params.radius-sqrt(params.radius*params.radius-params.aptHalfWidth.y*params.aptHalfWidth.y));
+  float3 maxBox=make_float3(params.root+params.orientation*lensSag+params.aptHalfWidth.x*l_ex+params.aptHalfWidth.y*l_ey);
+  float3 minBox=make_float3(params.root-params.aptHalfWidth.x*l_ex-params.aptHalfWidth.y*l_ey);
+  aabb->set(minBox, maxBox);
 }

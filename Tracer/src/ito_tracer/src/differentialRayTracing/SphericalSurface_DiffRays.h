@@ -98,7 +98,7 @@ class SphericalSurface_DiffRays : public SphericalSurface
 	  materialList = NULL;
 	  materialListLength = 0;
 	  sprintf( this->path_to_ptx_intersect, "%s" PATH_SEPARATOR "%s", PATH_TO_PTX, "ITO-MacroSim_generated_SphericalSurface_DiffRays.cu.ptx" );
-	  sprintf( this->path_to_ptx_boundingBox, "%s" PATH_SEPARATOR "%s", PATH_TO_PTX, "ITO-MacroSim_generated_boundingBox.cu.ptx" );
+	  sprintf( this->path_to_ptx_boundingBox, "%s" PATH_SEPARATOR "%s", PATH_TO_PTX, "ITO-MacroSim_generated_SphericalSurface_DiffRays.cu.ptx" );
 	  type=GEOM_SPHERICALSURF;
 	}
     /* Constructor with known list length */
@@ -114,7 +114,7 @@ class SphericalSurface_DiffRays : public SphericalSurface
 	  }
 	  materialListLength = length;
 	  sprintf( this->path_to_ptx_intersect, "%s" PATH_SEPARATOR "%s", PATH_TO_PTX, "ITO-MacroSim_generated_SphericalSurface_DiffRays.cu.ptx" );
-	  sprintf( this->path_to_ptx_boundingBox, "%s" PATH_SEPARATOR "%s", PATH_TO_PTX, "ITO-MacroSim_generated_boundingBox.cu.ptx" );
+	  sprintf( this->path_to_ptx_boundingBox, "%s" PATH_SEPARATOR "%s", PATH_TO_PTX, "ITO-MacroSim_generated_SphericalSurface_DiffRays.cu.ptx" );
 	  type=GEOM_SPHERICALSURF;
 	}
 	/* Destruktor */

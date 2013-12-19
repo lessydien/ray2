@@ -440,6 +440,10 @@ RT_PROGRAM void rayGeneration()
   {
     //optix::Ray ray = optix::make_Ray(ray_origin, ray_direction, 0, scene_epsilon, RT_DEFAULT_MAX);
     rtTrace(top_object, ray, prd);
+	// update ray
+	ray.origin=make_float3(prd.position);
+	ray.direction=make_float3(prd.direction);
+
     if(!prd.running) 
     {
        //prd.result += prd.radiance * prd.attenuation;
@@ -496,6 +500,10 @@ RT_PROGRAM void rayGeneration_DirRandRect_PosRandRectNorm()
   {
     //optix::Ray ray = optix::make_Ray(ray_origin, ray_direction, 0, scene_epsilon, RT_DEFAULT_MAX);
     rtTrace(top_object, ray, prd);
+	// update ray
+	ray.origin=make_float3(prd.position);
+	ray.direction=make_float3(prd.direction);
+
     if(!prd.running) 
     {
        //prd.result += prd.radiance * prd.attenuation;
@@ -559,6 +567,10 @@ RT_PROGRAM void rayGeneration_DirRandRect_PosRandRad()
   {
     //optix::Ray ray = optix::make_Ray(ray_origin, ray_direction, 0, scene_epsilon, RT_DEFAULT_MAX);
     rtTrace(top_object, ray, prd);
+	// update ray
+	ray.origin=make_float3(prd.position);
+	ray.direction=make_float3(prd.direction);
+
     if(!prd.running) 
     {
        //prd.result += prd.radiance * prd.attenuation;
@@ -614,6 +626,10 @@ RT_PROGRAM void rayGeneration_DirUniform_PosRandRad()
   {
     //optix::Ray ray = optix::make_Ray(ray_origin, ray_direction, 0, scene_epsilon, RT_DEFAULT_MAX);
     rtTrace(top_object, ray, prd);
+	// update ray
+	ray.origin=make_float3(prd.position);
+	ray.direction=make_float3(prd.direction);
+
     if(!prd.running) 
     {
        //prd.result += prd.radiance * prd.attenuation;
@@ -675,6 +691,10 @@ RT_PROGRAM void rayGeneration_DirRandRad_PosGridRad()
   {
     //optix::Ray ray = optix::make_Ray(ray_origin, ray_direction, 0, scene_epsilon, RT_DEFAULT_MAX);
     rtTrace(top_object, ray, prd);
+	// update ray
+	ray.origin=make_float3(prd.position);
+	ray.direction=make_float3(prd.direction);
+
     if(!prd.running) 
     {
        //prd.result += prd.radiance * prd.attenuation;
@@ -730,6 +750,10 @@ RT_PROGRAM void rayGeneration_DirRandRect_PosGridRad()
   {
     //optix::Ray ray = optix::make_Ray(ray_origin, ray_direction, 0, scene_epsilon, RT_DEFAULT_MAX);
     rtTrace(top_object, ray, prd);
+	// update ray
+	ray.origin=make_float3(prd.position);
+	ray.direction=make_float3(prd.direction);
+
     if(!prd.running) 
     {
        //prd.result += prd.radiance * prd.attenuation;
@@ -785,6 +809,10 @@ RT_PROGRAM void rayGeneration_DirRandImpArea_PosGridRad()
   {
     //optix::Ray ray = optix::make_Ray(ray_origin, ray_direction, 0, scene_epsilon, RT_DEFAULT_MAX);
     rtTrace(top_object, ray, prd);
+	// update ray
+	ray.origin=make_float3(prd.position);
+	ray.direction=make_float3(prd.direction);
+
     if(!prd.running) 
     {
        //prd.result += prd.radiance * prd.attenuation;
@@ -840,6 +868,11 @@ RT_PROGRAM void rayGeneration_DirUniform_PosGridRad()
   {
     //optix::Ray ray = optix::make_Ray(ray_origin, ray_direction, 0, scene_epsilon, RT_DEFAULT_MAX);
     rtTrace(top_object, ray, prd);
+
+	// update ray
+	ray.origin=make_float3(prd.position);
+	ray.direction=make_float3(prd.direction);
+
     if(!prd.running) 
     {
        //prd.result += prd.radiance * prd.attenuation;
@@ -901,6 +934,11 @@ RT_PROGRAM void rayGeneration_DirRandRad_PosRandRect()
   for(;;) 
   {
     rtTrace(top_object, ray, prd);
+
+	// update ray
+	ray.origin=make_float3(prd.position);
+	ray.direction=make_float3(prd.direction);
+
     if(!prd.running) 
     {
        break;
@@ -954,6 +992,11 @@ RT_PROGRAM void rayGeneration_DirRandRect_PosRandRect()
   for(;;) 
   {
     rtTrace(top_object, ray, prd);
+
+	// update ray
+	ray.origin=make_float3(prd.position);
+	ray.direction=make_float3(prd.direction);
+
     if(!prd.running) 
     {
        break;
@@ -1007,6 +1050,11 @@ RT_PROGRAM void rayGeneration_DirRandImpArea_PosRandRect()
   for(;;) 
   {
     rtTrace(top_object, ray, prd);
+
+	// update ray
+	ray.origin=make_float3(prd.position);
+	ray.direction=make_float3(prd.direction);
+
     if(!prd.running) 
     {
        break;
@@ -1060,6 +1108,11 @@ RT_PROGRAM void rayGeneration_DirUniform_PosRandRect()
   for(;;) 
   {
     rtTrace(top_object, ray, prd);
+
+	// update ray
+	ray.origin=make_float3(prd.position);
+	ray.direction=make_float3(prd.direction);
+
     if(!prd.running) 
     {
        break;
@@ -1118,6 +1171,11 @@ RT_PROGRAM void rayGeneration_DirRandRad_PosGridRect()
   {
     //optix::Ray ray = optix::make_Ray(ray_origin, ray_direction, 0, scene_epsilon, RT_DEFAULT_MAX);
     rtTrace(top_object, ray, prd);
+
+	// update ray
+	ray.origin=make_float3(prd.position);
+	ray.direction=make_float3(prd.direction);
+
     if(!prd.running) 
     {
        //prd.result += prd.radiance * prd.attenuation;
@@ -1173,6 +1231,11 @@ RT_PROGRAM void rayGeneration_DirRandRect_PosGridRect()
   {
     //optix::Ray ray = optix::make_Ray(ray_origin, ray_direction, 0, scene_epsilon, RT_DEFAULT_MAX);
     rtTrace(top_object, ray, prd);
+
+	// update ray
+	ray.origin=make_float3(prd.position);
+	ray.direction=make_float3(prd.direction);
+
     if(!prd.running) 
     {
        //prd.result += prd.radiance * prd.attenuation;
@@ -1228,6 +1291,11 @@ RT_PROGRAM void rayGeneration_DirRandImpArea_PosGridRect()
   {
     //optix::Ray ray = optix::make_Ray(ray_origin, ray_direction, 0, scene_epsilon, RT_DEFAULT_MAX);
     rtTrace(top_object, ray, prd);
+
+	// update ray
+	ray.origin=make_float3(prd.position);
+	ray.direction=make_float3(prd.direction);
+
     if(!prd.running) 
     {
        //prd.result += prd.radiance * prd.attenuation;
@@ -1288,6 +1356,10 @@ RT_PROGRAM void rayGeneration_DirUniform_PosGridRect()
   {
     //optix::Ray ray = optix::make_Ray(ray_origin, ray_direction, 0, scene_epsilon, RT_DEFAULT_MAX);
     rtTrace(top_object, ray, prd);
+
+	// update ray
+	ray.origin=make_float3(prd.position);
+	ray.direction=make_float3(prd.direction);
     if(!prd.running) 
     {
        //prd.result += prd.radiance * prd.attenuation;
@@ -1348,6 +1420,10 @@ RT_PROGRAM void rayGeneration_DirRandRad_PosRandRad()
   {
     //optix::Ray ray = optix::make_Ray(ray_origin, ray_direction, 0, scene_epsilon, RT_DEFAULT_MAX);
     rtTrace(top_object, ray, prd);
+	// update ray
+	ray.origin=make_float3(prd.position);
+	ray.direction=make_float3(prd.direction);
+
     if(!prd.running) 
     {
        //prd.result += prd.radiance * prd.attenuation;
@@ -1403,6 +1479,10 @@ RT_PROGRAM void rayGeneration_DirGridRect_PosRandRad()
   {
     //optix::Ray ray = optix::make_Ray(ray_origin, ray_direction, 0, scene_epsilon, RT_DEFAULT_MAX);
     rtTrace(top_object, ray, prd);
+	// update ray
+	ray.origin=make_float3(prd.position);
+	ray.direction=make_float3(prd.direction);
+
     if(!prd.running) 
     {
        //prd.result += prd.radiance * prd.attenuation;
@@ -1458,6 +1538,10 @@ RT_PROGRAM void rayGeneration_DirRandImpArea_PosRandRad()
   {
     //optix::Ray ray = optix::make_Ray(ray_origin, ray_direction, 0, scene_epsilon, RT_DEFAULT_MAX);
     rtTrace(top_object, ray, prd);
+	// update ray
+	ray.origin=make_float3(prd.position);
+	ray.direction=make_float3(prd.direction);
+
     if(!prd.running) 
     {
        //prd.result += prd.radiance * prd.attenuation;
@@ -1514,6 +1598,10 @@ RT_PROGRAM void rayGeneration_DirGridRad_PosRandRad()
   {
     //optix::Ray ray = optix::make_Ray(ray_origin, ray_direction, 0, scene_epsilon, RT_DEFAULT_MAX);
     rtTrace(top_object, ray, prd);
+	// update ray
+	ray.origin=make_float3(prd.position);
+	ray.direction=make_float3(prd.direction);
+
     if(!prd.running) 
     {
        //prd.result += prd.radiance * prd.attenuation;

@@ -20,8 +20,8 @@
 #include <optixu/optixu_aabb.h>
 
 
-rtDeclareVariable(float3, boxmin, , );
-rtDeclareVariable(float3, boxmax, , );
+//rtDeclareVariable(float3, boxmin, , );
+//rtDeclareVariable(float3, boxmax, , );
 
 RT_PROGRAM void bounds (int, float result[6])
 {

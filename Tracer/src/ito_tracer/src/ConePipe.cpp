@@ -213,6 +213,7 @@ geometryError ConePipe::reduceParams(void)
 		this->reducedParamsPtr->thickness=this->paramsPtr->thickness;
 //		this->reducedParamsPtr->rotNormal=this->paramsPtr->rotNormal;
 		this->reducedParamsPtr->tilt=this->paramsPtr->tilt;
+		this->reducedParamsPtr->radMax=max(this->paramsPtr->apertureRadius.x,this->paramsPtr->apertureRadius.x+tan(acos(this->paramsPtr->cosTheta.x))*this->paramsPtr->thickness);
 	}
 	return GEOM_NO_ERR;
 };

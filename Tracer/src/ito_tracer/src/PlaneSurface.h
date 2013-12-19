@@ -94,7 +94,7 @@ private:
 	  materialList=NULL;
 	  materialListLength=0;
 	  sprintf( this->path_to_ptx_intersect, "%s" PATH_SEPARATOR "%s", PATH_TO_PTX, "ITO-MacroSim_generated_PlaneSurface.cu.ptx" );
-	  sprintf( this->path_to_ptx_boundingBox, "%s" PATH_SEPARATOR "%s", PATH_TO_PTX, "ITO-MacroSim_generated_boundingBox.cu.ptx" );
+	  sprintf( this->path_to_ptx_boundingBox, "%s" PATH_SEPARATOR "%s", PATH_TO_PTX, "ITO-MacroSim_generated_PlaneSurface.cu.ptx" );
 	  type=GEOM_PLANESURF;
 	}
     /* Constructor in case length of list is already known */
@@ -111,7 +111,7 @@ private:
 	  }
 	  materialListLength = length;
 	  sprintf( this->path_to_ptx_intersect, "%s" PATH_SEPARATOR "%s", PATH_TO_PTX, "ITO-MacroSim_generated_PlaneSurface.cu.ptx" );
-	  sprintf( this->path_to_ptx_boundingBox, "%s" PATH_SEPARATOR "%s", PATH_TO_PTX, "ITO-MacroSim_generated_boundingBox.cu.ptx" );
+	  sprintf( this->path_to_ptx_boundingBox, "%s" PATH_SEPARATOR "%s", PATH_TO_PTX, "ITO-MacroSim_generated_PlaneSurface.cu.ptx" );
 	  type=GEOM_PLANESURF;
 	}
 	/* Destruktor */

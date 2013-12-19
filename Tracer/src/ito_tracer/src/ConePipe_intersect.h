@@ -52,7 +52,7 @@ class ConePipe_ReducedParams : public Geometry_ReducedParams
 	  double3 orientation; // orientation of the symmetrie axis of the cone
 	  double2 cosTheta; // half opening angle of the cone in x and y
 	  double thickness; // length of the cone segment
-//	  double rotNormal; // rotation of geometry around its normal
+	  double radMax; // maximum aperture radius of cone
 	  //int geometryID;
 };
 

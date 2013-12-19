@@ -35,7 +35,7 @@
 #include "pugixml.hpp"
 
 
-#define GEOMRAYFIELD_PSEUDOBANDWIDTH_PATHTOPTX "ITO-MacroSim_generated_rayGeneration_pseudoBandwidth.cu.ptx"
+#define GEOMRAYFIELD_PSEUDOBANDWIDTH_PATHTOPTX "ITO-MacroSim_generated_rayGeneration.cu.ptx"
 
 /* declare class */
 /**

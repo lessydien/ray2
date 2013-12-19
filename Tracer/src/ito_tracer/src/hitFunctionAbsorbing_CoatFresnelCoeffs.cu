@@ -60,8 +60,7 @@ __forceinline__ __device__ void absorbingCoatFresnelCoeffs_closestHit_device( Ma
   if (hitCoatingFresnelCoeff(prd, hitParams, coating_params))
 	  prd.direction=reflect(prd.direction, hitParams.normal);
   if ( (prd.depth>max_depth) || (prd.flux<min_flux) )
-	  prd.running=false;	  
-
+	  prd.running=false;	
 }
 
 /********************************************************************************/

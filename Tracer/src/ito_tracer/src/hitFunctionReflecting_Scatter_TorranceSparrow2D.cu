@@ -60,7 +60,7 @@ __forceinline__ __device__ void reflectingScatTorrSparr2D_closestHit_device( Mat
 	hitTorranceSparrow2D(prd, hitParams, scatterParams);
 
   if ( (prd.depth>max_depth) || (prd.flux<min_flux) )
-	  prd.running=false;  
+	  prd.running=false; 
 }
 
 /********************************************************************************/
