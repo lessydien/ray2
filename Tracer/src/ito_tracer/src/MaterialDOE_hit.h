@@ -148,6 +148,7 @@ inline RT_HOSTDEVICE bool hitDOE(rayStruct &ray, Mat_hitParams hitParams, MatDOE
 
 	// mirror x-coordinate
 	//zeroposition.y=-zeroposition.y;
+	//zeroposition.x=-zeroposition.x;
 
 	double3 Local;
 

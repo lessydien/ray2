@@ -608,7 +608,7 @@ MaterialError MaterialDOE::parseXml(pugi::xml_node &material)
 	// if we have a user defined glass we simply take the values of n1 and n2 defined in the prescription file and set no dispersion
 	if (!strcmp(l_glassName,"USERDEFINED"))
 	{
-		if (!l_parser.attrByNameToDouble(material, "n1", this->params.n1))
+		if (!this->checkParserError(l_parser.attrByNameToDouble(material, "n1", this->params.n1)))
 		{
 			std::cout << "error in MaterialDOE.parseXml(): n1 is not defined" << std::endl;
 			return MAT_ERR;
@@ -670,7 +670,7 @@ MaterialError MaterialDOE::parseXml(pugi::xml_node &material)
 	// if we have a user defined glass we simply take the values of n1 and n2 defined in the prescription file and set no dispersion
 	if (!strcmp(l_immersionName,"USERDEFINED"))
 	{
-		if (!l_parser.attrByNameToDouble(material, "n2", this->params.n2))
+		if (!this->checkParserError(l_parser.attrByNameToDouble(material, "n2", this->params.n2)))
 		{
 			std::cout << "error in MaterialDOE.parseXml(): n2 is not defined" << std::endl;
 			return MAT_ERR;
