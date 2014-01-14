@@ -408,7 +408,7 @@ if (firstOrder == true)
 
 	// --->>>  if (zerodirection.z < 0) n = -n;
 
-
+	// Was zur Hölle ist das ???
 	double rad = n.x*u.x + n.y*u.y + n.z*u.z;
 
 	rad = 1.0 - (u.x*u.x + u.y*u.y + u.z*u.z) + rad*rad;
@@ -433,7 +433,7 @@ if (firstOrder == true)
 
 
 	if (coat_reflected)
-		ray.direction=reflect(zerodirection,make_double3(0,0,1));
+		zerodirection=reflect(zerodirection,make_double3(0,0,1));
 	else
 	{ 
 

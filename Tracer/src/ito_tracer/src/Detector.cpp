@@ -197,7 +197,7 @@ detError Detector::parseXml(pugi::xml_node &det, vector<Detector*> &detVec)
 		return DET_ERROR;
 	if (!this->checkParserError(l_parser.attrByNameToDouble(det, "apertureHalfWidth.y", this->getDetParamsPtr()->apertureHalfWidth.y)))
 		return DET_ERROR;
-	this->getDetParamsPtr()->apertureHalfWidth.z=0.05;
+	this->getDetParamsPtr()->apertureHalfWidth.z=0.0005;
 	if (!this->checkParserError(l_parser.attrByNameToDetOutFormat(det, "detOutFormat", this->getDetParamsPtr()->outFormat)))
 		return DET_ERROR;
 	this->getDetParamsPtr()->MTransform=createTransformationMatrix(this->getDetParamsPtr()->tilt, this->getDetParamsPtr()->root);

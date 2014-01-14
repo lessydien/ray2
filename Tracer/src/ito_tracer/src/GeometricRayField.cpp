@@ -1681,6 +1681,7 @@ fieldError GeometricRayField::convert2Intensity(Field* imagePtr, detParams &oDet
 	****************************************************************************************************************************/
 	double3 scale=l_IntensityImagePtr->getParamsPtr()->scale;
 	long3 nrPixels=l_IntensityImagePtr->getParamsPtr()->nrPixels;
+	scale.z=2*oDetParams.apertureHalfWidth.z/nrPixels.z; // we need to set this here as the IntensityField coming from the Detector is set for PseudoBandwidth...
 
 	// create unit vectors
 	double3 t_ez = make_double3(0,0,1);
@@ -2253,6 +2254,9 @@ fieldError  GeometricRayField::parseXml(pugi::xml_node &field, vector<Field*> &f
 	this->rayParamsPtr->totalLaunch_height=this->rayParamsPtr->height;
 	this->rayParamsPtr->totalLaunch_width=this->rayParamsPtr->width;
 	this->rayParamsPtr->nrRayDirections=make_ulong2(1,1);
+
+	this->getParamsPtr()->pseudoBandwidth=0; // default to zero
+	this->getParamsPtr()->nrPseudoLambdas=1; // default to one
 
 	return FIELD_NO_ERR;
 };

@@ -167,7 +167,6 @@ detError DetectorIntensity::detect(Field* fieldPtr, Field **imagePtrPtr)
 			if (imageParams.nrPixels.z!=fieldPtr->getParamsPtr()->nrPseudoLambdas)
 			{
 				// 3 dimensional IntensityFields are not implemented yet !!!
-				imageParams.scale.z=0.02; // we calculate a field that is 2D in space here anyway
 				std::cout << "error in DetectorIntensity.detect: 3dimensional fields are not implemented yet" << std::endl;
 				return DET_ERROR;
 			}

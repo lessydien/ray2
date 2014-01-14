@@ -72,6 +72,8 @@ inline RT_HOSTDEVICE bool hitLambert2D(rayStruct &prd, Mat_hitParams hitParams, 
 	uint32_t x1[5];
 	RandomInit(prd.currentSeed, x1); // init random variable
 
+	prd.running=true;
+
 	ScatLambert2D_params test=params;
 
 	// adjust flux of ray according to TIR of surface
