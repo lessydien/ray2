@@ -220,6 +220,7 @@ OPTIX_add_sample_executable( ITO-MacroSim
   src/GeometryLib.cpp
   src/GeometryLib.h
   src/differentialRayTracing/GeometryLib_DiffRays.h
+  src/differentialRayTracing/GeometryLib_DiffRays.cpp
   src/Group.cpp
   src/Group.h
   src/Material.cpp

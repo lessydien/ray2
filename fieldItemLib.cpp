@@ -31,12 +31,12 @@ FieldItem* FieldItemLib::createField(FieldItem::FieldType type)
 		case FieldItem::GEOMRAYFIELD_PSEUDOBANDWIDTH:
 			l_pItem=new GeomRayFieldItem_PseudoBandwidth();
 			break;
-		//case FieldItem::DIFFRAYFIELD:
-		//	l_pItem=new DiffRayFieldItem();
-		//	break;
-		//case FieldItem::DIFFRAYFIELDRAYAIM:
-		//	l_pItem=new DiffRayField_RayAiming_Item();
-		//	break;
+		case FieldItem::DIFFRAYFIELD:
+			l_pItem=new DiffRayFieldItem();
+			break;
+		case FieldItem::DIFFRAYFIELDRAYAIM:
+			l_pItem=new DiffRayField_RayAiming_Item();
+			break;
 		case FieldItem::INTENSITYFIELD:
 			l_pItem=new IntensityFieldItem();
 			break;
@@ -138,8 +138,8 @@ QList<AbstractItem*> FieldItemLib::fillLibrary() const
 	QList<AbstractItem*> l_list;
 	l_list.append(new GeomRayFieldItem());
 	l_list.append(new GeomRayFieldItem_PseudoBandwidth());
-	//l_list.append(new DiffRayFieldItem());
-	//l_list.append(new DiffRayField_RayAiming_Item());
+	l_list.append(new DiffRayFieldItem());
+	l_list.append(new DiffRayField_RayAiming_Item());
 	//l_list.append(new IntensityFieldItem());
 	//l_list.append(new ScalarPlaneFieldItem());
 	//l_list.append(new ScalarSphericalFieldItem());

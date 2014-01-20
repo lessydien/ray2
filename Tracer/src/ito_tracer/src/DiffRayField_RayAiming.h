@@ -160,9 +160,10 @@ class DiffRayField_RayAiming : public DiffRayField
 	virtual fieldError createLayoutInstance();
 
 	virtual fieldError initCPUSubset();
+    fieldError doSim(Group &oGroup, simAssParams &params, bool &simDone);
 
-	virtual fieldError traceScene(Group &oGroup, bool RunOnCPU, RTcontext &context, RTbuffer &output_buffer_obj, RTbuffer &seed_buffer_obj);
-	virtual fieldError traceStep(Group &oGroup, bool RunOnCPU, RTcontext &context, RTbuffer &output_buffer_obj, RTbuffer &seed_buffer_obj);
+	virtual fieldError traceScene(Group &oGroup, bool RunOnCPU);
+	virtual fieldError traceStep(Group &oGroup, bool RunOnCPU);
 
 	virtual fieldError writeData2File(FILE *hFile_pos, rayDataOutParams outParams);
 

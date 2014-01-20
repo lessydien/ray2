@@ -22,13 +22,13 @@
 * \author Mauch
 */
 
-#include "GeometryLib.h"
-#include "MaterialLib.h"
+#include "GeometryLib_DiffRays.h"
+#include "MaterialLib_DiffRays.h"
 #include "string.h"
 
 using namespace std;
 
-bool GeometryFab::createGeomInstFromXML(xml_node &geomNode, TraceMode l_mode, vector<Geometry*> &geomVec) const
+bool GeometryFab_DiffRays::createGeomInstFromXML(xml_node &geomNode, TraceMode l_mode, vector<Geometry*> &geomVec) const
 {	
 	Geometry* l_pGeometry=NULL;
 	Parser_XML l_parser;
@@ -54,67 +54,66 @@ bool GeometryFab::createGeomInstFromXML(xml_node &geomNode, TraceMode l_mode, ve
 	// create instance of geometry according to geomType
 	switch (l_geomType)
 	{
-	case GEOM_SPHERICALLENSE:
-		l_pGeometry=new SphericalLense(1);
-		break;
+	//case GEOM_SPHERICALLENSE:
+	//	l_pGeometry=new SphericalLense(1);
+	//	break;
 	case GEOM_SPHERICALSURF:
-		l_pGeometry=new SphericalSurface(1);
+		l_pGeometry=new SphericalSurface_DiffRays(1);
 		break;
-	case GEOM_PARABOLICSURF:
-		l_pGeometry=new ParabolicSurface(1);
-		break;
-	case GEOM_MICROLENSARRAY:
-		l_pGeometry=new MicroLensArray(1);
-		break;
-	case GEOM_MICROLENSARRAYSURF:
-		l_pGeometry=new MicroLensArraySurface(1);
-		break;
-	case GEOM_STOPARRAYSURF:
-		l_pGeometry=new StopArraySurface(1);
-		break;
-	case GEOM_APERTUREARRAYSURF:
-		l_pGeometry=new ApertureArraySurface(1);
-		break;
+	//case GEOM_PARABOLICSURF:
+	//	l_pGeometry=new ParabolicSurface(1);
+	//	break;
+	//case GEOM_MICROLENSARRAY:
+	//	l_pGeometry=new MicroLensArray(1);
+	//	break;
+	//case GEOM_MICROLENSARRAYSURF:
+	//	l_pGeometry=new MicroLensArraySurface(1);
+	//	break;
+//	case GEOM_STOPARRAYSURF:
+//		l_pGeometry=new StopArraySurface(1);
+//		break;
+//	case GEOM_APERTUREARRAYSURF:
+//		l_pGeometry=new ApertureArraySurface(1);
+//		break;
 	case GEOM_PLANESURF:
-		l_pGeometry=new PlaneSurface(1);
+		l_pGeometry=new PlaneSurface_DiffRays(1);
 		break;
 	case GEOM_ASPHERICALSURF:
-		l_pGeometry=new AsphericalSurface(1);
+		l_pGeometry=new AsphericalSurface_DiffRays(1);
 		break;
-	case GEOM_CYLLENSESURF:
-		l_pGeometry=new CylLenseSurface(1);
-		break;
+//	case GEOM_CYLLENSESURF:
+//		l_pGeometry=new CylLenseSurface(1);
+//		break;
 	case GEOM_CYLPIPE:
-		l_pGeometry=new CylPipe(1);
+		l_pGeometry=new CylPipe_DiffRays(1);
 		break;
 	case GEOM_CONEPIPE:
-		l_pGeometry=new ConePipe(1);
+		l_pGeometry=new ConePipe_DiffRays(1);
 		break;
 	case GEOM_IDEALLENSE:
-		l_pGeometry=new IdealLense(1);
+		l_pGeometry=new IdealLense_DiffRays(1);
 		break;
 	case GEOM_APERTURESTOP:
-		l_pGeometry=new ApertureStop(1);
+		l_pGeometry=new ApertureStop_DiffRays(1);
 		break;
 	case GEOM_COSINENORMAL:
-		l_pGeometry=new SinusNormalSurface(1);
+		l_pGeometry=new SinusNormalSurface_DiffRays(1);
 		break;
-	case GEOM_CADOBJECT:
-		l_pGeometry=new CadObject(1);
-		break;
-	case GEOM_SUBSTRATE:
-		l_pGeometry=new Substrate(1);
-		break;
-	case GEOM_VOLUMESCATTERERBOX:
-		l_pGeometry=new VolumeScattererBox(1);
-		break;
+//	case GEOM_CADOBJECT:
+//		l_pGeometry=new CadObject(1);
+//		break;
+	//case GEOM_SUBSTRATE:
+	//	l_pGeometry=new Substrate(1);
+	//	break;
+	//case GEOM_VOLUMESCATTERERBOX:
+	//	l_pGeometry=new VolumeScattererBox(1);
+	//	break;
 
 	default:
-		cout << "error om GeometryFab.createInstanceFromXML(): unknown geometryType for geometric ray tracing." << endl;
+		cout << "error om GeometryFab.createInstanceFromXML(): unknown geometryType." << endl;
 		return false;
 		break;
 	}
-
 	
 	// call parsing routine of geometry
 	if (GEOM_NO_ERR != l_pGeometry->parseXml(geomNode, l_mode, geomVec))

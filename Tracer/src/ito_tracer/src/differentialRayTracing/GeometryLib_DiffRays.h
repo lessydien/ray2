@@ -26,7 +26,7 @@
   #define GEOMETRYLIB_DIFFRAYS_H
 
 // include base class
-//#include "Geometry.h"
+#include "..\GeometryLib.h"
 // include the individual geometries
 #include "PlaneSurface_DiffRays.h"
 #include "SphericalSurface_DiffRays.h"
@@ -36,5 +36,24 @@
 #include "IdealLense_DiffRays.h"
 #include "ApertureStop_DiffRays.h"
 #include "SinusNormalSurface_DiffRays.h"
+
+class GeometryFab_DiffRays : public GeometryFab
+{
+protected:
+
+public:
+
+	GeometryFab_DiffRays()
+	{
+
+	}
+	~GeometryFab_DiffRays()
+	{
+
+	}
+
+	bool createGeomInstFromXML(xml_node &node, TraceMode l_mode, vector<Geometry*> &geomVec) const;
+};
+
 
 #endif

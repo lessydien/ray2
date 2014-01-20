@@ -903,6 +903,70 @@ fieldError DiffRayField_RayAiming::write2TextFile(char* filename, detParams &oDe
 };
 
 /**
+ * \detail doSim
+ *
+ * \param[in] 
+ * 
+ * \return fieldError
+ * \sa 
+ * \remarks 
+ * \author Mauch
+ */
+fieldError DiffRayField_RayAiming::doSim(Group &oGroup, simAssParams &params, bool &simDone)
+{
+	unsigned long long width=this->getParamsPtr()->totalLaunch_width;//SourceListPtrPtr->getParamsPtr()->width*SourceListPtrPtr->getParamsPtr()->nrRayDirections.x*SourceListPtrPtr->getParamsPtr()->nrRayDirections.y;
+	unsigned long long height=this->getParamsPtr()->totalLaunch_height;//SourceListPtrPtr->getParamsPtr()->height;
+
+	unsigned long long roughNrOfSubsets=std::floorf(width*height/(this->getSubsetWidthMax()*this->getSubsetHeightMax()))+1;
+
+
+	std::cout << "****************************************************** " << std::endl;
+	std::cout << "starting subset.......... " << std::endl;
+	std::cout << std::endl;
+	/***********************************************
+	/	trace rays
+	/***********************************************/
+
+	long2 l_GPUSubsetDim=this->calcSubsetDim();
+
+	if (FIELD_NO_ERR != this->traceScene(oGroup, params.RunOnCPU) )//, context, output_buffer_obj, seed_buffer_obj) )
+	{
+		std::cout << "error in GeometricRayField.doSim(): GeometricRayField.traceScene() returned an error" << std::endl;
+		return FIELD_ERR;
+	}
+	this->subsetCounter++;
+	// signal simulation progress via callback to gui
+	if ((Field::p2ProgCallbackObject != NULL) && (Field::callbackProgress != NULL))
+		Field::callbackProgress(Field::p2ProgCallbackObject, floorf(this->subsetCounter*100/roughNrOfSubsets));
+
+	// increment x-offset
+	this->getParamsPtr()->launchOffsetX=this->getParamsPtr()->launchOffsetX+this->getParamsPtr()->GPUSubset_width;				
+	if (this->getParamsPtr()->launchOffsetX>width-1)
+	{
+		// increment y-offset
+		this->getParamsPtr()->launchOffsetY=this->getParamsPtr()->launchOffsetY+this->getParamsPtr()->GPUSubset_height;
+		// reset x-offset
+		this->getParamsPtr()->launchOffsetX=0;
+		if (this->getParamsPtr()->launchOffsetY>height-1)
+			simDone=true;
+	}
+
+	tracedRayNr=tracedRayNr+l_GPUSubsetDim.x*l_GPUSubsetDim.y;
+	std::cout << " " << tracedRayNr <<" out of " << width*height << " rays traced in total" << std::endl;
+
+	if (simDone)
+	{
+		if (!params.RunOnCPU)
+		{
+			// clean up
+			if (!RT_CHECK_ERROR_NOEXIT( rtContextDestroy( context ), context ))
+				return FIELD_ERR;
+		}
+	}
+	return FIELD_NO_ERR;
+};
+
+/**
  * \detail traceScene 
  *
  * \param[in] Group &oGroup
@@ -912,7 +976,7 @@ fieldError DiffRayField_RayAiming::write2TextFile(char* filename, detParams &oDe
  * \remarks 
  * \author Mauch
  */
-fieldError DiffRayField_RayAiming::traceScene(Group &oGroup, bool RunOnCPU, RTcontext &context, RTbuffer &output_buffer_obj, RTbuffer &seed_buffer_obj)
+fieldError DiffRayField_RayAiming::traceScene(Group &oGroup, bool RunOnCPU)
 {
 	clock_t start, end;
 	double msecs=0;
@@ -1131,7 +1195,7 @@ fieldError DiffRayField_RayAiming::traceScene(Group &oGroup, bool RunOnCPU, RTco
  * \remarks 
  * \author Mauch
  */
-fieldError DiffRayField_RayAiming::traceStep(Group &oGroup, bool RunOnCPU, RTcontext &context, RTbuffer &output_buffer_obj, RTbuffer &seed_buffer_obj)
+fieldError DiffRayField_RayAiming::traceStep(Group &oGroup, bool RunOnCPU)
 {
 	clock_t start, end;
 	double msecs=0;
@@ -1952,6 +2016,13 @@ fieldError  DiffRayField_RayAiming::parseXml(pugi::xml_node &field, vector<Field
 		return FIELD_ERR;
 	if (!this->checkParserError(l_parser.attrByNameToDouble(field, "detApertureHalfWidth.y", this->getParamsPtr()->oDetParams.apertureHalfWidth.y)))
 		return FIELD_ERR;
+
+    // As we need to hit each detector pixel from each position in the field, the number of ray directions is given by detector pixels
+    this->getParamsPtr()->nrRayDirections.x=this->getParamsPtr()->oDetParams.detPixel.x;
+    this->getParamsPtr()->nrRayDirections.y=this->getParamsPtr()->oDetParams.detPixel.y;
+
+    this->rayParamsPtr->totalLaunch_width=this->getParamsPtr()->height*this->getParamsPtr()->width*this->getParamsPtr()->nrRayDirections.x*this->getParamsPtr()->nrRayDirections.y;
+    this->rayParamsPtr->totalLaunch_height=1;
 
 	return FIELD_NO_ERR;
 };

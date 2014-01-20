@@ -34,9 +34,13 @@
 #include "Group.h"
 #include "Geometry.h"
 #include "GeometryLib.h"
-#include "MaterialLib.h"
-#include "ScatterLib.h"
-#include "CoatingLib.h"
+//#include "MaterialLib.h"
+//#include "ScatterLib.h"
+//#include "CoatingLib.h"
+#include "differentialRayTracing\GeometryLib_DiffRays.h"
+//#include "differentialRayTracing\MaterialLib_DiffRays.h"
+//#include "differentialRayTracing\CoatingLib_DiffRays.h"
+//#include "differentialRayTracing\ScatterLib_DiffRays.h"
 #include "SimAssistantLib.h"
 #include "DetectorLib.h"
 #include "Scatter.h"
@@ -497,6 +501,23 @@ bool createSceneFromXML(Group **oGroupPtrPtr, char *sceneChar, Field ***sourceLi
 			return false;
 		}
 		
+        GeometryFab* l_pGeomFab;
+        switch (l_mode)
+        {
+        case SIM_GEOMRAYS_NONSEQ:
+        case SIM_GEOMRAYS_SEQ:
+            l_pGeomFab=new GeometryFab();
+            break;
+        case SIM_DIFFRAYS_NONSEQ:
+        case SIM_DIFFRAYS_SEQ:
+            l_pGeomFab=new GeometryFab_DiffRays();
+            break;
+        default:
+			std::cout <<"error in Parser_XML.createSceneFromXML(): unknown trace mode"  << std::endl;
+			return false;
+            break;
+        }
+
 		GeometryFab l_geomFab;
 		int globalSurfaceCount=0; // as some of the geometries consist of different number of surfaces in different simulation modes, we need to keep track of the number of surfaces in each geometryGroup here...
 		// now, create the objects and add them to current geometryGroup

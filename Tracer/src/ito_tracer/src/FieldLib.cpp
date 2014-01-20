@@ -61,6 +61,12 @@ bool FieldFab::createFieldInstFromXML(xml_node &fieldNode, vector<Field*> &field
 	case GEOMRAYFIELD_PSEUDOBANDWIDTH:
 		l_pField=new GeometricRayField_PseudoBandwidth();
 		break;
+	case DIFFRAYFIELD:
+		l_pField=new DiffRayField();
+		break;
+	case DIFFRAYFIELDRAYAIM:
+		l_pField=new DiffRayField_RayAiming();
+		break;
 	case PATHINTTISSUERAYFIELD:
 		l_pField=new PathIntTissueRayField();
 		break;

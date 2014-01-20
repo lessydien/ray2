@@ -65,7 +65,7 @@ public:
 
 	}
 
-	bool createGeomInstFromXML(xml_node &node, TraceMode l_mode, vector<Geometry*> &geomVec) const;
+	virtual bool createGeomInstFromXML(xml_node &node, TraceMode l_mode, vector<Geometry*> &geomVec) const;
 };
 
 #endif
