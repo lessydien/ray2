@@ -60,7 +60,7 @@ public:
 
 	}
 
-	bool createFieldInstFromXML(xml_node &node, vector<Field*> &fieldVec) const;
+	bool createFieldInstFromXML(xml_node &node, vector<Field*> &fieldVec, SimParams simParams) const;
 };
 
 #endif

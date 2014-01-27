@@ -60,7 +60,7 @@ CoatingError Coating::processParseResults(MaterialParseParamStruct &parseResults
  * \remarks 
  * \author Mauch
  */
-CoatingError Coating::parseXml(pugi::xml_node &geometry)
+CoatingError Coating::parseXml(pugi::xml_node &geometry, SimParams simParams)
 {
 	cout << "error in Coating.parseXml(): not implemented yet for given coating type" << endl;
 	return COAT_ERROR;

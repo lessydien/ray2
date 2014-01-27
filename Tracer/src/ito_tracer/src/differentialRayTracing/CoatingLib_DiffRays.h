@@ -25,7 +25,26 @@
 #ifndef COATINGLIB_DIFFRAYS_H
   #define COATINGLIB_DIFFRAYS_H
 
+#include "../CoatingLib.h"
 // include the individual coatings
 #include "Coating_NumCoeffs_DiffRays.h"
+
+class CoatingFab_DiffRays : public CoatingFab
+{
+protected:
+
+public:
+
+	CoatingFab_DiffRays()
+	{
+
+	}
+	~CoatingFab_DiffRays()
+	{
+
+	}
+
+	bool createCoatInstFromXML(xml_node &node, Coating* &pCoat, SimParams simParams) const;
+};
 
 #endif

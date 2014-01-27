@@ -55,6 +55,7 @@ class DiffRayField_RayAimingParams : public diffRayFieldParams
 {
 public:
 	detParams oDetParams;	
+    double3 initialTarget;
 };
 
 /* declare class */
@@ -173,7 +174,7 @@ class DiffRayField_RayAiming : public DiffRayField
 	virtual fieldError convert2PhaseSpace(Field* imagePtr, detParams &oDetParams);
 //	fieldError convert2VecField(Field* imagePtr, detParams &oDetParams);
 	virtual fieldError processParseResults(FieldParseParamStruct &parseResults_Src, parseGlassResultStruct* parseResults_GlassPtr, DetectorParseParamStruct &parseResults_Det);
-	virtual fieldError parseXml(pugi::xml_node &field, vector<Field*> &fieldVec);
+	virtual fieldError parseXml(pugi::xml_node &field, vector<Field*> &fieldVec, SimParams simParams);
 
 };
 

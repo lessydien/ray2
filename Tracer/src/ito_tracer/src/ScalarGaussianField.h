@@ -125,7 +125,7 @@ class ScalarGaussianField: public ScalarLightField
 	  }
 	}
 
-	fieldError parseXml(pugi::xml_node &field, vector<Field*> &fieldVec);
+	fieldError parseXml(pugi::xml_node &field, vector<Field*> &fieldVec, SimParams simParams);
 };
 
 #endif

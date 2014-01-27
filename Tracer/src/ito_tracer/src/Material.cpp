@@ -29,6 +29,8 @@
 #include <string.h>
 #include "ScatterLib.h"
 #include "CoatingLib.h"
+#include "differentialRayTracing\ScatterLib_DiffRays.h"
+#include "differentialRayTracing\CoatingLib_DiffRays.h"
 
 #include "Parser_XML.h"
 
@@ -62,7 +64,7 @@ MaterialError Material::processParseResults(MaterialParseParamStruct &parseResul
  * \remarks 
  * \author Mauch
  */
-MaterialError Material::parseXml(pugi::xml_node &material)
+MaterialError Material::parseXml(pugi::xml_node &material, SimParams simParams)
 {
 	Parser_XML l_parser;
 	vector<xml_node>* l_pScatNodes;
@@ -71,21 +73,37 @@ MaterialError Material::parseXml(pugi::xml_node &material)
 	l_pScatNodes=l_parser.childsByTagName(material,"scatter");
 	if ((l_pScatNodes->size()!=1) || (l_pCoatNodes->size()!=1))
 	{
-		std::cout << "error in Geometry.parseXml(): there must be exactly 1 scatter and 1 coating attached to each material." << std::endl;
+		std::cout << "error in Material.parseXml(): there must be exactly 1 scatter and 1 coating attached to each material." << std::endl;
 		return MAT_ERR;
 	}
-	ScatterFab l_scatFab;
+	ScatterFab* l_pScatFab;
+    CoatingFab* l_pCoatFab;
+    switch (simParams.simMode)
+    {
+    case SIM_GEOM_RT:
+        l_pScatFab=new ScatterFab();
+        l_pCoatFab=new CoatingFab();
+        break;
+    case SIM_DIFF_RT:
+        l_pScatFab=new ScatterFab_DiffRays();
+        l_pCoatFab=new CoatingFab_DiffRays();
+        break;
+    default:
+        std::cout << "error in Material.parseXml(): unknown simulation mode." << std::endl;
+        return MAT_ERR;
+        break;
+    }
+
 	Scatter* l_pScatter;
-	if (!l_scatFab.createScatInstFromXML(l_pScatNodes->at(0),l_pScatter))
+	if (!l_pScatFab->createScatInstFromXML(l_pScatNodes->at(0),l_pScatter, simParams))
 	{
 		std::cout << "error in Material.parseXml(): ScatFab.createScatInstFromXML() returned an error." << std::endl;
 		return MAT_ERR;
 	}
 	this->setScatter(l_pScatter);
 
-	CoatingFab l_coatFab;
 	Coating* l_pCoat;
-	if (!l_coatFab.createCoatInstFromXML(l_pCoatNodes->at(0),l_pCoat))
+	if (!l_pCoatFab->createCoatInstFromXML(l_pCoatNodes->at(0),l_pCoat, simParams))
 	{
 		std::cout << "error in Material.parseXml(): CoatFab.createCoatInstFromXML() returned an error." << std::endl;
 		return MAT_ERR;
@@ -94,6 +112,8 @@ MaterialError Material::parseXml(pugi::xml_node &material)
 
 	delete l_pScatNodes;
 	delete l_pCoatNodes;
+    delete l_pCoatFab;
+    delete l_pScatFab;
 
 	return MAT_NO_ERR;
 }
@@ -144,9 +164,9 @@ char* Material::getPathToPtx(void)
  * \remarks 
  * \author Mauch
  */
-MaterialError Material::createMaterialHitProgramPtx(RTcontext context, TraceMode mode)
+MaterialError Material::createMaterialHitProgramPtx(RTcontext context, SimParams simParams)
 {
-	if ( (mode==SIM_DIFFRAYS_NONSEQ) || (mode==SIM_DIFFRAYS_SEQ) )
+	if ( (simParams.simMode==SIM_DIFF_RT) )
 		strcat(this->path_to_ptx, "_DiffRays");
 	strcat(this->path_to_ptx, ".cu.ptx");
 
@@ -183,7 +203,7 @@ MaterialError Material::createOptiXInstance(RTcontext context, RTgeometryinstanc
 		return MAT_ERR;
 	}
 
-	if (MAT_NO_ERR != createMaterialHitProgramPtx(context, simParams.traceMode))
+	if (MAT_NO_ERR != createMaterialHitProgramPtx(context, simParams))
 	{
 		std::cout << "error in Material.createOptiXInstance(): createMaterialHitProgramPtx() returned an error" << std::endl;
 		return MAT_ERR;

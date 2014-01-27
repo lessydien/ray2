@@ -2144,10 +2144,10 @@ fieldError DiffRayField_RayAiming_Holo::processParseResults(FieldParseParamStruc
  * \remarks 
  * \author Mauch
  */
-fieldError  DiffRayField_RayAiming_Holo::parseXml(pugi::xml_node &det, vector<Field*> &fieldVec)
+fieldError  DiffRayField_RayAiming_Holo::parseXml(pugi::xml_node &det, vector<Field*> &fieldVec, SimParams simParams)
 {
 	// call base class function
-	if (FIELD_NO_ERR != DiffRayField_RayAiming::parseXml(det, fieldVec))
+	if (FIELD_NO_ERR != DiffRayField_RayAiming::parseXml(det, fieldVec, simParams))
 	{
 		std::cout << "error in DiffRayField_RayAiming_Holo.parseXml(): RayField_RayAiming.parseXml()  returned an error." << std::endl;
 		return FIELD_ERR;

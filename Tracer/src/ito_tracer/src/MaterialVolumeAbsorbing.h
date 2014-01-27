@@ -70,6 +70,6 @@ class MaterialVolumeAbsorbing: public Material
 	MatVolumeAbsorbing_params getParams(void);
 	void hit(rayStruct &ray, Mat_hitParams hitParams, double t_hit, int geometryID);
 	//void hit(diffRayStruct &ray, Mat_hitParams hitParams, double t_hit, int geometryID);
-	MaterialError parseXml(pugi::xml_node &geometry);
+	MaterialError parseXml(pugi::xml_node &geometry, SimParams simParams);
 };
 #endif

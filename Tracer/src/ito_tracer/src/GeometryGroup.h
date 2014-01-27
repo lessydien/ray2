@@ -80,7 +80,7 @@ class GeometryGroup
   protected:
     Geometry** geometryList;
 	unsigned int geometryListLength;
-	TraceMode mode;
+	SimParams mode;
 	geometryGroupError findClosestGeometry();
 	geomGroupParams *paramsPtr;
 	bool update;

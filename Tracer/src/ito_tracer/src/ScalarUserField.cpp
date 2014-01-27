@@ -44,10 +44,10 @@
  * \remarks 
  * \author Mauch
  */
-fieldError  ScalarUserField::parseXml(pugi::xml_node &det, vector<Field*> &fieldVec)
+fieldError  ScalarUserField::parseXml(pugi::xml_node &det, vector<Field*> &fieldVec, SimParams simParams)
 {
 	// call base class function
-	if (FIELD_NO_ERR != ScalarLightField::parseXml(det, fieldVec))
+	if (FIELD_NO_ERR != ScalarLightField::parseXml(det, fieldVec, simParams))
 	{
 		std::cout << "error in ScalarUserField.parseXml(): ScalarLightField.parseXml()  returned an error." << std::endl;
 		return FIELD_ERR;

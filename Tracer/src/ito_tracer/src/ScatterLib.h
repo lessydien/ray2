@@ -51,7 +51,7 @@ public:
 
 	}
 
-	bool createScatInstFromXML(xml_node &node, Scatter* &pScat) const;
+	virtual bool createScatInstFromXML(xml_node &node, Scatter* &pScat, SimParams simParams) const;
 };
 
 

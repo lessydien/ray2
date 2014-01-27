@@ -390,6 +390,11 @@ fieldError  Field::createLayoutInstance()
 	return FIELD_ERR;
 };
 
+void Field::setSimMode(SimMode &simMode)
+{
+	std::cout <<"error in Field.setSimMode(): this has not yet been implemented for the given Field representation" << std::endl;
+};
+
 /**
  * \detail doSim
  *
@@ -454,7 +459,7 @@ void Field::setProgressCallback(void* p2CallbackObjectIn, void (*callbackProgres
  * \remarks 
  * \author Mauch
  */
-fieldError  Field::parseXml(pugi::xml_node &field, vector<Field*> &fieldVec)
+fieldError  Field::parseXml(pugi::xml_node &field, vector<Field*> &fieldVec, SimParams simParams)
 {
 	Parser_XML l_parser;
 	if (!this->checkParserError(l_parser.attrByNameToDouble(field, "lambda", this->getParamsPtr()->lambda)))

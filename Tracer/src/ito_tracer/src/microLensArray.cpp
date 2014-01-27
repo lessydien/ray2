@@ -42,7 +42,7 @@
  * \remarks 
  * \author Mauch
  */
-geometryError MicroLensArray::parseXml(pugi::xml_node &geometry, TraceMode l_mode, vector<Geometry*> &geomVec)
+geometryError MicroLensArray::parseXml(pugi::xml_node &geometry, SimParams simParams, vector<Geometry*> &geomVec)
 {
 	Parser_XML l_parser;
 
@@ -68,10 +68,10 @@ geometryError MicroLensArray::parseXml(pugi::xml_node &geometry, TraceMode l_mod
 			return GEOM_ERR;
 		}
 		// if we are in sequential mode, we ignore the side face
-		if ( ((l_mode==SIM_GEOMRAYS_SEQ) || (l_mode==SIM_DIFFRAYS_SEQ) ) && (strcmp(str,"SIDEFACE")==0) )
+        if ( ((simParams.traceMode==TRACE_SEQ) ) && (strcmp(str,"SIDEFACE")==0) )
 			;
 		else
-			if (!l_GeomFab.createGeomInstFromXML(l_pXmlGeomList->at(i), l_mode, geomVec))
+			if (!l_GeomFab.createGeomInstFromXML(l_pXmlGeomList->at(i), simParams, geomVec))
 			{
 				std::cout << "error in MicroLensArray.parseXML(): geomFab.createGeomInstFromXml() returned an error." << std::endl;
 				return GEOM_ERR;

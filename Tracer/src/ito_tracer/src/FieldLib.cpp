@@ -29,7 +29,7 @@
 
 using namespace std;
 
-bool FieldFab::createFieldInstFromXML(xml_node &fieldNode, vector<Field*> &fieldVec) const
+bool FieldFab::createFieldInstFromXML(xml_node &fieldNode, vector<Field*> &fieldVec, SimParams simParams) const
 {	
 	Parser_XML l_parser;
 	// get object type from XML element
@@ -90,7 +90,7 @@ bool FieldFab::createFieldInstFromXML(xml_node &fieldNode, vector<Field*> &field
 	}
 
 	// call parsing routine of geometry
-	if (FIELD_NO_ERR != l_pField->parseXml(fieldNode, fieldVec))
+	if (FIELD_NO_ERR != l_pField->parseXml(fieldNode, fieldVec, simParams))
 	{
 		cout << "error om FieldFab.createInstanceFromXML(): field.parseXml() returned an error" << endl;
 		return false;

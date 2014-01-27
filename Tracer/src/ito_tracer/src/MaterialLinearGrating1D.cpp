@@ -695,9 +695,9 @@ MaterialError MaterialLinearGrating1D::processParseResults(MaterialParseParamStr
  * \remarks 
  * \author Mauch
  */
-MaterialError MaterialLinearGrating1D::parseXml(pugi::xml_node &material)
+MaterialError MaterialLinearGrating1D::parseXml(pugi::xml_node &material, SimParams simParams)
 {
-	if (!Material::parseXml(material))
+	if (!Material::parseXml(material, simParams))
 	{
 		std::cout << "error in MaterialLinearGrating1D.parseXml(): Material.parseXml() returned an error." << std::endl;
 		return MAT_ERR;

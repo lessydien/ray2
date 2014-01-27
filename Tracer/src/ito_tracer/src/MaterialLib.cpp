@@ -28,7 +28,7 @@
 #include "CoatingLib.h"
 #include "ScatterLib.h"
 
-bool MaterialFab::createMatInstFromXML(xml_node &node, Material* &pMat) const
+bool MaterialFab::createMatInstFromXML(xml_node &node, Material* &pMat, SimParams simParams) const
 {	
 	Parser_XML l_parser;
 	// get object type from XML element
@@ -88,7 +88,7 @@ bool MaterialFab::createMatInstFromXML(xml_node &node, Material* &pMat) const
 		break;
 	}
 
-	if (MAT_NO_ERR != pMat->parseXml(node) )
+	if (MAT_NO_ERR != pMat->parseXml(node, simParams) )
 	{
 		std::cout <<"error in MaterialFab.createMatInstFromXML(): mat.parseXML() returned an error" << std::endl;
 		return false;

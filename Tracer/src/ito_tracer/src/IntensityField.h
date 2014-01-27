@@ -109,7 +109,7 @@ class IntensityField : public Field
 	double* getIntensityPtr();
 	complex<double>* getComplexAmplPtr();
 	virtual fieldError convert2ItomObject(void** dataPtrPtr, ItomFieldParams* paramsOut);
-	virtual fieldError parseXml(pugi::xml_node &field, vector<Field*> &fieldVec);
+	virtual fieldError parseXml(pugi::xml_node &field, vector<Field*> &fieldVec, SimParams simParams);
 };
 
 inline double IntensityField::getPix(ulong2 pixel)

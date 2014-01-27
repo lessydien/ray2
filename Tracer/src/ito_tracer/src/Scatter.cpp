@@ -58,7 +58,7 @@ ScatterError Scatter::processParseResults(MaterialParseParamStruct &parseResults
  * \remarks 
  * \author Mauch
  */
-ScatterError Scatter::parseXml(pugi::xml_node &geometry)
+ScatterError Scatter::parseXml(pugi::xml_node &geometry, SimParams simParams)
 {
 	cout << "error in Scatter.parseXml(): not implemented yet for given scatter type" << endl;
 	return SCAT_ERROR;

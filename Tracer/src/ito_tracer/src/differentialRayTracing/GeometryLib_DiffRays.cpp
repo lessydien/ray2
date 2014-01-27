@@ -28,7 +28,7 @@
 
 using namespace std;
 
-bool GeometryFab_DiffRays::createGeomInstFromXML(xml_node &geomNode, TraceMode l_mode, vector<Geometry*> &geomVec) const
+bool GeometryFab_DiffRays::createGeomInstFromXML(xml_node &geomNode, SimParams simParams, vector<Geometry*> &geomVec) const
 {	
 	Geometry* l_pGeometry=NULL;
 	Parser_XML l_parser;
@@ -116,7 +116,7 @@ bool GeometryFab_DiffRays::createGeomInstFromXML(xml_node &geomNode, TraceMode l
 	}
 	
 	// call parsing routine of geometry
-	if (GEOM_NO_ERR != l_pGeometry->parseXml(geomNode, l_mode, geomVec))
+	if (GEOM_NO_ERR != l_pGeometry->parseXml(geomNode, simParams, geomVec))
 	{
 		cout << "error om GeomFab.createInstanceFromXML(): geometry.parseXml() returned an error" << endl;
 		return false;

@@ -193,7 +193,7 @@ private:
 
 	//fieldError writeData2File(FILE *hFile_pos, rayDataOutParams outParams);
 
-	fieldError parseXml(pugi::xml_node &field, vector<Field*> &fieldVec);
+	fieldError parseXml(pugi::xml_node &field, vector<Field*> &fieldVec, SimParams simParams);
 };
 
 #endif

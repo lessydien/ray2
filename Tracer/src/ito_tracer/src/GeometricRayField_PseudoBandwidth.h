@@ -117,7 +117,7 @@ class GeometricRayField_PseudoBandwidth : public GeometricRayField
 	fieldError convert2ScalarField(Field* imagePtr, detParams &oDetParams);
 	fieldError convert2VecField(Field* imagePtr, detParams &oDetParams);
 
-	fieldError parseXml(pugi::xml_node &field, vector<Field*> &fieldVec);
+	fieldError parseXml(pugi::xml_node &field, vector<Field*> &fieldVec, SimParams simParams);
 };
 
 #endif

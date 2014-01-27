@@ -158,7 +158,7 @@ groupError Group::createOptixInstance(RTcontext &context, SimParams simParams, d
 		return GROUP_NOGEOMGROUP_ERR;
 	}
 
-	if ( (simParams.traceMode==SIM_GEOMRAYS_SEQ) || (simParams.traceMode==SIM_DIFFRAYS_SEQ) )
+	if ( (simParams.traceMode==TRACE_SEQ) )
 	{
 		/* create top level selector in context */
 		if (!RT_CHECK_ERROR_NOEXIT( rtSelectorCreate( context, &selector ), context ))
@@ -253,7 +253,7 @@ groupError Group::updateOptixInstance(RTcontext &context, SimParams simParams, d
 		return GROUP_NOGEOMGROUP_ERR;
 	}
 
-	if ( (this->mode==SIM_GEOMRAYS_SEQ) || (this->mode==SIM_DIFFRAYS_SEQ) )
+	if ( (this->mode.traceMode==TRACE_SEQ) )
 	{
 		/* create top level selector in context */
 //		RT_CHECK_ERROR_NOEXIT( rtSelectorCreate( context, &selector ) );

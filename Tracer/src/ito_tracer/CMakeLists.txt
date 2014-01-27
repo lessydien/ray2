@@ -235,13 +235,15 @@ OPTIX_add_sample_executable( ITO-MacroSim
   src/MaterialLib.cpp
   src/MaterialLib.h
   src/differentialRayTracing/MaterialLib_DiffRays.h
-  src/differentialRayTracing/Material_DiffRays_Lib.h
+  src/differentialRayTracing/MaterialLib_DiffRays.cpp
   src/CoatingLib.cpp
   src/CoatingLib.h
   src/differentialRayTracing/CoatingLib_DiffRays.h
+  src/differentialRayTracing/CoatingLib_DiffRays.cpp
   src/ScatterLib.cpp
   src/ScatterLib.h
   src/differentialRayTracing/ScatterLib_DiffRays.h
+  src/differentialRayTracing/ScatterLib_DiffRays.cpp
   src/MaterialFilter.cpp
   src/MaterialFilter.h
   src/MaterialFilter_hit.h

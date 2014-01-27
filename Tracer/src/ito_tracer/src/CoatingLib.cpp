@@ -24,7 +24,7 @@
 
 #include "CoatingLib.h"
 
-bool CoatingFab::createCoatInstFromXML(xml_node &node, Coating* &pCoat) const
+bool CoatingFab::createCoatInstFromXML(xml_node &node, Coating* &pCoat, SimParams simParams) const
 {	
 	Parser_XML l_parser;
 	// get object type from XML element
@@ -62,7 +62,7 @@ bool CoatingFab::createCoatInstFromXML(xml_node &node, Coating* &pCoat) const
 		break;
 	}
 
-	pCoat->parseXml(node);
+	pCoat->parseXml(node, simParams);
 
 	return true;
 }

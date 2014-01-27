@@ -30,6 +30,7 @@
 #include <iostream>
 #include "Material.h"
 #include "MaterialLib.h"
+#include "differentialRayTracing\MaterialLib_DiffRays.h"
 
 #include "Parser_XML.h"
 
@@ -63,7 +64,7 @@ geometryError Geometry::processParseResults(GeometryParseParamStruct &parseResul
  * \remarks 
  * \author Mauch
  */
-geometryError Geometry::parseXml(pugi::xml_node &geometry, TraceMode l_mode, vector<Geometry*> &geomVec)
+geometryError Geometry::parseXml(pugi::xml_node &geometry, SimParams simParams, vector<Geometry*> &geomVec)
 {
 	Parser_XML l_parser;
 
@@ -103,9 +104,22 @@ geometryError Geometry::parseXml(pugi::xml_node &geometry, TraceMode l_mode, vec
 		return GEOM_ERR;
 	}
 	// create material
-	MaterialFab l_matFab;
+	MaterialFab* l_pMatFab;
+    switch (simParams.simMode)
+    {
+        case SIM_GEOM_RT:
+            l_pMatFab=new MaterialFab();
+            break;
+        case SIM_DIFF_RT:
+            l_pMatFab=new MaterialFab_DiffRays();
+            break;
+        default:
+            std::cout << "error in Geometry.parseXml(): unknown simulation mode." << std::endl;
+            return GEOM_ERR;
+            break;
+    }
 	Material* l_pMaterial;
-	if (!l_matFab.createMatInstFromXML(l_pMatNodes->at(0),l_pMaterial))
+	if (!l_pMatFab->createMatInstFromXML(l_pMatNodes->at(0),l_pMaterial, simParams))
 	{
 		std::cout << "error in Geometry.parseXml() of Geometry " << this->name << ": matFab.createInstFromXML() returned an error." << std::endl;
 		return GEOM_ERR;
@@ -114,6 +128,7 @@ geometryError Geometry::parseXml(pugi::xml_node &geometry, TraceMode l_mode, vec
 	this->setMaterial(l_pMaterial,0);
 
 	delete l_pMatNodes;
+    delete l_pMatFab;
 	return GEOM_NO_ERR;
 }
 

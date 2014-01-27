@@ -287,12 +287,12 @@ geometryError ApertureArraySurface::updateOptixInstance( RTcontext &context, RTg
  * \remarks 
  * \author Mauch
  */
-geometryError ApertureArraySurface::parseXml(pugi::xml_node &geometry, TraceMode mode, vector<Geometry*> &geomVec)
+geometryError ApertureArraySurface::parseXml(pugi::xml_node &geometry, SimParams simParams, vector<Geometry*> &geomVec)
 {
 	Parser_XML l_parser;
 
 	// call base class function
-	if (GEOM_NO_ERR != Geometry::parseXml(geometry, mode, geomVec))
+	if (GEOM_NO_ERR != Geometry::parseXml(geometry, simParams, geomVec))
 	{
 		std::cout << "error in ApertureArraySurface.parseXml(): Geometry.parseXml() returned an error" << std::endl;
 		return GEOM_ERR;

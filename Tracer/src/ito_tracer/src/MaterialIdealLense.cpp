@@ -361,9 +361,9 @@ MaterialError MaterialIdealLense::processParseResults(MaterialParseParamStruct &
  * \remarks 
  * \author Mauch
  */
-MaterialError MaterialIdealLense::parseXml(pugi::xml_node &geometry)
+MaterialError MaterialIdealLense::parseXml(pugi::xml_node &geometry, SimParams simParams)
 {
-	if (!Material::parseXml(geometry))
+	if (!Material::parseXml(geometry, simParams))
 	{
 		std::cout << "error in MaterialIdealLense.parseXml(): Material.parseXml() returned an error." << std::endl;
 		return MAT_ERR;

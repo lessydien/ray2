@@ -452,9 +452,9 @@ MaterialError MaterialRefracting::processParseResults(MaterialParseParamStruct &
  * \remarks 
  * \author Mauch
  */
-MaterialError MaterialRefracting::parseXml(pugi::xml_node &material)
+MaterialError MaterialRefracting::parseXml(pugi::xml_node &material, SimParams simParams)
 {
-	if (!Material::parseXml(material))
+	if (!Material::parseXml(material, simParams))
 	{
 		std::cout << "error in MaterialRefracting.parseXml(): Material.parseXml() returned an error." << std::endl;
 		return MAT_ERR;

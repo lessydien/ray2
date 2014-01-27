@@ -476,9 +476,9 @@ MaterialError MaterialDOE::processParseResults(MaterialParseParamStruct &parseRe
  * \remarks 
  * \author Mauch
  */
-MaterialError MaterialDOE::parseXml(pugi::xml_node &material)
+MaterialError MaterialDOE::parseXml(pugi::xml_node &material, SimParams simParams)
 {
-	if (!Material::parseXml(material))
+	if (!Material::parseXml(material, simParams))
 	{
 		std::cout << "error in MaterialDOE.parseXml(): Material.parseXml() returned an error." << std::endl;
 		return MAT_ERR;

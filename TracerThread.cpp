@@ -60,10 +60,10 @@ void TracerThread::init(QString& scene, ito::DataObject* field, ConsoleStream *o
 	switch (guiParams.traceMode)
 	{
 	case GuiSimParams::SEQUENTIAL:
-		this->m_params.mode=SIM_GEOMRAYS_SEQ;
+        this->m_params.simParams.traceMode=TRACE_SEQ;
 		break;
 	case GuiSimParams::NONSEQUENTIAL:
-		this->m_params.mode=SIM_GEOMRAYS_NONSEQ;
+        this->m_params.simParams.traceMode=TRACE_NONSEQ;
 		break;
 	}
 

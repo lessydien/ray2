@@ -197,9 +197,9 @@ MatVolumeScatter_params MaterialVolumeScatter::getParams(void)
  * \remarks 
  * \author Mauch
  */
-MaterialError MaterialVolumeScatter::parseXml(pugi::xml_node &material)
+MaterialError MaterialVolumeScatter::parseXml(pugi::xml_node &material, SimParams simParams)
 {
-	if (!Material::parseXml(material))
+	if (!Material::parseXml(material, simParams))
 	{
 		std::cout << "error in MaterialVolumeScatter.parseXml(): Material.parseXml() returned an error." << std::endl;
 		return MAT_ERR;

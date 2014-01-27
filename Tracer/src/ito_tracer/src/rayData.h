@@ -188,11 +188,11 @@ typedef struct
 //typedef enum 
 //{
 //  SIM_GEOMRAYS_NONSEQ,
-//  SIM_GEOMRAYS_SEQ,
+//  TRACE_SEQ,
 //  SIM_GAUSSBEAMRAYS_NONSEQ,
-//  SIM_GAUSSBEAMRAYS_SEQ,
+//  TRACE_SEQ,
 //  SIM_DIFFRAYS_NONSEQ,
-//  SIM_DIFFRAYS_SEQ
+//  TRACE_SEQ
 //} traceMode;
 
 #endif

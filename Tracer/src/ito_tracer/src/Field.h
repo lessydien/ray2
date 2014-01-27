@@ -204,7 +204,7 @@ class Field
 	virtual fieldParams* getParamsPtr(void);
 
 	virtual fieldError processParseResults(FieldParseParamStruct &parseResults_Src);
-	virtual fieldError parseXml(pugi::xml_node &field, vector<Field*> &fieldVec);
+	virtual fieldError parseXml(pugi::xml_node &field, vector<Field*> &fieldVec, SimParams simParams);
 
 	//virtual fieldError writeData2File(FILE *hFile_pos, rayDataOutParams outParams);
 	virtual fieldError convert2Intensity(Field *imagePtr, detParams &oDetParams);
@@ -226,6 +226,8 @@ class Field
 	virtual fieldError  createLayoutInstance();
 
 	virtual fieldError  doSim(Group &oGroup, simAssParams &params, bool &simDone);
+
+    virtual void setSimMode(SimMode &simMode);
 
 	virtual bool checkParserError(char *msg);
 };

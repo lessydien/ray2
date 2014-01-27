@@ -166,9 +166,9 @@ MaterialError MaterialAbsorbing::processParseResults(MaterialParseParamStruct &p
  * \remarks 
  * \author Mauch
  */
-MaterialError MaterialAbsorbing::parseXml(pugi::xml_node &geometry)
+MaterialError MaterialAbsorbing::parseXml(pugi::xml_node &geometry, SimParams simParams)
 {
-	if (!Material::parseXml(geometry))
+	if (!Material::parseXml(geometry, simParams))
 	{
 		std::cout << "error in MaterialAbsorbing.parseXml(): Material.parseXml() returned an error." << std::endl;
 		return MAT_ERR;

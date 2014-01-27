@@ -132,7 +132,7 @@ class Coating
 	virtual bool hit(diffRayStruct &ray, Mat_hitParams hitParams);
 	virtual bool hit(gaussBeamRayStruct &ray, gaussBeam_geometricNormal normal);
 	virtual CoatingError processParseResults(MaterialParseParamStruct &parseResults_Mat);
-	virtual CoatingError parseXml(pugi::xml_node &node);
+	virtual CoatingError parseXml(pugi::xml_node &node, SimParams simParams);
 };
 
 #endif

@@ -69,6 +69,6 @@ class MaterialAbsorbing: public Material
 	void hit(diffRayStruct &ray, Mat_hitParams hitParams, double t_hit, int geometryID);
 	void hit(gaussBeamRayStruct &ray, gaussBeam_geometricNormal normal, int geometryID);
 	MaterialError processParseResults(MaterialParseParamStruct &parseResults_Mat);
-	MaterialError parseXml(pugi::xml_node &geometry);
+	MaterialError parseXml(pugi::xml_node &geometry, SimParams simParams);
 };
 #endif

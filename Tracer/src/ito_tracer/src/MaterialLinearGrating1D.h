@@ -179,7 +179,7 @@ class MaterialLinearGrating1D: public Material
 	MatLinearGrating1D_DiffractionParams* getDiffractionParams(void);
 	void setDiffractionParams(MatLinearGrating1D_DiffractionParams* diffractionParamsInPtr);
 	MaterialError processParseResults(MaterialParseParamStruct &parseResults_MatPtr, parseGlassResultStruct* parseResults_GlassPtr, parseGlassResultStruct* parseResults_ImmPtr, ParseGratingResultStruct* parseResults_GratPtr);
-	MaterialError parseXml(pugi::xml_node &geometry);	
+	MaterialError parseXml(pugi::xml_node &geometry, SimParams simParams);	
 
 };
 

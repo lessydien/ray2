@@ -38,12 +38,17 @@ class DiffRayField_RayAiming_Item :
 {
 	Q_OBJECT
 
+        Q_PROPERTY(Vec3d initialTarget READ getInitialTarget WRITE setInitialTarget DESIGNABLE true USER true);	
+
 public:
 
 	DiffRayField_RayAiming_Item(QString name="DiffRayField_RayAiming", QObject *parent=0);
 	~DiffRayField_RayAiming_Item(void);
 
 	// functions for property editor
+	const Vec3d getInitialTarget()  {return m_initialTarget;};
+	void setInitialTarget(const Vec3d in) {m_initialTarget=in;};
+
 	bool signalDataChanged();
 
 	bool writeToXML(QDomDocument &document, QDomElement &root) const;
@@ -52,6 +57,7 @@ public:
 	void renderVtk(vtkSmartPointer<vtkRenderer> renderer);
 
 private:
+    Vec3d m_initialTarget;
 
 }; // class DiffRayField_RayAiming_Item
 

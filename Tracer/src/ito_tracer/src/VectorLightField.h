@@ -97,7 +97,7 @@ class VectorLightField: Field
 	vecLight getPix(ulong2 pixel);
 	fieldError setPix(ulong2 pixel, vecLight value);
 
-	fieldError parseXml(pugi::xml_node &field, vector<Field*> &fieldVec);
+	fieldError parseXml(pugi::xml_node &field, vector<Field*> &fieldVec, SimParams simParams);
 };
 
 inline vecLight VectorLightField::getPix(ulong2 pixel)

@@ -89,17 +89,26 @@ public:
 
 typedef enum 
 {
-  SIM_GEOMRAYS_NONSEQ,
-  SIM_GEOMRAYS_SEQ,
-  SIM_GAUSSBEAMRAYS_NONSEQ,
-  SIM_GAUSSBEAMRAYS_SEQ,
-  SIM_DIFFRAYS_NONSEQ,
-  SIM_DIFFRAYS_SEQ
+    TRACE_SEQ,
+    TRACE_NONSEQ
+  //SIM_GEOMRAYS_NONSEQ,
+  //TRACE_SEQ,
+  //SIM_GAUSSBEAMRAYS_NONSEQ,
+  //TRACE_SEQ,
+  //SIM_DIFFRAYS_NONSEQ,
+  //TRACE_SEQ
 } TraceMode;
+
+typedef enum 
+{
+    SIM_GEOM_RT,
+    SIM_DIFF_RT
+} SimMode;
 
 typedef struct
 {
 	TraceMode traceMode;
+    SimMode simMode;
 } SimParams;
 
 /* declare class */
@@ -154,7 +163,7 @@ public:
 	char inputFilesPath[512];
 	char outputFilesPath[512];
 	char path_to_ptx[512];
-	TraceMode mode;
+	SimParams simParams;
 };
 
 class MacroSimTracer

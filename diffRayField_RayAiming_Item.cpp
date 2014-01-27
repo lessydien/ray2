@@ -27,7 +27,8 @@
 using namespace macrosim;
 
 DiffRayField_RayAiming_Item::DiffRayField_RayAiming_Item(QString name, QObject *parent) :
-	RayFieldItem(name, DIFFRAYFIELDRAYAIM, parent)
+	RayFieldItem(name, DIFFRAYFIELDRAYAIM, parent),
+        m_initialTarget(Vec3d(0,0,0))
 {
 	this->setRender(false); //per default we dont render the ray field
 }
@@ -76,6 +77,9 @@ bool DiffRayField_RayAiming_Item::writeToXML(QDomDocument &document, QDomElement
 	node.setAttribute("detRoot.x", QString::number(l_detInt->getRoot().X));
 	node.setAttribute("detRoot.y", QString::number(l_detInt->getRoot().Y));
 	node.setAttribute("detRoot.z", QString::number(l_detInt->getRoot().Z));
+    node.setAttribute("initialTarget.x", QString::number(this->m_initialTarget.X));
+    node.setAttribute("initialTarget.y", QString::number(this->m_initialTarget.Y));
+    node.setAttribute("initialTarget.z", QString::number(this->m_initialTarget.Z));
 
 	root.appendChild(node);
 	return true;
@@ -86,7 +90,10 @@ bool DiffRayField_RayAiming_Item::readFromXML(const QDomElement &node)
 	if (!RayFieldItem::readFromXML(node))
 		return false;
 
-
+    m_initialTarget.X=node.attribute("initialTarget.x").toDouble();
+    m_initialTarget.Y=node.attribute("initialTarget.y").toDouble();
+    m_initialTarget.Z=node.attribute("initialTarget.z").toDouble();
+    
 	return true;
 }
 

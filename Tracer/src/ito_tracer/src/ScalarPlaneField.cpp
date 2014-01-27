@@ -194,10 +194,10 @@ fieldError ScalarPlaneField::initSimulation(Group &oGroup, simAssParams &params)
  * \remarks 
  * \author Mauch
  */
-fieldError  ScalarPlaneField::parseXml(pugi::xml_node &field, vector<Field*> &fieldVec)
+fieldError  ScalarPlaneField::parseXml(pugi::xml_node &field, vector<Field*> &fieldVec, SimParams simParams)
 {
 	// call base class function
-	if (FIELD_NO_ERR != ScalarLightField::parseXml(field, fieldVec))
+	if (FIELD_NO_ERR != ScalarLightField::parseXml(field, fieldVec, simParams))
 	{
 		std::cout << "error in ScalarPlaneField.parseXml(): ScalarLightField.parseXml()  returned an error." << std::endl;
 		return FIELD_ERR;

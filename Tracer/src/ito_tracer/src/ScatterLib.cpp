@@ -24,7 +24,7 @@
 
 #include "ScatterLib.h"
 
-bool ScatterFab::createScatInstFromXML(xml_node &node, Scatter* &pScat) const
+bool ScatterFab::createScatInstFromXML(xml_node &node, Scatter* &pScat, SimParams simParams) const
 {	
 	Parser_XML l_parser;
 	// get object type from XML element
@@ -68,7 +68,7 @@ bool ScatterFab::createScatInstFromXML(xml_node &node, Scatter* &pScat) const
 		break;
 	}
 
-	pScat->parseXml(node);
+	pScat->parseXml(node, simParams);
 
 	return true;
 }

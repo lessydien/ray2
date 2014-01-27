@@ -62,15 +62,56 @@ public:
  * \remarks this function is defined inline so it can be used on GPU and CPU
  * \author Mauch
  */
-inline RT_HOSTDEVICE bool hitReflecting_DiffRays(diffRayStruct &ray, Mat_DiffRays_hitParams hitParams, double t_hit, int geometryID, bool coat_reflected)
+inline RT_HOSTDEVICE bool hitReflecting_DiffRays(diffRayStruct &ray, Mat_DiffRays_hitParams hitParams, double t_hit, int geomID, bool coat_reflected)
 {
-    ray.position = ray.position + t_hit * ray.direction;
-	ray.currentGeometryID=geometryID;
+	Mat_DiffRays_hitParams hittest=hitParams;
+	// update ray position
+	ray.position=ray.position+t_hit*ray.direction;
+	ray.currentGeometryID=geomID;
 	ray.opl=ray.opl+ray.nImmersed*t_hit;
-	if (coat_reflected)
-		ray.direction=reflect(ray.direction,hitParams.normal);
-	ray.flux=ray.flux;
-	return true;
+	double3 oldRayDirection=ray.direction; // save ray direction for use in refractDifferentialData()
+	// calc differential ray stuff
+	// calc new wavefront radii
+	double2 newWavefrontRad;
+	newWavefrontRad.x=(ray.wavefrontRad.x-t_hit*ray.nImmersed);
+	newWavefrontRad.y=(ray.wavefrontRad.y-t_hit*ray.nImmersed);
+	// calc local flux from wavefront radii
+	ray.flux=ray.flux*abs(ray.wavefrontRad.x/newWavefrontRad.x)*abs(ray.wavefrontRad.y/newWavefrontRad.y);
+	// save new wavefront radii
+	ray.wavefrontRad=newWavefrontRad;
+
+	// see Diss. O. Stolz: "Differentielles Ray Tracing für spezielle Beleuchtungssysteme", Uni Erlangen 2010
+	// transform tha data of the incoming ray
+	double3 P_r, T_r;
+	double2 radius_r;
+	double torsion_r;
+	double testPhi=acos(dot(ray.direction,hitParams.normal));
+	transformDifferentialData(ray.direction, ray.mainDirY, ray.wavefrontRad, hitParams.normal, P_r, T_r, radius_r, torsion_r );
+
+	// transform the data of the surface
+	double3 PBar_r, TBar_r;
+	double2 radiusBar_r;
+	double torsionBar_r;
+	transformDifferentialData(ray.direction, hitParams.mainDirY, hitParams.mainRad, hitParams.normal, PBar_r, TBar_r, radiusBar_r, torsionBar_r );
+
+    // if the coating wants us to have reflection, we do reflection here instead of refraction
+	double mu;
+	double3 PPrime_r, TPrime_r;
+	double2 radiusPrime_r;
+	double torsionPrime_r;
+	// do the reflection
+	ray.direction=reflect(ray.direction,hitParams.normal);
+	mu=1;
+	// calc the data of the reflected ray
+	reflectDifferentialData(oldRayDirection, hitParams.normal, ray.direction,  P_r, radius_r, radiusBar_r, torsion_r, torsionBar_r, mu, PPrime_r, TPrime_r, radiusPrime_r, torsionPrime_r, ray.flux);
+
+	// transform the data of the refracted ray into its local system
+	invTransformDifferentialData(PPrime_r, TPrime_r, radiusPrime_r, torsionPrime_r, ray.mainDirX, ray.mainDirY, ray.wavefrontRad);
+
+    // adjust flux due to projections on interface
+	ray.flux=ray.flux*abs(dot(oldRayDirection,hitParams.normal))/abs(dot(ray.direction,hitParams.normal));
+
+	return 1;
 }
 
 #endif

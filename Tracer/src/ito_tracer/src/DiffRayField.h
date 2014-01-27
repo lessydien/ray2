@@ -162,13 +162,15 @@ class DiffRayField : public RayField
 
 	virtual fieldError writeData2File(FILE *hFile_pos, rayDataOutParams outParams);
 
+    void setSimMode(SimMode &simMode);
+
 	virtual fieldError convert2RayData(Field** imagePtrPtr, detParams &oDetParams);
 	virtual fieldError convert2Intensity(Field* imagePtr, detParams &oDetParams);
 	virtual fieldError convert2ScalarField(Field* imagePtr, detParams &oDetParams);
 	virtual fieldError convert2PhaseSpace(Field* imagePtr, detParams &oDetParams);
 //	fieldError convert2VecField(Field* imagePtr, detParams &oDetParams);
 	virtual fieldError processParseResults(FieldParseParamStruct &parseResults_Src, parseGlassResultStruct* parseResults_GlassPtr);
-	fieldError parseXml(pugi::xml_node &field, vector<Field*> &fieldVec);
+	fieldError parseXml(pugi::xml_node &field, vector<Field*> &fieldVec, SimParams simParams);
 
 };
 

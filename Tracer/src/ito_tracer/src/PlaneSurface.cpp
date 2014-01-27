@@ -331,10 +331,10 @@ geometryError PlaneSurface::processParseResults(GeometryParseParamStruct &parseR
 	return GEOM_NO_ERR;
 }
 
-geometryError PlaneSurface::parseXml(pugi::xml_node &geometry, TraceMode l_mode, vector<Geometry*> &geomVec)
+geometryError PlaneSurface::parseXml(pugi::xml_node &geometry, SimParams simParams, vector<Geometry*> &geomVec)
 {
 	// parse base class
-	if (GEOM_NO_ERR!=Geometry::parseXml(geometry,l_mode, geomVec))
+	if (GEOM_NO_ERR!=Geometry::parseXml(geometry,simParams, geomVec))
 	{
 		std::cout << "error in PlaneSurface.parseXml(): Geometry.parseXml() returned an error." << std::endl;
 		return GEOM_ERR;

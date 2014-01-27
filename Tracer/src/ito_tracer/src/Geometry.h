@@ -237,7 +237,7 @@ class Geometry
 	virtual geometryError createCPUSimInstance(double lambda, SimParams simParams);
 	virtual geometryError updateCPUSimInstance(double lambda, SimParams simParams);
 	virtual geometryError processParseResults(GeometryParseParamStruct &parseResults_Geom, int geomID);
-	virtual geometryError parseXml(pugi::xml_node &geometry, TraceMode l_mode, vector<Geometry*> &geomVec);
+	virtual geometryError parseXml(pugi::xml_node &geometry, SimParams simParams, vector<Geometry*> &geomVec);
 	virtual bool checkParserError(char *msg);
 };
 

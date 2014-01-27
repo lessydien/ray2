@@ -38,7 +38,7 @@
  * \remarks 
  * \author Mauch
  */
-bool createSceneFromZemax(Group *oGroupPtr, FILE *hfile, RayField ***sourceListPtr, long *sourceNumberPtr, Detector ***detListPtr, long *detNumberPtr, TraceMode mode)
+bool createSceneFromZemax(Group *oGroupPtr, FILE *hfile, RayField ***sourceListPtr, long *sourceNumberPtr, Detector ***detListPtr, long *detNumberPtr, SimMode mode)
 {
 
 	std::cout <<"********************************************" << std::endl;
@@ -186,7 +186,7 @@ bool createSceneFromZemax(Group *oGroupPtr, FILE *hfile, RayField ***sourceListP
  * \remarks 
  * \author Mauch
  */
-bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseResults, RayField ***sourceListPtr, long *sourceNumberPtr, Detector ***detListPtr, long *detNumberPtr, TraceMode mode)
+bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseResults, RayField ***sourceListPtr, long *sourceNumberPtr, Detector ***detListPtr, long *detNumberPtr, SimMode mode)
 {
 	/* output the geometry-data for debugging purpose */
 	/* get handle to parser-debug file */
@@ -1077,7 +1077,7 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
  * \remarks 
  * \author Mauch
  */
-bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseResults, RayField ***sourceListPtr, long *sourceNumberPtr, Detector ***detListPtr, long *detNumberPtr, TraceMode mode)
+bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseResults, RayField ***sourceListPtr, long *sourceNumberPtr, Detector ***detListPtr, long *detNumberPtr, SimMode mode)
 {
 	/* output the geometry-data for debugging purpose */
 	/* get handle to parser-debug file */
@@ -1856,7 +1856,7 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
  * \remarks 
  * \author Mauch
  */
-bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseResults, RayField ***sourceListPtr, long *sourceNumberPtr, Detector ***detListPtr, long *detNumberPtr, TraceMode mode)
+bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseResults, RayField ***sourceListPtr, long *sourceNumberPtr, Detector ***detListPtr, long *detNumberPtr, SimMode mode)
 {
 	/* output the geometry-data for debugging purpose */
 	/* get handle to parser-debug file */

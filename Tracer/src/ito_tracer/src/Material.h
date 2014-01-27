@@ -93,7 +93,7 @@ class Material
 	}
 	void setPathToPtx(char* path);
 	MaterialError setCoating(Coating* ptrIn);
-	MaterialError createMaterialHitProgramPtx(RTcontext context, TraceMode mode);
+	MaterialError createMaterialHitProgramPtx(RTcontext context, SimParams simParams);
 	Coating* getCoating(void);
 	MaterialError setScatter(Scatter* ptrIn);
 	Scatter* getScatter(void);
@@ -113,7 +113,7 @@ class Material
 	virtual MatDispersionParams* getImmersionDispersionParams(void);
 
 	virtual MaterialError processParseResults(MaterialParseParamStruct &parseResults_Mat);
-	virtual MaterialError parseXml(pugi::xml_node &node);
+	virtual MaterialError parseXml(pugi::xml_node &node, SimParams simParams);
 	virtual bool checkParserError(char *msg);
 };
 

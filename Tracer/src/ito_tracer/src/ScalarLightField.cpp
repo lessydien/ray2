@@ -389,10 +389,10 @@ fieldError  ScalarLightField::doSim(Group &oGroup, simAssParams &params, bool &s
  * \remarks 
  * \author Mauch
  */
-fieldError  ScalarLightField::parseXml(pugi::xml_node &field, vector<Field*> &fieldVec)
+fieldError  ScalarLightField::parseXml(pugi::xml_node &field, vector<Field*> &fieldVec, SimParams simParams)
 {
 	// call base class function
-	if (FIELD_NO_ERR != Field::parseXml(field, fieldVec))
+	if (FIELD_NO_ERR != Field::parseXml(field, fieldVec, simParams))
 	{
 		std::cout << "error in ScalarLightField.parseXml(): Field.parseXml()  returned an error." << std::endl;
 		return FIELD_ERR;

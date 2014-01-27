@@ -25,11 +25,28 @@
 #ifndef SCATTERLIB_DIFFRAYS_H
   #define SCATTERLIB_DIFFRAYS_H
 
+#include "../ScatterLib.h"
 // include the individual materials
 #include "Scatter_TorranceSparrow1D_DiffRays.h"
 #include "Scatter_DoubleCauchy1D_DiffRays.h"
 #include "Scatter_Lambert2D_DiffRays.h"
 
+class ScatterFab_DiffRays : public ScatterFab
+{
+protected:
 
+public:
+
+	ScatterFab_DiffRays()
+	{
+
+	}
+	~ScatterFab_DiffRays()
+	{
+
+	}
+
+	bool createScatInstFromXML(xml_node &node, Scatter* &pScat, SimParams simParams) const;
+};
 
 #endif

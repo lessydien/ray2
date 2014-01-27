@@ -106,7 +106,7 @@ class Pupil
 	}
 	void setPathToPtx(char* path);
 	char* getPathToPtx(void);
-	PupilError createPupilAimProgramPtx(RTcontext context, TraceMode mode);
+	PupilError createPupilAimProgramPtx(RTcontext context, SimMode mode);
 
 //    virtual PupilError createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda);
 	virtual PupilError createCPUSimInstance(double lambda);

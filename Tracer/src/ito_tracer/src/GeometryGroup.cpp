@@ -47,7 +47,7 @@ geometryGroupError  GeometryGroup::trace(rayStruct &ray)
 	int indexToTrace;
 	double minDist=99999999999999999;//infinity
 	double tempDist;
-	if ( (this->mode==SIM_GEOMRAYS_SEQ) )
+	if ( (this->mode.traceMode==TRACE_SEQ) )
 	{
 		Geometry* l_geometry=this->getGeometry(ray.currentGeometryID);
 		if (l_geometry==NULL)
@@ -89,7 +89,7 @@ geometryGroupError  GeometryGroup::trace(rayStruct &ray)
 			//start with first geometry's data
 			indexToTrace=-1;
 			tempDist=this->getGeometry(0)->intersect(&ray);
-			if (tempDist>0.000001)
+			if (tempDist>EPSILON)
 			{
 				minDist=tempDist;
 				indexToTrace=0;
@@ -106,7 +106,7 @@ geometryGroupError  GeometryGroup::trace(rayStruct &ray)
 				}
 				
 			}
-			if (minDist<0.00000001)
+			if (minDist<EPSILON)
 				std::cout << "distance to small" << std::endl;
 			if ((minDist<0) || (indexToTrace==-1))
 			{
@@ -138,7 +138,7 @@ geometryGroupError  GeometryGroup::trace(diffRayStruct &ray)
 	int indexToTrace;
 	double minDist=99999999999999999;//infinity
 	double tempDist;
-	if ( (this->mode==SIM_DIFFRAYS_SEQ) )
+	if ( (this->mode.traceMode==TRACE_SEQ) )
 	{
 		tempDist=this->getGeometry(ray.currentGeometryID)->intersect(&ray);
 		if (tempDist>0.000001)
@@ -172,7 +172,7 @@ geometryGroupError  GeometryGroup::trace(diffRayStruct &ray)
 			//start with first geometry's data
 			indexToTrace=-1;
 			tempDist=this->getGeometry(0)->intersect(&ray);
-			if (tempDist>0.000001)
+			if (tempDist>EPSILON)
 			{
 				minDist=tempDist;
 				indexToTrace=0;
@@ -182,7 +182,7 @@ geometryGroupError  GeometryGroup::trace(diffRayStruct &ray)
 			{
 				tempDist=this->getGeometry(i)->intersect(&ray);
 				
-				if ((tempDist<minDist)&&(tempDist>0.1))
+				if ((tempDist<minDist)&&(tempDist>EPSILON))
 				{
 					minDist=tempDist;
 					indexToTrace=i;
@@ -223,7 +223,7 @@ geometryGroupError  GeometryGroup::trace(gaussBeamRayStruct &ray)
 	double tempDist;
 	indexToTrace=0;
 	gaussBeam_t t;
-	if (this->mode==SIM_GAUSSBEAMRAYS_SEQ)
+	if (this->mode.traceMode==TRACE_SEQ)
 	{
 		t=this->getGeometry(ray.baseRay.currentGeometryID+1)->intersect(&ray);
 		if (t.t_baseRay>=0)
@@ -349,7 +349,7 @@ geometryGroupError GeometryGroup::createOptixInstance(RTcontext &context, RTgrou
 	}
 	// if we plan to do nonsequential simulation we put all the geometries into one OptiX-OptiX_group
 	// if we plan to do sequential raytracing we end up in another createOptixInstance...
-	if (1)//mode==SIM_GEOMRAYS_NONSEQ)
+	if (1)//mode.traceMode==SIM_GEOMRAYS_NONSEQ)
 	{
 		/* create optix geometry_group to hold instance transform */
 		if (!RT_CHECK_ERROR_NOEXIT( rtGeometryGroupCreate( context, &OptiX_geometrygroup ), context ))
@@ -509,7 +509,7 @@ geometryGroupError GeometryGroup::updateOptixInstance(RTcontext &context, RTgrou
 		return GEOMGROUP_NOGEOM_ERR;
 	}
 	// if we plan to do nonsequential simulation we put all the geometries into one OptiX-OptiX_group
-	if (1)//mode==SIM_GEOMRAYS_NONSEQ)
+	if (1)//mode.traceMode==SIM_GEOMRAYS_NONSEQ)
 	{
 		/* create geometry OptiX_group OptiX_group to hold instance transform */
 //		RT_CHECK_ERROR_NOEXIT( rtGeometryGroupCreate( context, &OptiX_geometrygroup ) );
@@ -631,7 +631,7 @@ geometryGroupError GeometryGroup::createCPUSimInstance(double lambda, SimParams 
 		std::cout << "error in GeometryGroup.createCPUSimInstance(): no geometries attached to group" << std::endl;
 		return GEOMGROUP_NOGEOM_ERR;
 	}
-	this->mode=simParams.traceMode;
+	this->mode=simParams;
 	/* create Instances of geometryGroups */
 	unsigned int i;
 	for (i=0; i<geometryListLength; i++)
@@ -663,7 +663,7 @@ geometryGroupError GeometryGroup::updateCPUSimInstance(double lambda, SimParams 
 		std::cout << "error in GeometryGroup.updateCPUSimInstance(): no geometries attached to group" << std::endl;
 		return GEOMGROUP_NOGEOM_ERR;
 	}
-	this->mode=simParams.traceMode;
+	this->mode=simParams;
 	/* create Instances of geometryGroups */
 	unsigned int i;
 	for (i=0; i<geometryListLength; i++)

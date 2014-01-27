@@ -137,7 +137,7 @@ class Scatter
 	virtual ScatterError setReducedParams(Scatter_ReducedParams* ptrIn);
 	virtual Scatter_ReducedParams* getReducedParams(void);
 	virtual ScatterError processParseResults(MaterialParseParamStruct &parseResults_Mat);
-	virtual ScatterError parseXml(pugi::xml_node &node);
+	virtual ScatterError parseXml(pugi::xml_node &node, SimParams simParams);
 	virtual bool checkParserError(char *msg);
 };
 

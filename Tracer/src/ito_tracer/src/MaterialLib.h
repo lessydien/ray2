@@ -56,7 +56,7 @@ public:
 
 	}
 
-	bool createMatInstFromXML(xml_node &node, Material* &pMat) const;
+	virtual bool createMatInstFromXML(xml_node &node, Material* &pMat, SimParams simParams) const;
 };
 
 #endif

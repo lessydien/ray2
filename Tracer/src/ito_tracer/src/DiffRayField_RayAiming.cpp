@@ -1053,7 +1053,7 @@ fieldError DiffRayField_RayAiming::traceScene(Group &oGroup, bool RunOnCPU)
 				bool firstRun=true;
 
 				// set direction for testing
-				this->rayList[jx].direction=normalize(this->rayParamsPtr->oDetParams.root-this->rayList[jx].position);
+                this->rayList[jx].direction=normalize(this->rayParamsPtr->initialTarget-this->rayList[jx].position);
 
 				// init old ray
 				diffRayStruct oldRay=this->rayList[jx];
@@ -1375,32 +1375,31 @@ fieldError DiffRayField_RayAiming::convert2Intensity(Field* imagePtr, detParams 
 	* floor() of the coefficients of these vectors gives the indices we were looking for                                      
 	****************************************************************************************************************************/
 	double3 scale=l_IntensityImagePtr->getParamsPtr()->scale;
-	double4x4 MTransform=oDetParams.MTransform;
 	long3 nrPixels=l_IntensityImagePtr->getParamsPtr()->nrPixels;
-	// save the offset from the transformation matrix
-	double3 offset=make_double3(MTransform.m14, MTransform.m24, MTransform.m34);
-	// set offset in transformation matrix to zero for rotation of the scaled unit vectors
-	MTransform.m14=0;
-	MTransform.m24=0;
-	MTransform.m34=0;
+	scale.z=2*oDetParams.apertureHalfWidth.z/nrPixels.z; // we need to set this here as the IntensityField coming from the Detector is set for PseudoBandwidth...
+
 	// create unit vectors
 	double3 t_ez = make_double3(0,0,1);
 	double3 t_ey=make_double3(0,1,0);
 	double3 t_ex=make_double3(1,0,0);
 	// transform unit vectors into local coordinate system of IntensityField
-	t_ez=MTransform*t_ez;
-	t_ey=MTransform*t_ey;
-	t_ex=MTransform*t_ex;
-
-	// save normal
-	double3 t_normal=t_ez;
+	rotateRay(&t_ez,oDetParams.tilt);
+	rotateRay(&t_ey,oDetParams.tilt);
+	rotateRay(&t_ex,oDetParams.tilt);
 
 	// the origin of the IntensityField is at the outer edge of the detector rather than at the origin
-//	offset=offset-oDetParams.apertureHalfWidth.x*t_ex-oDetParams.apertureHalfWidth.y*t_ey;
-	// the origin of the IntensityField is at the outer edge of the detector rather than at the origin
-	offset=offset-oDetParams.apertureHalfWidth.x*t_ex;//+0.5*l_PhaseSpacePtr->getParamsPtr()->scale*t_ex;
-	offset=offset-oDetParams.apertureHalfWidth.y*t_ey;//+0.5*l_PhaseSpacePtr->getParamsPtr()->scale*t_ey;
-	offset=offset-0.005*t_ez;//+0.5*l_PhaseSpacePtr->getParamsPtr()->scale*t_ez;
+	double3 offset;
+	offset=oDetParams.root-oDetParams.apertureHalfWidth.x*t_ex;//+0.5*l_IntensityImagePtr->getParamsPtr()->scale*t_ex;
+	offset=offset-oDetParams.apertureHalfWidth.y*t_ey;//+0.5*l_IntensityImagePtr->getParamsPtr()->scale*t_ey;
+	offset=offset-oDetParams.apertureHalfWidth.z*t_ez;//+0.5*l_PhaseSpacePtr->getParamsPtr()->scale*t_ez;
+
+	short solutionIndex;
+
+	unsigned long long hitNr=0;
+
+	double3 posMinOffset;
+	double3 indexFloat;
+	long3 index;
 
 	// we don't scale the vectors here anymore in order to ensure a good condition number of the matrix. Instead we scale the indices later
 	// scale unit vectors
@@ -1408,25 +1407,10 @@ fieldError DiffRayField_RayAiming::convert2Intensity(Field* imagePtr, detParams 
 	double3 t_ey_scaled = t_ey*scale.y; 
 	double3 t_ex_scaled = t_ex*scale.x; 
 
-	//// we need the offset to be shifted half of a pixel...
-	//offset=offset+0.5*t_ex+0.5*t_ey;
-
-	short solutionIndex;
-
-	double3x3 Matrix=make_double3x3(t_ex,t_ey,t_ez);
-	if (optix::det(Matrix)==0)
-	{
-		std::cout << "error in GeometricRayField.convert2Intensity(): Matrix is unitary!!" << std::endl;
-		return FIELD_ERR; //matrix singular
-	}
-	double3x3 MatrixInv=inv(Matrix);
-	double3 posMinOffset;
-	double3 indexFloat;
-	long3 index;
+	// save normal
+	double3 t_normal=t_ez;
 
 	complex<double> i_compl=complex<double>(0,1); // define complex number "i"
-
-	unsigned long long hitNr=0;
 
 //	std::cout << "processing on " << numCPU << " cores of CPU." << std::endl;
 
@@ -1436,14 +1420,13 @@ fieldError DiffRayField_RayAiming::convert2Intensity(Field* imagePtr, detParams 
 
 	for ( long jx=0; jx<this->rayParamsPtr->GPUSubset_width; jx++)
 	{
-		posMinOffset=this->rayList[jx].position-offset;
-		indexFloat=MatrixInv*posMinOffset;
-		// subtract half a pixel (0.5*scale.x). This way the centre of our pixels do not lie on the edge of the aperture but rather half a pixel inside...
-		// then round to nearest neighbour
-		//index.x=floor((indexFloat.x-0.5*scale.x)/scale.x+0.5);
-		index.x=floor((indexFloat.x)/scale.x);
-		index.y=floor((indexFloat.y)/scale.y);
-		index.z=floor((indexFloat.z)/scale.z);
+	    // transform to local coordinate system
+	    double3 posMinOffset=this->rayList[jx].position-offset;
+	    rotateRayInv(&posMinOffset,oDetParams.tilt);
+
+	    index.x=floor((posMinOffset.x)/scale.x);
+	    index.y=floor((posMinOffset.y)/scale.y);
+	    index.z=floor((posMinOffset.z)/scale.z);
 			
 		// use this ray only if it is inside our Intensity Field. Otherwise ignore it...
 		if ( ( (index.x<nrPixels.x)&&(index.x>=0) ) && ( (index.y<nrPixels.y)&&(index.y>=0) ) && ( (index.z<nrPixels.z)&&(index.z>=0) ) )
@@ -1466,9 +1449,10 @@ fieldError DiffRayField_RayAiming::convert2Intensity(Field* imagePtr, detParams 
 			// nevertheless we need to take into account the angle between the ray direction and the normal of the pixel surface
 			double t_fac=dot(this->rayList[jx].direction,t_normal);
 			// add current field contribution to field at current pixel
-			complex<double> l_U=polar(t_fac*this->rayList[jx].flux,phi);
+			//complex<double> l_U=polar(t_fac*this->rayList[jx].flux,phi);
+            complex<double> l_U=complex<double>(this->rayList[jx].flux*cos(phi),this->rayList[jx].flux*sin(phi));
 
-//			complex<double> l_U=complex<double>(this->rayList[jx].flux*cos(phi),this->rayList[jx].flux*sin(phi));
+            //complex<double> l_U=complex<double>(this->rayList[jx].opl,0);
 			l_IntensityImagePtr->getComplexAmplPtr()[index.x+index.y*nrPixels.x+index.z*nrPixels.x*nrPixels.y]=l_IntensityImagePtr->getComplexAmplPtr()[index.x+index.y*nrPixels.x+index.z*nrPixels.x*nrPixels.y]+l_U; // create a complex amplitude from the rays flux and opl and sum them coherently
 			hitNr++;
 		}
@@ -1492,6 +1476,7 @@ fieldError DiffRayField_RayAiming::convert2Intensity(Field* imagePtr, detParams 
 				{
 					// intensity is square of modulus of complex amplitude
 					(l_IntensityImagePtr->getIntensityPtr())[jx+jy*nrPixels.x+jz*nrPixels.x*nrPixels.y]=pow(abs(l_IntensityImagePtr->getComplexAmplPtr()[jx+jy*nrPixels.x+jz*nrPixels.x*nrPixels.y]),2);
+                    //(l_IntensityImagePtr->getIntensityPtr())[jx+jy*nrPixels.x+jz*nrPixels.x*nrPixels.y]=abs(l_IntensityImagePtr->getComplexAmplPtr()[jx+jy*nrPixels.x+jz*nrPixels.x*nrPixels.y]);
 				}
 			}
 		}
@@ -1985,10 +1970,10 @@ fieldError DiffRayField_RayAiming::processParseResults(FieldParseParamStruct &pa
  * \remarks 
  * \author Mauch
  */
-fieldError  DiffRayField_RayAiming::parseXml(pugi::xml_node &field, vector<Field*> &fieldVec)
+fieldError  DiffRayField_RayAiming::parseXml(pugi::xml_node &field, vector<Field*> &fieldVec, SimParams simParams)
 {
 	// call base class function
-	if (DET_NO_ERROR != DiffRayField::parseXml(field, fieldVec))
+	if (DET_NO_ERROR != DiffRayField::parseXml(field, fieldVec, simParams))
 	{
 		std::cout << "error in DiffRayField_RayAiming.parseXml(): DiffRayField.parseXml()  returned an error." << std::endl;
 		return FIELD_ERR;
@@ -2015,6 +2000,13 @@ fieldError  DiffRayField_RayAiming::parseXml(pugi::xml_node &field, vector<Field
 	if (!this->checkParserError(l_parser.attrByNameToDouble(field, "detApertureHalfWidth.x", this->getParamsPtr()->oDetParams.apertureHalfWidth.x)))
 		return FIELD_ERR;
 	if (!this->checkParserError(l_parser.attrByNameToDouble(field, "detApertureHalfWidth.y", this->getParamsPtr()->oDetParams.apertureHalfWidth.y)))
+		return FIELD_ERR;
+
+    if (!this->checkParserError(l_parser.attrByNameToDouble(field, "initialTarget.x", this->getParamsPtr()->initialTarget.x)))
+		return FIELD_ERR;
+    if (!this->checkParserError(l_parser.attrByNameToDouble(field, "initialTarget.y", this->getParamsPtr()->initialTarget.y)))
+		return FIELD_ERR;
+    if (!this->checkParserError(l_parser.attrByNameToDouble(field, "initialTarget.z", this->getParamsPtr()->initialTarget.z)))
 		return FIELD_ERR;
 
     // As we need to hit each detector pixel from each position in the field, the number of ray directions is given by detector pixels

@@ -60,5 +60,4 @@ void MaterialReflecting_DiffRays::hit(diffRayStruct &ray, Mat_DiffRays_hitParams
 	//}
 	if (ray.depth>MAX_DEPTH_CPU || ray.flux<MIN_FLUX_CPU)
 		ray.running=false;//stop ray
-	ray.running=false;
 }

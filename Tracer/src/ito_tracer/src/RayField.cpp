@@ -804,13 +804,13 @@ fieldError  RayField::doSim(Group &oGroup, simAssParams &params, bool &simDone)
  * \remarks 
  * \author Mauch
  */
-fieldError RayField::parseXml(pugi::xml_node &field, vector<Field*> &fieldVec)
+fieldError RayField::parseXml(pugi::xml_node &field, vector<Field*> &fieldVec, SimParams simParams)
 {
 
 	Parser_XML l_parser;
 
 	// call base class function
-	if (FIELD_NO_ERR != Field::parseXml(field, fieldVec))
+	if (FIELD_NO_ERR != Field::parseXml(field, fieldVec, simParams))
 	{
 		std::cout << "error in RayField.parseXml(): Field.parseXml()  returned an error." << std::endl;
 		return FIELD_ERR;
@@ -900,7 +900,7 @@ fieldError RayField::parseXml(pugi::xml_node &field, vector<Field*> &fieldVec)
 	// create material
 	MaterialFab l_matFab;
 	Material* l_pMaterial;
-	if (!l_matFab.createMatInstFromXML(l_pMatNodes->at(0),l_pMaterial))
+	if (!l_matFab.createMatInstFromXML(l_pMatNodes->at(0),l_pMaterial, simParams))
 	{
 		std::cout << "error in Geometry.parseXml(): matFab.createInstFromXML() returned an error." << std::endl;
 		return FIELD_ERR;

@@ -116,7 +116,7 @@ void initRayField_AsphereTestCPU(FILE *hfileQxy, FILE *hfilePxy, GeometricRayFie
 void initRayField_AsphereTestGPU(RTcontext &context, FILE *hfileQxy, FILE *hfilePxy, GeometricRayField* oGeomRayFieldPtr, double RadiusSourceReference, double zSourceReference, double *MNmn, int width, int height, double lambda);
 bool doTheSimulation(Group *oGrouPtr, RayField *SourceListPtrPtr, bool RunOnCPU);
 //bool createSceneFromXML(Group *oGroupPtr, FILE *hfile, RayField ***sourceListPtr, Detector ***detListPtr);
-bool createSceneFromXML(Group **oGroupPtrPtr, char *sceneChar, Field ***sourceListPtr, long *sourceNumberPtr, Detector ***detListPtr, long *detNumberPtr, MacroSimTracerParams &simParams);
+bool createSceneFromXML(Group **oGroupPtrPtr, char *sceneChar, Field ***sourceListPtr, long *sourceNumberPtr, Detector ***detListPtr, long *detNumberPtr, MacroSimTracerParams &tracerParams);
 
 
 void wait ()
@@ -184,7 +184,7 @@ int main(int argc, char* argv[])
 //	}
 	
 	// decide wether we want to do sequential or nonsequential simulations
-//	TraceMode mode=SIM_GEOMRAYS_NONSEQ;
+//	TraceMode mode=TRACE_NONSEQ;
 	char inFile[512];
 	sprintf(inFile, "%s" PATH_SEPARATOR "%s", INPUT_FILEPATH,"MacroSimDoubleGaussSeq_Timing.xml");
 
@@ -271,9 +271,9 @@ int main(int argc, char* argv[])
 	const char* l_pString=l_parser.attrValByName(scene, "mode");
 
 	if (strcmp(l_pString,"SEQUENTIAL") == 0)
-		oSimAssParamsPtr->simParams.traceMode=SIM_GEOMRAYS_SEQ;
+		oSimAssParamsPtr->simParams.traceMode=TRACE_SEQ;
 	if (strcmp(l_pString,"NONSEQUENTIAL") == 0)
-		oSimAssParamsPtr->simParams.traceMode=SIM_GEOMRAYS_NONSEQ;	
+		oSimAssParamsPtr->simParams.traceMode=TRACE_NONSEQ;	
 
 	l_pString=l_parser.attrValByName(scene, "GPUacceleration");
 
@@ -342,14 +342,14 @@ int main(int argc, char* argv[])
  *
  * parses the XML and creates an OptiX scene 
  *
- * \param[in] Group *oGroupPtr, FILE *hfile, RayField ***sourceListPtr, long long *sourceNumberPtr, Detector ***detListPtr, long long *detNumberPtr, TraceMode mode, MacroSimTracerParams &simParams
+ * \param[in] Group *oGroupPtr, FILE *hfile, RayField ***sourceListPtr, long long *sourceNumberPtr, Detector ***detListPtr, long long *detNumberPtr, TraceMode mode, MacroSimTracerParams &tracerParams
  * 
  * \return bool
  * \sa 
  * \remarks 
  * \author Mauch
  */
-bool createSceneFromXML(Group **oGroupPtrPtr, char *sceneChar, Field ***sourceListPtr, long *sourceNumberPtr, Detector ***detListPtr, long *detNumberPtr, MacroSimTracerParams &simParams)
+bool createSceneFromXML(Group **oGroupPtrPtr, char *sceneChar, Field ***sourceListPtr, long *sourceNumberPtr, Detector ***detListPtr, long *detNumberPtr, MacroSimTracerParams &tracerParams)
 {
 
 	cout <<"********************************************" << endl;
@@ -370,14 +370,12 @@ bool createSceneFromXML(Group **oGroupPtrPtr, char *sceneChar, Field ***sourceLi
 	Parser_XML* l_pParser=new Parser_XML();
 	
 	// read simulation mode from xml file
-	TraceMode l_mode;
 	const char* l_pModeString=l_pParser->attrValByName(scene, "mode");
 
 	if (strcmp(l_pModeString,"SEQUENTIAL") == 0)
-		l_mode=SIM_GEOMRAYS_SEQ;
+		tracerParams.simParams.traceMode=TRACE_SEQ;
 	if (strcmp(l_pModeString,"NONSEQUENTIAL") == 0)
-		l_mode=SIM_GEOMRAYS_NONSEQ;	
-	simParams.mode=l_mode;
+		tracerParams.simParams.traceMode=TRACE_NONSEQ;	
 
 	// read file paths from xml
 	const char* l_pGlassFilePath=l_pParser->attrValByName(scene, "glassCatalog");
@@ -386,36 +384,36 @@ bool createSceneFromXML(Group **oGroupPtrPtr, char *sceneChar, Field ***sourceLi
 		cout << "error in createSceneFromXML: glassCatalog is not defined" << endl;
 		return false;
 	}
-	memcpy(simParams.glassFilePath, l_pGlassFilePath, sizeof(char)*512);
+	memcpy(tracerParams.glassFilePath, l_pGlassFilePath, sizeof(char)*512);
 	const char* l_pOutPath=l_pParser->attrValByName(scene, "outputFilePath");
 	if (!l_pOutPath)
 	{
 		cout << "error in createSceneFromXML: outputFilePath is not defined" << endl;
 		return false;
 	}
-	memcpy(simParams.outputFilesPath, l_pOutPath, sizeof(char)*512);
+	memcpy(tracerParams.outputFilesPath, l_pOutPath, sizeof(char)*512);
 	const char* l_pInPath=l_pParser->attrValByName(scene, "inputFilePath");
 	if (!l_pInPath)
 	{
 		cout << "error in createSceneFromXML: inputFilePath is not defined" << endl;
 		return false;
 	}
-	memcpy(simParams.inputFilesPath, l_pInPath, sizeof(char)*512);
+	memcpy(tracerParams.inputFilesPath, l_pInPath, sizeof(char)*512);
 	const char* l_pPtxPath=l_pParser->attrValByName(scene, "ptxPath");
 	if (!l_pPtxPath)
 	{
 		cout << "error in createSceneFromXML: ptxPath is not defined" << endl;
 		return false;
 	}
-	memcpy(simParams.path_to_ptx, l_pPtxPath, sizeof(char)*512);
+	memcpy(tracerParams.path_to_ptx, l_pPtxPath, sizeof(char)*512);
 
 	// init global variables
-	memcpy(FILE_GLASSCATALOG, simParams.glassFilePath, sizeof(char)*512);
-	memcpy(OUTPUT_FILEPATH, simParams.outputFilesPath, sizeof(char)*512);
-	memcpy(INPUT_FILEPATH, simParams.inputFilesPath, sizeof(char)*512);
-	memcpy(PATH_TO_PTX, simParams.path_to_ptx, sizeof(char)*512);
+	memcpy(FILE_GLASSCATALOG, tracerParams.glassFilePath, sizeof(char)*512);
+	memcpy(OUTPUT_FILEPATH, tracerParams.outputFilesPath, sizeof(char)*512);
+	memcpy(INPUT_FILEPATH, tracerParams.inputFilesPath, sizeof(char)*512);
+	memcpy(PATH_TO_PTX, tracerParams.path_to_ptx, sizeof(char)*512);
 
-	if (NULL!=l_pParser->attrByNameToInt(scene, "numCPU", simParams.numCPU))
+	if (NULL!=l_pParser->attrByNameToInt(scene, "numCPU", tracerParams.numCPU))
 	{
 		cout << "error in createSceneFromXML: numCPU is not defined" << endl;
 		return false;
@@ -426,14 +424,48 @@ bool createSceneFromXML(Group **oGroupPtrPtr, char *sceneChar, Field ***sourceLi
 		cout << "error in createSceneFromXML: subsetHeight is not defined" << endl;
 		return false;
 	}
-	simParams.subsetHeight=l_long;
+	tracerParams.subsetHeight=l_long;
 	if (NULL!=l_pParser->attrByNameToLong(scene, "rayTilingWidth", l_long))
 	{
 		cout << "error in createSceneFromXML: subsetWidth is not defined" << endl;
 		return false;
 	}
-	simParams.subsetWidth=l_long;
+	tracerParams.subsetWidth=l_long;
 
+	// get all sources
+	vector<xml_node>* l_pSources;
+	l_pSources=l_pParser->childsByTagName(scene, "field");
+
+	// so far we only allow for exactly on source
+	if (l_pSources->size() != 1)
+	{
+		cout << "error in createSceneFromXML: the scene has to have exactly one source to be vaild!" << endl;
+		return false;
+	}
+
+	FieldFab l_fieldFab;
+	/* create array for the sources of our simulation */
+	*sourceListPtr=new Field*[l_pSources->size()];
+	*sourceNumberPtr=l_pSources->size();
+
+	/* create sources */
+	for (int j=0; j<l_pSources->size(); j++)
+	{
+		vector<Field*> l_sourceVec;
+        if (!l_fieldFab.createFieldInstFromXML(l_pSources->at(j), l_sourceVec, tracerParams.simParams))
+		{
+			cout << "error in createSceneFromXML: l_FieldFab.createFieldInstFromXML() returned an error for given XML node " << j << endl;
+			return false;
+		}
+		// so far we don't allow for compound sources, therefore we know the size here will be equal to 1
+		for (int k=0; k<1;k++)//l_sourceVec.size(); k++)
+		{
+			*sourceListPtr[k]=l_sourceVec.at(k);
+		}
+	}
+
+    // determine simulation mode from source
+    (*sourceListPtr[0])->setSimMode(tracerParams.simParams.simMode);
 
 	// get all geometryGroups
 	vector<xml_node>* l_pGeometryGroups;
@@ -466,9 +498,9 @@ bool createSceneFromXML(Group **oGroupPtrPtr, char *sceneChar, Field ***sourceLi
 			if ( strcmp(child.name(), "geometry") == 0)
 			{
 				const char* t_str;
-				switch (l_mode)
+				switch (tracerParams.simParams.traceMode)
 				{
-				case SIM_GEOMRAYS_SEQ:
+				case TRACE_SEQ:
 					t_str = l_pParser->attrValByName(child, "nrSurfacesSeq");
 					if (t_str==NULL)
 					{
@@ -477,7 +509,7 @@ bool createSceneFromXML(Group **oGroupPtrPtr, char *sceneChar, Field ***sourceLi
 					}
 					nrSurfaces=nrSurfaces+atoi(t_str);
 					break;
-				case SIM_GEOMRAYS_NONSEQ:
+				case TRACE_NONSEQ:
 					t_str = l_pParser->attrValByName(child, "nrSurfacesNonSeq");
 					if (t_str==NULL)
 					{
@@ -502,14 +534,12 @@ bool createSceneFromXML(Group **oGroupPtrPtr, char *sceneChar, Field ***sourceLi
 		}
 		
         GeometryFab* l_pGeomFab;
-        switch (l_mode)
+        switch (tracerParams.simParams.simMode)
         {
-        case SIM_GEOMRAYS_NONSEQ:
-        case SIM_GEOMRAYS_SEQ:
+        case SIM_GEOM_RT:
             l_pGeomFab=new GeometryFab();
             break;
-        case SIM_DIFFRAYS_NONSEQ:
-        case SIM_DIFFRAYS_SEQ:
+        case SIM_DIFF_RT:
             l_pGeomFab=new GeometryFab_DiffRays();
             break;
         default:
@@ -518,13 +548,12 @@ bool createSceneFromXML(Group **oGroupPtrPtr, char *sceneChar, Field ***sourceLi
             break;
         }
 
-		GeometryFab l_geomFab;
 		int globalSurfaceCount=0; // as some of the geometries consist of different number of surfaces in different simulation modes, we need to keep track of the number of surfaces in each geometryGroup here...
 		// now, create the objects and add them to current geometryGroup
 		for (int j=0; j<l_pGeometries->size(); j++)
 		{			
 			vector<Geometry*> l_geomVec;
-			if (!l_geomFab.createGeomInstFromXML(l_pGeometries->at(j), l_mode, l_geomVec))
+			if (!l_pGeomFab->createGeomInstFromXML(l_pGeometries->at(j), tracerParams.simParams, l_geomVec))
 			{
 				cout << "error in createSceneFromXML: l_GeomFab.createGeomInstFromXML() returned an error for given XML node " << j << "in geometryGroup " << i << endl;
 				return false;
@@ -541,39 +570,8 @@ bool createSceneFromXML(Group **oGroupPtrPtr, char *sceneChar, Field ***sourceLi
 			}
 		}
 		delete l_pGeometries;
+        delete l_pGeomFab;
 	} // end lopp geometryGroups
-
-	// get all sources
-	vector<xml_node>* l_pSources;
-	l_pSources=l_pParser->childsByTagName(scene, "field");
-
-	// so far we only allow for exactly on source
-	if (l_pSources->size() != 1)
-	{
-		cout << "error in createSceneFromXML: the scene has to have exactly one source to be vaild!" << endl;
-		return false;
-	}
-
-	FieldFab l_fieldFab;
-	/* create array for the sources of our simulation */
-	*sourceListPtr=new Field*[l_pSources->size()];
-	*sourceNumberPtr=l_pSources->size();
-
-	/* create sources */
-	for (int j=0; j<l_pSources->size(); j++)
-	{
-		vector<Field*> l_sourceVec;
-		if (!l_fieldFab.createFieldInstFromXML(l_pSources->at(j), l_sourceVec))
-		{
-			cout << "error in createSceneFromXML: l_FieldFab.createFieldInstFromXML() returned an error for given XML node " << j << endl;
-			return false;
-		}
-		// so far we don't allow for compound sources, therefore we know the size here will be equal to 1
-		for (int k=0; k<1;k++)//l_sourceVec.size(); k++)
-		{
-			*sourceListPtr[k]=l_sourceVec.at(k);
-		}
-	}
 
 	// get all detectors
 	vector<xml_node>* l_pDetectors;
@@ -695,9 +693,9 @@ bool MacroSimTracer::runMacroSimRayTrace(char *xmlInput, void** fieldOut_ptrptr,
 	const char* l_pString=l_parser.attrValByName(scene, "mode");
 
 	if (strcmp(l_pString,"SEQUENTIAL") == 0)
-		oSimAssParamsPtr->simParams.traceMode=SIM_GEOMRAYS_SEQ;
+		oSimAssParamsPtr->simParams.traceMode=TRACE_SEQ;
 	if (strcmp(l_pString,"NONSEQUENTIAL") == 0)
-		oSimAssParamsPtr->simParams.traceMode=SIM_GEOMRAYS_NONSEQ;	
+		oSimAssParamsPtr->simParams.traceMode=TRACE_NONSEQ;	
 
 	l_pString=l_parser.attrValByName(scene, "GPUacceleration");
 
@@ -829,9 +827,9 @@ bool MacroSimTracer::runMacroSimLayoutTrace(char *xmlInput, void* p2CallbackObje
 	const char* l_pString=l_parser.attrValByName(scene, "mode");
 
 	if (strcmp(l_pString,"SEQUENTIAL") == 0)
-		oSimAssParamsPtr->simParams.traceMode=SIM_GEOMRAYS_SEQ;
+		oSimAssParamsPtr->simParams.traceMode=TRACE_SEQ;
 	if (strcmp(l_pString,"NONSEQUENTIAL") == 0)
-		oSimAssParamsPtr->simParams.traceMode=SIM_GEOMRAYS_NONSEQ;	
+		oSimAssParamsPtr->simParams.traceMode=TRACE_NONSEQ;	
 
 	l_pString=l_parser.attrValByName(scene, "GPUacceleration");
 

@@ -59,7 +59,7 @@ class Group
     char path_to_ptx_visit[512];
 	int geometryGroupListLength;
 	GeometryGroup** geometryGroupList;
-	TraceMode mode;
+	SimParams mode;
 	groupError findClosestGeometryGroup();
 
 	/* OptiX variables */

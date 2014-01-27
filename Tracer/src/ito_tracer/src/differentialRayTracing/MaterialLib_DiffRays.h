@@ -25,6 +25,8 @@
 #ifndef MATERIALLIB_DIFFRAYS_H
   #define MATERIALLIB_DIFFRAYS_H
 
+#include "../MaterialLib.h"
+
 // include the individual materials
 #include "MaterialReflecting_DiffRays.h"
 #include "MaterialAbsorbing_DiffRays.h"
@@ -32,5 +34,23 @@
 #include "MaterialLinearGrating1D_DiffRays.h"
 //#include "MaterialIdealLense_DiffRays.h"
 #include "MaterialDiffracting_DiffRays.h"
+
+class MaterialFab_DiffRays : public MaterialFab
+{
+protected:
+
+public:
+
+	MaterialFab_DiffRays()
+	{
+
+	}
+	~MaterialFab_DiffRays()
+	{
+
+	}
+
+	bool createMatInstFromXML(xml_node &node, Material* &pMat, SimParams simParams) const;
+};
 
 #endif

@@ -315,12 +315,12 @@ geometryError ParabolicSurface::processParseResults(GeometryParseParamStruct &pa
  * \remarks 
  * \author Mauch
  */
-geometryError ParabolicSurface::parseXml(pugi::xml_node &geometry, TraceMode mode, vector<Geometry*> &geomVec)
+geometryError ParabolicSurface::parseXml(pugi::xml_node &geometry, SimParams simParams, vector<Geometry*> &geomVec)
 {
 	Parser_XML l_parser;
 
 	// call base class function
-	if (GEOM_NO_ERR != Geometry::parseXml(geometry, mode, geomVec))
+	if (GEOM_NO_ERR != Geometry::parseXml(geometry, simParams, geomVec))
 	{
 		std::cout << "error in ParabolicSurface.parseXml(): Geometry.parseXml() returned an error" << std::endl;
 		return GEOM_ERR;

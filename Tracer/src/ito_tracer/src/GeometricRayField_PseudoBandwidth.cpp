@@ -325,11 +325,12 @@ fieldError GeometricRayField_PseudoBandwidth::convert2VecField(Field* imagePtr, 
  * \remarks 
  * \author Mauch
  */
-fieldError  GeometricRayField_PseudoBandwidth::parseXml(pugi::xml_node &field, vector<Field*> &fieldVec)
+fieldError  GeometricRayField_PseudoBandwidth::parseXml(pugi::xml_node &field, vector<Field*> &fieldVec, SimParams simParams)
 {
 	Parser_XML l_parser;
+
 	// call base class function
-	if (FIELD_NO_ERR != GeometricRayField::parseXml(field, fieldVec))
+	if (FIELD_NO_ERR != GeometricRayField::parseXml(field, fieldVec, simParams))
 	{
 		std::cout << "error in GeometricRayField_PseudoBandwidth.parseXml(): RayField.parseXml()  returned an error." << std::endl;
 		return FIELD_ERR;

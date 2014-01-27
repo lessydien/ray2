@@ -215,10 +215,10 @@ fieldError IntensityField::convert2ItomObject(void** dataPtrPtr, ItomFieldParams
  * \remarks 
  * \author Mauch
  */
-fieldError  IntensityField::parseXml(pugi::xml_node &det, vector<Field*> &fieldVec)
+fieldError  IntensityField::parseXml(pugi::xml_node &det, vector<Field*> &fieldVec, SimParams simParams)
 {
 	// call base class function
-	if (FIELD_NO_ERR != Field::parseXml(det, fieldVec))
+	if (FIELD_NO_ERR != Field::parseXml(det, fieldVec, simParams))
 	{
 		std::cout << "error in IntensityField.parseXml(): Field.parseXml()  returned an error." << std::endl;
 		return FIELD_ERR;

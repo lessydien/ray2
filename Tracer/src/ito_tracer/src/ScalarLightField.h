@@ -136,7 +136,7 @@ class ScalarLightField: public Field
 	fieldError setPix(ulong2 pixel, complex<double> value);
 	complex<double>* getFieldPtr();
 	virtual fieldParams* getParamsPtr();
-	fieldError parseXml(pugi::xml_node &field, vector<Field*> &fieldVec);
+	fieldError parseXml(pugi::xml_node &field, vector<Field*> &fieldVec, SimParams simParams);
 
 	fieldError convert2ScalarField(Field* imagePtr, detParams &oDetParams);
 	fieldError convert2Intensity(Field* imagePtr, detParams &oDetParams);

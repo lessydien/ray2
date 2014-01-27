@@ -134,7 +134,7 @@ class MaterialDOE: public Material
 	void setImmersionDispersionParams(MatDOE_DispersionParams *params);
 	MatDOE_DispersionParams* getImmersionDispersionParams(void);
 	virtual MaterialError processParseResults(MaterialParseParamStruct &parseResults_Mat, parseGlassResultStruct* parseResults_GlassPtr, parseGlassResultStruct* parseResults_ImmPtr);
-	MaterialError parseXml(pugi::xml_node &geometry);	
+	MaterialError parseXml(pugi::xml_node &geometry, SimParams simParams);	
 };
 
 #endif

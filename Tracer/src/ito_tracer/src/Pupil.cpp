@@ -92,9 +92,9 @@ char* Pupil::getPathToPtx(void)
  * \remarks 
  * \author Mauch
  */
-PupilError Pupil::createPupilAimProgramPtx(RTcontext context, TraceMode mode)
+PupilError Pupil::createPupilAimProgramPtx(RTcontext context, SimMode mode)
 {
-	//if ( (mode==SIM_DIFFRAYS_NONSEQ) || (mode==SIM_DIFFRAYS_SEQ) )
+	//if ( (mode.traceMode==SIM_DIFFRAYS_NONSEQ) || (mode.traceMode==TRACE_SEQ) )
 	//	strcat(this->path_to_ptx, "_DiffRays");
 	//strcat(this->path_to_ptx, ".cu.ptx");
 	//RT_CHECK_ERROR_NOEXIT( rtProgramCreateFromPTXFile( context, this->path_to_ptx, "closestHit", &closest_hit_program ) );

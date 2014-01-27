@@ -1292,7 +1292,7 @@ fieldError PathIntTissueRayField::write2TextFile(char* filename, detParams &oDet
  * \remarks 
  * \author Mauch
  */
-fieldError  PathIntTissueRayField::parseXml(pugi::xml_node &field, vector<Field*> &fieldVec)
+fieldError  PathIntTissueRayField::parseXml(pugi::xml_node &field, vector<Field*> &fieldVec, SimParams simParams)
 {
 	Parser_XML l_parser;
 
@@ -1421,7 +1421,7 @@ fieldError  PathIntTissueRayField::parseXml(pugi::xml_node &field, vector<Field*
 	// create material
 	MaterialFab l_matFab;
 	Material* l_pMaterial;
-	if (!l_matFab.createMatInstFromXML(l_pMatNodes->at(0),l_pMaterial))
+	if (!l_matFab.createMatInstFromXML(l_pMatNodes->at(0),l_pMaterial, simParams))
 	{
 		std::cout << "error in Geometry.parseXml(): matFab.createInstFromXML() returned an error." << std::endl;
 		return FIELD_ERR;

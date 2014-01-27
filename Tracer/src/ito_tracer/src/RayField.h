@@ -203,7 +203,7 @@ class RayField : public Field
 	virtual void createCPUSimInstance(unsigned long long launch_width, unsigned long long launch_height, double3 start, double3 end, double* xGrad, int size_xGrad, double* yGrad, int size_yGrad, double lambda);
 	virtual fieldError createLayoutInstance();
 
-	virtual fieldError parseXml(pugi::xml_node &det, vector<Field*> &fieldVec);
+	virtual fieldError parseXml(pugi::xml_node &det, vector<Field*> &fieldVec, SimParams simParams);
 
 	virtual fieldError initGPUSubset(RTcontext &context, RTbuffer &seed_buffer_obj);
 	virtual fieldError initCPUSubset();

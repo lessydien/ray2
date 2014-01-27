@@ -1310,55 +1310,33 @@ fieldError DiffRayField::convert2Intensity(Field* imagePtr, detParams &oDetParam
 	* floor() of the coefficients of these vectors gives the indices we were looking for                                      
 	****************************************************************************************************************************/
 	double3 scale=l_IntensityImagePtr->getParamsPtr()->scale;
-	double4x4 MTransform=oDetParams.MTransform;
 	long3 nrPixels=l_IntensityImagePtr->getParamsPtr()->nrPixels;
-	// save the offset from the transformation matrix
-	double3 offset=make_double3(MTransform.m14, MTransform.m24, MTransform.m34);
-	// set offset in transformation matrix to zero for rotation of the scaled unit vectors
-	MTransform.m14=0;
-	MTransform.m24=0;
-	MTransform.m34=0;
+	scale.z=2*oDetParams.apertureHalfWidth.z/nrPixels.z; // we need to set this here as the IntensityField coming from the Detector is set for PseudoBandwidth...
+
 	// create unit vectors
 	double3 t_ez = make_double3(0,0,1);
 	double3 t_ey=make_double3(0,1,0);
 	double3 t_ex=make_double3(1,0,0);
 	// transform unit vectors into local coordinate system of IntensityField
-	t_ez=MTransform*t_ez;
-	t_ey=MTransform*t_ey;
-	t_ex=MTransform*t_ex;
+	rotateRay(&t_ez,oDetParams.tilt);
+	rotateRay(&t_ey,oDetParams.tilt);
+	rotateRay(&t_ex,oDetParams.tilt);
 
 	// the origin of the IntensityField is at the outer edge of the detector rather than at the origin
-//	offset=offset-oDetParams.apertureHalfWidth.x*t_ex-oDetParams.apertureHalfWidth.y*t_ey;
-	// the origin of the IntensityField is at the outer edge of the detector rather than at the origin
-	offset=offset-oDetParams.apertureHalfWidth.x*t_ex;//+0.5*l_PhaseSpacePtr->getParamsPtr()->scale*t_ex;
-	offset=offset-oDetParams.apertureHalfWidth.y*t_ey;//+0.5*l_PhaseSpacePtr->getParamsPtr()->scale*t_ey;
-	offset=offset-0.005*t_ez;//+0.5*l_PhaseSpacePtr->getParamsPtr()->scale*t_ez;
-
-	// we don't scale the vectors here anymore in order to ensure a good condition number of the matrix. Instead we scale the indices later
-	//// scale unit vectors
-	//t_ez = t_ez*scale.z; 
-	//t_ey = t_ey*scale.y; 
-	//t_ex = t_ex*scale.x; 
-
-	//// we need the offset to be shifted half of a pixel...
-	//offset=offset+0.5*t_ex+0.5*t_ey;
+	double3 offset;
+	offset=oDetParams.root-oDetParams.apertureHalfWidth.x*t_ex;//+0.5*l_IntensityImagePtr->getParamsPtr()->scale*t_ex;
+	offset=offset-oDetParams.apertureHalfWidth.y*t_ey;//+0.5*l_IntensityImagePtr->getParamsPtr()->scale*t_ey;
+	offset=offset-oDetParams.apertureHalfWidth.z*t_ez;//+0.5*l_PhaseSpacePtr->getParamsPtr()->scale*t_ez;
 
 	short solutionIndex;
 
-	double3x3 Matrix=make_double3x3(t_ex,t_ey,t_ez);
-	if (optix::det(Matrix)==0)
-	{
-		std::cout << "error in GeometricRayField.convert2Intensity(): Matrix is unitary!!" << std::endl;
-		return FIELD_ERR; //matrix singular
-	}
-	double3x3 MatrixInv=inv(Matrix);
+	unsigned long long hitNr=0;
+
 	double3 posMinOffset;
 	double3 indexFloat;
 	long3 index;
 
 	complex<double> i_compl=complex<double>(0,1); // define complex number "i"
-
-	unsigned long long hitNr=0;
 
 //	std::cout << "processing on " << numCPU << " cores of CPU." << std::endl;
 
@@ -1368,14 +1346,13 @@ fieldError DiffRayField::convert2Intensity(Field* imagePtr, detParams &oDetParam
 
 	for ( long jx=0; jx<this->rayParamsPtr->GPUSubset_width; jx++)
 	{
-		posMinOffset=this->rayList[jx].position-offset;
-		indexFloat=MatrixInv*posMinOffset;
-		// subtract half a pixel (0.5*scale.x). This way the centre of our pixels do not lie on the edge of the aperture but rather half a pixel inside...
-		// then round to nearest neighbour
-		//index.x=floor((indexFloat.x-0.5*scale.x)/scale.x+0.5);
-		index.x=floor((indexFloat.x)/scale.x);
-		index.y=floor((indexFloat.y)/scale.y);
-		index.z=floor((indexFloat.z)/scale.z);
+		// transform to local coordinate system
+		double3 tmpPos=this->rayList[jx].position-offset;
+		rotateRayInv(&tmpPos,oDetParams.tilt);
+
+		index.x=floor((tmpPos.x)/scale.x);
+		index.y=floor((tmpPos.y)/scale.y);
+		index.z=floor((tmpPos.z)/scale.z);
 			
 		// use this ray only if it is inside our Intensity Field. Otherwise ignore it...
 		if ( ( (index.x<nrPixels.x)&&(index.x>=0) ) && ( (index.y<nrPixels.y)&&(index.y>=0) ) && ( (index.z<nrPixels.z)&&(index.z>=0) ) )
@@ -1460,58 +1437,36 @@ fieldError DiffRayField::convert2ScalarField(Field* imagePtr, detParams &oDetPar
 	* floor() of the coefficients of these vectors gives the indices we were looking for                                      
 	****************************************************************************************************************************/
 	double3 scale=l_ScalarImagePtr->getParamsPtr()->scale;
-	double4x4 MTransform=oDetParams.MTransform;
 	long3 nrPixels=l_ScalarImagePtr->getParamsPtr()->nrPixels;
-	// save the offset from the transformation matrix
-	double3 offset=make_double3(MTransform.m14, MTransform.m24, MTransform.m34);
-	// set offset in transformation matrix to zero for rotation of the scaled unit vectors
-	MTransform.m14=0;
-	MTransform.m24=0;
-	MTransform.m34=0;
+	scale.z=2*oDetParams.apertureHalfWidth.z/nrPixels.z; // we need to set this here as the IntensityField coming from the Detector is set for PseudoBandwidth...
+
 	// create unit vectors
 	double3 t_ez = make_double3(0,0,1);
 	double3 t_ey=make_double3(0,1,0);
 	double3 t_ex=make_double3(1,0,0);
 	// transform unit vectors into local coordinate system of IntensityField
-	t_ez=MTransform*t_ez;
-	t_ey=MTransform*t_ey;
-	t_ex=MTransform*t_ex;
+	rotateRay(&t_ez,oDetParams.tilt);
+	rotateRay(&t_ey,oDetParams.tilt);
+	rotateRay(&t_ex,oDetParams.tilt);
 
-	// save normal
-	double3 t_normal=t_ez;
-
-	//// the origin of the IntensityField is at the outer edge of the detector rather than at the origin
-	//offset=offset-oDetParams.apertureHalfWidth.x*t_ex-oDetParams.apertureHalfWidth.y*t_ey;
 	// the origin of the IntensityField is at the outer edge of the detector rather than at the origin
-	offset=offset-oDetParams.apertureHalfWidth.x*t_ex;//+0.5*l_PhaseSpacePtr->getParamsPtr()->scale*t_ex;
-	offset=offset-oDetParams.apertureHalfWidth.y*t_ey;//+0.5*l_PhaseSpacePtr->getParamsPtr()->scale*t_ey;
-	offset=offset-0.005*t_ez;//+0.5*l_PhaseSpacePtr->getParamsPtr()->scale*t_ez;
-
-	// we don't scale the vectors here anymore in order to ensure a good condition number of the matrix. Instead we scale the indices later
-	//// scale unit vectors
-	//t_ez = t_ez*scale.z; 
-	//t_ey = t_ey*scale.y; 
-	//t_ex = t_ex*scale.x; 
-
-	// we need the offset to be shifted half of a pixel...
-//	offset=offset+0.5*t_ex+0.5*t_ey;
+	double3 offset;
+	offset=oDetParams.root-oDetParams.apertureHalfWidth.x*t_ex;//+0.5*l_IntensityImagePtr->getParamsPtr()->scale*t_ex;
+	offset=offset-oDetParams.apertureHalfWidth.y*t_ey;//+0.5*l_IntensityImagePtr->getParamsPtr()->scale*t_ey;
+	offset=offset-oDetParams.apertureHalfWidth.z*t_ez;//+0.5*l_PhaseSpacePtr->getParamsPtr()->scale*t_ez;
 
 	short solutionIndex;
 
-	double3x3 Matrix=make_double3x3(t_ex,t_ey,t_ez);
-	if (optix::det(Matrix)==0)
-	{
-		std::cout << "error in GeometricRayField.convert2Intensity(): Matrix is unitary!!" << std::endl;
-		return FIELD_ERR; //matrix singular
-	}
-	double3x3 MatrixInv=inv(Matrix);
+	unsigned long long hitNr=0;
+
 	double3 posMinOffset;
 	double3 indexFloat;
 	long3 index;
 
-	complex<double> i_compl=complex<double>(0,1); // define complex number "i"
+	// save normal
+	double3 t_normal=t_ez;
 
-	unsigned long long hitNr=0;
+	complex<double> i_compl=complex<double>(0,1); // define complex number "i"
 
 //	std::cout << "processing on " << numCPU << " cores of CPU." << std::endl;
 
@@ -1521,14 +1476,13 @@ fieldError DiffRayField::convert2ScalarField(Field* imagePtr, detParams &oDetPar
 
 	for (long jx=0; jx<this->rayParamsPtr->GPUSubset_width; jx++)
 	{
-		posMinOffset=this->rayList[jx].position-offset;
-		indexFloat=MatrixInv*posMinOffset;
-		// subtract half a pixel (0.5*scale.x). This way the centre of our pixels do not lie on the edge of the aperture but rather half a pixel inside...
-		// then round to nearest neighbour
-		//index.x=floor((indexFloat.x-0.5*scale.x)/scale.x+0.5);
-		index.x=floor((indexFloat.x)/scale.x);
-		index.y=floor((indexFloat.y)/scale.y);
-		index.z=floor((indexFloat.z)/scale.z);
+		// transform to local coordinate system
+		double3 tmpPos=this->rayList[jx].position-offset;
+		rotateRayInv(&tmpPos,oDetParams.tilt);
+
+		index.x=floor((tmpPos.x)/scale.x);
+		index.y=floor((tmpPos.y)/scale.y);
+		index.z=floor((tmpPos.z)/scale.z);
 			
 		// use this ray only if it is inside our Intensity Field. Otherwise ignore it...
 		if ( ( (index.x<nrPixels.x)&&(index.x>=0) ) && ( (index.y<nrPixels.y)&&(index.y>=0) ) && ( (index.z<nrPixels.z)&&(index.z>=0) ) )
@@ -1617,45 +1571,32 @@ fieldError DiffRayField::convert2PhaseSpace(Field* imagePtr, detParams &oDetPara
 	* floor() of the coefficients of these vectors gives the indices we were looking for                                      
 	****************************************************************************************************************************/
 	double3 scale=l_PhaseSpacePtr->getParamsPtr()->scale;
-	double4x4 MTransform=oDetParams.MTransform;
 	long3 nrPixels=l_PhaseSpacePtr->getParamsPtr()->nrPixels;
-	// save the offset from the transformation matrix
-	double3 offset=make_double3(MTransform.m14, MTransform.m24, MTransform.m34);
-	// set offset in transformation matrix to zero for rotation of the scaled unit vectors
-	MTransform.m14=0;
-	MTransform.m24=0;
-	MTransform.m34=0;
+	scale.z=2*oDetParams.apertureHalfWidth.z/nrPixels.z; // we need to set this here as the IntensityField coming from the Detector is set for PseudoBandwidth...
+
 	// create unit vectors
 	double3 t_ez = make_double3(0,0,1);
 	double3 t_ey=make_double3(0,1,0);
 	double3 t_ex=make_double3(1,0,0);
 	// transform unit vectors into local coordinate system of IntensityField
-	t_ez=MTransform*t_ez;
-	t_ey=MTransform*t_ey;
-	t_ex=MTransform*t_ex;
+	rotateRay(&t_ez,oDetParams.tilt);
+	rotateRay(&t_ey,oDetParams.tilt);
+	rotateRay(&t_ex,oDetParams.tilt);
 
 	// the origin of the IntensityField is at the outer edge of the detector rather than at the origin
-	offset=offset-oDetParams.apertureHalfWidth.x*t_ex;//+0.5*l_PhaseSpacePtr->getParamsPtr()->scale*t_ex;
-	offset=offset-oDetParams.apertureHalfWidth.y*t_ey;//+0.5*l_PhaseSpacePtr->getParamsPtr()->scale*t_ey;
-	offset=offset-0.005*t_ez;//+0.5*l_PhaseSpacePtr->getParamsPtr()->scale*t_ez;
-
-	// scale unit vectors
-	double3 t_ez_scaled = t_ez*scale.z; 
-	double3 t_ey_scaled = t_ey*scale.y; 
-	double3 t_ex_scaled = t_ex*scale.x; 
+	double3 offset;
+	offset=oDetParams.root-oDetParams.apertureHalfWidth.x*t_ex;//+0.5*l_IntensityImagePtr->getParamsPtr()->scale*t_ex;
+	offset=offset-oDetParams.apertureHalfWidth.y*t_ey;//+0.5*l_IntensityImagePtr->getParamsPtr()->scale*t_ey;
+	offset=offset-oDetParams.apertureHalfWidth.z*t_ez;//+0.5*l_PhaseSpacePtr->getParamsPtr()->scale*t_ez;
 
 	short solutionIndex;
 
-	double3x3 Matrix=make_double3x3(t_ex_scaled,t_ey_scaled,t_ez_scaled);
-	if (optix::det(Matrix)==0)
-	{
-		std::cout << "error in GeometricRayField.convert2PhaseSpaceField(): Matrix is unitary!!" << std::endl;
-		return FIELD_ERR; //matrix singular
-	}
-	double3x3 MatrixInv=inv(Matrix);
-//	double3 posMinOffset;
-//	double3 indexFloat;
-//	long3 index;
+	unsigned long long hitNr=0;
+
+	double3 posMinOffset;
+	double3 indexFloat;
+	long3 index;
+
 	if (this->rayParamsPtr->coherence==1) // sum coherently
 	{
 		std::cout << "error in GeometricRayField.convert2PhaseSpaceField(): coherent conversion is not defined!!" << std::endl;
@@ -1673,13 +1614,13 @@ fieldError DiffRayField::convert2PhaseSpace(Field* imagePtr, detParams &oDetPara
 				{
 					// calc spatial coordinates
 					unsigned long long rayListIndex=jx+jy*GPU_SUBSET_WIDTH_MAX;
-					rayStruct rayTest=this->rayList[rayListIndex];
-					double3 posMinOffset=this->rayList[rayListIndex].position-offset;
-					double3 indexFloat=MatrixInv*posMinOffset;
-					long3 index;
-					index.x=floor(indexFloat.x+0.5);
-					index.y=floor(indexFloat.y+0.5);
-					index.z=floor(indexFloat.z+0.5);
+				    // transform to local coordinate system
+				    double3 tmpPos=this->rayList[rayListIndex].position-offset;
+				    rotateRayInv(&tmpPos,oDetParams.tilt);
+
+				    index.x=floor((tmpPos.x)/scale.x);
+				    index.y=floor((tmpPos.y)/scale.y);
+				    index.z=floor((tmpPos.z)/scale.z);
 
 					// calc directional coordinates
 					// calc the angle of the current ray with respect to the local coordinate axis
@@ -1881,6 +1822,11 @@ fieldError DiffRayField::processParseResults(FieldParseParamStruct &parseResults
 	return FIELD_NO_ERR;
 }
 
+void DiffRayField::setSimMode(SimMode &simMode)
+{
+    simMode=SIM_DIFF_RT;
+}
+
 /**
  * \detail parseXml
  *
@@ -1891,10 +1837,14 @@ fieldError DiffRayField::processParseResults(FieldParseParamStruct &parseResults
  * \remarks 
  * \author Mauch
  */
-fieldError  DiffRayField::parseXml(pugi::xml_node &det, vector<Field*> &fieldVec)
+fieldError  DiffRayField::parseXml(pugi::xml_node &det, vector<Field*> &fieldVec, SimParams simParams)
 {
+    this->setSimMode(simParams.simMode);
+
+    this->getParamsPtr()->epsilon=EPSILON;
+
 	// call base class function
-	if (FIELD_NO_ERR != RayField::parseXml(det, fieldVec))
+	if (FIELD_NO_ERR != RayField::parseXml(det, fieldVec, simParams))
 	{
 		std::cout << "error in DiffRayField.parseXml(): RayField.parseXml()  returned an error." << std::endl;
 		return FIELD_ERR;

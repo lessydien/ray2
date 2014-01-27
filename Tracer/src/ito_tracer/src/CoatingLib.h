@@ -47,7 +47,7 @@ public:
 
 	}
 
-	bool createCoatInstFromXML(xml_node &node, Coating* &pCoat) const;
+	virtual bool createCoatInstFromXML(xml_node &node, Coating* &pCoat, SimParams simParams) const;
 };
 
 #endif

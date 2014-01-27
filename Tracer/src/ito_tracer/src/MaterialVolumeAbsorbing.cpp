@@ -87,9 +87,9 @@ void MaterialVolumeAbsorbing::hit(rayStruct &ray, Mat_hitParams hitParams, doubl
  * \remarks 
  * \author Mauch
  */
-MaterialError MaterialVolumeAbsorbing::parseXml(pugi::xml_node &geometry)
+MaterialError MaterialVolumeAbsorbing::parseXml(pugi::xml_node &geometry, SimParams simParams)
 {
-	if (!Material::parseXml(geometry))
+	if (!Material::parseXml(geometry, simParams))
 	{
 		std::cout << "error in MaterialVolumeAbsorbing.parseXml(): Material.parseXml() returned an error." << std::endl;
 		return MAT_ERR;

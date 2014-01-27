@@ -155,10 +155,12 @@ class GeometricRayField : public RayField
 	fieldError convert2ScalarField(Field* imagePtr, detParams &oDetParams);
 	fieldError convert2VecField(Field* imagePtr, detParams &oDetParams);
 	fieldError convert2PhaseSpace(Field* imagePtr, detParams &oDetParams);
+
+    void setSimMode(SimMode &simMode);
 	
 	fieldError convert2RayData(Field** imagePtr, detParams &oDetParams);
 	fieldError processParseResults(FieldParseParamStruct &parseResults_Src, parseGlassResultStruct* parseResults_GlassPtr);
-	fieldError parseXml(pugi::xml_node &field, vector<Field*> &fieldVec);
+	fieldError parseXml(pugi::xml_node &field, vector<Field*> &fieldVec, SimParams simParams);
 };
 
 #endif

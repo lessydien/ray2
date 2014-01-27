@@ -102,7 +102,7 @@ class SphericalLense : public Geometry
 	  }
 	}
 
-	geometryError parseXml(pugi::xml_node &geometry, TraceMode l_mode, vector<Geometry*> &geomVec);
+	geometryError parseXml(pugi::xml_node &geometry, SimParams simParams, vector<Geometry*> &geomVec);
 };
 
 

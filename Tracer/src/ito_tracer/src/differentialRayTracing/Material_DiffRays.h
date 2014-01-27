@@ -99,7 +99,7 @@ class Material_DiffRays : public Material
 	}
 //	void setPathToPtx(char* path);
 //	MaterialError setCoating(Coating* ptrIn);
-//	MaterialError createMaterial_DiffRaysHitProgramPtx(RTcontext context, TraceMode mode);
+//	MaterialError createMaterial_DiffRaysHitProgramPtx(RTcontext context, SimMode mode);
 //	Coating* getCoating(void);
 //	MaterialError setScatter(Scatter* ptrIn);
 //	Scatter* getScatter(void);
