@@ -200,19 +200,21 @@ __global__ void defocField_kernel(cuDoubleComplex* d_pField, ConfPoint_KernelPar
 	// calc coordinates in pupil grid
 	double x=double(xGes)*(s_gridWidth/s_n)-s_gridWidth/2;
 	double y=double(yGes)*(s_gridWidth/s_n)-s_gridWidth/2;
-	double sigmaX=-x/s_f;//sin(atan(-x/s_f));
-	double sigmaY=-y/s_f;//sin(atan(-y/s_f));
-	double sigmaZ=(1-sigmaX*sigmaX-sigmaY*sigmaY);
-	if (sigmaZ>=0)
-		sigmaZ=sqrt(sigmaZ);
-	else
-		sigmaZ=0;
+	double sigmaX=sin(atan(-x/s_f));
+	double sigmaY=sin(atan(-y/s_f));
+    double sigmaZ=(1-sigmaX*sigmaX-sigmaY*sigmaY);
+    if (sigmaZ<0)
+        sigmaZ=0;
+    else
+        sigmaZ=sqrt(sigmaZ);
+    double cosThetaZ=abs(s_f/sqrt(x*x+y*y+s_f*s_f));
+    double apod=1;//sqrt(cosThetaZ);
 	// calc defocus
 	if (xGes+yGes*s_n < s_n*s_n)
 	{
 		// calc defocus phase
 		double phase=-s_k*sigmaZ*s_deltaZ;
-		d_pField[xGes+s_n*yGes]=cuCmul(d_pField[xGes+s_n*yGes],make_cuDoubleComplex(cos(phase),sin(phase)));
+		d_pField[xGes+s_n*yGes]=cuCmul(d_pField[xGes+s_n*yGes],make_cuDoubleComplex(apod*cos(phase),apod*sin(phase)));
 		//d_pField[xGes+s_n*yGes]=make_cuDoubleComplex(cos(phase),sin(phase));
 	}
 }
@@ -290,6 +292,7 @@ __global__ void createField_kernel(cuDoubleComplex* pPupField, ConfPoint_KernelP
 			double ampl=exp(-rho*rho/(apodRad*apodRad));
 			// create real and imaginary part of field with unity modulus and our phase
 			pPupField[xGes+yGes*pParams->n]=make_cuDoubleComplex(ampl*cos(phase_aberr+phase_defoc),ampl*sin(phase_aberr+phase_defoc)); 
+            //pPupField[xGes+yGes*pParams->n]=make_cuDoubleComplex(1.0,0.0); 
 		}
 		else
 			pPupField[xGes+yGes*pParams->n]=make_cuDoubleComplex(0, 0);
@@ -1167,31 +1170,50 @@ bool cu_simConfPointRawSig_wrapper(double** ppRawSig, ConfPoint_KernelParams par
 	createField_kernel<<<dimGrid,dimBlock>>>(d_pPupField, d_pParams);
 
 	// allocate host memory for pupil field
-	//cuDoubleComplex* h_pPupField=(cuDoubleComplex*)malloc(params.n*params.n*sizeof(cuDoubleComplex));
-	//// transfer pupil field from device
-	//if (cudaSuccess != cudaMemcpy(h_pPupField, d_pPupField, params.n*params.n*sizeof(cuDoubleComplex), cudaMemcpyDeviceToHost))
-	//	return false;
+	cuDoubleComplex* h_pPupField=(cuDoubleComplex*)malloc(params.n*params.n*sizeof(cuDoubleComplex));
+	// transfer pupil field from device
+	if (cudaSuccess != cudaMemcpy(h_pPupField, d_pPupField, params.n*params.n*sizeof(cuDoubleComplex), cudaMemcpyDeviceToHost))
+		return false;
 
-	//char t_filename[512];
-	//sprintf(t_filename, "E:\\test.txt");
-	//FILE* hFile;
-	//hFile = fopen( t_filename, "w" ) ;
-
-
-	//if ( (hFile == NULL) )
-	//	return 1;
+	char t_filename[512];
+	sprintf(t_filename, "E:\\testReal.txt");
+	FILE* hFile;
+	hFile = fopen( t_filename, "w" ) ;
 
 
-	//for (unsigned int jy=0; jy<params.n; jy++)
-	//{
-	//	for (unsigned int jx=0; jx<params.n; jx++)
-	//	{
-	//		fprintf(hFile, " %.16e;\n", h_pPupField[jx+jy*params.n].x);
-	//	}
-	//}
+	if ( (hFile == NULL) )
+		return 1;
 
-	//fclose(hFile);
-		
+
+	for (unsigned int jy=0; jy<params.n; jy++)
+	{
+		for (unsigned int jx=0; jx<params.n; jx++)
+		{
+			fprintf(hFile, " %.16e;\n", h_pPupField[jx+jy*params.n].x);
+		}
+	}
+
+	fclose(hFile);
+
+	sprintf(t_filename, "E:\\testImag.txt");
+	hFile = fopen( t_filename, "w" ) ;
+
+
+	if ( (hFile == NULL) )
+		return 1;
+
+
+	for (unsigned int jy=0; jy<params.n; jy++)
+	{
+		for (unsigned int jx=0; jx<params.n; jx++)
+		{
+			fprintf(hFile, " %.16e;\n", h_pPupField[jx+jy*params.n].y);
+		}
+	}
+
+	fclose(hFile);
+
+
     cufftHandle plan;
 	if (!myCufftSafeCall(cufftPlan2d(&plan,params.n, params.n, CUFFT_Z2Z)))
 	{

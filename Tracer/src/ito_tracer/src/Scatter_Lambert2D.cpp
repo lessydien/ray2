@@ -149,7 +149,7 @@ ScatterError Scatter_Lambert2D::processParseResults(MaterialParseParamStruct &pa
  * \remarks 
  * \author Mauch
  */
-ScatterError Scatter_Lambert2D::parseXml(pugi::xml_node &geometry)
+ScatterError Scatter_Lambert2D::parseXml(pugi::xml_node &geometry, SimParams simParams)
 {
 	Parser_XML l_parser;
 	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "Tis", this->getFullParams()->TIR)))

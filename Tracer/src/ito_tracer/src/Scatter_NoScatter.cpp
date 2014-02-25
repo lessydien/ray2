@@ -45,7 +45,7 @@
  * \remarks 
  * \author Mauch
  */
-ScatterError Scatter_NoScatter::parseXml(pugi::xml_node &geometry)
+ScatterError Scatter_NoScatter::parseXml(pugi::xml_node &geometry, SimParams simParams)
 {
 	return SCAT_NO_ERROR;
 }

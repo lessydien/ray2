@@ -33,6 +33,7 @@ class MacroSimInterface : public ito::AddInInterfaceBase
 {
     Q_OBJECT
         Q_INTERFACES(ito::AddInInterfaceBase)
+        PLUGIN_ITOM_API
 
     protected:
 

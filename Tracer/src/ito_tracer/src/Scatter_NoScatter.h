@@ -56,7 +56,7 @@ class Scatter_NoScatter: public Scatter
 	{
 	}
 
-	ScatterError parseXml(pugi::xml_node &geometry);
+	ScatterError parseXml(pugi::xml_node &geometry, SimParams simParams);
 };
 
 #endif

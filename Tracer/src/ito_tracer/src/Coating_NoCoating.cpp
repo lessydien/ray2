@@ -42,7 +42,7 @@
  * \remarks 
  * \author Mauch
  */
-CoatingError Coating_NoCoating::parseXml(pugi::xml_node &geometry)
+CoatingError Coating_NoCoating::parseXml(pugi::xml_node &geometry, SimParams simParams)
 {
 	return COAT_NO_ERROR;
 }

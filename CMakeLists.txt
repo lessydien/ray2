@@ -271,10 +271,6 @@ IF(CUDA_FOUND)
     QT4_WRAP_UI_ITOM(plugin_ui_MOC ${plugin_ui})
 
     set(plugin_SOURCES 
-        ${ITOM_SDK_INCLUDE_DIR}/common/addInInterface.cpp
-        ${ITOM_SDK_INCLUDE_DIR}/common/helperCommon.cpp
-        ${ITOM_SDK_INCLUDE_DIR}/common/sharedStructures.cpp
-        ${ITOM_SDK_INCLUDE_DIR}/common/sharedStructuresQt.cpp	
 #        ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/ColorCombo.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/CustomTypes.cpp
 #        ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/EnumProperty.cpp
@@ -397,9 +393,9 @@ IF(CUDA_FOUND)
 
     ADD_LIBRARY(${target_name} ${LIBRARY_TYPE} ${plugin_SOURCES} ${plugin_RESOURCES} ${plugin_HEADERS} ${plugin_HEADERS_MOC} ${plugin_ui_MOC} ${plugin_rcc_MOC} ${EXISTING_TRANSLATION_FILES})
 	if (VTK_LIBRARIES)
-		TARGET_LINK_LIBRARIES(${target_name} ${QT_LIBRARIES} ${QT_QTUITOOLS_LIBRARY} ${QT_QTXML_LIBRARY} ${OpenCV_LIBS} ${MacroSim_Tracer_LIBS} ${ITOM_SDK_dataobject_LIBRARY} ${ITOM_SDK_qpropertyeditor_LIBRARY} ${FFTW_LIBRARY_D} ${CUDA_CUFFT_LIBRARIES} ${CUDA_LIBRARIES} ${VTK_LIBRARIES} QVTK)
+		TARGET_LINK_LIBRARIES(${target_name} ${QT_LIBRARIES} ${QT_QTUITOOLS_LIBRARY} ${QT_QTXML_LIBRARY} ${OpenCV_LIBS} ${MacroSim_Tracer_LIBS} ${ITOM_SDK_dataobject_LIBRARY} ${ITOM_SDK_qpropertyeditor_LIBRARY} ${FFTW_LIBRARY_D} ${CUDA_CUFFT_LIBRARIES} ${CUDA_LIBRARIES} ${ITOM_SDK_itomCommonLib_LIBRARY} ${ITOM_SDK_itomCommonQtLib_LIBRARY} ${VTK_LIBRARIES} QVTK)
 	else ()
-		TARGET_LINK_LIBRARIES(${target_name} ${QT_LIBRARIES} ${QT_QTUITOOLS_LIBRARY} ${QT_QTXML_LIBRARY} ${OpenCV_LIBS} ${MacroSim_Tracer_LIBS} ${ITOM_SDK_dataobject_LIBRARY} ${ITOM_SDK_qpropertyeditor_LIBRARY} ${FFTW_LIBRARY_D} ${CUDA_CUFFT_LIBRARIES} ${CUDA_LIBRARIES} vtkHybrid QVTK vtkViews)
+		TARGET_LINK_LIBRARIES(${target_name} ${QT_LIBRARIES} ${QT_QTUITOOLS_LIBRARY} ${QT_QTXML_LIBRARY} ${OpenCV_LIBS} ${MacroSim_Tracer_LIBS} ${ITOM_SDK_dataobject_LIBRARY} ${ITOM_SDK_qpropertyeditor_LIBRARY} ${FFTW_LIBRARY_D} ${CUDA_CUFFT_LIBRARIES} ${CUDA_LIBRARIES} ${ITOM_SDK_itomCommonLib_LIBRARY} ${ITOM_SDK_itomCommonQtLib_LIBRARY} vtkHybrid QVTK vtkViews)
 	endif()
 	#handle translations BEGIN STEP 2
 	if (UPDATE_TRANSLATIONS)

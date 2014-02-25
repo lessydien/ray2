@@ -15,6 +15,9 @@
     along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************/
 
+#define ITOM_IMPORT_API
+#define ITOM_IMPORT_PLOTAPI
+
 #include "mainWinMacroSim.h"
 #include "macroSim.h"
 #include "common/helperCommon.h"

@@ -99,14 +99,14 @@ geometryGroupError  GeometryGroup::trace(rayStruct &ray)
 			{
 				tempDist=this->getGeometry(i)->intersect(&ray);
 				
-				if ((tempDist<minDist)&&(tempDist>0.000001))
+				if ((tempDist<minDist)&&(tempDist>EPSILON))
 				{
 					minDist=tempDist;
 					indexToTrace=i;
 				}
 				
 			}
-			if (minDist<EPSILON)
+			if (abs(minDist)<EPSILON)
 				std::cout << "distance to small" << std::endl;
 			if ((minDist<0) || (indexToTrace==-1))
 			{
@@ -141,7 +141,7 @@ geometryGroupError  GeometryGroup::trace(diffRayStruct &ray)
 	if ( (this->mode.traceMode==TRACE_SEQ) )
 	{
 		tempDist=this->getGeometry(ray.currentGeometryID)->intersect(&ray);
-		if (tempDist>0.000001)
+		if (tempDist>EPSILON)
 			// if we intersect the geometry, hit it
 			this->getGeometry(ray.currentGeometryID)->hit(ray,tempDist);
 		else

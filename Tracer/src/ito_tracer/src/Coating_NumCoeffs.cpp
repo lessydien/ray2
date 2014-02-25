@@ -167,7 +167,7 @@ CoatingError Coating_NumCoeffs::processParseResults(MaterialParseParamStruct &pa
  * \remarks 
  * \author Mauch
  */
-CoatingError Coating_NumCoeffs::parseXml(pugi::xml_node &coating)
+CoatingError Coating_NumCoeffs::parseXml(pugi::xml_node &coating, SimParams simParams)
 {
 	Parser_XML l_parser;
 	if (!this->checkParserError(l_parser.attrByNameToDouble(coating, "tA", this->fullParamsPtr->t)))

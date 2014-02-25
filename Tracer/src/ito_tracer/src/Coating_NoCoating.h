@@ -77,7 +77,7 @@ class Coating_NoCoating : public Coating
 			fullParamsPtr=NULL;
 		}
 	}
-	virtual CoatingError parseXml(pugi::xml_node &node);
+	virtual CoatingError parseXml(pugi::xml_node &node, SimParams simParams);
 };
 
 #endif

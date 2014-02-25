@@ -108,7 +108,7 @@ class Scatter_Lambert2D: public Scatter
 	void hit(rayStruct &ray, Mat_hitParams hitParams);
 	void hit(gaussBeamRayStruct &ray, gaussBeam_geometricNormal normal);
 	ScatterError processParseResults(MaterialParseParamStruct &parseResults_Mat);
-	ScatterError parseXml(pugi::xml_node &geometry);
+	ScatterError parseXml(pugi::xml_node &geometry, SimParams simParams);
 };
 
 #endif

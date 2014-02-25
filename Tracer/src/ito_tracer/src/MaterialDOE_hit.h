@@ -178,7 +178,7 @@ inline RT_HOSTDEVICE bool hitDOE(rayStruct &ray, Mat_hitParams hitParams, MatDOE
 	}
 	else if (ray.nImmersed==params.n2 && refractbefore == true)
 	{
-		if (!calcSnellsLaw(&(zerodirection),make_double3(0,0,1), ray.nImmersed, params.n1))
+		if (calcSnellsLaw(&(zerodirection),make_double3(0,0,1), ray.nImmersed, params.n1))
 			ray.nImmersed=params.n1;
 	}
 
