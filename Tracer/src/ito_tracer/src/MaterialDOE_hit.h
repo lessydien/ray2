@@ -356,22 +356,27 @@ ray.currentSeed=x1[4]; // save seed for next round
 
 double zufall = (Random(x1))*prob_vector[20];
 //int Schrottordnung;
-
-
-for (i=0;i<21;i++)
-{
-	if (zufall<=prob_vector[i]) break;
-}
-
-//if(zufall>prob_vector[20])
-//	Schrottordnung=1;
-//else
-//	Schrottordnung=0;
-
-double CurrentOrder = orders[i];
+int CurrentOrder;
 if (firstOrder == true)
 {
 	CurrentOrder = 1;
+}
+else
+{
+    for (i=0;i<21;i++)
+    {
+	    if (zufall<=prob_vector[i]) break;
+    }
+    CurrentOrder = orders[i];
+    if (CurrentOrder != 1)
+        ray.depth++;
+
+    //if(zufall>prob_vector[20])
+    //	Schrottordnung=1;
+    //else
+    //	Schrottordnung=0;
+
+    
 }
 
 	//----------
