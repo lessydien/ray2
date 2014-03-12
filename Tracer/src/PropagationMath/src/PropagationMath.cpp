@@ -1385,7 +1385,8 @@ propError simConfPointRawSig(double **ppRawSig, ConfPoint_Params params, bool ru
 		l_kernelParams.scanStep=params.scanStep;
 		l_kernelParams.apodisationRadius=params.apodisationRadius;
 		memcpy(&(l_kernelParams.pAberrVec[0]),&(params.pAberrVec[0]),16*sizeof(double));
-		if (!cu_simConfPointRawSig_wrapper(ppRawSig, l_kernelParams))
+        if (!cu_simConfPointRawSig_wrapper(ppRawSig, l_kernelParams))
+        //if (!cu_simConfPointRawSig_wrapperTest(ppRawSig, l_kernelParams))
 		{
 			cout << "error in simConfPointRawSig: cu_simConfPointRawSig_wrapper() returned an error" << endl;
 			return PROP_ERR;

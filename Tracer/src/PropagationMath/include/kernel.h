@@ -4,11 +4,42 @@
 #include "vector_types.h"
 #include "cuComplex.h"
 #include "cufft.h"
+#include "cuda.h"
+#include "cuda_runtime.h"
 #include <iostream>
+#include "sm_12_atomic_functions.h"
 //#include "PropagationMath.h"
 
 //#define PI ((double)3.141592653589793238462643383279502884197169399375105820)
 
+struct Lock 
+{
+    int *mutex;
+    Lock ( void ) 
+    {
+        int state=0;
+        cudaMalloc( (void**)& mutex, sizeof(int));
+        cudaMemcpy( mutex, &state, sizeof(int), cudaMemcpyHostToDevice);
+    }
+    ~Lock ( void )
+    {
+        cudaFree( mutex);
+    }
+
+    __device__ void lock( void )
+    {
+        #ifdef __CUDA_ARCH__
+        while( atomicCAS( mutex, 0, 1 ) != 0 );
+        #endif
+    }
+
+    __device__ void unlock( void )
+    {
+        #ifdef __CUDA_ARCH__
+        atomicExch( mutex, 0 );
+        #endif
+    }
+};
 
 /* declare class */
 /**
@@ -81,7 +112,7 @@ inline __host__ __device__ uint2 calc2DIndices(uint3 blockIndex, dim3 blockDimen
 inline bool __myCufftSafeCall( cufftResult err, const char *file, const int line )
 {
     if( CUFFT_SUCCESS != err) {
-		std::cout << "cufftSafeCall() Runtime API error in file " << file << " line " << line << std::endl;
+		//std::cout << "cufftSafeCall() Runtime API error in file " << file << " line " << line << std::endl;
         return false;
     }
 	return true;

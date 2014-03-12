@@ -1,7 +1,4 @@
 #include "kernel.h"
-#include "cuda.h"
-#include "cuda_runtime.h"
-#include <cufft.h>
 #include <thrust/device_vector.h>
 #include <thrust/fill.h>
 #include <thrust/copy.h>
@@ -13,6 +10,8 @@
 #ifndef PI
 	#define PI       3.14159265358979323846
 #endif
+
+#define THREADSPERBLOCK 1024
 
 unsigned int nextPow2(unsigned int x)
 {
@@ -88,7 +87,7 @@ struct squareCuDoubleComplex
 {
     __host__ __device__
         cuDoubleComplex operator()(const cuDoubleComplex& x) const { 
-            return cuCmul(x,x);
+            return cuCmul(x,cuCmul(make_cuDoubleComplex(9.5367e-7,0),x));
         }
 };
 
@@ -207,14 +206,12 @@ __global__ void defocField_kernel(cuDoubleComplex* d_pField, ConfPoint_KernelPar
         sigmaZ=0;
     else
         sigmaZ=sqrt(sigmaZ);
-    double cosThetaZ=abs(s_f/sqrt(x*x+y*y+s_f*s_f));
-    double apod=1;//sqrt(cosThetaZ);
 	// calc defocus
 	if (xGes+yGes*s_n < s_n*s_n)
 	{
 		// calc defocus phase
 		double phase=-s_k*sigmaZ*s_deltaZ;
-		d_pField[xGes+s_n*yGes]=cuCmul(d_pField[xGes+s_n*yGes],make_cuDoubleComplex(apod*cos(phase),apod*sin(phase)));
+		d_pField[xGes+s_n*yGes]=cuCmul(d_pField[xGes+s_n*yGes],make_cuDoubleComplex(cos(phase),sin(phase)));
 		//d_pField[xGes+s_n*yGes]=make_cuDoubleComplex(cos(phase),sin(phase));
 	}
 }
@@ -222,7 +219,7 @@ __global__ void defocField_kernel(cuDoubleComplex* d_pField, ConfPoint_KernelPar
 __global__ void createField_kernel(cuDoubleComplex* pPupField, ConfPoint_KernelParams* pParams)
 {
 	__shared__ double s_aberrVec[16];
-	__shared__ double s_gridWidth, s_magnif, s_k, s_NA, s_deltaZ, s_apodRadius;
+	__shared__ double s_gridWidth, s_magnif, s_k, s_NA, s_deltaZ, s_apodRadius, s_f;
 	__shared__ unsigned int s_n;
 
 	// load aberration coeffs in shared memory
@@ -238,6 +235,7 @@ __global__ void createField_kernel(cuDoubleComplex* pPupField, ConfPoint_KernelP
 			s_n=pParams->n;
 			s_deltaZ=-pParams->scanStep.z*pParams->scanNumber.z/2;
 			s_apodRadius=pParams->apodisationRadius;
+            s_f=160/pParams->magnif;// we assume a tubus length of 160mm here to calculate the focal length of the objective lens
 		}
 	}
 
@@ -252,21 +250,22 @@ __global__ void createField_kernel(cuDoubleComplex* pPupField, ConfPoint_KernelP
 		double x=double(xGes)*(s_gridWidth/s_n)-s_gridWidth/2;
 		double y=double(yGes)*(s_gridWidth/s_n)-s_gridWidth/2;
 		// calc width of pupil
-		double f=160/s_magnif; // we assume a tubus length of 160mm here to calculate the focal length of the objective lens
-		double wPup=tan(asin(s_NA))*2*f;
+		double wPup=tan(asin(s_NA))*2*s_f;
 		double rho=sqrt(x*x+y*y)/(wPup/2); // normalized radial coordinate in pupil
 		double apodRad=s_apodRadius/(wPup/2); // normalized apodisation radius
 		double phi=atan2(y,x);
 
 		// calc initial defocus
-		double sigmaX=sin(atan(-x/f));
-		double sigmaY=sin(atan(-y/f));
+		double sigmaX=sin(atan(-x/s_f));
+		double sigmaY=sin(atan(-y/s_f));
 		double sigmaZ=(1-sigmaX*sigmaX-sigmaY*sigmaY);
 		if (sigmaZ>=0)
 			sigmaZ=sqrt(sigmaZ);
 		else
 			sigmaZ=0;
 
+        double cosThetaZ=abs(s_f/sqrt(x*x+y*y+s_f*s_f));
+        double apod=sqrt(cosThetaZ);
 
 		if (rho<=1)
 		{
@@ -284,14 +283,14 @@ __global__ void createField_kernel(cuDoubleComplex* pPupField, ConfPoint_KernelP
 							+pParams->pAberrVec[8]*(6*pow(rho,4)-6*rho*rho+1)
 							+pParams->pAberrVec[9]*pow(rho,3)*cos(3*phi)
 							+pParams->pAberrVec[10]*pow(rho,3)*sin(3*phi)
-							+pParams->pAberrVec[11]*(4*pow(rho,4)-3*pow(rho,2)*cos(2*phi))
-							+pParams->pAberrVec[12]*(4*pow(rho,4)-3*pow(rho,2)*sin(2*phi))
+							+pParams->pAberrVec[11]*(4*pow(rho,4)-3*pow(rho,2))*cos(2*phi)
+							+pParams->pAberrVec[12]*(4*pow(rho,4)-3*pow(rho,2))*sin(2*phi)
 							+pParams->pAberrVec[13]*(10*pow(rho,5)-12*pow(rho,3)+3*rho)*cos(phi)
 							+pParams->pAberrVec[14]*(10*pow(rho,5)-12*pow(rho,3)+3*rho)*sin(phi)
 							+pParams->pAberrVec[15]*(20*pow(rho,6)-30*pow(rho,4)+12*pow(rho,2)-1));
 			double ampl=exp(-rho*rho/(apodRad*apodRad));
 			// create real and imaginary part of field with unity modulus and our phase
-			pPupField[xGes+yGes*pParams->n]=make_cuDoubleComplex(ampl*cos(phase_aberr+phase_defoc),ampl*sin(phase_aberr+phase_defoc)); 
+			pPupField[xGes+yGes*pParams->n]=make_cuDoubleComplex(apod*ampl*cos(phase_aberr+phase_defoc),apod*ampl*sin(phase_aberr+phase_defoc)); 
             //pPupField[xGes+yGes*pParams->n]=make_cuDoubleComplex(1.0,0.0); 
 		}
 		else
@@ -1069,38 +1068,110 @@ double cu_testReduce_wrapper()
 	return 1.0;//outData;
 }
 
+__global__ void myReduce(Lock lock, cuDoubleComplex *field, cuDoubleComplex *out, int N)
+{
+    __shared__ cuDoubleComplex cache[THREADSPERBLOCK];
+    int tid = threadIdx.x + blockIdx.x * blockDim.x;
+    int cacheIdx=threadIdx.x;
+
+    cuDoubleComplex temp=make_cuDoubleComplex(0.0, 0.0);
+
+    while (tid < N)
+    {
+        temp=cuCadd(temp, cuCmul(field[tid], cuCmul(make_cuDoubleComplex(1/(double)(N),0.0), field[tid])));
+        //temp=cuCadd(temp, cuCmul(field[tid], field[tid]));
+        tid += blockDim.x*gridDim.x;
+    }
+
+    // set the cache values
+    cache[cacheIdx]=temp;
+
+    // synchronize threads in this block
+    __syncthreads();
+
+    // for reductions, threadsPerBlock must be a power of two because of the following code
+    int i=blockDim.x/2;
+    while (i != 0)
+    {
+        if (cacheIdx < i)
+            cache[cacheIdx] = cuCadd(cache[cacheIdx], cache[cacheIdx+i]);
+        __syncthreads();
+        i = i/2;
+    }
+
+    if (cacheIdx==0)
+    {
+        lock.lock();
+        *out=cuCadd(*out, cache[0]);
+        lock.unlock();
+    }
+
+}
+
 bool cu_simConfPointRawSig_wrapperTest(double** ppRawSig, ConfPoint_KernelParams params)
 {
-   size_t N = 10;
+    size_t N = params.n*params.n;
+    cudaDeviceProp deviceProp;
+    cudaError_t error;
 
-   int * host_raw_ptr=(int*)malloc(N*sizeof(int));
-   for (int i=0;i<N;i++)
-   {
-	   host_raw_ptr[i]=1;
-   }
+	// check device
+    error = cudaGetDeviceProperties(&deviceProp, 0);
+    if (error != cudaSuccess)
+    {
+        std::cout << "error in cu_simConfPointRawSig_wrapper: cudaGetDeviceProperties returned error code " << error << " line: " << __LINE__ << std::endl;
+        return 0;
+    }
+
+    cuDoubleComplex * l_pHostData=(cuDoubleComplex*)malloc(N*sizeof(cuDoubleComplex));
+    for (int i=0;i<N;i++)
+    {
+	    l_pHostData[i]=make_cuDoubleComplex(10000.0,0.0);
+    }
 
     // obtain raw pointer to device memory
-    int * raw_ptr;
-    cudaMalloc((void **) &raw_ptr, N * sizeof(int));
+    cuDoubleComplex * l_pDeviceData;
+    cudaMalloc((void **) &l_pDeviceData, N * sizeof(cuDoubleComplex));
 
-	// transfre data to GPU
-	cudaMemcpy(raw_ptr, host_raw_ptr,N*sizeof(int),cudaMemcpyHostToDevice);
+    error=cudaMemcpy(l_pDeviceData, l_pHostData,N*sizeof(cuDoubleComplex),cudaMemcpyHostToDevice);
+	// transfer data to GPU
+	if (error != cudaSuccess)
+    {
+        std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMemcpy returned error code " << error << " line: " << __LINE__ << std::endl;
+        return 0;
+    }
 
+    *ppRawSig=(double*)calloc(1,sizeof(double));
 
-    // wrap raw pointer with a device_ptr 
-    //thrust::device_ptr<int> dev_ptr = thrust::device_pointer_cast(raw_ptr);
-	thrust::device_ptr<int> dev_ptr(raw_ptr);
+    cuDoubleComplex l_hostOutData=make_cuDoubleComplex(0.0,0.0);
+	cuDoubleComplex *l_pDeviceOutData;
+	if (cudaSuccess != cudaMalloc((void**)&l_pDeviceOutData, sizeof(cuDoubleComplex)))
+	{
+		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << std::endl;
+		return 0;
+	}
+    if (cudaSuccess != cudaMemcpy(l_pDeviceOutData, &l_hostOutData, sizeof(cuDoubleComplex), cudaMemcpyHostToDevice) )
+    {
+		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << std::endl;
+		return 0;
+    }
 
+    Lock lock;
+    int blocksPerGrid=(N+THREADSPERBLOCK-1)/THREADSPERBLOCK;
+    myReduce<<<blocksPerGrid, 1024>>>(lock, l_pDeviceData, l_pDeviceOutData, N);
 
-    // use device_ptr in Thrust algorithms
-//    thrust::fill(dev_ptr, dev_ptr + N, (int) 1);
-
-	int result=thrust::reduce(dev_ptr, dev_ptr+N);
+    // copy data back from GPU
+    if (cudaSuccess != cudaMemcpy(&l_hostOutData, l_pDeviceOutData, sizeof(cuDoubleComplex), cudaMemcpyDeviceToHost) )
+    {
+		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << std::endl;
+		return 0;
+    }
+    (*ppRawSig)[0]=cuCabs(l_hostOutData);
 
     // free memory
-    cudaFree(raw_ptr);
-
-
+    cudaFree(l_pDeviceData);
+    cudaFree(l_pDeviceOutData);
+    delete l_pHostData;
+    
     return true;
 }
 
@@ -1150,7 +1221,7 @@ bool cu_simConfPointRawSig_wrapper(double** ppRawSig, ConfPoint_KernelParams par
 		return false;
 	}
 	// allocate host memory for raw signal
-	*ppRawSig=(double*)malloc(params.scanNumber.x*params.scanNumber.y*params.scanNumber.z*sizeof(double));
+	*ppRawSig=(double*)calloc(params.scanNumber.x*params.scanNumber.y*params.scanNumber.z,sizeof(double));
 
 	// calc dimensions of kernel launch when have one kernel per element in the pupil field
     dim3 dimBlock(block_size,block_size,1); // number of threads within each block in x,y,z (maximum of 512 or 1024 in total. I.e. 512,1,1 or 8,16,2 or ...
@@ -1169,50 +1240,49 @@ bool cu_simConfPointRawSig_wrapper(double** ppRawSig, ConfPoint_KernelParams par
 	// create pupil field according to aberrations
 	createField_kernel<<<dimGrid,dimBlock>>>(d_pPupField, d_pParams);
 
-	// allocate host memory for pupil field
-	cuDoubleComplex* h_pPupField=(cuDoubleComplex*)malloc(params.n*params.n*sizeof(cuDoubleComplex));
-	// transfer pupil field from device
-	if (cudaSuccess != cudaMemcpy(h_pPupField, d_pPupField, params.n*params.n*sizeof(cuDoubleComplex), cudaMemcpyDeviceToHost))
-		return false;
+	//// allocate host memory for pupil field
+	//cuDoubleComplex* h_pPupField=(cuDoubleComplex*)malloc(params.n*params.n*sizeof(cuDoubleComplex));
+	//// transfer pupil field from device
+	//if (cudaSuccess != cudaMemcpy(h_pPupField, d_pPupField, params.n*params.n*sizeof(cuDoubleComplex), cudaMemcpyDeviceToHost))
+	//	return false;
 
-	char t_filename[512];
-	sprintf(t_filename, "E:\\testReal.txt");
-	FILE* hFile;
-	hFile = fopen( t_filename, "w" ) ;
-
-
-	if ( (hFile == NULL) )
-		return 1;
+	//char t_filename[512];
+	//sprintf(t_filename, "E:\\testReal.txt");
+	//FILE* hFile;
+	//hFile = fopen( t_filename, "w" ) ;
 
 
-	for (unsigned int jy=0; jy<params.n; jy++)
-	{
-		for (unsigned int jx=0; jx<params.n; jx++)
-		{
-			fprintf(hFile, " %.16e;\n", h_pPupField[jx+jy*params.n].x);
-		}
-	}
-
-	fclose(hFile);
-
-	sprintf(t_filename, "E:\\testImag.txt");
-	hFile = fopen( t_filename, "w" ) ;
+	//if ( (hFile == NULL) )
+	//	return 1;
 
 
-	if ( (hFile == NULL) )
-		return 1;
+	//for (unsigned int jy=0; jy<params.n; jy++)
+	//{
+	//	for (unsigned int jx=0; jx<params.n; jx++)
+	//	{
+	//		fprintf(hFile, " %.16e;\n", h_pPupField[jx+jy*params.n].x);
+	//	}
+	//}
+
+	//fclose(hFile);
+
+	//sprintf(t_filename, "E:\\testImag.txt");
+	//hFile = fopen( t_filename, "w" ) ;
 
 
-	for (unsigned int jy=0; jy<params.n; jy++)
-	{
-		for (unsigned int jx=0; jx<params.n; jx++)
-		{
-			fprintf(hFile, " %.16e;\n", h_pPupField[jx+jy*params.n].y);
-		}
-	}
+	//if ( (hFile == NULL) )
+	//	return 1;
 
-	fclose(hFile);
 
+	//for (unsigned int jy=0; jy<params.n; jy++)
+	//{
+	//	for (unsigned int jx=0; jx<params.n; jx++)
+	//	{
+	//		fprintf(hFile, " %.16e;\n", h_pPupField[jx+jy*params.n].y);
+	//	}
+	//}
+
+	//fclose(hFile);
 
     cufftHandle plan;
 	if (!myCufftSafeCall(cufftPlan2d(&plan,params.n, params.n, CUFFT_Z2Z)))
@@ -1221,12 +1291,29 @@ bool cu_simConfPointRawSig_wrapper(double** ppRawSig, ConfPoint_KernelParams par
 		return false;
 	}
 
-	// create a thrust ptr
-	thrust::device_ptr<cuDoubleComplex> d_pObjField_thrust=thrust::device_pointer_cast(d_pPupField);
-	squareCuDoubleComplex unary_op;
-	addCuDoubleComplex binary_op;
-	cuDoubleComplex init;
-	init=make_cuDoubleComplex(0,0);
+	//// create a thrust ptr
+	//thrust::device_ptr<cuDoubleComplex> d_pObjField_thrust=thrust::device_pointer_cast(d_pPupField);
+	//squareCuDoubleComplex unary_op;
+	//addCuDoubleComplex binary_op;
+	//cuDoubleComplex init;
+	//init=make_cuDoubleComplex(0.0,0.0);
+
+    // allocate outData on GPU and init it to zero
+    cuDoubleComplex l_hostOutData=make_cuDoubleComplex(0.0,0.0);
+	cuDoubleComplex *l_pDeviceOutData;
+	if (cudaSuccess != cudaMalloc((void**)&l_pDeviceOutData, sizeof(cuDoubleComplex)))
+	{
+		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << std::endl;
+		return 0;
+	}
+    if (cudaSuccess != cudaMemcpy(l_pDeviceOutData, &l_hostOutData, sizeof(cuDoubleComplex), cudaMemcpyHostToDevice) )
+    {
+		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << std::endl;
+		return 0;
+    }
+
+    Lock lock;
+    int blocksPerGrid=(params.n*params.n+THREADSPERBLOCK-1)/THREADSPERBLOCK;
 
 	clock_t start, end;
 	double msecs_Tracing=0;
@@ -1234,6 +1321,9 @@ bool cu_simConfPointRawSig_wrapper(double** ppRawSig, ConfPoint_KernelParams par
 	double msecs=0;
 	// start timing
 	start=clock();
+
+	// allocate host memory for pupil field
+	cuDoubleComplex* h_pObjField=(cuDoubleComplex*)malloc(params.n*params.n*sizeof(cuDoubleComplex));
 
 	// do the simulation
 	for (unsigned int jy=0; jy<params.scanNumber.y; jy++)
@@ -1244,19 +1334,90 @@ bool cu_simConfPointRawSig_wrapper(double** ppRawSig, ConfPoint_KernelParams par
 			{
 				// apply defocus
 				defocField_kernel<<<dimGrid,dimBlock>>>(d_pPupField, d_pParams);
+
 				// note that object field is not fftshifted after call to cufft !!
 				if (!myCufftSafeCall(cufftExecZ2Z(plan, (cufftDoubleComplex *)d_pPupField, (cufftDoubleComplex *)d_pObjField, CUFFT_FORWARD)))
 				{
-					cudaFree(d_pParams);
-					cudaFree(d_pPupField);
-					cudaFree(d_pObjField);
-					cufftDestroy (plan);
-					//thrust::device_free(d_pObjField_thrust);
-					std::cout << "error in cu_simConfPointRawSig_wrapper: cufftExecZ2Z returned an error " << error << " line: " << __LINE__ << std::endl;
-					return false;
+                    // try again, just to be sure...
+                    if (!myCufftSafeCall(cufftExecZ2Z(plan, (cufftDoubleComplex *)d_pPupField, (cufftDoubleComplex *)d_pObjField, CUFFT_FORWARD)))
+                    {
+					    cudaFree(d_pParams);
+					    cudaFree(d_pPupField);
+					    cudaFree(d_pObjField);
+					    cufftDestroy (plan);
+					    //thrust::device_free(d_pObjField_thrust);
+					    std::cout << "error in cu_simConfPointRawSig_wrapper: cufftExecZ2Z returned an error " << error << " line: " << __LINE__ << std::endl;
+					    return false;
+                    }
 				}
-				// do the summation
-				(*ppRawSig)[jz+jx*params.scanNumber.z+jy*params.scanNumber.x*params.scanNumber.z]=pow(cuCabs(thrust::transform_reduce(d_pObjField_thrust, d_pObjField_thrust+params.n*params.n-1, unary_op, init, binary_op)),2);
+    // transfer pupil field from device
+    if (cudaSuccess != cudaMemcpy(h_pObjField, d_pObjField, params.n*params.n*sizeof(cuDoubleComplex), cudaMemcpyDeviceToHost))
+        return false;
+
+	char t_filename[512];
+	sprintf(t_filename, "E:\\testReal%i.txt", jz);
+	FILE* hFile;
+	hFile = fopen( t_filename, "w" ) ;
+
+
+	if ( (hFile == NULL) )
+		return 1;
+
+
+	for (unsigned int jyIdx=0; jyIdx<params.n; jyIdx++)
+	{
+		for (unsigned int jxIdx=0; jxIdx<params.n; jxIdx++)
+		{
+			fprintf(hFile, " %.16e;\n", h_pObjField[jxIdx+jyIdx*params.n].x);
+		}
+	}
+
+	fclose(hFile);
+
+	sprintf(t_filename, "E:\\testImag%i.txt", jz);
+	hFile = fopen( t_filename, "w" ) ;
+
+
+	if ( (hFile == NULL) )
+		return 1;
+
+
+	for (unsigned int jyIdx=0; jyIdx<params.n; jyIdx++)
+	{
+		for (unsigned int jxIdx=0; jxIdx<params.n; jxIdx++)
+		{
+			fprintf(hFile, " %.16e;\n", h_pObjField[jxIdx+jyIdx*params.n].y);
+		}
+	}
+
+	fclose(hFile);
+
+             //   cuDoubleComplex test=make_cuDoubleComplex(0.0,0.0);
+             //   // do the summation
+	            //for (unsigned int jyIdx=0; jyIdx<params.n; jyIdx++)
+	            //{
+	            //	for (unsigned int jxIdx=0; jxIdx<params.n; jxIdx++)
+	            //	{
+             //           test=cuCadd(test,cuCmul(cuCmul(h_pObjField[jxIdx+jyIdx*params.n],h_pObjField[jxIdx+jyIdx*params.n]),make_cuDoubleComplex(0.0000001,0)));
+	            //		//fprintf(hFile, " %.16e;\n", h_pPupField[jx+jy*params.n].y);
+	            //	}
+	            //}
+             //   (*ppRawSig)[jz+jx*params.scanNumber.z+jy*params.scanNumber.x*params.scanNumber.z]=pow(cuCabs(test),2);
+
+				// do the summation on GPU using thrust
+				//(*ppRawSig)[jz+jx*params.scanNumber.z+jy*params.scanNumber.x*params.scanNumber.z]=pow(cuCabs(thrust::transform_reduce(d_pObjField_thrust, d_pObjField_thrust+params.n*params.n, unary_op, init, binary_op)),2);
+
+                // do the summoation on GPU using our own kernel
+                myReduce<<<blocksPerGrid, 1024>>>(lock, d_pObjField, l_pDeviceOutData, params.n*params.n);
+
+                // copy data back from GPU
+                if (cudaSuccess != cudaMemcpy(&l_hostOutData, l_pDeviceOutData, sizeof(cuDoubleComplex), cudaMemcpyDeviceToHost) )
+                {
+		            std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << std::endl;
+		            return 0;
+                }
+                (*ppRawSig)[jz+jx*params.scanNumber.z+jy*params.scanNumber.x*params.scanNumber.z]=pow(cuCabs(l_hostOutData),2);
+
 			}
 		}
 	}
@@ -1297,6 +1458,9 @@ bool cu_simConfPointRawSig_wrapper(double** ppRawSig, ConfPoint_KernelParams par
 	cudaFree(d_pParams);
 	cudaFree(d_pPupField);
 	cudaFree(d_pObjField);
+
+    delete h_pObjField;
+
 	cufftDestroy (plan);
 
 	return true;

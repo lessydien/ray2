@@ -21,7 +21,8 @@ source_group("PTX Files"  REGULAR_EXPRESSION ".+\\.ptx$")
 source_group("CUDA Files" REGULAR_EXPRESSION ".+\\.cu$")
 
 # set compiler flags
-SET(CUDA_NVCC_FLAGS "-arch;sm_20" "--maxrregcount=32")
+SET(CUDA_NVCC_FLAGS "-arch;sm_20" "--maxrregcount=32" "--ptxas-options=-v")
+#SET(CUDA_NVCC_FLAGS "-arch;sm_20")
 					
 cuda_add_library(${target_name} STATIC
   src/kernel.cu

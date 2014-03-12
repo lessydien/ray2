@@ -277,6 +277,8 @@ ito::RetVal MacroSim::simConfPointSensor(QVector<ito::ParamBase> *paramsMand, QV
 	}
 	else
 		retval = ito::retError;
+
+    delete l_pResult;
     return retval;
 }
 
