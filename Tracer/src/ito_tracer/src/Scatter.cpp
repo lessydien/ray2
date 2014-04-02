@@ -42,7 +42,7 @@
  */
 ScatterError Scatter::processParseResults(MaterialParseParamStruct &parseResults_Mat)
 {
-	std::cout << "error in Scatter.processParseResults(): not defined for the given Scatter" << std::endl;
+	std::cout << "error in Scatter.processParseResults(): not defined for the given Scatter" << "...\n";
 	return SCAT_ERROR;
 };
 
@@ -117,19 +117,19 @@ Scatter_ReducedParams* Scatter::getReducedParams(void)
 
 void Scatter::hit(rayStruct &ray, Mat_hitParams hitParams)
 {
-	std::cout << "error in Scatter.hit(): hit is not yet implemented for geometric rays for the given scatter. no scatter assumed." << std::endl;
+	std::cout << "error in Scatter.hit(): hit is not yet implemented for geometric rays for the given scatter. no scatter assumed." << "...\n";
 	// dummy function to be overwritten by child class
 }
 
 void Scatter::hit(diffRayStruct &ray, Mat_hitParams hitParams)
 {
-	std::cout << "error in Scatter.hit(): hit is not yet implemented for differential rays for the given scatter. no scatter assumed." << std::endl;
+	std::cout << "error in Scatter.hit(): hit is not yet implemented for differential rays for the given scatter. no scatter assumed." << "...\n";
 	// dummy function to be overwritten by child class
 }
 
 void Scatter::hit(gaussBeamRayStruct &ray, gaussBeam_geometricNormal normal)
 {
-	std::cout << "error in Scatter.hit(): hit is not yet implemented for gaussian beamlets for the given scatter. no scatter assumed." << std::endl;
+	std::cout << "error in Scatter.hit(): hit is not yet implemented for gaussian beamlets for the given scatter. no scatter assumed." << "...\n";
 	// dummy function to be overwritten by child class
 }
 

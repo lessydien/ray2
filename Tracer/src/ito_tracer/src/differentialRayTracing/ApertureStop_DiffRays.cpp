@@ -111,7 +111,7 @@ geometryError ApertureStop_DiffRays::createOptixInstance( RTcontext &context, RT
 {
 	if (GEOM_NO_ERR != Geometry::createOptixInstance(context, geometrygroup, index, simParams, lambda) )
 	{
-		std::cout <<"error in ApertureStop_DiffRays.createOptixInstance(): Geometry.creatOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << std::endl;
+		std::cout <<"error in ApertureStop_DiffRays.createOptixInstance(): Geometry.creatOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << "...\n";
 		return GEOM_ERR;
 	}
 	if ( !RT_CHECK_ERROR_NOEXIT( rtVariableSetUserData(params, sizeof(ApertureStop_DiffRays_ReducedParams), this->reducedParamsPtr), context) )
@@ -138,7 +138,7 @@ geometryError ApertureStop_DiffRays::updateOptixInstance( RTcontext &context, RT
 	{
 		if (GEOM_NO_ERR != Geometry::updateOptixInstance(context, geometrygroup, index, simParams, lambda))
 		{
-			std::cout <<"error in ApertureStop_DiffRays.updateOptixInstance(): materialList[i] returned an error at geometry: " << this->getParamsPtr()->geometryID << std::endl;
+			std::cout <<"error in ApertureStop_DiffRays.updateOptixInstance(): materialList[i] returned an error at geometry: " << this->getParamsPtr()->geometryID << "...\n";
 			return GEOM_ERR;
 		}
 

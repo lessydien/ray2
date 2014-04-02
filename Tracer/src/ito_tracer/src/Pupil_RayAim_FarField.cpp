@@ -59,7 +59,7 @@ void Pupil_RayAim_FarField::setFullParamsPtr(pupilParams *paramsIn)//Pupil_RayAi
 	//	*(this->paramsPtr)=*l_ptr;
 	//else
 	//{
-	//	std::cout << "error in Pupil_RayAim_FarField.setParams(): paramsIn seems to not be of type Pupil_RayAim_FarField_Params" << std::endl;
+	//	std::cout << "error in Pupil_RayAim_FarField.setParams(): paramsIn seems to not be of type Pupil_RayAim_FarField_Params" << "...\n";
 	//	return GEOM_ERR;
 	//}
 	//this->update=true;
@@ -137,7 +137,7 @@ PupilError Pupil_RayAim_FarField::createCPUSimInstance(double lambda)
 	///* check wether any material is present */
 	//if (this->materialListLength==0)
 	//{
-	//	std::cout << "error in Pupil_RayAim_FarField.createCPUInstance(): no material attached to surface at geometry:" << this->paramsPtr->geometryID << std::endl;
+	//	std::cout << "error in Pupil_RayAim_FarField.createCPUInstance(): no material attached to surface at geometry:" << this->paramsPtr->geometryID << "...\n";
 	//	return GEOM_NOMATERIAL_ERR;
 	//}
 	//this->mode=mode;
@@ -147,7 +147,7 @@ PupilError Pupil_RayAim_FarField::createCPUSimInstance(double lambda)
 	//{
 	//	if ( MAT_NO_ERR != this->materialList[i]->createCPUSimInstance(lambda) )
 	//	{
-	//		std::cout << "error in Pupil_RayAim_FarField.createCPUInstance(): material.createCPUSimInstance() returned an error at geometry:" << this->paramsPtr->geometryID << std::endl;
+	//		std::cout << "error in Pupil_RayAim_FarField.createCPUInstance(): material.createCPUSimInstance() returned an error at geometry:" << this->paramsPtr->geometryID << "...\n";
 	//		return GEOM_ERR;
 	//	}
 	//}
@@ -169,7 +169,7 @@ PupilError Pupil_RayAim_FarField::updateCPUSimInstance(double lambda)
 	///* check wether any material is present */
 	//if (this->materialListLength==0)
 	//{
-	//	std::cout << "error in Geometry.updateCPUSimInstance(): no material attached to surface at geometry:" << this->paramsPtr->geometryID << std::endl;
+	//	std::cout << "error in Geometry.updateCPUSimInstance(): no material attached to surface at geometry:" << this->paramsPtr->geometryID << "...\n";
 	//	return GEOM_NOMATERIAL_ERR;
 	//}
 	//this->mode=mode;
@@ -179,7 +179,7 @@ PupilError Pupil_RayAim_FarField::updateCPUSimInstance(double lambda)
 	//{
 	//	if ( MAT_NO_ERR != this->materialList[i]->updateCPUSimInstance(lambda) )
 	//	{
-	//		std::cout << "error in Geometry.updateCPUSimInstance(): material.createCPUSimInstance() returned an error at geometry:" << this->paramsPtr->geometryID << std::endl;
+	//		std::cout << "error in Geometry.updateCPUSimInstance(): material.createCPUSimInstance() returned an error at geometry:" << this->paramsPtr->geometryID << "...\n";
 	//		return GEOM_ERR;
 	//	}
 	//}

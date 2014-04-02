@@ -178,8 +178,10 @@ public:
 
 	bool runMacroSimRayTrace(char *xmlInput, void** fieldOut_ptrptr, ItomFieldParams* fieldOutParams, void* p2CallbackObject, void (*callbackProgress)(void* p2Object, int progressValue));
 	bool runMacroSimLayoutTrace(char *xmlInput, void* p2CallbackObject, void (*callbackRayPlotData)(void* p2Object, double* rayPlotData, RayPlotDataParams *params));
-	bool runConfPointSensorSim(ConfPoint_Params &params, double** res_ptrptr);
+	bool runConfRawSigSim(ConfPoint_Params &params, double** res_ptrptr);
+    bool runConfSensorSigSim(ConfPoint_Params &params, ConfPointObject_Params &paramsObject, double** res_ptrptr);
 	bool checkVisibility(char *objectInput_filename);
+    bool calcCuFFT(cuDoubleComplex *pUin, int dimX, int dimY);
 	ostream* getCout();
 };
 

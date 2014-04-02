@@ -119,7 +119,7 @@ geometryError CylPipe_DiffRays::createOptixInstance( RTcontext &context, RTgeome
 {
 	if (GEOM_NO_ERR != Geometry::createOptixInstance(context, geometrygroup, index, simParams, lambda) )
 	{
-		std::cout <<"error in CylPipe_DiffRays.createOptixInstance(): Geometry.creatOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << std::endl;
+		std::cout <<"error in CylPipe_DiffRays.createOptixInstance(): Geometry.creatOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << "...\n";
 		return GEOM_ERR;
 	}
 	if ( !RT_CHECK_ERROR_NOEXIT( rtVariableSetUserData(params, sizeof(CylPipe_DiffRays_ReducedParams), this->reducedParamsPtr), context) )
@@ -146,7 +146,7 @@ geometryError CylPipe_DiffRays::updateOptixInstance( RTcontext &context, RTgeome
 	{
 		if (GEOM_NO_ERR != Geometry::updateOptixInstance(context, geometrygroup, index, simParams, lambda))
 		{
-			std::cout <<"error in CylPipe_DiffRays.updateOptixInstance(): materialList[i] returned an error at geometry: " << this->getParamsPtr()->geometryID << std::endl;
+			std::cout <<"error in CylPipe_DiffRays.updateOptixInstance(): materialList[i] returned an error at geometry: " << this->getParamsPtr()->geometryID << "...\n";
 			return GEOM_ERR;
 		}
 		if ( !RT_CHECK_ERROR_NOEXIT( rtGeometryInstanceQueryVariable( instance, "params", &params ), context) )

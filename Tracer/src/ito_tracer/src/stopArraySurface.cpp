@@ -61,7 +61,7 @@ geometryError StopArraySurface::setParams(Geometry_Params *paramsIn)//PlaneSurfa
 		*(this->paramsPtr)=*l_ptr;
 	else
 	{
-		std::cout << "error in StopArraySurface.setParams(): paramsIn seems to not be of type PlaneSurface_Params" << std::endl;
+		std::cout << "error in StopArraySurface.setParams(): paramsIn seems to not be of type PlaneSurface_Params" << "...\n";
 		return GEOM_ERR;
 	}
 
@@ -185,7 +185,7 @@ geometryError StopArraySurface::hit(rayStruct &ray, double t)
 //	}
 //	else
 //	{
-//		std::cout <<"error in StopArraySurface.hit(): rays of gaussian beamlet have inconsistent intersections at geometry:" << this->paramsPtr->geometryID << std::endl;
+//		std::cout <<"error in StopArraySurface.hit(): rays of gaussian beamlet have inconsistent intersections at geometry:" << this->paramsPtr->geometryID << "...\n";
 //		return GEOM_GBINCONSISTENTINTERSECTIONS_ERR;// terminate the ray with an error
 //	}
 //};
@@ -233,7 +233,7 @@ geometryError StopArraySurface::createOptixInstance( RTcontext &context, RTgeome
 {
 	if (GEOM_NO_ERR != Geometry::createOptixInstance(context, geometrygroup, index, simParams, lambda) )
 	{
-		std::cout <<"error in StopArraySurface.createOptixInstance(): Geometry.creatOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << std::endl;
+		std::cout <<"error in StopArraySurface.createOptixInstance(): Geometry.creatOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << "...\n";
 		return GEOM_ERR;
 	}
 
@@ -261,7 +261,7 @@ geometryError StopArraySurface::updateOptixInstance( RTcontext &context, RTgeome
 	{
 		if (GEOM_NO_ERR != this->updateOptixInstance(context, geometrygroup, index, simParams, lambda) )
 		{
-			std::cout <<"error in StopArraySurface.updateOptixInstance(): Geometry.updateOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << std::endl;
+			std::cout <<"error in StopArraySurface.updateOptixInstance(): Geometry.updateOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << "...\n";
 			return GEOM_ERR;
 		}
 		/* set geometry variables */
@@ -294,7 +294,7 @@ geometryError StopArraySurface::parseXml(pugi::xml_node &geometry, SimParams sim
 	// call base class function
 	if (GEOM_NO_ERR != Geometry::parseXml(geometry, simParams, geomVec))
 	{
-		std::cout << "error in StopArraySurface.parseXml(): Geometry.parseXml() returned an error" << std::endl;
+		std::cout << "error in StopArraySurface.parseXml(): Geometry.parseXml() returned an error" << "...\n";
 		return GEOM_ERR;
 	}
 
@@ -323,7 +323,7 @@ geometryError StopArraySurface::parseXml(pugi::xml_node &geometry, SimParams sim
 	const char* str=l_parser.attrValByName(geometry, "microStopType");
 	if (str==NULL)
 	{
-		std::cout << "error in StopArraySurface.parseXml(): microStopType is not defined" << std::endl;
+		std::cout << "error in StopArraySurface.parseXml(): microStopType is not defined" << "...\n";
 		return GEOM_ERR;
 	}
 
@@ -335,7 +335,7 @@ geometryError StopArraySurface::parseXml(pugi::xml_node &geometry, SimParams sim
 			this->paramsPtr->microStopType=AT_ELLIPT;
 		else
 		{
-			std::cout << "error in StopArraySurface.parseXml(): unknown microStopType" << std::endl;
+			std::cout << "error in StopArraySurface.parseXml(): unknown microStopType" << "...\n";
 			return GEOM_ERR;
 		}
 	}

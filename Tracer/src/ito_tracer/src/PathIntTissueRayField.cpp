@@ -166,7 +166,7 @@ fieldError PathIntTissueRayField::copyRayList(rayStruct *data, long long length)
 {
 	if (length > this->rayListLength)
 	{
-		std::cout << "error in PathIntTissueRayField.copyRayList(): subset dimensions exceed rayLIst dimension" << std::endl;
+		std::cout << "error in PathIntTissueRayField.copyRayList(): subset dimensions exceed rayLIst dimension" << "...\n";
 		return FIELD_ERR;
 	}
 
@@ -198,7 +198,7 @@ fieldError PathIntTissueRayField::copyRayListSubset(rayStruct *data, long2 launc
 	//  ----memory range of completed lines---- + ---memory range blocks in given line---
 	if (launchOffset.y*this->rayParamsPtr->width+(subsetDim.x+launchOffset.x)*subsetDim.y > this->rayListLength)
 	{
-		std::cout << "error in PathIntTissueRayField.copyRayListSubset(): subset dimensions exceed rayLIst dimension" << std::endl;
+		std::cout << "error in PathIntTissueRayField.copyRayListSubset(): subset dimensions exceed rayLIst dimension" << "...\n";
 		return FIELD_ERR;
 	}
 	// copy the ray list line per line
@@ -273,7 +273,7 @@ fieldError PathIntTissueRayField::createOptixInstance(RTcontext &context, RTbuff
 
 	//if (FIELD_NO_ERR != RayField::createOptixInstance(context, output_buffer_obj, seed_buffer_obj) )
 	//{
-	//	std::cout <<"error in PathIntTissueRayField.createOptixInstance(): RayField.createOptixInstance() returned an error." << std::endl;
+	//	std::cout <<"error in PathIntTissueRayField.createOptixInstance(): RayField.createOptixInstance() returned an error." << "...\n";
 	//	return FIELD_ERR;
 	//}
 
@@ -314,7 +314,7 @@ fieldError PathIntTissueRayField::createOptixInstance(RTcontext &context, RTbuff
 
 	if (FIELD_NO_ERR!=this->createCPUSimInstance())
 	{
-		std::cout <<"error in PathTracingRayField.createOptixInstance(): create CPUSimInstance() returned an error." << std::endl;
+		std::cout <<"error in PathTracingRayField.createOptixInstance(): create CPUSimInstance() returned an error." << "...\n";
 		return FIELD_ERR;
 	}
 
@@ -458,7 +458,7 @@ fieldError PathIntTissueRayField::initCPUSubset()
 			// start timing
 			start=clock();
 
-			std::cout << "initalizing random seed" << std::endl;
+			std::cout << "initalizing random seed" << "...\n";
 
 			int seed = (int)time(0);            // random seed
 			RandomInit(seed, x);
@@ -471,13 +471,13 @@ fieldError PathIntTissueRayField::initCPUSubset()
 
 			end=clock();
 			msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
-			std::cout << " " << msecs <<" ms to initialize random seeds of " << this->rayParamsPtr->GPUSubset_width*this->rayParamsPtr->GPUSubset_height << " rays." << std::endl;
+			std::cout << " " << msecs <<" ms to initialize random seeds of " << this->rayParamsPtr->GPUSubset_width*this->rayParamsPtr->GPUSubset_height << " rays." << "...\n";
 
 			// start timing
 			start=clock();
 
 			// create all the rays
-		std::cout << "initializing rays on " << numCPU << " cores of CPU." << std::endl;
+		std::cout << "initializing rays on " << numCPU << " cores of CPU." << "...\n";
 
 		omp_set_num_threads(numCPU);
 
@@ -516,20 +516,20 @@ fieldError PathIntTissueRayField::initCPUSubset()
 } // end omp
 			end=clock();
 			msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
-			std::cout << " " << msecs <<" ms to initialize " << this->rayParamsPtr->GPUSubset_width*this->rayParamsPtr->GPUSubset_height << " rays." << std::endl;
+			std::cout << " " << msecs <<" ms to initialize " << this->rayParamsPtr->GPUSubset_width*this->rayParamsPtr->GPUSubset_height << " rays." << "...\n";
 
 		}
 		else if(this->rayParamsPtr->width*this->rayParamsPtr->height<1)
 		{
 			//not Possible. Report error or set n=-n
-			std::cout << "error in PathIntTissueRayField.initCPUInstance: negative raynumber" << std::endl;
+			std::cout << "error in PathIntTissueRayField.initCPUInstance: negative raynumber" << "...\n";
 			return FIELD_ERR;
 		}
 		this->update=false;
 	}	// end if GPUsubsetwidth*height<rayListLength
 	else
 	{
-		std::cout << "error in PathIntTissueRayField.initCPUInstance: rayList is smaller than simulation subset" << std::endl;
+		std::cout << "error in PathIntTissueRayField.initCPUInstance: rayList is smaller than simulation subset" << "...\n";
 		return FIELD_ERR;
 	}
 	return FIELD_NO_ERR;
@@ -715,7 +715,7 @@ fieldError PathIntTissueRayField::createCPUSimInstance()
 	rayList=(rayStruct*) malloc(GPU_SUBSET_WIDTH_MAX*GPU_SUBSET_HEIGHT_MAX*sizeof(rayStruct));
 	if (!rayList)
 	{
-		std::cout << "error in PathIntTissueRayField.createLayoutInstance(): memory for rayList could not be allocated" << std::endl;
+		std::cout << "error in PathIntTissueRayField.createLayoutInstance(): memory for rayList could not be allocated" << "...\n";
 		return FIELD_ERR;
 	}
 	this->rayListLength=GPU_SUBSET_WIDTH_MAX*GPU_SUBSET_HEIGHT_MAX;
@@ -771,7 +771,7 @@ fieldError PathIntTissueRayField::createLayoutInstance()
 	rayList=(rayStruct*) malloc(GPU_SUBSET_WIDTH_MAX*GPU_SUBSET_HEIGHT_MAX*sizeof(rayStruct));
 	if (!rayList)
 	{
-		std::cout << "error in PathIntTissueRayField.createLayoutInstance(): memory for rayList could not be allocated. try to reduce ray tiling size" << std::endl;
+		std::cout << "error in PathIntTissueRayField.createLayoutInstance(): memory for rayList could not be allocated. try to reduce ray tiling size" << "...\n";
 		return FIELD_ERR;
 	}
 	this->rayListLength=GPU_SUBSET_WIDTH_MAX*GPU_SUBSET_HEIGHT_MAX;
@@ -897,15 +897,15 @@ fieldError PathIntTissueRayField::traceScene(Group &oGroup, bool RunOnCPU)
 
 	if (RunOnCPU)
 	{
-		std::cout << "tracing on " << numCPU << " cores of CPU." << std::endl;
+		std::cout << "tracing on " << numCPU << " cores of CPU." << "...\n";
 
 		if (FIELD_NO_ERR!= initCPUSubset())
 		{
-			std::cout << "error in GeometrciRayField.traceScene(): initCPUSubset() returned an error." << std::endl;
+			std::cout << "error in GeometrciRayField.traceScene(): initCPUSubset() returned an error." << "...\n";
 			return FIELD_ERR;
 		}
 
-		std::cout << "starting the actual trace..." << std::endl;		
+		std::cout << "starting the actual trace..." << "...\n";		
 
 		omp_set_num_threads(numCPU);
 
@@ -932,12 +932,12 @@ fieldError PathIntTissueRayField::traceScene(Group &oGroup, bool RunOnCPU)
 					break;
 				oGroup.trace(rayList[rayListIndex]);
 			}
-			//std::cout << "Iteration " << jy << " running Cur Thread " << omp_get_thread_num() << "Num Threads " << omp_get_num_threads() << "Max Threads " << omp_get_max_threads() << " running" << std::endl;
+			//std::cout << "Iteration " << jy << " running Cur Thread " << omp_get_thread_num() << "Num Threads " << omp_get_num_threads() << "Max Threads " << omp_get_max_threads() << " running" << "...\n";
 		}
 }
 		//for (int i=0;i<20;i++)
 		//{
-		//	std::cout << "Thread number " << i << " has run " << threadCounter[i] << " times" << std::endl;
+		//	std::cout << "Thread number " << i << " has run " << threadCounter[i] << " times" << "...\n";
 		//}
 	}
 	else
@@ -946,7 +946,7 @@ fieldError PathIntTissueRayField::traceScene(Group &oGroup, bool RunOnCPU)
 		void				*data; // pointer to cast output buffer into
  		//rayStruct			*bufferData;
 
-		std::cout << "tracing on GPU." << std::endl;
+		std::cout << "tracing on GPU." << "...\n";
 
 		initGPUSubset(context, seed_buffer_obj);
 		// start current launch
@@ -970,11 +970,11 @@ fieldError PathIntTissueRayField::traceScene(Group &oGroup, bool RunOnCPU)
 		//bufferData=(rayStruct*)data;
 		//rayStruct test=bufferData[250];
 		//SourceList->setRayList((rayStruct*)data);
-		//std::cout << "DEBUG: jx=" << jx << " jy=" << jy << std::endl;
+		//std::cout << "DEBUG: jx=" << jx << " jy=" << jy << "...\n";
 		//copyRayListSubset((rayStruct*)data, l_launchOffset, l_GPUSubsetDim);
 		if (FIELD_NO_ERR != copyRayList((rayStruct*)data,this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width) )
 		{
-			std::cout << "error in PathIntTissueRayField.traceScene(): copyRayList() returned an error" << std::endl;
+			std::cout << "error in PathIntTissueRayField.traceScene(): copyRayList() returned an error" << "...\n";
 			return FIELD_NO_ERR;
 		}
 		
@@ -985,7 +985,7 @@ fieldError PathIntTissueRayField::traceScene(Group &oGroup, bool RunOnCPU)
 	end=clock();
 	msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
 	msecs_Tracing=msecs_Tracing+msecs;
-	std::cout << msecs <<" ms to trace " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays." << std::endl;
+	std::cout << msecs <<" ms to trace " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays." << "...\n";
 
 	return FIELD_NO_ERR;
 };
@@ -1003,7 +1003,7 @@ fieldError PathIntTissueRayField::traceScene(Group &oGroup, bool RunOnCPU)
 fieldError PathIntTissueRayField::traceStep(Group &oGroup, bool RunOnCPU)
 {
 	if (!RunOnCPU)
-		std::cout << "warning in PathIntTissueRayField.traceStep(): GPU acceleration is not implemented, continuing on CPU anyways..." << std::endl;
+		std::cout << "warning in PathIntTissueRayField.traceStep(): GPU acceleration is not implemented, continuing on CPU anyways..." << "...\n";
 
 	clock_t start, end;
 	double msecs_Tracing=0;
@@ -1015,7 +1015,7 @@ fieldError PathIntTissueRayField::traceStep(Group &oGroup, bool RunOnCPU)
 //	long2 l_GPUSubsetDim=calcSubsetDim();
 //	this->rayParamsPtr->GPUSubset_width=l_GPUSubsetDim.x;
 //	this->rayParamsPtr->GPUSubset_height=l_GPUSubsetDim.y;
-	std::cout << "tracing on " << numCPU << " cores of CPU." << std::endl;
+	std::cout << "tracing on " << numCPU << " cores of CPU." << "...\n";
 
 //#pragma omp parallel default(shared)
 //{
@@ -1043,7 +1043,7 @@ fieldError PathIntTissueRayField::traceStep(Group &oGroup, bool RunOnCPU)
 	end=clock();
 	msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
 	msecs_Tracing=msecs_Tracing+msecs;
-	std::cout << msecs <<" ms to trace " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays." << std::endl;
+	std::cout << msecs <<" ms to trace " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays." << "...\n";
 
 	return FIELD_NO_ERR;
 };
@@ -1066,9 +1066,9 @@ fieldError PathIntTissueRayField::doSim(Group &oGroup, simAssParams &params, boo
 	unsigned long long roughNrOfSubsets=std::floorf(width*height/(this->getSubsetWidthMax()*this->getSubsetHeightMax()))+1;
 
 
-	std::cout << "****************************************************** " << std::endl;
-	std::cout << "starting subset.......... " << std::endl;
-	std::cout << std::endl;
+	std::cout << "****************************************************** " << "...\n";
+	std::cout << "starting subset.......... " << "...\n";
+	std::cout << "...\n";
 	/***********************************************
 	/	trace rays
 	/***********************************************/
@@ -1077,7 +1077,7 @@ fieldError PathIntTissueRayField::doSim(Group &oGroup, simAssParams &params, boo
 
 	if (FIELD_NO_ERR != this->traceScene(oGroup, params.RunOnCPU) )//, context, output_buffer_obj, seed_buffer_obj) )
 	{
-		std::cout << "error in PathIntTissueRayField.doSim(): PathIntTissueRayField.traceScene() returned an error" << std::endl;
+		std::cout << "error in PathIntTissueRayField.doSim(): PathIntTissueRayField.traceScene() returned an error" << "...\n";
 		return FIELD_ERR;
 	}
 //	this->subsetCounter++;
@@ -1096,7 +1096,7 @@ fieldError PathIntTissueRayField::doSim(Group &oGroup, simAssParams &params, boo
 	}
 
 	tracedRayNr=tracedRayNr+l_GPUSubsetDim.x*l_GPUSubsetDim.y;
-	std::cout << " " << tracedRayNr <<" out of " << width*height << " rays traced in total" << std::endl;
+	std::cout << " " << tracedRayNr <<" out of " << width*height << " rays traced in total" << "...\n";
 
 	if (simDone)
 	{
@@ -1149,7 +1149,7 @@ fieldError PathIntTissueRayField::write2TextFile(char* filename, detParams &oDet
 	hFileOut = fopen( t_filename, "w" ) ;
 	if (!hFileOut)
 	{
-		std::cout << "error in PathIntTissueRayField.write2TextFile(): could not open output file: " << filename << std::endl;
+		std::cout << "error in PathIntTissueRayField.write2TextFile(): could not open output file: " << filename << "...\n";
 		return FIELD_ERR;
 	}
 	if (1) //(oDetParams.reduceData==1)
@@ -1298,111 +1298,111 @@ fieldError  PathIntTissueRayField::parseXml(pugi::xml_node &field, vector<Field*
 
 	if (!l_parser.attrByNameToDouble(field, "root.x", this->rayParamsPtr->translation.x))
 	{
-		std::cout << "error in PathIntTissueRayField.parseXml(): root.x is not defined" << std::endl;
+		std::cout << "error in PathIntTissueRayField.parseXml(): root.x is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	if (!l_parser.attrByNameToDouble(field, "root.y", this->rayParamsPtr->translation.y))
 	{
-		std::cout << "error in PathIntTissueRayField.parseXml(): root.y is not defined" << std::endl;
+		std::cout << "error in PathIntTissueRayField.parseXml(): root.y is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	if (!l_parser.attrByNameToDouble(field, "root.z", this->rayParamsPtr->translation.z))
 	{
-		std::cout << "error in PathIntTissueRayField.parseXml(): root.z is not defined" << std::endl;
+		std::cout << "error in PathIntTissueRayField.parseXml(): root.z is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	if (!l_parser.attrByNameToDouble(field, "tilt.x", this->getParamsPtr()->tilt.x))
 	{
-		std::cout << "error in PathIntTissueRayField.parseXml(): tilt.x is not defined" << std::endl;
+		std::cout << "error in PathIntTissueRayField.parseXml(): tilt.x is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	this->getParamsPtr()->tilt.x=this->getParamsPtr()->tilt.x/360*2*PI;
 	if (!l_parser.attrByNameToDouble(field, "tilt.y", this->getParamsPtr()->tilt.y))
 	{
-		std::cout << "error in PathIntTissueRayField.parseXml(): tilt.y is not defined" << std::endl;
+		std::cout << "error in PathIntTissueRayField.parseXml(): tilt.y is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	this->getParamsPtr()->tilt.y=this->getParamsPtr()->tilt.y/360*2*PI;
 	if (!l_parser.attrByNameToDouble(field, "tilt.z", this->getParamsPtr()->tilt.z))
 	{
-		std::cout << "error in PathIntTissueRayField.parseXml(): tilt.z is not defined" << std::endl;
+		std::cout << "error in PathIntTissueRayField.parseXml(): tilt.z is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	this->getParamsPtr()->tilt.z=this->getParamsPtr()->tilt.z/360*2*PI;
 	if (!l_parser.attrByNameToDouble(field, "power", this->getParamsPtr()->flux))
 	{
-		std::cout << "error in RayField.parseXml(): power is not defined" << std::endl;
+		std::cout << "error in RayField.parseXml(): power is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	unsigned long l_val;
 	if (!l_parser.attrByNameToLong(field, "width", l_val))
 	{
-		std::cout << "error in RayField.parseXml(): width is not defined" << std::endl;
+		std::cout << "error in RayField.parseXml(): width is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	this->getParamsPtr()->width=l_val;
 	if (!l_parser.attrByNameToLong(field, "height", l_val))
 	{
-		std::cout << "error in RayField.parseXml(): height is not defined" << std::endl;
+		std::cout << "error in RayField.parseXml(): height is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	this->getParamsPtr()->height=l_val;
 	if (!l_parser.attrByNameToLong(field, "widthLayout", l_val))
 	{
-		std::cout << "error in RayField.parseXml(): widthLayout is not defined" << std::endl;
+		std::cout << "error in RayField.parseXml(): widthLayout is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	this->getParamsPtr()->widthLayout=l_val;
 	if (!l_parser.attrByNameToLong(field, "heightLayout", l_val))
 	{
-		std::cout << "error in RayField.parseXml(): heightLayout is not defined" << std::endl;
+		std::cout << "error in RayField.parseXml(): heightLayout is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	this->getParamsPtr()->heightLayout=l_val;
 
 	if (!l_parser.attrByNameToDouble(field, "meanFreePath", this->rayParamsPtr->meanFreePath))
 	{
-		std::cout << "error in PathIntTissueRayField.parseXml(): meanFreePath is not defined" << std::endl;
+		std::cout << "error in PathIntTissueRayField.parseXml(): meanFreePath is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	if (!l_parser.attrByNameToDouble(field, "anisotropy", this->rayParamsPtr->anisotropy))
 	{
-		std::cout << "error in PathIntTissueRayField.parseXml(): anisotropy is not defined" << std::endl;
+		std::cout << "error in PathIntTissueRayField.parseXml(): anisotropy is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	if (!l_parser.attrByNameToDouble(field, "sourcePos.x", this->rayParamsPtr->sourcePos.x))
 	{
-		std::cout << "error in PathIntTissueRayField.parseXml(): sourcePos.x is not defined" << std::endl;
+		std::cout << "error in PathIntTissueRayField.parseXml(): sourcePos.x is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	if (!l_parser.attrByNameToDouble(field, "sourcePos.y", this->rayParamsPtr->sourcePos.y))
 	{
-		std::cout << "error in PathIntTissueRayField.parseXml(): sourcePos.y is not defined" << std::endl;
+		std::cout << "error in PathIntTissueRayField.parseXml(): sourcePos.y is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	if (!l_parser.attrByNameToDouble(field, "sourcePos.z", this->rayParamsPtr->sourcePos.z))
 	{
-		std::cout << "error in PathIntTissueRayField.parseXml(): sourcePos.z is not defined" << std::endl;
+		std::cout << "error in PathIntTissueRayField.parseXml(): sourcePos.z is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	if (!l_parser.attrByNameToDouble(field, "volumeWidth.x", this->rayParamsPtr->volumeWidth.x))
 	{
-		std::cout << "error in PathIntTissueRayField.parseXml(): volumeWidth.x is not defined" << std::endl;
+		std::cout << "error in PathIntTissueRayField.parseXml(): volumeWidth.x is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	if (!l_parser.attrByNameToDouble(field, "volumeWidth.y", this->rayParamsPtr->volumeWidth.y))
 	{
-		std::cout << "error in PathIntTissueRayField.parseXml(): volumeWidth.y is not defined" << std::endl;
+		std::cout << "error in PathIntTissueRayField.parseXml(): volumeWidth.y is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	if (!l_parser.attrByNameToDouble(field, "volumeWidth.z", this->rayParamsPtr->volumeWidth.z))
 	{
-		std::cout << "error in PathIntTissueRayField.parseXml(): volumeWidth.z is not defined" << std::endl;
+		std::cout << "error in PathIntTissueRayField.parseXml(): volumeWidth.z is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	if (!l_parser.attrByNameToDouble(field, "lambda", this->getParamsPtr()->lambda))
 	{
-		std::cout << "error in PathIntTissueRayField.parseXml(): lambda is not defined" << std::endl;
+		std::cout << "error in PathIntTissueRayField.parseXml(): lambda is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 
@@ -1415,7 +1415,7 @@ fieldError  PathIntTissueRayField::parseXml(pugi::xml_node &field, vector<Field*
 	l_pMatNodes=l_parser.childsByTagName(field,"material");
 	if (l_pMatNodes->size() != 1)
 	{
-		std::cout << "error in RayField.parseXml(): there must be exactly 1 material attached to each Rayfield." << std::endl;
+		std::cout << "error in RayField.parseXml(): there must be exactly 1 material attached to each Rayfield." << "...\n";
 		return FIELD_ERR;
 	}
 	// create material
@@ -1423,7 +1423,7 @@ fieldError  PathIntTissueRayField::parseXml(pugi::xml_node &field, vector<Field*
 	Material* l_pMaterial;
 	if (!l_matFab.createMatInstFromXML(l_pMatNodes->at(0),l_pMaterial, simParams))
 	{
-		std::cout << "error in Geometry.parseXml(): matFab.createInstFromXML() returned an error." << std::endl;
+		std::cout << "error in Geometry.parseXml(): matFab.createInstFromXML() returned an error." << "...\n";
 		return FIELD_ERR;
 	}
 	this->setMaterialListLength(1);

@@ -7,6 +7,8 @@
 #include <omp.h>
 #include <complex>
 
+#include <ctime>
+
 //#include <iostream>
 //using namespace std;
 
@@ -17,41 +19,79 @@ propError cu_scalarRichardsonWolf(cuDoubleComplex* Uin_ptr, unsigned int dimx, u
 	return PROP_NO_ERR;
 }
 
-propError cu_ft2(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double delta)
+propError cu_ft2(cuDoubleComplex* Uin_ptr, unsigned int dimx, unsigned int dimy)
 {
+ /*   clock_t start, end, startGes, endGes;
+	double msecs_DataTransfer=0;
+    double msecs_fft=0;
+    double msecs_ges=0;
+
+    startGes=clock();
+
+
+    for (unsigned int idx=0; idx<1000;idx++)
+    {
+    start=clock();*/
+
 	if (dimx!=dimy)
 		return PROP_ERR;
-	fftshift(Uin_ptr, dimx, dimy);
 
     // Allocate device memory 
-    complex<double>* Uin_kernel_ptr;
-    (cudaMalloc((void**)&Uin_kernel_ptr, sizeof(complex<double>)*dimx*dimy));
+    cuDoubleComplex* Uin_kernel_ptr;
+    (cudaMalloc((void**)&Uin_kernel_ptr, sizeof(cuDoubleComplex)*dimx*dimy));
 
     // Copy host memory to device
-    (cudaMemcpy(Uin_kernel_ptr, Uin_ptr, sizeof(complex<double>)*dimx*dimy, cudaMemcpyHostToDevice));
+    (cudaMemcpy(Uin_kernel_ptr, Uin_ptr, sizeof(cuDoubleComplex)*dimx*dimy, cudaMemcpyHostToDevice));
 
 	// do the fft
     // CUFFT plan
     cufftHandle plan;
     (cufftPlan2d(&plan,dimx, dimy, CUFFT_Z2Z));
+    //cudaDeviceSynchronize();
 
+    //end=clock();
+    //msecs_DataTransfer+=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
+
+    //start=clock();
     // execution
     (cufftExecZ2Z(plan, (cufftDoubleComplex *)Uin_kernel_ptr, (cufftDoubleComplex *)Uin_kernel_ptr, CUFFT_FORWARD));
+    //cudaDeviceSynchronize();
+    //end=clock();
 
+    //msecs_fft+=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
+
+    //start=clock();
 	// copy device memory back to host
 	(cudaMemcpy(Uin_ptr, Uin_kernel_ptr, sizeof(complex<double>)*dimx*dimy, cudaMemcpyDeviceToHost));
+    //cudaDeviceSynchronize();
 
-	fftshift(Uin_ptr, dimx, dimy);
 
-	for (unsigned long jx=0; jx<dimx; jx++)
-	{
-		for (unsigned long jy=0; jy<dimy;jy++)
-		{
-			Uin_ptr[jx+jy*dimy]=Uin_ptr[jx+jy*dimy]*delta*delta;
-		}
-	}
+//	fftshift(Uin_ptr, dimx, dimy);
+
+	//for (unsigned long jx=0; jx<dimx; jx++)
+	//{
+	//	for (unsigned long jy=0; jy<dimy;jy++)
+	//	{
+	//		Uin_ptr[jx+jy*dimy]=Uin_ptr[jx+jy*dimy]*delta*delta;
+	//	}
+	//}
 
 	cudaFree(Uin_kernel_ptr);
+    cufftDestroy (plan);
+    //end=clock();
+    //msecs_DataTransfer+=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
+
+    //}
+
+    //endGes=clock();
+    //msecs_ges=(endGes-startGes)/(double)CLOCKS_PER_SEC*1000.0;
+
+    //double msecs_fft2=msecs_ges-msecs_DataTransfer;
+
+    //cout << "fft time in ms: " << msecs_fft << "\n";
+    //cout << "fft2 time in ms: " << msecs_fft2 << "\n";
+    //cout << "transfer time in ms: " << msecs_DataTransfer << "\n";
+    //cout << "resulting time in ms: " << msecs_ges << "\n";
 
 	return PROP_NO_ERR;
 };
@@ -654,7 +694,7 @@ propError calcWavefront(complex<double>* Uin_ptr, unsigned int dimx, unsigned in
 //
 //	omp_set_num_threads(nrThreads);
 //
-//	std::cout << "calculating on " << nrThreads << " cores of CPU." << std::endl;
+//	std::cout << "calculating on " << nrThreads << " cores of CPU." << "...\n";
 //
 //#pragma omp parallel default(shared)
 //{
@@ -1347,7 +1387,68 @@ propError fftshift(complex<double>* in, unsigned int dimx, unsigned int dimy)
 }
 
 /**
- * \detail simConfPointRawSig 
+ * \detail simConfSensorSig 
+ *
+ * simulates the sensor signal of a confocal point sensor. see F. Mauch, Improved signal model for confocal sensors accounting for object depending artifacts, Optics Express, 20, 19936-19945 (2012)
+ *
+ * \param[in]	double				NA			:	numerical aperture of objective lens
+ *				double				magnif		:	magnification of objective lens
+ *				double				wvl			:	wavelength of illumination in um
+ *				unsigned int		n			:	number of sample points per dimension
+ *				double				gridWidth   :   width of the square grid in the objective lens aperture
+ *				double*				pScanWidth	:	vector containing the scan widths in x, y and z in um
+ *				unsigned int*		pScanNumber :	number of steps of the scan in x, y and z
+ *				double*				pAberrVec	:	vector containing the zernike coefficients of the aberrations of the confocal sensor
+ * \param[out]	double**			pRawSig		:	3D-array containing the raw signals. The layout is: first z, then x, then y.
+ * 
+ * \return propError
+ * \sa 
+ * \remarks 
+ * \author Mauch
+ */
+propError simConfSensorSig(double **ppRawSig, ConfPoint_Params params, ConfPointObject_Params paramsObject, bool runOnCPU)
+{
+	if (runOnCPU)
+	{
+		cout << "error in simConfSensorSig: running on CPU not implemented yet" << endl;
+		return PROP_ERR;
+	}
+	else
+	{
+		ConfPoint_KernelParams l_kernelParams;
+		l_kernelParams.gridWidth=params.gridWidth;
+		l_kernelParams.magnif=params.magnif;
+		l_kernelParams.wvl=params.wvl;
+		l_kernelParams.n=params.n;
+		l_kernelParams.NA=params.NA;
+		l_kernelParams.scanNumber=params.scanNumber;
+		l_kernelParams.scanStep=params.scanStep;
+		l_kernelParams.apodisationRadius=params.apodisationRadius;
+		memcpy(&(l_kernelParams.pAberrVec[0]),&(params.pAberrVec[0]),16*sizeof(double));
+
+        ConfPoint_KernelObjectParams l_kernelParamsObject;
+        l_kernelParamsObject.A=paramsObject.A;
+        l_kernelParamsObject.kN=paramsObject.kN;
+        if (!cu_simConfPointSensorSig_wrapper(ppRawSig, l_kernelParams, l_kernelParamsObject))
+		{
+			cout << "error in simConfRawSig: cu_simConfPointSensorSig_wrapper() returned an error" << endl;
+			return PROP_ERR;
+		}
+
+		//unsigned int test=cu_testReduce_wrapper();
+		//cout << "result of reduce: " << test << endl;
+
+		return PROP_NO_ERR;
+	}
+	return PROP_NO_ERR;
+}
+
+propError simConfSensorSig(double **ppRawSig, ConfPoint_Params params, bool runOnCPU)
+{
+    return PROP_NO_ERR;
+}
+/**
+ * \detail simConfRawSig 
  *
  * simulates the raw signal of a confocal point sensor. see F. Mauch, Improved signal model for confocal sensors accounting for object depending artifacts, Optics Express, 20, 19936-19945 (2012)
  *
@@ -1366,11 +1467,11 @@ propError fftshift(complex<double>* in, unsigned int dimx, unsigned int dimy)
  * \remarks 
  * \author Mauch
  */
-propError simConfPointRawSig(double **ppRawSig, ConfPoint_Params params, bool runOnCPU)
+propError simConfRawSig(double **ppRawSig, ConfPoint_Params params, bool runOnCPU)
 {
 	if (runOnCPU)
 	{
-		cout << "error in simConfPointRawSig: running on CPU not implemented yet" << endl;
+		cout << "error in simConfRawSig: running on CPU not implemented yet" << endl;
 		return PROP_ERR;
 	}
 	else
@@ -1388,7 +1489,7 @@ propError simConfPointRawSig(double **ppRawSig, ConfPoint_Params params, bool ru
         if (!cu_simConfPointRawSig_wrapper(ppRawSig, l_kernelParams))
         //if (!cu_simConfPointRawSig_wrapperTest(ppRawSig, l_kernelParams))
 		{
-			cout << "error in simConfPointRawSig: cu_simConfPointRawSig_wrapper() returned an error" << endl;
+			cout << "error in simConfRawSig: cu_simConfPointRawSig_wrapper() returned an error" << endl;
 			return PROP_ERR;
 		}
 

@@ -45,7 +45,7 @@
  */
 fieldError Field::write2TextFile(char* filename, detParams &oDetParams)
 {
-	std::cout << "error in Field.write2TextFile(): not defined for the given field representation" << std::endl;
+	std::cout << "error in Field.write2TextFile(): not defined for the given field representation" << "...\n";
 	return FIELD_ERR;
 }
 
@@ -63,7 +63,7 @@ fieldError Field::write2TextFile(char* filename, detParams &oDetParams)
  */
 fieldError Field::write2MatFile(char* filename, detParams &oDetParams)
 {
-	std::cout << "error in Field.write2MatFile(): not defined for the given field representation" << std::endl;
+	std::cout << "error in Field.write2MatFile(): not defined for the given field representation" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -91,11 +91,11 @@ fieldError Field::write2File(char* filename, detParams &oDetParams)
 		err=write2MatFile(filename, oDetParams);
 		break;
 	default:
-		std::cout << "error in Field.write2File(): outFormat " << oDetParams.outFormat << " not implemented yet" << std::endl;
+		std::cout << "error in Field.write2File(): outFormat " << oDetParams.outFormat << " not implemented yet" << "...\n";
 		return FIELD_ERR;
 	}
 	return err;
-	//std::cout << "error in Field.write2MatFile(): not defined for the given field representation" << std::endl;
+	//std::cout << "error in Field.write2MatFile(): not defined for the given field representation" << "...\n";
 	//return FIELD_ERR;
 };
 
@@ -111,7 +111,7 @@ fieldError Field::write2File(char* filename, detParams &oDetParams)
  */
 fieldError Field::convert2Intensity(Field* imagePtr, detParams &oDetParams)
 {
-	std::cout << "error in Field.convert2Intensity(): not defined for the given field representation" << std::endl;
+	std::cout << "error in Field.convert2Intensity(): not defined for the given field representation" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -127,7 +127,7 @@ fieldError Field::convert2Intensity(Field* imagePtr, detParams &oDetParams)
  */
 fieldError Field::convert2PhaseSpace(Field* imagePtr, detParams &oDetParams)
 {
-	std::cout << "error in Field.convert2PhaseSpace(): not defined for the given field representation" << std::endl;
+	std::cout << "error in Field.convert2PhaseSpace(): not defined for the given field representation" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -143,7 +143,7 @@ fieldError Field::convert2PhaseSpace(Field* imagePtr, detParams &oDetParams)
  */
 fieldError Field::convert2ScalarField(Field* imagePtr, detParams &oDetParams)
 {
-	std::cout << "error in Field.convert2Intensity(): not defined for the given field representation" << std::endl;
+	std::cout << "error in Field.convert2Intensity(): not defined for the given field representation" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -159,7 +159,7 @@ fieldError Field::convert2ScalarField(Field* imagePtr, detParams &oDetParams)
  */
 fieldError Field::convert2VecField(Field* imagePtr, detParams &oDetParams)
 {
-	std::cout << "error in Field.convert2Intensity(): not defined for the given field representation" << std::endl;
+	std::cout << "error in Field.convert2Intensity(): not defined for the given field representation" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -175,7 +175,7 @@ fieldError Field::convert2VecField(Field* imagePtr, detParams &oDetParams)
  */
 fieldError Field::convert2ItomObject(void** dataPtrPtr, ItomFieldParams* paramsOut)
 {
-	std::cout << "error in Field.convert2ItomObject(): not defined for the given field representation" << std::endl;
+	std::cout << "error in Field.convert2ItomObject(): not defined for the given field representation" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -191,7 +191,7 @@ fieldError Field::convert2ItomObject(void** dataPtrPtr, ItomFieldParams* paramsO
  */
 fieldError Field::initGPUSubset(RTcontext &context)
 {
-	std::cout << "error in Field.initGPUSubset(): not defined for the given field representation" << std::endl;
+	std::cout << "error in Field.initGPUSubset(): not defined for the given field representation" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -207,7 +207,7 @@ fieldError Field::initGPUSubset(RTcontext &context)
  */
 fieldError Field::initCPUSubset()
 {
-	std::cout << "error in Field.initCPUSubset(): not defined for the given field representation" << std::endl;
+	std::cout << "error in Field.initCPUSubset(): not defined for the given field representation" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -223,7 +223,7 @@ fieldError Field::initCPUSubset()
  */
 fieldError Field::createCPUSimInstance()
 {
-	std::cout << "error in Field.createCPUSimInstance(): not defined for the given field representation" << std::endl;
+	std::cout << "error in Field.createCPUSimInstance(): not defined for the given field representation" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -239,7 +239,7 @@ fieldError Field::createCPUSimInstance()
  */
 fieldError Field::createOptixInstance(RTcontext &context, RTbuffer &output_buffer_obj, RTbuffer &seed_buffer_obj)
 {
-	std::cout << "error in Field.createOptixInstance(): not defined for the given field representation" << std::endl;
+	std::cout << "error in Field.createOptixInstance(): not defined for the given field representation" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -304,7 +304,7 @@ fieldError Field::convertFieldParams2ItomFieldParams(ItomFieldParams* paramsOut)
  */
 fieldParams* Field::getParamsPtr(void)
 {
-	std::cout << "error in Field.getParamsPtr(): not defined for the given field representation" << std::endl;
+	std::cout << "error in Field.getParamsPtr(): not defined for the given field representation" << "...\n";
 	return NULL;
 }
 
@@ -322,7 +322,7 @@ fieldParams* Field::getParamsPtr(void)
  */
 fieldError Field::processParseResults(FieldParseParamStruct &parseResults_Src)
 {
-	std::cout << "error in Field.processParseResults(): not defined for the given Field representation" << std::endl;
+	std::cout << "error in Field.processParseResults(): not defined for the given Field representation" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -338,7 +338,7 @@ fieldError Field::processParseResults(FieldParseParamStruct &parseResults_Src)
  */
 fieldError Field::convert2RayData(Field **imagePtrPtr, detParams &oDetParams)
 {
-	std::cout <<"error in Field.convert2RayData(): this has not yet been implemented for the given Field representation" << std::endl;
+	std::cout <<"error in Field.convert2RayData(): this has not yet been implemented for the given Field representation" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -354,7 +354,7 @@ fieldError Field::convert2RayData(Field **imagePtrPtr, detParams &oDetParams)
  */
 fieldError Field::traceScene(Group &oGroup, bool RunOnCPU)
 {
-	std::cout <<"error in Field.traceScene(): this has not yet been implemented for the given Field representation" << std::endl;
+	std::cout <<"error in Field.traceScene(): this has not yet been implemented for the given Field representation" << "...\n";
 	return FIELD_ERR;
 }
 
@@ -370,7 +370,7 @@ fieldError Field::traceScene(Group &oGroup, bool RunOnCPU)
  */
 fieldError Field::traceStep(Group &oGroup, bool RunOnCPU)
 {
-	std::cout <<"error in Field.traceStep(): this has not yet been implemented for the given Field representation" << std::endl;
+	std::cout <<"error in Field.traceStep(): this has not yet been implemented for the given Field representation" << "...\n";
 	return FIELD_ERR;
 }
 
@@ -386,13 +386,13 @@ fieldError Field::traceStep(Group &oGroup, bool RunOnCPU)
  */
 fieldError  Field::createLayoutInstance()
 {
-	std::cout <<"error in Field.createLayoutInstance(): this has not yet been implemented for the given Field representation" << std::endl;
+	std::cout <<"error in Field.createLayoutInstance(): this has not yet been implemented for the given Field representation" << "...\n";
 	return FIELD_ERR;
 };
 
 void Field::setSimMode(SimMode &simMode)
 {
-	std::cout <<"error in Field.setSimMode(): this has not yet been implemented for the given Field representation" << std::endl;
+	std::cout <<"error in Field.setSimMode(): this has not yet been implemented for the given Field representation" << "...\n";
 };
 
 /**
@@ -407,7 +407,7 @@ void Field::setSimMode(SimMode &simMode)
  */
 fieldError  Field::doSim(Group &oGroup, simAssParams &params, bool &simDone)
 {
-	std::cout <<"error in Field.doSim(): this has not yet been implemented for the given Field representation" << std::endl;
+	std::cout <<"error in Field.doSim(): this has not yet been implemented for the given Field representation" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -423,7 +423,7 @@ fieldError  Field::doSim(Group &oGroup, simAssParams &params, bool &simDone)
  */
 fieldError Field::initSimulation(Group &oGroup, simAssParams &params)
 {
-	std::cout <<"error in Field.initSimulation(): this has not yet been implemented for the given Field representation" << std::endl;
+	std::cout <<"error in Field.initSimulation(): this has not yet been implemented for the given Field representation" << "...\n";
 	return FIELD_ERR;
 }
 
@@ -439,7 +439,7 @@ fieldError Field::initSimulation(Group &oGroup, simAssParams &params)
  */
 fieldError Field::initLayout(Group &oGroup, simAssParams &params)
 {
-	std::cout <<"error in Field.initLayout(): this has not yet been implemented for the given Field representation" << std::endl;
+	std::cout <<"error in Field.initLayout(): this has not yet been implemented for the given Field representation" << "...\n";
 	return FIELD_ERR;
 }
 

@@ -192,7 +192,7 @@ int main(int argc, char* argv[])
 	is.open( inFile, ifstream::in );
 	if (is.fail())
 	{
-		std::cout << "error in main: can not optn scene description file" << std::endl;
+		std::cout << "error in main: can not optn scene description file" << "...\n";
 		return 1;
 	}
 
@@ -475,7 +475,7 @@ bool createSceneFromXML(Group **oGroupPtrPtr, char *sceneChar, Field ***sourceLi
 	/* set number of geometry groups */
 	if (GROUP_NO_ERR != (*oGroupPtrPtr)->setGeometryGroupListLength(l_pGeometryGroups->size()) )
 	{
-		std::cout <<"error in Parser.createSceneFromZemax(): group.setGeometryGroupListLength(1) returned an error" << std::endl;
+		std::cout <<"error in Parser.createSceneFromZemax(): group.setGeometryGroupListLength(1) returned an error" << "...\n";
 		return false;
 	}
 
@@ -484,7 +484,7 @@ bool createSceneFromXML(Group **oGroupPtrPtr, char *sceneChar, Field ***sourceLi
 	{
 		if (GROUP_NO_ERR != (*oGroupPtrPtr)->createGeometryGroup(i) )
 		{
-			std::cout <<"error in Parser_XML.createSceneFromXML(): group.createGeometryGroup(" << i << ") returned an error" << std::endl;
+			std::cout <<"error in Parser_XML.createSceneFromXML(): group.createGeometryGroup(" << i << ") returned an error" << "...\n";
 			return false;
 		}
 		// parse params of geometryGroup
@@ -529,7 +529,7 @@ bool createSceneFromXML(Group **oGroupPtrPtr, char *sceneChar, Field ***sourceLi
 		/* set number of geometries in current geometryGroup*/
 		if (GEOMGROUP_NO_ERR != (*oGroupPtrPtr)->getGeometryGroup(i)->setGeometryListLength(nrSurfaces) )
 		{
-			std::cout <<"error in Parser_XML.createSceneFromXML(): group.getGeometryGroup(" << i << ")->setGeometryListLength(" << nrSurfaces << ") returned an error"  << std::endl;
+			std::cout <<"error in Parser_XML.createSceneFromXML(): group.getGeometryGroup(" << i << ")->setGeometryListLength(" << nrSurfaces << ") returned an error"  << "...\n";
 			return false;
 		}
 		
@@ -543,7 +543,7 @@ bool createSceneFromXML(Group **oGroupPtrPtr, char *sceneChar, Field ***sourceLi
             l_pGeomFab=new GeometryFab_DiffRays();
             break;
         default:
-			std::cout <<"error in Parser_XML.createSceneFromXML(): unknown trace mode"  << std::endl;
+			std::cout <<"error in Parser_XML.createSceneFromXML(): unknown trace mode"  << "...\n";
 			return false;
             break;
         }
@@ -898,12 +898,33 @@ bool MacroSimTracer::runMacroSimLayoutTrace(char *xmlInput, void* p2CallbackObje
 	return true;
 }
 
-bool MacroSimTracer::runConfPointSensorSim(ConfPoint_Params &params, double** res_ptrptr)
+bool MacroSimTracer::calcCuFFT(cuDoubleComplex *pUin, int dimX, int dimY)
+{
+	if (PROP_NO_ERR!=cu_ft2(pUin, dimX, dimY))
+	{
+		cout << "error in MacroSimTracer.runConfRawSigSim(): simConfRawSig() returned an error." << endl;
+		return false;
+	}
+	return true;
+}
+
+bool MacroSimTracer::runConfRawSigSim(ConfPoint_Params &params, double** res_ptrptr)
 {
 	bool runOnCPU=false;
-	if (PROP_NO_ERR!=simConfPointRawSig(res_ptrptr, params, runOnCPU))
+	if (PROP_NO_ERR!=simConfRawSig(res_ptrptr, params, runOnCPU))
 	{
-		cout << "error in MacroSimTracer.runConfPointSensorSim(): simConfPointRawSig() returned an error." << endl;
+		cout << "error in MacroSimTracer.runConfRawSigSim(): simConfRawSig() returned an error." << endl;
+		return false;
+	}
+	return true;
+};
+
+bool MacroSimTracer::runConfSensorSigSim(ConfPoint_Params &params, ConfPointObject_Params &paramsObject, double** res_ptrptr)
+{
+	bool runOnCPU=false;
+	if (PROP_NO_ERR!=simConfSensorSig(res_ptrptr, params, paramsObject, runOnCPU))
+	{
+		cout << "error in MacroSimTracer.runConfSensorigSim(): simConfRawSig() returned an error." << endl;
 		return false;
 	}
 	return true;
@@ -920,7 +941,7 @@ bool MacroSimTracer::checkVisibility(char *objectInput_filename)
 	nv::Model* model = new nv::Model();
 
 	if(!model->loadModelFromFile(objectInput_filename)) {
-		std::cerr << "Unable to load model '" << objectInput_filename << "'" << std::endl;
+		std::cerr << "Unable to load model '" << objectInput_filename << "'" << "...\n";
 		exit(-1);
 	}
 

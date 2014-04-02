@@ -61,7 +61,7 @@ geometryError CylPipe::setParams(Geometry_Params *paramsIn)
 		*(this->paramsPtr)=*l_ptr;
 	else
 	{
-		std::cout << "error in CylPipe.setParams(): paramsIn seems to not be of type CylPipe_Params" << std::endl;
+		std::cout << "error in CylPipe.setParams(): paramsIn seems to not be of type CylPipe_Params" << "...\n";
 		return GEOM_ERR;
 	}
 	this->update=true;
@@ -185,7 +185,7 @@ geometryError CylPipe::hit(rayStruct &ray,double t)
 //	}
 //	else
 //	{
-//		std::cout << "error in CylPipe.hit: rays of gaussian beamlet have inconsistent intersections at geometry:" << this->paramsPtr->geometryID << std::endl;
+//		std::cout << "error in CylPipe.hit: rays of gaussian beamlet have inconsistent intersections at geometry:" << this->paramsPtr->geometryID << "...\n";
 //		return GEOM_GBINCONSISTENTINTERSECTIONS_ERR;// terminate the ray with an error
 //	}
 //};
@@ -231,7 +231,7 @@ geometryError CylPipe::createOptixInstance( RTcontext &context, RTgeometrygroup 
 {
 	if (GEOM_NO_ERR != Geometry::createOptixInstance(context, geometrygroup, index, simParams, lambda) )
 	{
-		std::cout <<"error in CylPipe.createOptixInstance(): Geometry.creatOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << std::endl;
+		std::cout <<"error in CylPipe.createOptixInstance(): Geometry.creatOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << "...\n";
 		return GEOM_ERR;
 	}
 
@@ -259,7 +259,7 @@ geometryError CylPipe::updateOptixInstance( RTcontext &context, RTgeometrygroup 
 	{
 		if (GEOM_NO_ERR != Geometry::updateOptixInstance(context, geometrygroup, index, simParams, lambda))
 		{
-			std::cout <<"error in CylPipe.updateOptixInstance(): materialList[i] returned an error at geometry: " << this->getParamsPtr()->geometryID << std::endl;
+			std::cout <<"error in CylPipe.updateOptixInstance(): materialList[i] returned an error at geometry: " << this->getParamsPtr()->geometryID << "...\n";
 			return GEOM_ERR;
 		}
 		/* set the variables of the geometry */
@@ -301,7 +301,7 @@ geometryError CylPipe::parseXml(pugi::xml_node &geometry, SimParams simParams, v
 	// parse base class
 	if (GEOM_NO_ERR!=Geometry::parseXml(geometry,simParams, geomVec))
 	{
-		std::cout << "error in CylPipe.parseXml(): Geometry.parseXml() returned an error." << std::endl;
+		std::cout << "error in CylPipe.parseXml(): Geometry.parseXml() returned an error." << "...\n";
 		return GEOM_ERR;
 	}
 	double3 l_vec=make_double3(0,0,1);

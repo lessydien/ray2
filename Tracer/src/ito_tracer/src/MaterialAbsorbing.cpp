@@ -170,7 +170,7 @@ MaterialError MaterialAbsorbing::parseXml(pugi::xml_node &geometry, SimParams si
 {
 	if (!Material::parseXml(geometry, simParams))
 	{
-		std::cout << "error in MaterialAbsorbing.parseXml(): Material.parseXml() returned an error." << std::endl;
+		std::cout << "error in MaterialAbsorbing.parseXml(): Material.parseXml() returned an error." << "...\n";
 		return MAT_ERR;
 	}
 

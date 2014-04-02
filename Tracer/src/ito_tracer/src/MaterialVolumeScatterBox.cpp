@@ -85,7 +85,7 @@ MaterialError MaterialVolumeScatterBox::createCPUSimInstance(double lambda)
 	// create simulation instance of coating
 	if (MAT_NO_ERR != Material::createCPUSimInstance(lambda) )
 	{
-		std::cout << "error in MaterialVolumeScatterBox.createCPUSimInstance(): Material.createCPUSimInstance() returned an error." << std::endl;
+		std::cout << "error in MaterialVolumeScatterBox.createCPUSimInstance(): Material.createCPUSimInstance() returned an error." << "...\n";
 		return MAT_ERR;
 	}
 
@@ -106,7 +106,7 @@ MaterialError MaterialVolumeScatterBox::createOptiXInstance(RTcontext context, R
 {
 	if (MAT_NO_ERR != Material::createOptiXInstance(context, instance, index, simParams, lambda) )
 	{
-		std::cout << "error in MaterialVolumeScatterBox.createOptiXInstance(): Material.creatOptiXInstance() returned an error" << std::endl;
+		std::cout << "error in MaterialVolumeScatterBox.createOptiXInstance(): Material.creatOptiXInstance() returned an error" << "...\n";
 		return MAT_ERR;
 	}
 
@@ -146,7 +146,7 @@ MaterialError MaterialVolumeScatterBox::updateOptiXInstance(RTcontext context, R
 
 	if (MAT_NO_ERR != Material::updateOptiXInstance(context, instance, index, simParams, lambda) )
 	{
-		std::cout << "error in MaterialVolumeScatterBox.updateOptiXInstance(): Material.updateOptiXInstance() returned an error" << std::endl;
+		std::cout << "error in MaterialVolumeScatterBox.updateOptiXInstance(): Material.updateOptiXInstance() returned an error" << "...\n";
 		return MAT_ERR;
 	}
 
@@ -201,7 +201,7 @@ MaterialError MaterialVolumeScatterBox::parseXml(pugi::xml_node &material, SimPa
 {
 	if (!Material::parseXml(material, simParams))
 	{
-		std::cout << "error in MaterialVolumeScatterBox.parseXml(): Material.parseXml() returned an error." << std::endl;
+		std::cout << "error in MaterialVolumeScatterBox.parseXml(): Material.parseXml() returned an error." << "...\n";
 		return MAT_ERR;
 	}
 

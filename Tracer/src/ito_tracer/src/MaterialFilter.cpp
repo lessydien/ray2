@@ -141,14 +141,14 @@ MaterialError MaterialFilter::createCPUSimInstance(double lambda)
 	// calc the refractive indices at current wavelength
 	if (MAT_NO_ERR!=this->calcFilter(lambda))
 	{
-		std::cout << "error in MaterialFilter.createCPUSimInstance(): calcFilter returned an error" << std::endl;
+		std::cout << "error in MaterialFilter.createCPUSimInstance(): calcFilter returned an error" << "...\n";
 		return MAT_ERR;
 	}
 
 	// create simulation instance of coating
 	if (MAT_NO_ERR != Material::createCPUSimInstance(lambda) )
 	{
-		std::cout << "error in MaterialFilter.createCPUSimInstance(): Material.createCPUSimInstance() returned an error." << std::endl;
+		std::cout << "error in MaterialFilter.createCPUSimInstance(): Material.createCPUSimInstance() returned an error." << "...\n";
 		return MAT_ERR;
 	}
 
@@ -215,7 +215,7 @@ MaterialError MaterialFilter::updateCPUSimInstance(double lambda)
 		// calc the refractive indices at current wavelength
 		if (MAT_NO_ERR != calcFilter(lambda))
 		{
-			std::cout << "error in MaterialFilter.updateOptixInstance(): calcFilter returned an error" << std::endl;
+			std::cout << "error in MaterialFilter.updateOptixInstance(): calcFilter returned an error" << "...\n";
 			return MAT_ERR;
 		}
 
@@ -259,7 +259,7 @@ MaterialError MaterialFilter::createOptiXInstance(RTcontext context, RTgeometryi
 {
 	if (MAT_NO_ERR != Material::createOptiXInstance(context, instance, index, simParams, lambda) )
 	{
-		std::cout << "error in MaterialFilter.createOptiXInstance(): Material.creatOptiXInstance() returned an error" << std::endl;
+		std::cout << "error in MaterialFilter.createOptiXInstance(): Material.creatOptiXInstance() returned an error" << "...\n";
 		return MAT_ERR;
 	}
 
@@ -268,7 +268,7 @@ MaterialError MaterialFilter::createOptiXInstance(RTcontext context, RTgeometryi
 	// calc the refractive indices at current wavelength
 	if (MAT_NO_ERR != calcFilter(lambda))
 	{
-		std::cout << "error in MaterialFilter.createOptixInstance(): calcFilter returned an error" << std::endl;
+		std::cout << "error in MaterialFilter.createOptixInstance(): calcFilter returned an error" << "...\n";
 		return MAT_ERR;
 	}
 
@@ -298,7 +298,7 @@ MaterialError MaterialFilter::updateOptiXInstance(RTcontext context, RTgeometryi
 		// calc the refractive indices at current wavelength
 		if (MAT_NO_ERR != calcFilter(lambda))
 		{
-			std::cout << "error in MaterialFilter.updateOptixInstance(): calcFilter returned an error" << std::endl;
+			std::cout << "error in MaterialFilter.updateOptixInstance(): calcFilter returned an error" << "...\n";
 			return MAT_ERR;
 		}
 		/* set the variables of the geometry */
@@ -312,7 +312,7 @@ MaterialError MaterialFilter::updateOptiXInstance(RTcontext context, RTgeometryi
 
 	if (MAT_NO_ERR != Material::updateOptiXInstance(context, instance, index, simParams, lambda) )
 	{
-		std::cout << "error in MaterialFilter.updateOptiXInstance(): Material.updateOptiXInstance() returned an error" << std::endl;
+		std::cout << "error in MaterialFilter.updateOptiXInstance(): Material.updateOptiXInstance() returned an error" << "...\n";
 		return MAT_ERR;
 	}
 

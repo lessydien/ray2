@@ -61,7 +61,7 @@ geometryError VolumeScattererBox::setParams(Geometry_Params *paramsIn)//VolumeSc
 		*(this->paramsPtr)=*l_ptr;
 	else
 	{
-		std::cout << "error in VolumeScattererBox.setParams(): paramsIn seems to not be of type VolumeScattererBox_Params" << std::endl;
+		std::cout << "error in VolumeScattererBox.setParams(): paramsIn seems to not be of type VolumeScattererBox_Params" << "...\n";
 		return GEOM_ERR;
 	}
 	this->update=true;
@@ -244,7 +244,7 @@ geometryError VolumeScattererBox::hit(gaussBeamRayStruct &ray, gaussBeam_t t)
 	}
 	else
 	{
-		std::cout <<"error in VolumeScattererBox.hit(): rays of gaussian beamlet have inconsistent intersections on geometry:" << this->paramsPtr->geometryID << std::endl;
+		std::cout <<"error in VolumeScattererBox.hit(): rays of gaussian beamlet have inconsistent intersections on geometry:" << this->paramsPtr->geometryID << "...\n";
 		return GEOM_GBINCONSISTENTINTERSECTIONS_ERR;// terminate the ray with an error
 	}
  };
@@ -265,7 +265,7 @@ geometryError VolumeScattererBox::createOptixInstance( RTcontext &context, RTgeo
 {
 	if (GEOM_NO_ERR != Geometry::createOptixInstance(context, geometrygroup, index, simParams, lambda) )
 	{
-		std::cout <<"error in VolumeScattererBox.createOptixInstance(): Geometry.creatOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << std::endl;
+		std::cout <<"error in VolumeScattererBox.createOptixInstance(): Geometry.creatOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << "...\n";
 		return GEOM_ERR;
 	}
 
@@ -293,7 +293,7 @@ geometryError VolumeScattererBox::updateOptixInstance( RTcontext &context, RTgeo
 	{
 		if (GEOM_NO_ERR != this->updateOptixInstance(context, geometrygroup, index, simParams, lambda) )
 		{
-			std::cout <<"error in VolumeScattererBox.updateOptixInstance(): Geometry.updateOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << std::endl;
+			std::cout <<"error in VolumeScattererBox.updateOptixInstance(): Geometry.updateOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << "...\n";
 			return GEOM_ERR;
 		}
 		/* set the variables of the geometry */
@@ -335,7 +335,7 @@ geometryError VolumeScattererBox::parseXml(pugi::xml_node &geometry, SimParams s
 	// parse base class
 	if (GEOM_NO_ERR!=Geometry::parseXml(geometry,simParams, geomVec))
 	{
-		std::cout << "error in VolumeScattererBox.parseXml(): Geometry.parseXml() returned an error." << std::endl;
+		std::cout << "error in VolumeScattererBox.parseXml(): Geometry.parseXml() returned an error." << "...\n";
 		return GEOM_ERR;
 	}
 	double3 l_vec=make_double3(0,0,1);
@@ -344,22 +344,22 @@ geometryError VolumeScattererBox::parseXml(pugi::xml_node &geometry, SimParams s
 	Parser_XML l_parser;
 	if (!l_parser.attrByNameToDouble(geometry, "root.x", this->paramsPtr->root.x))
 	{
-		std::cout << "error in VolumeScattererBox.parseXml(): root.x is not defined" << std::endl;
+		std::cout << "error in VolumeScattererBox.parseXml(): root.x is not defined" << "...\n";
 		return GEOM_ERR;
 	}
 	if (!l_parser.attrByNameToDouble(geometry, "root.y", this->paramsPtr->root.y))
 	{
-		std::cout << "error in VolumeScattererBox.parseXml(): root.y is not defined" << std::endl;
+		std::cout << "error in VolumeScattererBox.parseXml(): root.y is not defined" << "...\n";
 		return GEOM_ERR;
 	}
 	if (!l_parser.attrByNameToDouble(geometry, "root.z", this->paramsPtr->root.z))
 	{
-		std::cout << "error in VolumeScattererBox.parseXml(): root.z is not defined" << std::endl;
+		std::cout << "error in VolumeScattererBox.parseXml(): root.z is not defined" << "...\n";
 		return GEOM_ERR;
 	}
 	if (!l_parser.attrByNameToDouble(geometry, "thickness", this->paramsPtr->thickness))
 	{
-		std::cout << "error in VolumeScattererBox.parseXml(): thickness is not defined" << std::endl;
+		std::cout << "error in VolumeScattererBox.parseXml(): thickness is not defined" << "...\n";
 		return GEOM_ERR;
 	}
 	geomVec.push_back(this);

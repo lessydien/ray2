@@ -61,7 +61,7 @@ geometryError MicroLensArraySurface::setParams(Geometry_Params *paramsIn)//Plane
 		*(this->paramsPtr)=*l_ptr;
 	else
 	{
-		std::cout << "error in PlaneSurface.setParams(): paramsIn seems to not be of type PlaneSurface_Params" << std::endl;
+		std::cout << "error in PlaneSurface.setParams(): paramsIn seems to not be of type PlaneSurface_Params" << "...\n";
 		return GEOM_ERR;
 	}
 
@@ -185,7 +185,7 @@ geometryError MicroLensArraySurface::hit(rayStruct &ray, double t)
 //	}
 //	else
 //	{
-//		std::cout <<"error in MicroLensArraySurface.hit(): rays of gaussian beamlet have inconsistent intersections at geometry:" << this->paramsPtr->geometryID << std::endl;
+//		std::cout <<"error in MicroLensArraySurface.hit(): rays of gaussian beamlet have inconsistent intersections at geometry:" << this->paramsPtr->geometryID << "...\n";
 //		return GEOM_GBINCONSISTENTINTERSECTIONS_ERR;// terminate the ray with an error
 //	}
 //};
@@ -234,7 +234,7 @@ geometryError MicroLensArraySurface::createOptixInstance( RTcontext &context, RT
 {
 	if (GEOM_NO_ERR != Geometry::createOptixInstance(context, geometrygroup, index, simParams, lambda) )
 	{
-		std::cout <<"error in MicroLensArraySurface.createOptixInstance(): Geometry.creatOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << std::endl;
+		std::cout <<"error in MicroLensArraySurface.createOptixInstance(): Geometry.creatOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << "...\n";
 		return GEOM_ERR;
 	}
 
@@ -262,7 +262,7 @@ geometryError MicroLensArraySurface::updateOptixInstance( RTcontext &context, RT
 	{
 		if (GEOM_NO_ERR != this->updateOptixInstance(context, geometrygroup, index, simParams, lambda) )
 		{
-			std::cout <<"error in MicroLensArraySurface.updateOptixInstance(): Geometry.updateOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << std::endl;
+			std::cout <<"error in MicroLensArraySurface.updateOptixInstance(): Geometry.updateOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << "...\n";
 			return GEOM_ERR;
 		}
 		/* set geometry variables */
@@ -295,7 +295,7 @@ geometryError MicroLensArraySurface::parseXml(pugi::xml_node &geometry, SimParam
 	// call base class function
 	if (GEOM_NO_ERR != Geometry::parseXml(geometry, simParams, geomVec))
 	{
-		std::cout << "error in MicroLensArraySurface.parseXml(): Geometry.parseXml() returned an error" << std::endl;
+		std::cout << "error in MicroLensArraySurface.parseXml(): Geometry.parseXml() returned an error" << "...\n";
 		return GEOM_ERR;
 	}
 
@@ -322,7 +322,7 @@ geometryError MicroLensArraySurface::parseXml(pugi::xml_node &geometry, SimParam
 	const char* str=l_parser.attrValByName(geometry, "microLensAptType");
 	if (str==NULL)
 	{
-		std::cout << "error in MicroLensArraySurface.parseXml(): microLensAptType is not defined" << std::endl;
+		std::cout << "error in MicroLensArraySurface.parseXml(): microLensAptType is not defined" << "...\n";
 		return GEOM_ERR;
 	}
 
@@ -334,7 +334,7 @@ geometryError MicroLensArraySurface::parseXml(pugi::xml_node &geometry, SimParam
 			this->paramsPtr->microLensAptType=MICROELLIPTICAL;
 		else
 		{
-			std::cout << "error in MicroLensArraySurface.parseXml(): unknown microLensAptType" << std::endl;
+			std::cout << "error in MicroLensArraySurface.parseXml(): unknown microLensAptType" << "...\n";
 			return GEOM_ERR;
 		}
 	}

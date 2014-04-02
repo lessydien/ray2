@@ -96,7 +96,7 @@ void Scatter_TorranceSparrow2D_PathTrace::hit(rayStruct &ray, Mat_hitParams hitP
 	// continue conventional tracing
 	if (!hitTorranceSparrow2D_PathTrace(*ray_interpreted, hitParams, this->reducedParams) )
 	{
-		std::cout <<"error in ScatterTorranceSparrow1D.hit(): hitTorranceSparrow1D returned an error." << std::endl;
+		std::cout <<"error in ScatterTorranceSparrow1D.hit(): hitTorranceSparrow1D returned an error." << "...\n";
 		// some error mechanism !!
 	}
 }

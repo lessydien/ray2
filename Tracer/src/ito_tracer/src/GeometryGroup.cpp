@@ -107,7 +107,7 @@ geometryGroupError  GeometryGroup::trace(rayStruct &ray)
 				
 			}
 			if (abs(minDist)<EPSILON)
-				std::cout << "distance to small" << std::endl;
+				std::cout << "distance to small" << "...\n";
 			if ((minDist<0) || (indexToTrace==-1))
 			{
 				ray.running=false; //stop ray
@@ -287,7 +287,7 @@ geometryGroupError GeometryGroup::setGeometry(Geometry* oGeometryPtr, unsigned i
 {
 	if (index >= geometryListLength)
 	{
-		std::cout << "error in GeometryGroup.setGeometry(): index exceeds size of geometryList" << std::endl;
+		std::cout << "error in GeometryGroup.setGeometry(): index exceeds size of geometryList" << "...\n";
 		return GEOMGROUP_ERR;
 	}
 	geometryList[index]=oGeometryPtr;
@@ -344,7 +344,7 @@ geometryGroupError GeometryGroup::createOptixInstance(RTcontext &context, RTgrou
 	/* check wether any geometry is present */
 	if (this->geometryListLength==0)
 	{
-		std::cout << "error in GeometryGroup.createOtpixInstance(): no geometries attached to group" << std::endl;
+		std::cout << "error in GeometryGroup.createOtpixInstance(): no geometries attached to group" << "...\n";
 		return GEOMGROUP_NOGEOM_ERR;
 	}
 	// if we plan to do nonsequential simulation we put all the geometries into one OptiX-OptiX_group
@@ -399,7 +399,7 @@ geometryGroupError GeometryGroup::createOptixInstance(RTcontext &context, RTgrou
 		{
 			if (GEOM_NO_ERR != geometryList[i]->createOptixInstance(context, OptiX_geometrygroup, i, simParams, lambda))
 			{
-				std::cout << "error in GeometryGroup.createOptixInstance: geometryList[i]->createOptiXInstance returned an error at index:" << i << std::endl;
+				std::cout << "error in GeometryGroup.createOptixInstance: geometryList[i]->createOptiXInstance returned an error at index:" << i << "...\n";
 				return GEOMGROUP_ERR;
 			}
 		}
@@ -429,7 +429,7 @@ geometryGroupError GeometryGroup::createOptixInstance(RTcontext &context, RTsele
 	/* check wether any geometry is present */
 	if (this->geometryListLength==0)
 	{
-		std::cout << "error in GeometryGroup.createOtpixInstance(): no geometries attached to group" << std::endl;
+		std::cout << "error in GeometryGroup.createOtpixInstance(): no geometries attached to group" << "...\n";
 		return GEOMGROUP_NOGEOM_ERR;
 	}
 
@@ -479,7 +479,7 @@ geometryGroupError GeometryGroup::createOptixInstance(RTcontext &context, RTsele
 		// create OptiX geometry inside OptiX_geometrygroup at index 0
 		if ( GEOM_NO_ERR != geometryList[i]->createOptixInstance(context, OptiX_geometrygroup, 0, simParams, lambda) )
 		{
-			std::cout << "error in GeometryGroup.createOptixInstance: geometryList[i]->createOptixInstance returned an error at index:" << i << std::endl;
+			std::cout << "error in GeometryGroup.createOptixInstance: geometryList[i]->createOptixInstance returned an error at index:" << i << "...\n";
 			return GEOMGROUP_ERR;
 		}
 	}
@@ -505,7 +505,7 @@ geometryGroupError GeometryGroup::updateOptixInstance(RTcontext &context, RTgrou
 	/* check wether any geometry is present */
 	if (this->geometryListLength==0)
 	{
-		std::cout << "error in GeometryGroup.updateOtpixInstance(): no geometries attached to group" << std::endl;
+		std::cout << "error in GeometryGroup.updateOtpixInstance(): no geometries attached to group" << "...\n";
 		return GEOMGROUP_NOGEOM_ERR;
 	}
 	// if we plan to do nonsequential simulation we put all the geometries into one OptiX-OptiX_group
@@ -571,7 +571,7 @@ geometryGroupError GeometryGroup::updateOptixInstance(RTcontext &context, RTsele
 	/* check wether any geometry is present */
 	if (this->geometryListLength==0)
 	{
-		std::cout << "error in GeometryGroup.createOtpixInstance(): no geometries attached to group" << std::endl;
+		std::cout << "error in GeometryGroup.createOtpixInstance(): no geometries attached to group" << "...\n";
 		return GEOMGROUP_NOGEOM_ERR;
 	}
 
@@ -628,7 +628,7 @@ geometryGroupError GeometryGroup::createCPUSimInstance(double lambda, SimParams 
 	/* check wether any geometry is present */
 	if (this->geometryListLength==0)
 	{
-		std::cout << "error in GeometryGroup.createCPUSimInstance(): no geometries attached to group" << std::endl;
+		std::cout << "error in GeometryGroup.createCPUSimInstance(): no geometries attached to group" << "...\n";
 		return GEOMGROUP_NOGEOM_ERR;
 	}
 	this->mode=simParams;
@@ -638,7 +638,7 @@ geometryGroupError GeometryGroup::createCPUSimInstance(double lambda, SimParams 
 	{
 		if ( GEOM_NO_ERR != geometryList[i]->createCPUSimInstance(lambda, simParams) )
 		{
-			std::cout << "error in GeometryGroup.createCPUSimInstance(): geometry.createCPUSimInstance() returned an error at index:" << i << std::endl;
+			std::cout << "error in GeometryGroup.createCPUSimInstance(): geometry.createCPUSimInstance() returned an error at index:" << i << "...\n";
 			return GEOMGROUP_ERR;
 		}
 	}
@@ -660,7 +660,7 @@ geometryGroupError GeometryGroup::updateCPUSimInstance(double lambda, SimParams 
 	/* check wether any geometry is present */
 	if (this->geometryListLength==0)
 	{
-		std::cout << "error in GeometryGroup.updateCPUSimInstance(): no geometries attached to group" << std::endl;
+		std::cout << "error in GeometryGroup.updateCPUSimInstance(): no geometries attached to group" << "...\n";
 		return GEOMGROUP_NOGEOM_ERR;
 	}
 	this->mode=simParams;
@@ -670,7 +670,7 @@ geometryGroupError GeometryGroup::updateCPUSimInstance(double lambda, SimParams 
 	{
 		if ( GEOM_NO_ERR != geometryList[i]->updateCPUSimInstance(lambda, simParams) )
 		{
-			std::cout << "error in GeometryGroup.updateCPUSimInstance(): geometry.updateCPUSimInstance() returned an error at index:" << i << std::endl;
+			std::cout << "error in GeometryGroup.updateCPUSimInstance(): geometry.updateCPUSimInstance() returned an error at index:" << i << "...\n";
 			return GEOMGROUP_ERR;
 		}
 	}
@@ -698,7 +698,7 @@ geometryGroupError GeometryGroup::setGeometryListLength(unsigned int length)
 	}
 	else
 	{
-		std::cout << "error in GeometryGroup.setGeometryListLength(): geometryList has beend initialized before." << std::endl;
+		std::cout << "error in GeometryGroup.setGeometryListLength(): geometryList has beend initialized before." << "...\n";
 		return GEOMGROUP_LISTCREATION_ERR;
 	}
 	return GEOMGROUP_NO_ERR;
@@ -723,7 +723,7 @@ geometryGroupError GeometryGroup::createGeometry(unsigned int index)
 	}
 	else
 	{
-		std::cout << "error in GeometryGroup.createGeometry(): invalid geometryIndex:" << index << std::endl;
+		std::cout << "error in GeometryGroup.createGeometry(): invalid geometryIndex:" << index << "...\n";
 		return GEOMGROUP_LISTCREATION_ERR;
 	}
 };

@@ -51,10 +51,10 @@ detError  DetectorPhaseSpace::parseXml(pugi::xml_node &det, vector<Detector*> &d
 	// call base class function
 	if (DET_NO_ERROR != Detector::parseXml(det, detVec))
 	{
-		std::cout << "error in DetectorPhaseSpace.parseXml(): Detector.parseXml()  returned an error." << std::endl;
+		std::cout << "error in DetectorPhaseSpace.parseXml(): Detector.parseXml()  returned an error." << "...\n";
 		return DET_ERROR;
 	}
-	std::cout << "error in DetectorPhaseSpace.parseXml(): not implemented yet." << std::endl;
+	std::cout << "error in DetectorPhaseSpace.parseXml(): not implemented yet." << "...\n";
 	return DET_ERROR;
 };
 
@@ -106,13 +106,13 @@ detError DetectorPhaseSpace::detect2TextFile(FILE* hFile, RayField* rayFieldPtr)
 	Field **l_imagePtrPtr=&l_imagePtr;
 	if (FIELD_NO_ERR != this->detect(rayFieldPtr, l_imagePtrPtr) )
 	{
-		std::cout << "error in DetectorPhaseSpace.detect2TextFile(): detect() returned an error" << std::endl;
+		std::cout << "error in DetectorPhaseSpace.detect2TextFile(): detect() returned an error" << "...\n";
 		return DET_ERROR;
 	}
 	ScalarLightField *l_ScalarImagePtr=dynamic_cast<ScalarLightField*>(l_imagePtr);
 	if ( FIELD_NO_ERR != writeScalarField2File(hFile, l_ScalarImagePtr) )
 	{
-		std::cout << "error in DetectorIntensity.detect2TextFile(): writeIntensityFIeld2File() returned an error" << std::endl;
+		std::cout << "error in DetectorIntensity.detect2TextFile(): writeIntensityFIeld2File() returned an error" << "...\n";
 		return DET_ERROR;
 	}
 
@@ -150,7 +150,7 @@ detError DetectorPhaseSpace::detect(Field* rayFieldPtr, Field **imagePtrPtr)
 			|| ((*imagePtrPtr)->getParamsPtr()->MTransform.m23 != this->detParamsPtr->MTransform.m23)
 			|| ((*imagePtrPtr)->getParamsPtr()->MTransform.m24 != this->detParamsPtr->MTransform.m24) )
 		{
-			std::cout << "error in DetectorPhaseSpace.detect: given ScalarField does not match parameters of detector" << std::endl;
+			std::cout << "error in DetectorPhaseSpace.detect: given ScalarField does not match parameters of detector" << "...\n";
 			return DET_ERROR;
 		}
 	}
@@ -167,21 +167,21 @@ detError DetectorPhaseSpace::detect(Field* rayFieldPtr, Field **imagePtrPtr)
 		imageParams.dirHalfWidth=this->detParamsPtr->dirHalfWidth;
 		if (imageParams.nrPixels.x<1)
 		{
-			std::cout << "error in DetectorPhaseSpace.detect: pixel number smaller than 1 in x is not allowed" << std::endl;
+			std::cout << "error in DetectorPhaseSpace.detect: pixel number smaller than 1 in x is not allowed" << "...\n";
 			return DET_ERROR;
 		}
 		else
 			imageParams.scale.x=2*this->detParamsPtr->apertureHalfWidth.x/(imageParams.nrPixels.x);
 		if (imageParams.nrPixels.y<1)
 		{
-			std::cout << "error in DetectorPhaseSpace.detect: pixel number smaller than one in y is not allowed" << std::endl;
+			std::cout << "error in DetectorPhaseSpace.detect: pixel number smaller than one in y is not allowed" << "...\n";
 			return DET_ERROR;
 		}
 		else
 			imageParams.scale.y=2*this->detParamsPtr->apertureHalfWidth.y/(imageParams.nrPixels.y);
 		if (imageParams.nrPixels.z<1)
 		{
-			std::cout << "error in DetectorPhaseSpace.detect: pixel number smaller than one in z is not allowed" << std::endl;
+			std::cout << "error in DetectorPhaseSpace.detect: pixel number smaller than one in z is not allowed" << "...\n";
 			return DET_ERROR;
 		}
 		else
@@ -190,21 +190,21 @@ detError DetectorPhaseSpace::detect(Field* rayFieldPtr, Field **imagePtrPtr)
 			{
 				// 3 dimensional IntensityFields are not implemented yet !!!
 				imageParams.scale.z=0.02/(imageParams.nrPixels.z); // we calculate a 2dimensional field here anyway
-				std::cout << "error in DetectorPhaseSpace.detect: 3dimensional fields are not implemented yet" << std::endl;
+				std::cout << "error in DetectorPhaseSpace.detect: 3dimensional fields are not implemented yet" << "...\n";
 				return DET_ERROR;
 			}
 			imageParams.scale.z=0.02; // we calculate a 2dimensional field here anyway
 		}
 		if (imageParams.nrPixels_PhaseSpace.x<1)
 		{
-			std::cout << "error in DetectorPhaseSpace.detect: pixel number smaller than 1 in dirX is not allowed" << std::endl;
+			std::cout << "error in DetectorPhaseSpace.detect: pixel number smaller than 1 in dirX is not allowed" << "...\n";
 			return DET_ERROR;
 		}
 		else
 			imageParams.scale_dir.x=2*imageParams.dirHalfWidth.x/(imageParams.nrPixels_PhaseSpace.x);
 		if (imageParams.nrPixels_PhaseSpace.y<1)
 		{
-			std::cout << "error in DetectorPhaseSpace.detect: pixel number smaller than 1 in dirY is not allowed" << std::endl;
+			std::cout << "error in DetectorPhaseSpace.detect: pixel number smaller than 1 in dirY is not allowed" << "...\n";
 			return DET_ERROR;
 		}
 		else
@@ -219,7 +219,7 @@ detError DetectorPhaseSpace::detect(Field* rayFieldPtr, Field **imagePtrPtr)
 		
 	if ( FIELD_NO_ERR != rayFieldPtr->convert2PhaseSpace(*imagePtrPtr, *(this->detParamsPtr)) )
 	{
-		std::cout << "error in Detector_PhaseSpace.detect(): convert2PhaseSpace() returned an error" << std::endl;
+		std::cout << "error in Detector_PhaseSpace.detect(): convert2PhaseSpace() returned an error" << "...\n";
 		return DET_ERROR;
 	}
 	return DET_NO_ERROR;

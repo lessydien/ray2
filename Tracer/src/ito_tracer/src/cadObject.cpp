@@ -61,7 +61,7 @@ geometryError CadObject::setParams(Geometry_Params *paramsIn)//CadObject_Params 
 		*(this->paramsPtr)=*l_ptr;
 	else
 	{
-		std::cout << "error in CadObject.setParams(): paramsIn seems to not be of type CadObject_Params" << std::endl;
+		std::cout << "error in CadObject.setParams(): paramsIn seems to not be of type CadObject_Params" << "...\n";
 		return GEOM_ERR;
 	}
 	this->update=true;
@@ -292,7 +292,7 @@ geometryError CadObject::createOptixInstance( RTcontext &context, RTgeometrygrou
 	{
 		if (MAT_NO_ERR != this->materialList[i]->createOptiXInstance(context, instance, i, simParams, lambda) )
 		{
-			std::cout <<"error in Geometry.createOptixInstance(): materialList[i]->createOptiXInstance() returned an error at index:" << i << " at geometry: " << this->getParamsPtr()->geometryID << std::endl;
+			std::cout <<"error in Geometry.createOptixInstance(): materialList[i]->createOptiXInstance() returned an error at index:" << i << " at geometry: " << this->getParamsPtr()->geometryID << "...\n";
 			return GEOM_ERR;
 		}
 	}
@@ -301,7 +301,7 @@ geometryError CadObject::createOptixInstance( RTcontext &context, RTgeometrygrou
 	/* set bounding box program */
 	//if (GEOM_NO_ERR != this->createOptixBoundingBox( context, geometry ) )
 	//{
-	//	std::cout <<"error in Geometry.createOptixInstance(): createOptixBoundingBox() returned an error at geometry:" << this->getParamsPtr()->geometryID << std::endl;
+	//	std::cout <<"error in Geometry.createOptixInstance(): createOptixBoundingBox() returned an error at geometry:" << this->getParamsPtr()->geometryID << "...\n";
 	//	return GEOM_ERR;
 	//}
 
@@ -330,7 +330,7 @@ geometryError CadObject::updateOptixInstance( RTcontext &context, RTgeometrygrou
 	{
 		if (GEOM_NO_ERR != this->updateOptixInstance(context, geometrygroup, index, simParams, lambda) )
 		{
-			std::cout <<"error in CadObject.updateOptixInstance(): Geometry.updateOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << std::endl;
+			std::cout <<"error in CadObject.updateOptixInstance(): Geometry.updateOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << "...\n";
 			return GEOM_ERR;
 		}
 		/* set the variables of the geometry */
@@ -372,7 +372,7 @@ geometryError CadObject::parseXml(pugi::xml_node &geometry, SimParams simParams,
 	// parse base class
 	if (GEOM_NO_ERR!=Geometry::parseXml(geometry,simParams, geomVec))
 	{
-		std::cout << "error in CadObject.parseXml(): Geometry.parseXml() returned an error." << std::endl;
+		std::cout << "error in CadObject.parseXml(): Geometry.parseXml() returned an error." << "...\n";
 		return GEOM_ERR;
 	}
 	double3 l_vec=make_double3(0,0,1);
@@ -388,13 +388,13 @@ geometryError CadObject::parseXml(pugi::xml_node &geometry, SimParams simParams,
 	const char* l_objFileName=l_parser.attrValByName(geometry, "objFilename");
 	if (l_objFileName==NULL)
 	{
-		std::cout << "error in CadObject.parseXml(): glassName is not defined" << std::endl;
+		std::cout << "error in CadObject.parseXml(): glassName is not defined" << "...\n";
 		return GEOM_ERR;
 	}
 	// load object file
 	model = new nv::Model();
 	if(!model->loadModelFromFile(l_objFileName)) {
-		std::cout << "error in CadObject.parseXml(): Unable to load model '" << l_objFileName << "'" << std::endl;
+		std::cout << "error in CadObject.parseXml(): Unable to load model '" << l_objFileName << "'" << "...\n";
 		return GEOM_ERR;
 	}
 	model->compileModel();

@@ -37,7 +37,7 @@ bool GeometryFab::createGeomInstFromXML(xml_node &geomNode, SimParams simParams,
 	// if we don't have an geometry, return NULL
 	if (strcmp((l_parser.attrByName(geomNode, "objectType"))->value(),"GEOMETRY"))
 	{
-		std::cout << "error in GeometryFab.createGeomInstanceFromXML(): objectType is not defined for given node." << std::endl;
+		std::cout << "error in GeometryFab.createGeomInstanceFromXML(): objectType is not defined for given node." << "...\n";
 		return false; // return empty vector
 	}
 
@@ -45,7 +45,7 @@ bool GeometryFab::createGeomInstFromXML(xml_node &geomNode, SimParams simParams,
 	const char* l_geomTypeAscii = (l_parser.attrByName(geomNode,"geomType"))->value();
 	if (l_geomTypeAscii==NULL)
 	{
-		std::cout << "error in GeometryFab.createInstanceFromXML(): geomType is not defined for given node." << std::endl;
+		std::cout << "error in GeometryFab.createInstanceFromXML(): geomType is not defined for given node." << "...\n";
 		return false;
 	}
 

@@ -66,7 +66,7 @@ void Scatter_TorranceSparrow1D::hit(rayStruct &ray, Mat_hitParams hitParams)
 	}
 	else
 	{
-		std::cout <<"error in ScatterTorranceSparrow1D.hit(): hitTorranceSparrow1D returned an error." << std::endl;
+		std::cout <<"error in ScatterTorranceSparrow1D.hit(): hitTorranceSparrow1D returned an error." << "...\n";
 		// some error mechanism !!
 	}
 

@@ -111,22 +111,22 @@ const char* SimAssistantSingleSim::getPathToPtx(void)
 // */
 //simAssError SimAssistantSingleSim::initSimulation( Group *oGroupPtr, Field *SourceListPtrPtr)
 //{
-//	std::cout << "*****************************************************" << std::endl;
-//	std::cout << "starting to initialize Simulation..." << std::endl;
+//	std::cout << "*****************************************************" << "...\n";
+//	std::cout << "starting to initialize Simulation..." << "...\n";
 //
 //	clock_t start, end;
 //	start=clock();
 //
 //	if (SIMASS_NO_ERROR != initSimulationBaseClass(oGroupPtr, SourceListPtrPtr, this->paramsPtr))
 //	{
-//		std::cout << "error in SimAssistantSingleSim.initSimulation(): initSimulationBaseClass() returned an error" << std::endl;
+//		std::cout << "error in SimAssistantSingleSim.initSimulation(): initSimulationBaseClass() returned an error" << "...\n";
 //		return SIMASS_ERROR;
 //	}
 //
 //	end=clock();
 //	double msecs;
 //	msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
-//	std::cout << msecs <<"ms to initialize Simulation." << std::endl;
+//	std::cout << msecs <<"ms to initialize Simulation." << "...\n";
 //
 //	return SIMASS_NO_ERROR;
 //};
@@ -149,8 +149,8 @@ simAssError SimAssistantSingleSim::run(Group *oGroupPtr, Field *SourceListPtrPtr
 	//void				*data; // pointer to cast output buffer into
  //	rayStruct			*bufferData;
 
-	std::cout << "*****************************************************" << std::endl;
-	std::cout << "starting simulation..." << std::endl;
+	std::cout << "*****************************************************" << "...\n";
+	std::cout << "starting simulation..." << "...\n";
 
 	clock_t start, end;
 	double msecs_Saving=0;
@@ -159,15 +159,15 @@ simAssError SimAssistantSingleSim::run(Group *oGroupPtr, Field *SourceListPtrPtr
 //	if (SIMASS_NO_ERROR != this->doSim(*oGroupPtr, SourceListPtrPtr, DetectorListPtrPtr, &(this->oFieldPtr), this->paramsPtr->RunOnCPU, context, output_buffer_obj, seed_buffer_obj))
 	if (SIMASS_NO_ERROR != this->doSim(*oGroupPtr, SourceListPtrPtr, DetectorListPtrPtr, &(this->oFieldPtr), this->paramsPtr->RunOnCPU))
 	{
-		std::cout << "error in SimAssistantSingleSim.run(): doSim() returned an error" << std::endl;
+		std::cout << "error in SimAssistantSingleSim.run(): doSim() returned an error" << "...\n";
 		return SIMASS_ERROR;
 	}
 
 	/********************************************
 	*		   output results					*
 	********************************************/
-	std::cout << "**************************************************************" << std::endl;
-	std::cout << "starting to save simulation results..." << std::endl;
+	std::cout << "**************************************************************" << "...\n";
+	std::cout << "starting to save simulation results..." << "...\n";
 
 	start=clock();
 	char filepath[512];
@@ -179,13 +179,13 @@ simAssError SimAssistantSingleSim::run(Group *oGroupPtr, Field *SourceListPtrPtr
 	// comment out for benchmark
 	if (FIELD_NO_ERR != this->oFieldPtr->write2File(filepath, *(DetectorListPtrPtr[0]->getDetParamsPtr())) )
 	{
-		std::cout << "error in SimAssistantSingleSim.run(): Field.write2File() returned an error" << std::endl;
+		std::cout << "error in SimAssistantSingleSim.run(): Field.write2File() returned an error" << "...\n";
 		return SIMASS_ERROR;
 	}
 	// end comment out
 	end =clock();
 	msecs_Saving=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
-	std::cout << msecs_Saving <<"ms to save data." << std::endl;
+	std::cout << msecs_Saving <<"ms to save data." << "...\n";
 
 	//if (!this->paramsPtr->RunOnCPU)
 	//{

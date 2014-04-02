@@ -64,7 +64,7 @@ void MaterialDOE::hit(rayStruct &ray, Mat_hitParams hitParams, double t_hit, int
 	}
 	else
 	{
-		std::cout << "error in MaterialDOE.hit: hitDOE() returned an error" << std::endl;
+		std::cout << "error in MaterialDOE.hit: hitDOE() returned an error" << "...\n";
 		ray.running=false;
 	}
 
@@ -85,14 +85,14 @@ MaterialError MaterialDOE::createCPUSimInstance(double lambda)
 	// calc the refractive indices at current wavelength
 	if (MAT_NO_ERR != calcRefrIndices(lambda))
 	{
-		std::cout << "error in MaterialLinearGrating1D.createCPUSimInstance(): calcRefrIndices() returned an error" << std::endl;
+		std::cout << "error in MaterialLinearGrating1D.createCPUSimInstance(): calcRefrIndices() returned an error" << "...\n";
 		return MAT_ERR;
 	}
 
 	// create simulation instance of coating
 	if (MAT_NO_ERR != Material::createCPUSimInstance(lambda) )
 	{
-		std::cout << "error in MaterialLinearGrating1D.createCPUSimInstance(): Material.createCPUSimInstance() returned an error." << std::endl;
+		std::cout << "error in MaterialLinearGrating1D.createCPUSimInstance(): Material.createCPUSimInstance() returned an error." << "...\n";
 		return MAT_ERR;
 	}
 
@@ -113,7 +113,7 @@ MaterialError MaterialDOE::createOptiXInstance(RTcontext context, RTgeometryinst
 {
 	if (MAT_NO_ERR != Material::createOptiXInstance(context, instance, index, simParams, lambda) )
 	{
-		std::cout << "error in MaterialDOE.createOptiXInstance(): Material.creatOptiXInstance() returned an error" << std::endl;
+		std::cout << "error in MaterialDOE.createOptiXInstance(): Material.creatOptiXInstance() returned an error" << "...\n";
 		return MAT_ERR;
 	}
 
@@ -122,7 +122,7 @@ MaterialError MaterialDOE::createOptiXInstance(RTcontext context, RTgeometryinst
 	// calc the refractive indices at current wavelength
 	if (MAT_NO_ERR != calcRefrIndices(lambda))
 	{
-		std::cout << "error in MaterialLinearGrating1D.createOptiXInstance(): calcRefrIndices() returned an error" << std::endl;
+		std::cout << "error in MaterialLinearGrating1D.createOptiXInstance(): calcRefrIndices() returned an error" << "...\n";
 		return MAT_ERR;
 	}
 
@@ -166,7 +166,7 @@ MaterialError MaterialDOE::updateOptiXInstance(RTcontext context, RTgeometryinst
 		// calc the refractive indices at current wavelength
 		if (MAT_NO_ERR != calcRefrIndices(lambda))
 		{
-			std::cout << "error in MaterialLinearGrating1D.createOptiXInstance(): calcRefrIndeices() returned an error" << std::endl;
+			std::cout << "error in MaterialLinearGrating1D.createOptiXInstance(): calcRefrIndeices() returned an error" << "...\n";
 			return MAT_ERR;
 		}
 		/* set the variables of the geometry */
@@ -189,7 +189,7 @@ MaterialError MaterialDOE::updateOptiXInstance(RTcontext context, RTgeometryinst
 
 	if (MAT_NO_ERR != Material::updateOptiXInstance(context, instance, index, simParams, lambda) )
 	{
-		std::cout << "error in MaterialDOE.updateOptiXInstance(): Material.updateOptiXInstance() returned an error" << std::endl;
+		std::cout << "error in MaterialDOE.updateOptiXInstance(): Material.updateOptiXInstance() returned an error" << "...\n";
 		return MAT_ERR;
 	}
 
@@ -304,7 +304,7 @@ MaterialError MaterialDOE::calcRefrIndices(double lambda)
 	// calc refractive index of glass material for current wavelength
 	if ( (l_lambda<glassDispersionParamsPtr->lambdaMin)||(l_lambda>glassDispersionParamsPtr->lambdaMax) )
 	{
-		std::cout << "error in MaterialDOE.calcRefrIndices(): lambda outside of range of glass definition at lambda=" << lambda << std::endl;
+		std::cout << "error in MaterialDOE.calcRefrIndices(): lambda outside of range of glass definition at lambda=" << lambda << "...\n";
 		return MAT_ERR;
 	}
 	switch (this->glassDispersionParamsPtr->dispersionFormula)
@@ -327,7 +327,7 @@ MaterialError MaterialDOE::calcRefrIndices(double lambda)
 	// do the same for the immersion medium
 	if ( (l_lambda<immersionDispersionParamsPtr->lambdaMin)||(l_lambda>immersionDispersionParamsPtr->lambdaMax) )
 	{
-		std::cout << "error in MaterialDOE.calcRefrIndices(): lambda outside of range of immersion definition at lambda=" << lambda << std::endl;
+		std::cout << "error in MaterialDOE.calcRefrIndices(): lambda outside of range of immersion definition at lambda=" << lambda << "...\n";
 		return MAT_ERR;
 	}
 	switch (this->immersionDispersionParamsPtr->dispersionFormula)
@@ -366,7 +366,7 @@ double MaterialDOE::calcSourceImmersion(double lambda)
 	// calc the refractive indices at current wavelength
 	if (MAT_NO_ERR!=this->calcRefrIndices(lambda))
 	{
-		std::cout << "error in MaterialDOE.calcSourceImmersion(): calcRefrIndices() returned an error" << std::endl;
+		std::cout << "error in MaterialDOE.calcSourceImmersion(): calcRefrIndices() returned an error" << "...\n";
 		return 0; // if we encounterd an error we return 0 to indicate this error
 	}
 	return this->params.n1;
@@ -413,7 +413,7 @@ MaterialError MaterialDOE::processParseResults(MaterialParseParamStruct &parseRe
 				break;
 			default:
 				this->glassDispersionParamsPtr->dispersionFormula=MAT_DISPFORMULA_UNKNOWN;
-				std::cout <<"error in MaterialDOE.processParseResults(): unknown material dispersion formula" << std::endl;
+				std::cout <<"error in MaterialDOE.processParseResults(): unknown material dispersion formula" << "...\n";
 				return MAT_ERR;
 				break;
 		}
@@ -453,7 +453,7 @@ MaterialError MaterialDOE::processParseResults(MaterialParseParamStruct &parseRe
 					break;
 				default:
 					this->immersionDispersionParamsPtr->dispersionFormula=MAT_DISPFORMULA_UNKNOWN;
-					std::cout <<"error in MaterialDOE.processParseResults(): unknown material dispersion formula" << std::endl;
+					std::cout <<"error in MaterialDOE.processParseResults(): unknown material dispersion formula" << "...\n";
 					return MAT_ERR;
 					break;
 			}
@@ -480,7 +480,7 @@ MaterialError MaterialDOE::parseXml(pugi::xml_node &material, SimParams simParam
 {
 	if (!Material::parseXml(material, simParams))
 	{
-		std::cout << "error in MaterialDOE.parseXml(): Material.parseXml() returned an error." << std::endl;
+		std::cout << "error in MaterialDOE.parseXml(): Material.parseXml() returned an error." << "...\n";
 		return MAT_ERR;
 	}
 
@@ -512,7 +512,7 @@ MaterialError MaterialDOE::parseXml(pugi::xml_node &material, SimParams simParam
 	const char* l_DOEEffsBaseFileName=l_parser.attrValByName(material, "filenameBaseDOEEffs");
 	if (l_DOEEffsBaseFileName==NULL)
 	{
-		std::cout << "error in MaterialDOE.parseXml(): filenameBaseDOEEffs is not defined" << std::endl;
+		std::cout << "error in MaterialDOE.parseXml(): filenameBaseDOEEffs is not defined" << "...\n";
 		return MAT_ERR;
 	}
     char buf[15001];
@@ -537,7 +537,7 @@ MaterialError MaterialDOE::parseXml(pugi::xml_node &material, SimParams simParam
 		FILE* hfileDOEEffs = fopen(l_DOEEffsfile, "r");
 		if (!hfileDOEEffs)
 		{
-			std::cout <<"error in MaterialDOE.parseXml(): could not open DOE efficiency file at: " << l_DOEEffsfile  << std::endl;
+			std::cout <<"error in MaterialDOE.parseXml(): could not open DOE efficiency file at: " << l_DOEEffsfile  << "...\n";
 			return MAT_ERR;
 		}
 
@@ -571,7 +571,7 @@ MaterialError MaterialDOE::parseXml(pugi::xml_node &material, SimParams simParam
 	const char* l_DOEFileName=l_parser.attrValByName(material, "filenameDOE");
 	if (l_DOEFileName==NULL)
 	{
-		std::cout << "error in MaterialDOE.parseXml(): filenameDOE is not defined" << std::endl;
+		std::cout << "error in MaterialDOE.parseXml(): filenameDOE is not defined" << "...\n";
 		return MAT_ERR;
 	}
 
@@ -581,7 +581,7 @@ MaterialError MaterialDOE::parseXml(pugi::xml_node &material, SimParams simParam
 	FILE* hfileDOE = fopen(l_DOEfile, "r");
 	if (!hfileDOE)
 	{
-		std::cout <<"error in MaterialDOE.parseXml(): could not open DOE file at: " << l_DOEfile  << std::endl;
+		std::cout <<"error in MaterialDOE.parseXml(): could not open DOE file at: " << l_DOEfile  << "...\n";
 		return MAT_ERR;
 	}
 
@@ -589,7 +589,7 @@ MaterialError MaterialDOE::parseXml(pugi::xml_node &material, SimParams simParam
 	/* parse doe coefficient file */
 	if ( PARSER_NO_ERR != parseDOEFile(&parseResultsDOEPtr, hfileDOE, this->params.dOEnr) )
 	{
-		std::cout <<"error in MaterialDOE.parseXml(): parseDOEFile() returned an error." << std::endl;
+		std::cout <<"error in MaterialDOE.parseXml(): parseDOEFile() returned an error." << "...\n";
 		return MAT_ERR;
 	}
 //	this->coeffVec = (double*)malloc(parseResultsDOEPtr->coeffLength*sizeof(double));
@@ -602,7 +602,7 @@ MaterialError MaterialDOE::parseXml(pugi::xml_node &material, SimParams simParam
 	const char* l_glassName=l_parser.attrValByName(material, "glassName");
 	if (l_glassName==NULL)
 	{
-		std::cout << "error in MaterialDOE.parseXml(): glassName is not defined" << std::endl;
+		std::cout << "error in MaterialDOE.parseXml(): glassName is not defined" << "...\n";
 		return MAT_ERR;
 	}
 	// if we have a user defined glass we simply take the values of n1 and n2 defined in the prescription file and set no dispersion
@@ -610,7 +610,7 @@ MaterialError MaterialDOE::parseXml(pugi::xml_node &material, SimParams simParam
 	{
 		if (!this->checkParserError(l_parser.attrByNameToDouble(material, "n1", this->params.n1)))
 		{
-			std::cout << "error in MaterialDOE.parseXml(): n1 is not defined" << std::endl;
+			std::cout << "error in MaterialDOE.parseXml(): n1 is not defined" << "...\n";
 			return MAT_ERR;
 		}
 
@@ -627,14 +627,14 @@ MaterialError MaterialDOE::parseXml(pugi::xml_node &material, SimParams simParam
 		FILE* hfileGlass = fopen(FILE_GLASSCATALOG, "r");
 		if (!hfileGlass)
 		{
-			std::cout <<"error in MaterialDOE.parseXml(): could not open glass catalog at: " << FILE_GLASSCATALOG  << std::endl;
+			std::cout <<"error in MaterialDOE.parseXml(): could not open glass catalog at: " << FILE_GLASSCATALOG  << "...\n";
 			return MAT_ERR;
 		}
 		parseGlassResultStruct* parseResultsGlassPtr;
 		/* parse Zemax glass catalog */
 		if ( PARSER_NO_ERR != parseZemaxGlassCatalog(&parseResultsGlassPtr, hfileGlass, l_glassName) )
 		{
-			std::cout <<"error in MaterialDOE.parseXml(): parseZemaxGlassCatalogOld() returned an error." << std::endl;
+			std::cout <<"error in MaterialDOE.parseXml(): parseZemaxGlassCatalogOld() returned an error." << "...\n";
 			return MAT_ERR;
 		}
 		this->glassDispersionParamsPtr->lambdaMax=parseResultsGlassPtr->lambdaMax;
@@ -651,7 +651,7 @@ MaterialError MaterialDOE::parseXml(pugi::xml_node &material, SimParams simParam
 				break;
 			default:
 				this->glassDispersionParamsPtr->dispersionFormula=MAT_DISPFORMULA_UNKNOWN;
-				std::cout <<"error in MaterialDOE.parseXml(): unknown material dispersion formula" << std::endl;
+				std::cout <<"error in MaterialDOE.parseXml(): unknown material dispersion formula" << "...\n";
 				return MAT_ERR;
 				break;
 		}
@@ -664,7 +664,7 @@ MaterialError MaterialDOE::parseXml(pugi::xml_node &material, SimParams simParam
 	const char* l_immersionName=l_parser.attrValByName(material, "immersionName");
 	if (l_immersionName==NULL)
 	{
-		std::cout << "error in MaterialDOE.parseXml(): glassName is not defined" << std::endl;
+		std::cout << "error in MaterialDOE.parseXml(): glassName is not defined" << "...\n";
 		return MAT_ERR;
 	}
 	// if we have a user defined glass we simply take the values of n1 and n2 defined in the prescription file and set no dispersion
@@ -672,7 +672,7 @@ MaterialError MaterialDOE::parseXml(pugi::xml_node &material, SimParams simParam
 	{
 		if (!this->checkParserError(l_parser.attrByNameToDouble(material, "n2", this->params.n2)))
 		{
-			std::cout << "error in MaterialDOE.parseXml(): n2 is not defined" << std::endl;
+			std::cout << "error in MaterialDOE.parseXml(): n2 is not defined" << "...\n";
 			return MAT_ERR;
 		}
 
@@ -689,14 +689,14 @@ MaterialError MaterialDOE::parseXml(pugi::xml_node &material, SimParams simParam
 		FILE* hfileGlass = fopen(FILE_GLASSCATALOG, "r");
 		if (!hfileGlass)
 		{
-			std::cout <<"error in MaterialDOE.parseXml(): could not open glass catalog at: " << filepath  << std::endl;
+			std::cout <<"error in MaterialDOE.parseXml(): could not open glass catalog at: " << filepath  << "...\n";
 			return MAT_ERR;
 		}
 		parseGlassResultStruct* parseResultsGlassPtr;
 		/* parse Zemax glass catalog */
 		if ( PARSER_NO_ERR != parseZemaxGlassCatalog(&parseResultsGlassPtr, hfileGlass, l_immersionName) )
 		{
-			std::cout <<"error in MaterialDOE.parseXml(): parseZemaxGlassCatalogOld() returned an error." << std::endl;
+			std::cout <<"error in MaterialDOE.parseXml(): parseZemaxGlassCatalogOld() returned an error." << "...\n";
 			return MAT_ERR;
 		}
 		this->immersionDispersionParamsPtr->lambdaMax=parseResultsGlassPtr->lambdaMax;
@@ -713,7 +713,7 @@ MaterialError MaterialDOE::parseXml(pugi::xml_node &material, SimParams simParam
 				break;
 			default:
 				this->immersionDispersionParamsPtr->dispersionFormula=MAT_DISPFORMULA_UNKNOWN;
-				std::cout <<"error in MaterialDOE.parseXml(): unknown material dispersion formula" << std::endl;
+				std::cout <<"error in MaterialDOE.parseXml(): unknown material dispersion formula" << "...\n";
 				return MAT_ERR;
 				break;
 		}

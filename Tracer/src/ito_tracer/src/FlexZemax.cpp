@@ -1369,7 +1369,7 @@ YY_RULE_SETUP
 #line 323 "LexZemaxNonSeq.l"
 {
 		fprintf(yyout, "error!!! number of wavelengths is less than specified");
-		std::cout << "error in yylex(): number of wavelentghs is less than specified" << std::endl;
+		std::cout << "error in yylex(): number of wavelentghs is less than specified" << "...\n";
 		LexerErr=true;
 		BEGIN GRATINGDET;
 		}
@@ -2452,7 +2452,7 @@ parserError parseDOEFile(parseDOEResultStruct** parseResultsDOEPtrPtr, FILE *hfi
 	fclose(yyout);
 	if (doeErr)
 	{
-		std::cout << "error in parseDOEFile" << std::endl;
+		std::cout << "error in parseDOEFile" << "...\n";
 		return PARSER_ERR;
 	}
 	doeResultStructPtr->coeffLength=doeCoeffIndex;
@@ -2495,7 +2495,7 @@ parserError parseZemaxGlassCatalogOld(parseGlassResultStruct** parseResultsGlass
 	fclose(yyout);
 	if (!glassFound)
 	{
-		std::cout << "error in parseZemaxGlassCatalog: glass name -%s was not found" << (*glassName) << std::endl;
+		std::cout << "error in parseZemaxGlassCatalog: glass name -%s was not found" << (*glassName) << "...\n";
 		return PARSER_ERR;
 	}
 	
@@ -2522,7 +2522,7 @@ parserError parseZemaxGlassCatalog(parseGlassResultStruct** parseResultsGlassPtr
 	fclose(yyout);
 	if (!glassFound)
 	{
-		std::cout << "error in parseZemaxGlassCatalog: glass name -%s was not found" << (*glassName) << std::endl;
+		std::cout << "error in parseZemaxGlassCatalog: glass name -%s was not found" << (*glassName) << "...\n";
 		return PARSER_ERR;
 	}
 	

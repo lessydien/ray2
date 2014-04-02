@@ -1461,7 +1461,7 @@ RT_PROGRAM void rayGeneration_DirUniform_PosGridRect()
 	//	if (index>50)
 	//	{
 	//		// some error mechanism
-	//		//std::cout << "error in DiffRayField_RayAiming_Holo.traceScene(): ray aiming loop canceled after " << index << " iterations for ray " << jx << std::endl;
+	//		//std::cout << "error in DiffRayField_RayAiming_Holo.traceScene(): ray aiming loop canceled after " << index << " iterations for ray " << jx << "...\n";
 	//		break;
 	//	}
 	//	// init ray with data from last trace

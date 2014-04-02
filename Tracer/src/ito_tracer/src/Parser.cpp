@@ -41,8 +41,8 @@
 bool createSceneFromZemax(Group *oGroupPtr, FILE *hfile, RayField ***sourceListPtr, long *sourceNumberPtr, Detector ***detListPtr, long *detNumberPtr, SimMode mode)
 {
 
-	std::cout <<"********************************************" << std::endl;
-	std::cout <<"starting to parse prescritpion files..." << std::endl;
+	std::cout <<"********************************************" << "...\n";
+	std::cout <<"starting to parse prescritpion files..." << "...\n";
 	/* output the geometry-data for debugging purpose */
 	/* get handle to parser-debug file */
 	char filepath[512];
@@ -50,7 +50,7 @@ bool createSceneFromZemax(Group *oGroupPtr, FILE *hfile, RayField ***sourceListP
 	FILE *hfileDebug = fopen( filepath, "w" ) ;
 	if (!hfileDebug)
 	{
-		std::cout <<"error in Parser.createSceneFromZemax(): cannot open description file: " << filepath << std::endl;
+		std::cout <<"error in Parser.createSceneFromZemax(): cannot open description file: " << filepath << "...\n";
 		return false;
 	}
 	// define structure to hold the parse results
@@ -61,7 +61,7 @@ bool createSceneFromZemax(Group *oGroupPtr, FILE *hfile, RayField ***sourceListP
 	parserError err=parseZemaxPrescr(&parseResults, hfile, mode);
 	if (err != PARSER_NO_ERR)
 	{
-		std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxPrescr() returned an error" << std::endl;
+		std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxPrescr() returned an error" << "...\n";
 		//fprintf( hfileDebug, parseResults->errMsg);
 		return false;
 	}
@@ -71,26 +71,26 @@ bool createSceneFromZemax(Group *oGroupPtr, FILE *hfile, RayField ***sourceListP
 	case SIMTYPE_GEOM_RAYS:
 		if (!createGeometricSceneFromZemax(oGroupPtr, parseResults, sourceListPtr, sourceNumberPtr, detListPtr, detNumberPtr, mode) )
 		{
-			std::cout <<"error in Parser.createSceneFromZemax(): createGeometricSceneFromZemax() returned an error" << std::endl;
+			std::cout <<"error in Parser.createSceneFromZemax(): createGeometricSceneFromZemax() returned an error" << "...\n";
 			return false;
 		}
 		break;
 	case SIMTYPE_DIFF_RAYS:
 		if (!createDifferentialSceneFromZemax(oGroupPtr, parseResults, sourceListPtr, sourceNumberPtr, detListPtr, detNumberPtr, mode) )
 		{
-			std::cout <<"error in Parser.createSceneFromZemax(): createDifferentialSceneFromZemax() returned an error" << std::endl;
+			std::cout <<"error in Parser.createSceneFromZemax(): createDifferentialSceneFromZemax() returned an error" << "...\n";
 			return false;
 		}
 		break;
 	case SIMTYPE_PATHTRACING:
 		if (!createPathTracingSceneFromZemax(oGroupPtr, parseResults, sourceListPtr, sourceNumberPtr, detListPtr, detNumberPtr, mode) )
 		{
-			std::cout <<"error in Parser.createSceneFromZemax(): createPathTracingSceneFromZemax() returned an error" << std::endl;
+			std::cout <<"error in Parser.createSceneFromZemax(): createPathTracingSceneFromZemax() returned an error" << "...\n";
 			return false;
 		}
 		break;		
 	default:
-		std::cout <<"error in Parser.createSceneFromZemax(): unknown simulation type" << std::endl;
+		std::cout <<"error in Parser.createSceneFromZemax(): unknown simulation type" << "...\n";
 		return false;
 		break;
 	}
@@ -195,25 +195,25 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 	FILE *hfileDebug = fopen( filepath, "w" ) ;
 	if (!hfileDebug)
 	{
-		std::cout <<"error in Parser.createSceneFromZemax(): cannot open description file: " << filepath << std::endl;
+		std::cout <<"error in Parser.createSceneFromZemax(): cannot open description file: " << filepath << "...\n";
 		return false;
 	}
 	/* set number of geometry groups */
 	if (GROUP_NO_ERR != oGroupPtr->setGeometryGroupListLength(1) )
 	{
-		std::cout <<"error in Parser.createSceneFromZemax(): group.setGeometryGroupListLength(1) returned an error" << std::endl;
+		std::cout <<"error in Parser.createSceneFromZemax(): group.setGeometryGroupListLength(1) returned an error" << "...\n";
 		return false;
 	}
 	/* create a geometryGroup inside the group object at index 0 */
 	if (GROUP_NO_ERR != oGroupPtr->createGeometryGroup(0) )
 	{
-		std::cout <<"error in Parser.createSceneFromZemax(): group.createGeometryGroup(0) returned an error" << std::endl;
+		std::cout <<"error in Parser.createSceneFromZemax(): group.createGeometryGroup(0) returned an error" << "...\n";
 		return false;
 	}
 	/* set number of geometries */
 	if (GEOMGROUP_NO_ERR != oGroupPtr->getGeometryGroup(0)->setGeometryListLength(parseResults->geomNumber) )
 	{
-		std::cout <<"error in Parser.createSceneFromZemax(): group.getGeometryGroup(0)->setGeometryListLength(number) returned an error with number = " << parseResults->geomNumber << std::endl;
+		std::cout <<"error in Parser.createSceneFromZemax(): group.getGeometryGroup(0)->setGeometryListLength(number) returned an error with number = " << parseResults->geomNumber << "...\n";
 		return false;
 	}
 
@@ -380,7 +380,7 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 			
 		default:
 			// some error mechanism
-			std::cout << "error in Parser.createSceneFromZemax(): unknown detector type" << std::endl;
+			std::cout << "error in Parser.createSceneFromZemax(): unknown detector type" << "...\n";
 			return false;
 			break;
 		} // end switch detector type
@@ -405,14 +405,14 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 			hfileGlass = fopen( filepath, "r" );
 			if (!hfileGlass)
 			{
-				std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << std::endl;
+				std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << "...\n";
 				fprintf( hfileDebug, "could not open glass file");
 				return false;
 			}
 			/* parse Zemax glass catalog */
 			if ( PARSER_NO_ERR != parseZemaxGlassCatalogOld(&parseResultsGlassPtr, hfileGlass, parseResults->geometryParams[k].materialParams.immersionName) )
 			{
-				std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << std::endl;
+				std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << "...\n";
 				return false;
 			}
 		}
@@ -425,7 +425,7 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 
 		if (FIELD_NO_ERR != GeomRayFieldPtr->processParseResults(parseResults->sourceParams[k], parseResultsGlassPtr) )
 		{
-			std::cout <<"error in Parser.createSceneFromZemax(): GeomRayField.processParseResults() returned an error in geometry number: " << k << std::endl;
+			std::cout <<"error in Parser.createSceneFromZemax(): GeomRayField.processParseResults() returned an error in geometry number: " << k << "...\n";
 			return false;
 		}
 
@@ -450,7 +450,7 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 
 				if (GEOM_NO_ERR != oSinusNormalPtr->processParseResults(parseResults->geometryParams[k], k+1) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oSinusNormalPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oSinusNormalPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -463,7 +463,7 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 
 				if (GEOM_NO_ERR != oIdealLensePtr->processParseResults(parseResults->geometryParams[k], k+1) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oIdealLensePtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oIdealLensePtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -476,7 +476,7 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 
 				if (GEOM_NO_ERR != oPlaneSurfacePtr->processParseResults(parseResults->geometryParams[k], k+1) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oPlaneSurfacePtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oPlaneSurfacePtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -489,7 +489,7 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 
 				if (GEOM_NO_ERR != oApertureStopPtr->processParseResults(parseResults->geometryParams[k], k+1) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oApertureStopPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oApertureStopPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -502,7 +502,7 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 
 				if (GEOM_NO_ERR != oSphericalSurfacePtr->processParseResults(parseResults->geometryParams[k], k+1) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oSphericalSurfacePtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oSphericalSurfacePtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -515,7 +515,7 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 
 				if (GEOM_NO_ERR != oCylLenseSurfPtr->processParseResults(parseResults->geometryParams[k], k+1) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oCylLenseSurfPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oCylLenseSurfPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -528,7 +528,7 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 
 				if (GEOM_NO_ERR != oAsphericalSurfacePtr->processParseResults(parseResults->geometryParams[k], k+1) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oAsphericalSurfacePtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oAsphericalSurfacePtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -540,7 +540,7 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 
 				if (GEOM_NO_ERR != oCylPipePtr->processParseResults(parseResults->geometryParams[k], k+1) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oCylPipePtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oCylPipePtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -552,14 +552,14 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 
 				if (GEOM_NO_ERR != oConePipePtr->processParseResults(parseResults->geometryParams[k], k+1) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oConePipePtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oConePipePtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
 				break;
 
 			default:
-				std::cout << "error in createSceneFromZemax(): unknown geometry in geometry number: " << k << std::endl;
+				std::cout << "error in createSceneFromZemax(): unknown geometry in geometry number: " << k << "...\n";
 				return false;
 
 				break;
@@ -568,7 +568,7 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 		// set material list length. so far we set it const to one!!
 		if (oGeometryPtr->setMaterialListLength(1)!=GEOM_NO_ERR)
 		{
-			std::cout << "error in createSceneFromZemax(): setMaterialListLength(1) returned an error" << std::endl;
+			std::cout << "error in createSceneFromZemax(): setMaterialListLength(1) returned an error" << "...\n";
 			return false;
 		}
 		/* create scatter */
@@ -579,7 +579,7 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 //				parseImpArea_Material(parseResults, k); //importance area not implemented yet
 				if (SCAT_NO_ERROR != oScatterTorrSparr1DPtr->processParseResults(parseResults->geometryParams[k].materialParams) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): scatTorrSparr1DParamsPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): scatTorrSparr1DParamsPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -591,7 +591,7 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 				parseImpArea_Material(parseResults,k);
 				if (SCAT_NO_ERROR != oScatterTorrSparr2DPtr->processParseResults(parseResults->geometryParams[k].materialParams) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): scatTorrSparr2DParamsPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): scatTorrSparr2DParamsPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -603,7 +603,7 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 //				parseImpArea_Material(parseResults, k); //importance area not implemented yet
 				if (SCAT_NO_ERROR != oScatterDoubleCauchy1DPtr->processParseResults(parseResults->geometryParams[k].materialParams) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oScatterDoubleCauchy1DPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oScatterDoubleCauchy1DPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -615,7 +615,7 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 //				parseImpArea_Material(parseResults, k); //importance area not implemented yet
 				if (SCAT_NO_ERROR != oScatterDispDoubleCauchy1DPtr->processParseResults(parseResults->geometryParams[k].materialParams) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oScatterDispDoubleCauchy1DPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oScatterDispDoubleCauchy1DPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -627,7 +627,7 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 				parseImpArea_Material(parseResults, k); 
 				if (SCAT_NO_ERROR != oScatterLambert2DPtr->processParseResults(parseResults->geometryParams[k].materialParams) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oScatterLambert2DPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oScatterLambert2DPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -640,7 +640,7 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 				scatterParamsPtr->type=ST_NOSCATTER;
 				if ( SCAT_NO_ERROR != oScatterPtr->setFullParams(scatterParamsPtr) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): Scatter.setFullParams() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): Scatter.setFullParams() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 				break;
@@ -650,7 +650,7 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 				scatterParamsPtr=new Scatter_Params();
 				scatterParamsPtr->type=ST_NOSCATTER;
 				oScatterPtr->setFullParams(scatterParamsPtr);
-				std::cout << "warning in createSceneFromZemax(): unknown scatter in geometry number: " << k << ". No scatter assumed..." << std::endl;
+				std::cout << "warning in createSceneFromZemax(): unknown scatter in geometry number: " << k << ". No scatter assumed..." << "...\n";
 				break;
 		} // end switch materialParams.scatterType
 		
@@ -664,7 +664,7 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 				coatingParamsPtr->type=CT_NOCOATING;
 				if ( COAT_NO_ERROR != oCoatingPtr->setFullParams(coatingParamsPtr) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): Coating.setFullParams() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): Coating.setFullParams() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 				break;
@@ -674,7 +674,7 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 
 				if (SCAT_NO_ERROR != oCoatingNumCoeffPtr->processParseResults(parseResults->geometryParams[k].materialParams) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oCoatingNumCoeffPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oCoatingNumCoeffPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -686,7 +686,7 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 
 				if (SCAT_NO_ERROR != oCoatingDispNumCoeffPtr->processParseResults(parseResults->geometryParams[k].materialParams) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oCoatingDispNumCoeffPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oCoatingDispNumCoeffPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -703,14 +703,14 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 					hfileGlass = fopen( filepath, "r" );
 					if (!hfileGlass)
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << "...\n";
 						fprintf( hfileDebug, "could not open glass file");
 						return false;
 					}
 					/* parse Zemax glass catalog */
 					if ( PARSER_NO_ERR != parseZemaxGlassCatalogOld(&parseResultsGlassImmPtr, hfileGlass, parseResults->geometryParams[k].materialParams.immersionName) )
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << "...\n";
 						return false;
 					}
 				}
@@ -726,14 +726,14 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 					hfileGlass = fopen( filepath, "r" );
 					if (!hfileGlass)
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << "...\n";
 						fprintf( hfileDebug, "could not open glass file");
 						return false;
 					}
 					/* parse Zemax glass catalog */
 					if ( PARSER_NO_ERR != parseZemaxGlassCatalogOld(&parseResultsGlassPtr, hfileGlass, parseResults->geometryParams[k].materialParams.glassName) )
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << "...\n";
 						return false;
 					}
 				}
@@ -744,7 +744,7 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 
 				if (SCAT_NO_ERROR != oCoatingFresnelCoeffPtr->processParseResults(parseResults->geometryParams[k].materialParams, parseResultsGlassPtr, parseResultsGlassPtr) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oCoatingFresnelCoeffPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oCoatingFresnelCoeffPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -757,7 +757,7 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 				coatingParamsPtr=new Coating_FullParams();
 				coatingParamsPtr->type=CT_NOCOATING;
 				oCoatingPtr->setFullParams(coatingParamsPtr);
-				std::cout << "warning in createSceneFromZemax(): unknown coating in geometry number: " << k << ". No coating assumed..." << std::endl;
+				std::cout << "warning in createSceneFromZemax(): unknown coating in geometry number: " << k << ". No coating assumed..." << "...\n";
 				break;
 		} // end switch coating type
 
@@ -796,14 +796,14 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 					hfileGlass = fopen( filepath, "r" );
 					if (!hfileGlass)
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << "...\n";
 						fprintf( hfileDebug, "could not open glass file");
 						return false;
 					}
 					/* parse Zemax glass catalog */
 					if ( PARSER_NO_ERR != parseZemaxGlassCatalogOld(&parseResultsGlassPtr, hfileGlass, parseResults->geometryParams[k].materialParams.immersionName) )
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << "...\n";
 						return false;
 					}
 				}
@@ -814,7 +814,7 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 
 				if (MAT_NO_ERR != oMaterialDiffractingPtr->processParseResults(parseResults->geometryParams[k].materialParams, parseResultsGlassPtr) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oMaterialDiffractingPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oMaterialDiffractingPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -832,7 +832,7 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 
 				if (MAT_NO_ERR != oMaterialIdealLensePtr->processParseResults(parseResults->geometryParams[k].materialParams) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oMaterialIdealLensePtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oMaterialIdealLensePtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -845,7 +845,7 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 
 				if (MAT_NO_ERR != oMaterialFilterPtr->processParseResults(parseResults->geometryParams[k].materialParams) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oMaterialFilterPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oMaterialFilterPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -864,14 +864,14 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 					hfileGlass = fopen( filepath, "r" );
 					if (!hfileGlass)
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << "...\n";
 						fprintf( hfileDebug, "could not open glass file");
 						return false;
 					}
 					/* parse Zemax glass catalog */
 					if ( PARSER_NO_ERR != parseZemaxGlassCatalogOld(&parseResultsGlassImmPtr, hfileGlass, parseResults->geometryParams[k].materialParams.immersionName) )
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << "...\n";
 						return false;
 					}
 				}
@@ -887,14 +887,14 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 					hfileGlass = fopen( filepath, "r" );
 					if (!hfileGlass)
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << "...\n";
 						fprintf( hfileDebug, "could not open glass file");
 						return false;
 					}
 					/* parse Zemax glass catalog */
 					if ( PARSER_NO_ERR != parseZemaxGlassCatalogOld(&parseResultsGlassPtr, hfileGlass, parseResults->geometryParams[k].materialParams.glassName) )
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << "...\n";
 						return false;
 					}
 				}
@@ -905,7 +905,7 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 
 				if (MAT_NO_ERR != oMaterialRefractingPtr->processParseResults(parseResults->geometryParams[k].materialParams, parseResultsGlassPtr, parseResultsGlassImmPtr) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oMaterialRefractingPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oMaterialRefractingPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 				
@@ -922,7 +922,7 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 				oMaterialReflecting_CovGlassPtr=dynamic_cast<MaterialReflecting_CovGlass*>(oMaterialPtr);
 				if (MAT_NO_ERR != oMaterialReflecting_CovGlassPtr->processParseResults(parseResults->geometryParams[k].materialParams, parseResults->detectorParams[0]) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oMaterialReflecting_CovGlassPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oMaterialReflecting_CovGlassPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 				else
@@ -934,7 +934,7 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 					coatingParamsPtr->type=CT_NOCOATING;
 					if ( COAT_NO_ERROR != oCoatingPtr->setFullParams(coatingParamsPtr) )
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): Coating.setFullParams() returned an error in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): Coating.setFullParams() returned an error in geometry number: " << k << "...\n";
 						return false;
 					}
 				}
@@ -954,14 +954,14 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 					hfileGlass = fopen( filepath, "r" );
 					if (!hfileGlass)
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << "...\n";
 						fprintf( hfileDebug, "could not open glass file");
 						return false;
 					}
 					/* parse Zemax glass catalog */
 					if ( PARSER_NO_ERR != parseZemaxGlassCatalogOld(&parseResultsGlassImmPtr, hfileGlass, parseResults->geometryParams[k].materialParams.immersionName) )
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << "...\n";
 						return false;
 					}
 				}
@@ -977,14 +977,14 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 					hfileGlass = fopen( filepath, "r" );
 					if (!hfileGlass)
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << "...\n";
 						fprintf( hfileDebug, "could not open glass file");
 						return false;
 					}
 					/* parse Zemax glass catalog */
 					if ( PARSER_NO_ERR != parseZemaxGlassCatalogOld(&parseResultsGlassPtr, hfileGlass, parseResults->geometryParams[k].materialParams.glassName) )
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << "...\n";
 						return false;
 					}
 				}
@@ -1001,26 +1001,26 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 					hfileGrating = fopen( filepath, "r" ) ;
 					if (!hfileGrating)
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): could not open grating file: " << filepath << ".  in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): could not open grating file: " << filepath << ".  in geometry number: " << k << "...\n";
 						fprintf( hfileDebug, "could not open grating file");
 						return false;
 					}
 					/* parse MicroSim Grating Data */
 					if (PARSER_NO_ERR != parseMicroSimGratingData(&parseResultsGratingPtr, hfileGrating) )
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): parseMicroSimGratingData() returned an error in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): parseMicroSimGratingData() returned an error in geometry number: " << k << "...\n";
 						return false;
 					}
 				}
 
 				if (MAT_NO_ERR != oMaterialLinearGrating1DPtr->processParseResults(parseResults->geometryParams[k].materialParams, parseResultsGlassPtr, parseResultsGlassImmPtr, parseResultsGratingPtr) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oMaterialLinearGrating1DPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oMaterialLinearGrating1DPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}				
 				break;
 			default:
-				std::cout <<"warning: no material found in geometry number: " << k << " absorbing material is assumed." << std::endl;
+				std::cout <<"warning: no material found in geometry number: " << k << " absorbing material is assumed." << "...\n";
 				/* allocate memory for absorbing surface */
 				oMaterialPtr = new MaterialAbsorbing();
 				break;
@@ -1036,19 +1036,19 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 		// fuse coating, scatter, material and geometry into on object
 		if (MAT_NO_ERR != oMaterialPtr->setCoating(oCoatingPtr) ) // set coating parameters
 		{
-			std::cout <<"error in Parser.createSceneFromZemax(): material.setCoating() returned an error in geometry number: " << k << std::endl;
+			std::cout <<"error in Parser.createSceneFromZemax(): material.setCoating() returned an error in geometry number: " << k << "...\n";
 			return false;
 		}
 		if (MAT_NO_ERR != oMaterialPtr->setScatter(oScatterPtr) ) // set coating parameters
 		{
-			std::cout <<"error in Parser.createSceneFromZemax(): material.setScatter() returned an error in geometry number: " << k << std::endl;
+			std::cout <<"error in Parser.createSceneFromZemax(): material.setScatter() returned an error in geometry number: " << k << "...\n";
 			return false;
 		}
 		/* copy the pointer to the material. Note that we do not release the allocated memory */
 		/* here. This will be taken care of in the destructor of the geometry!!          */
 		if (GEOM_NO_ERR != oGeometryPtr->setMaterial(oMaterialPtr,0) )
 		{
-			std::cout <<"error in Parser.createSceneFromZemax(): Geometry.set;aterial() returned an error in geometry number: " << k << std::endl;
+			std::cout <<"error in Parser.createSceneFromZemax(): Geometry.set;aterial() returned an error in geometry number: " << k << "...\n";
 			return false;
 		}
 		//oGeometryPtr->setID(k);
@@ -1058,7 +1058,7 @@ bool createGeometricSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseRes
 		/* here. This will be taken care of in the destructor of the geometryGroup!!          */
 		if (GEOMGROUP_NO_ERR != oGroupPtr->getGeometryGroup(0)->setGeometry(oGeometryPtr, k) )
 		{
-			std::cout <<"error in Parser.createSceneFromZemax(): geometryGroup.setGeometry() returned an error in geometry number: " << k << std::endl;
+			std::cout <<"error in Parser.createSceneFromZemax(): geometryGroup.setGeometry() returned an error in geometry number: " << k << "...\n";
 			return false;
 		}
 	} // end: for (k=0; k<parseResults->geomNumber;k++)
@@ -1086,25 +1086,25 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
 	FILE *hfileDebug = fopen( filepath, "w" ) ;
 	if (!hfileDebug)
 	{
-		std::cout <<"error in Parser.createDifferentialSceneFromZemax(): cannot open log file: " << filepath << std::endl;
+		std::cout <<"error in Parser.createDifferentialSceneFromZemax(): cannot open log file: " << filepath << "...\n";
 		return false;
 	}
 	/* set number of geometry groups */
 	if (GROUP_NO_ERR != oGroupPtr->setGeometryGroupListLength(1) )
 	{
-		std::cout <<"error in Parser.createDifferentialSceneFromZemax(): group.setGeometryGroupListLength(1) returned an error" << std::endl;
+		std::cout <<"error in Parser.createDifferentialSceneFromZemax(): group.setGeometryGroupListLength(1) returned an error" << "...\n";
 		return false;
 	}
 	/* create a geometryGroup inside the group object at index 0 */
 	if (GROUP_NO_ERR != oGroupPtr->createGeometryGroup(0) )
 	{
-		std::cout <<"error in Parser.createDifferentialSceneFromZemax(): group.createGeometryGroup(0) returned an error" << std::endl;
+		std::cout <<"error in Parser.createDifferentialSceneFromZemax(): group.createGeometryGroup(0) returned an error" << "...\n";
 		return false;
 	}
 	/* set number of geometries */
 	if (GEOMGROUP_NO_ERR != oGroupPtr->getGeometryGroup(0)->setGeometryListLength(parseResults->geomNumber) )
 	{
-		std::cout <<"error in Parser.createDifferentialSceneFromZemax(): group.getGeometryGroup(0)->setGeometryListLength(number) returned an error with number = " << parseResults->geomNumber << std::endl;
+		std::cout <<"error in Parser.createDifferentialSceneFromZemax(): group.getGeometryGroup(0)->setGeometryListLength(number) returned an error with number = " << parseResults->geomNumber << "...\n";
 		return false;
 	}
 
@@ -1264,7 +1264,7 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
 
 		default:
 			// some error mechanism
-			std::cout << "error in Parser.createSceneFromZemax(): unknown detector type" << std::endl;
+			std::cout << "error in Parser.createSceneFromZemax(): unknown detector type" << "...\n";
 			return false;
 			break;
 		} // end switch detector type
@@ -1282,14 +1282,14 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
 			hfileGlass = fopen( filepath, "r" );
 			if (!hfileGlass)
 			{
-				std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << std::endl;
+				std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << "...\n";
 				fprintf( hfileDebug, "could not open glass file");
 				return false;
 			}
 			/* parse Zemax glass catalog */
 			if ( PARSER_NO_ERR != parseZemaxGlassCatalogOld(&parseResultsGlassPtr, hfileGlass, parseResults->geometryParams[k].materialParams.immersionName) )
 			{
-				std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << std::endl;
+				std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << "...\n";
 				return false;
 			}
 		}
@@ -1312,7 +1312,7 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
 			DiffRayFieldPtr=dynamic_cast<DiffRayField*>(*sourceListPtr[k]);
 			if (FIELD_NO_ERR != DiffRayFieldPtr->processParseResults(parseResults->sourceParams[k], parseResultsGlassPtr) )
 			{
-				std::cout <<"error in Parser.createSceneFromZemax(): DiffRayField.processParseResults() returned an error in geometry number: " << k << std::endl;
+				std::cout <<"error in Parser.createSceneFromZemax(): DiffRayField.processParseResults() returned an error in geometry number: " << k << "...\n";
 				return false;
 			}
 			break;
@@ -1322,7 +1322,7 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
 			DiffRayField_FreeformPtr=dynamic_cast<DiffRayField_Freeform*>(*sourceListPtr[k]);
 			if (FIELD_NO_ERR != DiffRayField_FreeformPtr->processParseResults(parseResults->sourceParams[k], parseResultsGlassPtr) )
 			{
-				std::cout <<"error in Parser.createSceneFromZemax(): DiffRayField_Freeform.processParseResults() returned an error in geometry number: " << k << std::endl;
+				std::cout <<"error in Parser.createSceneFromZemax(): DiffRayField_Freeform.processParseResults() returned an error in geometry number: " << k << "...\n";
 				return false;
 			}
 			break;
@@ -1332,7 +1332,7 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
 			DiffRayField_RayAiming_HoloPtr=dynamic_cast<DiffRayField_RayAiming_Holo*>(*sourceListPtr[k]);
 			if (FIELD_NO_ERR != DiffRayField_RayAiming_HoloPtr->processParseResults(parseResults->sourceParams[k], parseResultsGlassPtr, parseResults->detectorParams[0]) )
 			{
-				std::cout <<"error in Parser.createSceneFromZemax(): DiffRayField_RayAiming_Holo.processParseResults() returned an error in geometry number: " << k << std::endl;
+				std::cout <<"error in Parser.createSceneFromZemax(): DiffRayField_RayAiming_Holo.processParseResults() returned an error in geometry number: " << k << "...\n";
 				return false;
 			}
 			break;
@@ -1342,12 +1342,12 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
 			DiffRayField_RayAimingPtr=dynamic_cast<DiffRayField_RayAiming*>(*sourceListPtr[k]);
 			if (FIELD_NO_ERR != DiffRayField_RayAimingPtr->processParseResults(parseResults->sourceParams[k], parseResultsGlassPtr, parseResults->detectorParams[0]) )
 			{
-				std::cout <<"error in Parser.createSceneFromZemax(): DiffRayField_RayAimingPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+				std::cout <<"error in Parser.createSceneFromZemax(): DiffRayField_RayAimingPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 				return false;
 			}
 			break;
 		default:
-			std::cout <<"error in Parser.createSceneFromZemax(): unknown source type in source number: " << k << std::endl;
+			std::cout <<"error in Parser.createSceneFromZemax(): unknown source type in source number: " << k << "...\n";
 			return false;
 			break;
 		} // end switch source type
@@ -1373,7 +1373,7 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
 
 				if (GEOM_NO_ERR != oSinusNormalPtr->processParseResults(parseResults->geometryParams[k], k+1) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oSinusNormalPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oSinusNormalPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -1386,7 +1386,7 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
 
 				if (GEOM_NO_ERR != oIdealLensePtr->processParseResults(parseResults->geometryParams[k], k+1) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oIdealLensePtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oIdealLensePtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -1399,7 +1399,7 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
 
 				if (GEOM_NO_ERR != oPlaneSurfacePtr->processParseResults(parseResults->geometryParams[k],k+1) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oPlaneSurfacePtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oPlaneSurfacePtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -1412,7 +1412,7 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
 
 				if (GEOM_NO_ERR != oApertureStopPtr->processParseResults(parseResults->geometryParams[k], k+1) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oApertureStopPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oApertureStopPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -1425,7 +1425,7 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
 
 				if (GEOM_NO_ERR != oSphericalSurfacePtr->processParseResults(parseResults->geometryParams[k], k+1) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oSphericalSurfacePtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oSphericalSurfacePtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -1437,7 +1437,7 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
 
 				if (GEOM_NO_ERR != oAsphericalSurfacePtr->processParseResults(parseResults->geometryParams[k], k+1) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oAsphericalSurfacePtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oAsphericalSurfacePtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -1449,7 +1449,7 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
 
 				if (GEOM_NO_ERR != oCylPipePtr->processParseResults(parseResults->geometryParams[k], k+1) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oCylPipePtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oCylPipePtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -1461,14 +1461,14 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
 
 				if (GEOM_NO_ERR != oConePipePtr->processParseResults(parseResults->geometryParams[k], k+1) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oConePipePtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oConePipePtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
 				break;
 
 			default:
-				std::cout << "error in createSceneFromZemax(): unknown geometry in geometry number: " << k << std::endl;
+				std::cout << "error in createSceneFromZemax(): unknown geometry in geometry number: " << k << "...\n";
 				return false;
 
 				break;
@@ -1477,7 +1477,7 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
 		// set material list length
 		if (oGeometryPtr->setMaterialListLength(1)!=GEOM_NO_ERR)
 		{
-			std::cout << "error in createSceneFromZemax(): setMaterialListLength(1) returned an error" << std::endl;
+			std::cout << "error in createSceneFromZemax(): setMaterialListLength(1) returned an error" << "...\n";
 			return false;
 		}
 		/* create scatter */
@@ -1488,7 +1488,7 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
 
 				if (SCAT_NO_ERROR != oScatterTorrSparr1DPtr->processParseResults(parseResults->geometryParams[k].materialParams) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): scatTorrSparr1DParamsPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): scatTorrSparr1DParamsPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -1500,7 +1500,7 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
 
 				if (SCAT_NO_ERROR != oScatterDoubleCauchy1DPtr->processParseResults(parseResults->geometryParams[k].materialParams) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oScatterDoubleCauchy1DPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oScatterDoubleCauchy1DPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -1511,7 +1511,7 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
 
 				if (SCAT_NO_ERROR != oScatterLambert2DPtr->processParseResults(parseResults->geometryParams[k].materialParams) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oScatterLambert2DPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oScatterLambert2DPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -1524,7 +1524,7 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
 				scatterParamsPtr->type=ST_NOSCATTER;
 				if ( SCAT_NO_ERROR != oScatter_DiffRaysPtr->setFullParams(scatterParamsPtr) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): Scatter.setFullParams() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): Scatter.setFullParams() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 				oScatterPtr=oScatter_DiffRaysPtr;
@@ -1535,7 +1535,7 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
 				scatterParamsPtr=new Scatter_DiffRays_Params();
 				scatterParamsPtr->type=ST_NOSCATTER;
 				oScatterPtr->setFullParams(scatterParamsPtr);
-				std::cout << "warning in createSceneFromZemax(): unknown scatter in geometry number: " << k << ". No scatter assumed..." << std::endl;
+				std::cout << "warning in createSceneFromZemax(): unknown scatter in geometry number: " << k << ". No scatter assumed..." << "...\n";
 				break;
 		} // end switch materialParams.scatterType
 		
@@ -1549,7 +1549,7 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
 				coatingParamsPtr->type=CT_NOCOATING;
 				if ( COAT_NO_ERROR != oCoating_DiffRaysPtr->setFullParams(coatingParamsPtr) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): Coating.setFullParams() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): Coating.setFullParams() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 				oCoatingPtr=oCoating_DiffRaysPtr;
@@ -1560,7 +1560,7 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
 
 				if (SCAT_NO_ERROR != oCoatingNumCoeffPtr->processParseResults(parseResults->geometryParams[k].materialParams) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oCoatingNumCoeffPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oCoatingNumCoeffPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -1572,7 +1572,7 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
 				coatingParamsPtr=new Coating_DiffRays_FullParams();
 				coatingParamsPtr->type=CT_NOCOATING;
 				oCoatingPtr->setFullParams(coatingParamsPtr);
-				std::cout << "warning in createSceneFromZemax(): unknown coating in geometry number: " << k << ". No coating assumed..." << std::endl;
+				std::cout << "warning in createSceneFromZemax(): unknown coating in geometry number: " << k << ". No coating assumed..." << "...\n";
 				break;
 		} // end switch coating type
 
@@ -1611,14 +1611,14 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
 					hfileGlass = fopen( filepath, "r" );
 					if (!hfileGlass)
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << "...\n";
 						fprintf( hfileDebug, "could not open glass file");
 						return false;
 					}
 					/* parse Zemax glass catalog */
 					if (PARSER_NO_ERR != parseZemaxGlassCatalogOld(&parseResultsGlassPtr, hfileGlass, parseResults->geometryParams[k].materialParams.immersionName) )
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << "...\n";
 						return false;
 					}
 				}
@@ -1629,7 +1629,7 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
 
 				if (MAT_NO_ERR != oMaterialDiffractingPtr->processParseResults(parseResults->geometryParams[k].materialParams, parseResultsGlassPtr) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oMaterialDiffractingPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oMaterialDiffractingPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 				break;
@@ -1646,7 +1646,7 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
 
 				if (MAT_NO_ERR != oMaterialIdealLensePtr->processParseResults(parseResults->geometryParams[k].materialParams) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oMaterialIdealLensePtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oMaterialIdealLensePtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -1665,14 +1665,14 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
 					hfileGlass = fopen( filepath, "r" );
 					if (!hfileGlass)
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << "...\n";
 						fprintf( hfileDebug, "could not open glass file");
 						return false;
 					}
 					/* parse Zemax glass catalog */
 					if ( PARSER_NO_ERR != parseZemaxGlassCatalogOld(&parseResultsGlassImmPtr, hfileGlass, parseResults->geometryParams[k].materialParams.immersionName) )
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << "...\n";
 						return false;
 					}
 				}
@@ -1688,14 +1688,14 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
 					hfileGlass = fopen( filepath, "r" );
 					if (!hfileGlass)
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << "...\n";
 						fprintf( hfileDebug, "could not open glass file");
 						return false;
 					}
 					/* parse Zemax glass catalog */
 					if ( PARSER_NO_ERR != parseZemaxGlassCatalogOld(&parseResultsGlassPtr, hfileGlass, parseResults->geometryParams[k].materialParams.glassName) )
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << "...\n";
 						return false;
 					}
 				}
@@ -1706,7 +1706,7 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
 
 				if (MAT_NO_ERR != oMaterialRefractingPtr->processParseResults(parseResults->geometryParams[k].materialParams, parseResultsGlassPtr, parseResultsGlassImmPtr) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oMaterialRefractingPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oMaterialRefractingPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}				
 				break;
@@ -1729,14 +1729,14 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
 					hfileGlass = fopen( filepath, "r" );
 					if (!hfileGlass)
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << "...\n";
 						fprintf( hfileDebug, "could not open glass file");
 						return false;
 					}
 					/* parse Zemax glass catalog */
 					if ( PARSER_NO_ERR != parseZemaxGlassCatalogOld(&parseResultsGlassImmPtr, hfileGlass, parseResults->geometryParams[k].materialParams.immersionName) )
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << "...\n";
 						return false;
 					}
 				}
@@ -1752,14 +1752,14 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
 					hfileGlass = fopen( filepath, "r" );
 					if (!hfileGlass)
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << "...\n";
 						fprintf( hfileDebug, "could not open glass file");
 						return false;
 					}
 					/* parse Zemax glass catalog */
 					if ( PARSER_NO_ERR != parseZemaxGlassCatalogOld(&parseResultsGlassPtr, hfileGlass, parseResults->geometryParams[k].materialParams.glassName) )
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << "...\n";
 						return false;
 					}
 				}
@@ -1776,27 +1776,27 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
 					hfileGrating = fopen( filepath, "r" ) ;
 					if (!hfileGrating)
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): could not open grating file: " << filepath << ".  in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): could not open grating file: " << filepath << ".  in geometry number: " << k << "...\n";
 						fprintf( hfileDebug, "could not open grating file");
 						return false;
 					}
 					/* parse MicroSim Grating Data */
 					if (PARSER_NO_ERR != parseMicroSimGratingData(&parseResultsGratingPtr, hfileGrating) )
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): parseMicroSimGratingData() returned an error in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): parseMicroSimGratingData() returned an error in geometry number: " << k << "...\n";
 						return false;
 					}
 				}
 
 				if (MAT_NO_ERR != oMaterialLinearGrating1DPtr->processParseResults(parseResults->geometryParams[k].materialParams, parseResultsGlassPtr, parseResultsGlassImmPtr, parseResultsGratingPtr) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oMaterialLinearGrating1DPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oMaterialLinearGrating1DPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 				
 				break;
 			default:
-				std::cout <<"warning: no material found in geometry number: " << k << " absorbing material is assumed." << std::endl;
+				std::cout <<"warning: no material found in geometry number: " << k << " absorbing material is assumed." << "...\n";
 				/* allocate memory for absorbing surface */
 				oMaterialPtr = new MaterialAbsorbing_DiffRays();
 				break;
@@ -1813,19 +1813,19 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
 		// fuse coating, scatter, material and geometry into on object
 		if (MAT_NO_ERR != oMaterialPtr->setCoating(oCoatingPtr) ) // set coating parameters
 		{
-			std::cout <<"error in Parser.createSceneFromZemax(): material.setCoating() returned an error in geometry number: " << k << std::endl;
+			std::cout <<"error in Parser.createSceneFromZemax(): material.setCoating() returned an error in geometry number: " << k << "...\n";
 			return false;
 		}
 		if (MAT_NO_ERR != oMaterialPtr->setScatter(oScatterPtr) ) // set coating parameters
 		{
-			std::cout <<"error in Parser.createSceneFromZemax(): material.setScatter() returned an error in geometry number: " << k << std::endl;
+			std::cout <<"error in Parser.createSceneFromZemax(): material.setScatter() returned an error in geometry number: " << k << "...\n";
 			return false;
 		}
 		/* copy the pointer to the material. Note that we do not release the allocated memory */
 		/* here. This will be taken care of in the destructor of the geometry!!          */
 		if (GEOM_NO_ERR != oGeometryPtr->setMaterial(oMaterialPtr,0) )
 		{
-			std::cout <<"error in Parser.createSceneFromZemax(): Geometry.set;aterial() returned an error in geometry number: " << k << std::endl;
+			std::cout <<"error in Parser.createSceneFromZemax(): Geometry.set;aterial() returned an error in geometry number: " << k << "...\n";
 			return false;
 		}
 		//oGeometryPtr->setID(k);
@@ -1835,7 +1835,7 @@ bool createDifferentialSceneFromZemax(Group *oGroupPtr, parseResultStruct* parse
 		/* here. This will be taken care of in the destructor of the geometryGroup!!          */
 		if (GEOMGROUP_NO_ERR != oGroupPtr->getGeometryGroup(0)->setGeometry(oGeometryPtr, k) )
 		{
-			std::cout <<"error in Parser.createSceneFromZemax(): geometryGroup.setGeometry() returned an error in geometry number: " << k << std::endl;
+			std::cout <<"error in Parser.createSceneFromZemax(): geometryGroup.setGeometry() returned an error in geometry number: " << k << "...\n";
 			return false;
 		}
 	} // end: for (k=0; k<parseResults->geomNumber;k++)
@@ -1865,25 +1865,25 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 	FILE *hfileDebug = fopen( filepath, "w" ) ;
 	if (!hfileDebug)
 	{
-		std::cout <<"error in Parser.createSceneFromZemax(): cannot open description file: " << filepath << std::endl;
+		std::cout <<"error in Parser.createSceneFromZemax(): cannot open description file: " << filepath << "...\n";
 		return false;
 	}
 	/* set number of geometry groups */
 	if (GROUP_NO_ERR != oGroupPtr->setGeometryGroupListLength(1) )
 	{
-		std::cout <<"error in Parser.createSceneFromZemax(): group.setGeometryGroupListLength(1) returned an error" << std::endl;
+		std::cout <<"error in Parser.createSceneFromZemax(): group.setGeometryGroupListLength(1) returned an error" << "...\n";
 		return false;
 	}
 	/* create a geometryGroup inside the group object at index 0 */
 	if (GROUP_NO_ERR != oGroupPtr->createGeometryGroup(0) )
 	{
-		std::cout <<"error in Parser.createSceneFromZemax(): group.createGeometryGroup(0) returned an error" << std::endl;
+		std::cout <<"error in Parser.createSceneFromZemax(): group.createGeometryGroup(0) returned an error" << "...\n";
 		return false;
 	}
 	/* set number of geometries */
 	if (GEOMGROUP_NO_ERR != oGroupPtr->getGeometryGroup(0)->setGeometryListLength(parseResults->geomNumber-1) ) // detector is not a geometry in pathtracing
 	{
-		std::cout <<"error in Parser.createSceneFromZemax(): group.getGeometryGroup(0)->setGeometryListLength(number) returned an error with number = " << parseResults->geomNumber << std::endl;
+		std::cout <<"error in Parser.createSceneFromZemax(): group.getGeometryGroup(0)->setGeometryListLength(number) returned an error with number = " << parseResults->geomNumber << "...\n";
 		return false;
 	}
 
@@ -2035,7 +2035,7 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 			
 		default:
 			// some error mechanism
-			std::cout << "error in Parser.createSceneFromZemax(): unknown detector type" << std::endl;
+			std::cout << "error in Parser.createSceneFromZemax(): unknown detector type" << "...\n";
 			return false;
 			break;
 		} // end switch detector type
@@ -2084,7 +2084,7 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 
 	if (FIELD_NO_ERR != PathTracingRayFieldPtr->processParseResults(l_parseResults_DetSrc, parseResultsGlassPtr) )
 	{
-		std::cout <<"error in Parser.createSceneFromZemax(): GeomRayField.processParseResults() returned an error in geometry number: " << k << std::endl;
+		std::cout <<"error in Parser.createSceneFromZemax(): GeomRayField.processParseResults() returned an error in geometry number: " << k << "...\n";
 		return false;
 	}
 
@@ -2105,14 +2105,14 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 		//	hfileGlass = fopen( filepath, "r" );
 		//	if (!hfileGlass)
 		//	{
-		//		std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << std::endl;
+		//		std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << "...\n";
 		//		fprintf( hfileDebug, "could not open glass file");
 		//		return false;
 		//	}
 		//	/* parse Zemax glass catalog */
 		//	if ( PARSER_NO_ERR != parseZemaxGlassCatalogOld(&parseResultsGlassPtr, hfileGlass, parseResults->geometryParams[k].materialParams.immersionName) )
 		//	{
-		//		std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << std::endl;
+		//		std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << "...\n";
 		//		return false;
 		//	}
 		//}
@@ -2125,7 +2125,7 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 
 		//if (FIELD_NO_ERR != GeomRayFieldPtr->processParseResults(parseResults->sourceParams[k], parseResultsGlassPtr) )
 		//{
-		//	std::cout <<"error in Parser.createSceneFromZemax(): GeomRayField.processParseResults() returned an error in geometry number: " << k << std::endl;
+		//	std::cout <<"error in Parser.createSceneFromZemax(): GeomRayField.processParseResults() returned an error in geometry number: " << k << "...\n";
 		//	return false;
 		//}
 
@@ -2153,7 +2153,7 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 
 				if (GEOM_NO_ERR != oSinusNormalPtr->processParseResults(parseResults->geometryParams[k], k+1) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oSinusNormalPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oSinusNormalPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -2166,7 +2166,7 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 
 				if (GEOM_NO_ERR != oIdealLensePtr->processParseResults(parseResults->geometryParams[k], k+1) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oIdealLensePtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oIdealLensePtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -2179,7 +2179,7 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 
 				if (GEOM_NO_ERR != oPlaneSurfacePtr->processParseResults(parseResults->geometryParams[k], k+1) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oPlaneSurfacePtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oPlaneSurfacePtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -2192,7 +2192,7 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 
 				if (GEOM_NO_ERR != oApertureStopPtr->processParseResults(parseResults->geometryParams[k], k+1) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oApertureStopPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oApertureStopPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -2205,7 +2205,7 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 
 				if (GEOM_NO_ERR != oSphericalSurfacePtr->processParseResults(parseResults->geometryParams[k], k+1) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oSphericalSurfacePtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oSphericalSurfacePtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -2218,7 +2218,7 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 
 				if (GEOM_NO_ERR != oCylLenseSurfPtr->processParseResults(parseResults->geometryParams[k], k+1) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oCylLenseSurfPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oCylLenseSurfPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -2231,7 +2231,7 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 
 				if (GEOM_NO_ERR != oAsphericalSurfacePtr->processParseResults(parseResults->geometryParams[k], k+1) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oAsphericalSurfacePtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oAsphericalSurfacePtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -2243,7 +2243,7 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 
 				if (GEOM_NO_ERR != oCylPipePtr->processParseResults(parseResults->geometryParams[k], k+1) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oCylPipePtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oCylPipePtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -2255,14 +2255,14 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 
 				if (GEOM_NO_ERR != oConePipePtr->processParseResults(parseResults->geometryParams[k], k+1) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oConePipePtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oConePipePtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
 				break;
 
 			default:
-				std::cout << "error in createSceneFromZemax(): unknown geometry in geometry number: " << k << std::endl;
+				std::cout << "error in createSceneFromZemax(): unknown geometry in geometry number: " << k << "...\n";
 				return false;
 
 				break;
@@ -2271,7 +2271,7 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 		// set material list length. so far we set it const to one!!
 		if (oGeometryPtr->setMaterialListLength(1)!=GEOM_NO_ERR)
 		{
-			std::cout << "error in createSceneFromZemax(): setMaterialListLength(1) returned an error" << std::endl;
+			std::cout << "error in createSceneFromZemax(): setMaterialListLength(1) returned an error" << "...\n";
 			return false;
 		}
 		/* create scatter */
@@ -2289,7 +2289,7 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 
 				if (SCAT_NO_ERROR != oScatterTorrSparr2DPtr->processParseResults(parseResults->geometryParams[k].materialParams) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): scatTorrSparr2DParamsPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): scatTorrSparr2DParamsPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -2301,7 +2301,7 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 				parseImpArea_Material(parseResults, parseResults->geometryParams[k].materialParams.importanceObjNr); 
 				if (SCAT_NO_ERROR != oScatterLambert2DPtr->processParseResults(parseResults->geometryParams[k].materialParams) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oScatterLambert2DPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oScatterLambert2DPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -2314,7 +2314,7 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 				scatterParamsPtr->type=ST_NOSCATTER;
 				if ( SCAT_NO_ERROR != oScatterPtr->setFullParams(scatterParamsPtr) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): Scatter.setFullParams() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): Scatter.setFullParams() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 				break;
@@ -2324,7 +2324,7 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 				scatterParamsPtr=new Scatter_Params();
 				scatterParamsPtr->type=ST_NOSCATTER;
 				oScatterPtr->setFullParams(scatterParamsPtr);
-				std::cout << "warning in createSceneFromZemax(): unknown scatter in geometry number: " << k << ". No scatter assumed..." << std::endl;
+				std::cout << "warning in createSceneFromZemax(): unknown scatter in geometry number: " << k << ". No scatter assumed..." << "...\n";
 				break;
 		} // end switch materialParams.scatterType
 		
@@ -2338,7 +2338,7 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 				coatingParamsPtr->type=CT_NOCOATING;
 				if ( COAT_NO_ERROR != oCoatingPtr->setFullParams(coatingParamsPtr) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): Coating.setFullParams() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): Coating.setFullParams() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 				break;
@@ -2348,7 +2348,7 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 
 				if (SCAT_NO_ERROR != oCoatingNumCoeffPtr->processParseResults(parseResults->geometryParams[k].materialParams) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oCoatingNumCoeffPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oCoatingNumCoeffPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -2365,14 +2365,14 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 					hfileGlass = fopen( filepath, "r" );
 					if (!hfileGlass)
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << "...\n";
 						fprintf( hfileDebug, "could not open glass file");
 						return false;
 					}
 					/* parse Zemax glass catalog */
 					if ( PARSER_NO_ERR != parseZemaxGlassCatalogOld(&parseResultsGlassImmPtr, hfileGlass, parseResults->geometryParams[k].materialParams.immersionName) )
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << "...\n";
 						return false;
 					}
 				}
@@ -2388,14 +2388,14 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 					hfileGlass = fopen( filepath, "r" );
 					if (!hfileGlass)
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << "...\n";
 						fprintf( hfileDebug, "could not open glass file");
 						return false;
 					}
 					/* parse Zemax glass catalog */
 					if ( PARSER_NO_ERR != parseZemaxGlassCatalogOld(&parseResultsGlassPtr, hfileGlass, parseResults->geometryParams[k].materialParams.glassName) )
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << "...\n";
 						return false;
 					}
 				}
@@ -2406,7 +2406,7 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 
 				if (SCAT_NO_ERROR != oCoatingFresnelCoeffPtr->processParseResults(parseResults->geometryParams[k].materialParams, parseResultsGlassPtr, parseResultsGlassPtr) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oCoatingFresnelCoeffPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oCoatingFresnelCoeffPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -2419,7 +2419,7 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 				coatingParamsPtr=new Coating_FullParams();
 				coatingParamsPtr->type=CT_NOCOATING;
 				oCoatingPtr->setFullParams(coatingParamsPtr);
-				std::cout << "warning in createSceneFromZemax(): unknown coating in geometry number: " << k << ". No coating assumed..." << std::endl;
+				std::cout << "warning in createSceneFromZemax(): unknown coating in geometry number: " << k << ". No coating assumed..." << "...\n";
 				break;
 		} // end switch coating type
 
@@ -2458,14 +2458,14 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 					hfileGlass = fopen( filepath, "r" );
 					if (!hfileGlass)
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << "...\n";
 						fprintf( hfileDebug, "could not open glass file");
 						return false;
 					}
 					/* parse Zemax glass catalog */
 					if ( PARSER_NO_ERR != parseZemaxGlassCatalogOld(&parseResultsGlassPtr, hfileGlass, parseResults->geometryParams[k].materialParams.immersionName) )
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << "...\n";
 						return false;
 					}
 				}
@@ -2476,7 +2476,7 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 
 				if (MAT_NO_ERR != oMaterialDiffractingPtr->processParseResults(parseResults->geometryParams[k].materialParams, parseResultsGlassPtr) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oMaterialDiffractingPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oMaterialDiffractingPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -2494,7 +2494,7 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 
 				if (MAT_NO_ERR != oMaterialIdealLensePtr->processParseResults(parseResults->geometryParams[k].materialParams) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oMaterialIdealLensePtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oMaterialIdealLensePtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -2507,7 +2507,7 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 
 				if (MAT_NO_ERR != oMaterialFilterPtr->processParseResults(parseResults->geometryParams[k].materialParams) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oMaterialFilterPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oMaterialFilterPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 
@@ -2526,14 +2526,14 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 					hfileGlass = fopen( filepath, "r" );
 					if (!hfileGlass)
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << "...\n";
 						fprintf( hfileDebug, "could not open glass file");
 						return false;
 					}
 					/* parse Zemax glass catalog */
 					if ( PARSER_NO_ERR != parseZemaxGlassCatalogOld(&parseResultsGlassImmPtr, hfileGlass, parseResults->geometryParams[k].materialParams.immersionName) )
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << "...\n";
 						return false;
 					}
 				}
@@ -2549,14 +2549,14 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 					hfileGlass = fopen( filepath, "r" );
 					if (!hfileGlass)
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << "...\n";
 						fprintf( hfileDebug, "could not open glass file");
 						return false;
 					}
 					/* parse Zemax glass catalog */
 					if ( PARSER_NO_ERR != parseZemaxGlassCatalogOld(&parseResultsGlassPtr, hfileGlass, parseResults->geometryParams[k].materialParams.glassName) )
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << "...\n";
 						return false;
 					}
 				}
@@ -2567,7 +2567,7 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 
 				if (MAT_NO_ERR != oMaterialRefractingPtr->processParseResults(parseResults->geometryParams[k].materialParams, parseResultsGlassPtr, parseResultsGlassImmPtr) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oMaterialRefractingPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oMaterialRefractingPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 				
@@ -2584,7 +2584,7 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 				oMaterialReflecting_CovGlassPtr=dynamic_cast<MaterialReflecting_CovGlass*>(oMaterialPtr);
 				if (MAT_NO_ERR != oMaterialReflecting_CovGlassPtr->processParseResults(parseResults->geometryParams[k].materialParams, parseResults->detectorParams[0]) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oMaterialReflecting_CovGlassPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oMaterialReflecting_CovGlassPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 				else
@@ -2596,7 +2596,7 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 					coatingParamsPtr->type=CT_NOCOATING;
 					if ( COAT_NO_ERROR != oCoatingPtr->setFullParams(coatingParamsPtr) )
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): Coating.setFullParams() returned an error in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): Coating.setFullParams() returned an error in geometry number: " << k << "...\n";
 						return false;
 					}
 				}
@@ -2609,7 +2609,7 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 				oMaterialPathTraceSourcePtr=dynamic_cast<MaterialPathTraceSource*>(oMaterialPtr);
 				if (MAT_NO_ERR != oMaterialPathTraceSourcePtr->processParseResults(parseResults->geometryParams[k].materialParams) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oMaterialPathTraceSourcePtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oMaterialPathTraceSourcePtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}
 				else
@@ -2621,7 +2621,7 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 					coatingParamsPtr->type=CT_NOCOATING;
 					if ( COAT_NO_ERROR != oCoatingPtr->setFullParams(coatingParamsPtr) )
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): Coating.setFullParams() returned an error in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): Coating.setFullParams() returned an error in geometry number: " << k << "...\n";
 						return false;
 					}
 				}
@@ -2641,14 +2641,14 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 					hfileGlass = fopen( filepath, "r" );
 					if (!hfileGlass)
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << "...\n";
 						fprintf( hfileDebug, "could not open glass file");
 						return false;
 					}
 					/* parse Zemax glass catalog */
 					if ( PARSER_NO_ERR != parseZemaxGlassCatalogOld(&parseResultsGlassImmPtr, hfileGlass, parseResults->geometryParams[k].materialParams.immersionName) )
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << "...\n";
 						return false;
 					}
 				}
@@ -2664,14 +2664,14 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 					hfileGlass = fopen( filepath, "r" );
 					if (!hfileGlass)
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): could not open glass catalog " << filepath << ". in geometry number: " << k << "...\n";
 						fprintf( hfileDebug, "could not open glass file");
 						return false;
 					}
 					/* parse Zemax glass catalog */
 					if ( PARSER_NO_ERR != parseZemaxGlassCatalogOld(&parseResultsGlassPtr, hfileGlass, parseResults->geometryParams[k].materialParams.glassName) )
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxGlassCatalogOld() returned an error in geometry number: " << k << "...\n";
 						return false;
 					}
 				}
@@ -2688,26 +2688,26 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 					hfileGrating = fopen( filepath, "r" ) ;
 					if (!hfileGrating)
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): could not open grating file: " << filepath << ".  in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): could not open grating file: " << filepath << ".  in geometry number: " << k << "...\n";
 						fprintf( hfileDebug, "could not open grating file");
 						return false;
 					}
 					/* parse MicroSim Grating Data */
 					if (PARSER_NO_ERR != parseMicroSimGratingData(&parseResultsGratingPtr, hfileGrating) )
 					{
-						std::cout <<"error in Parser.createSceneFromZemax(): parseMicroSimGratingData() returned an error in geometry number: " << k << std::endl;
+						std::cout <<"error in Parser.createSceneFromZemax(): parseMicroSimGratingData() returned an error in geometry number: " << k << "...\n";
 						return false;
 					}
 				}
 
 				if (MAT_NO_ERR != oMaterialLinearGrating1DPtr->processParseResults(parseResults->geometryParams[k].materialParams, parseResultsGlassPtr, parseResultsGlassImmPtr, parseResultsGratingPtr) )
 				{
-					std::cout <<"error in Parser.createSceneFromZemax(): oMaterialLinearGrating1DPtr.processParseResults() returned an error in geometry number: " << k << std::endl;
+					std::cout <<"error in Parser.createSceneFromZemax(): oMaterialLinearGrating1DPtr.processParseResults() returned an error in geometry number: " << k << "...\n";
 					return false;
 				}				
 				break;
 			default:
-				std::cout <<"warning: no material found in geometry number: " << k << " absorbing material is assumed." << std::endl;
+				std::cout <<"warning: no material found in geometry number: " << k << " absorbing material is assumed." << "...\n";
 				/* allocate memory for absorbing surface */
 				oMaterialPtr = new MaterialAbsorbing();
 				break;
@@ -2723,19 +2723,19 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 		// fuse coating, scatter, material and geometry into on object
 		if (MAT_NO_ERR != oMaterialPtr->setCoating(oCoatingPtr) ) // set coating parameters
 		{
-			std::cout <<"error in Parser.createSceneFromZemax(): material.setCoating() returned an error in geometry number: " << k << std::endl;
+			std::cout <<"error in Parser.createSceneFromZemax(): material.setCoating() returned an error in geometry number: " << k << "...\n";
 			return false;
 		}
 		if (MAT_NO_ERR != oMaterialPtr->setScatter(oScatterPtr) ) // set coating parameters
 		{
-			std::cout <<"error in Parser.createSceneFromZemax(): material.setScatter() returned an error in geometry number: " << k << std::endl;
+			std::cout <<"error in Parser.createSceneFromZemax(): material.setScatter() returned an error in geometry number: " << k << "...\n";
 			return false;
 		}
 		/* copy the pointer to the material. Note that we do not release the allocated memory */
 		/* here. This will be taken care of in the destructor of the geometry!!          */
 		if (GEOM_NO_ERR != oGeometryPtr->setMaterial(oMaterialPtr,0) )
 		{
-			std::cout <<"error in Parser.createSceneFromZemax(): Geometry.set;aterial() returned an error in geometry number: " << k << std::endl;
+			std::cout <<"error in Parser.createSceneFromZemax(): Geometry.set;aterial() returned an error in geometry number: " << k << "...\n";
 			return false;
 		}
 		//oGeometryPtr->setID(k);
@@ -2745,7 +2745,7 @@ bool createPathTracingSceneFromZemax(Group *oGroupPtr, parseResultStruct* parseR
 		/* here. This will be taken care of in the destructor of the geometryGroup!!          */
 		if (GEOMGROUP_NO_ERR != oGroupPtr->getGeometryGroup(0)->setGeometry(oGeometryPtr, k) )
 		{
-			std::cout <<"error in Parser.createSceneFromZemax(): geometryGroup.setGeometry() returned an error in geometry number: " << k << std::endl;
+			std::cout <<"error in Parser.createSceneFromZemax(): geometryGroup.setGeometry() returned an error in geometry number: " << k << "...\n";
 			return false;
 		}
 	} // end: for (k=0; k<parseResults->geomNumber;k++)

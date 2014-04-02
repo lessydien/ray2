@@ -37,7 +37,7 @@ bool FieldFab::createFieldInstFromXML(xml_node &fieldNode, vector<Field*> &field
 	// if we don't have an geometry, return NULL
 	if (strcmp((l_parser.attrByName(fieldNode, "objectType"))->value(),"FIELD"))
 	{
-		std::cout << "error in FieldFab.createFieldInstanceFromXML(): objectType is not defined for given node." << std::endl;
+		std::cout << "error in FieldFab.createFieldInstanceFromXML(): objectType is not defined for given node." << "...\n";
 		return false; 
 	}
 
@@ -45,7 +45,7 @@ bool FieldFab::createFieldInstFromXML(xml_node &fieldNode, vector<Field*> &field
 	const char* l_fieldTypeAscii = (l_parser.attrByName(fieldNode,"fieldType"))->value();
 	if (l_fieldTypeAscii==NULL)
 	{
-		std::cout << "error in FieldFab.createInstanceFromXML(): fieldType is not defined for given node." << std::endl;
+		std::cout << "error in FieldFab.createInstanceFromXML(): fieldType is not defined for given node." << "...\n";
 		return false;
 	}
 

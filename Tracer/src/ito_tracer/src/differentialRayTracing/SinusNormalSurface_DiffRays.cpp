@@ -117,7 +117,7 @@ geometryError SinusNormalSurface_DiffRays::createOptixInstance( RTcontext &conte
 {
 	if (GEOM_NO_ERR != Geometry::createOptixInstance(context, geometrygroup, index, simParams, lambda) )
 	{
-		std::cout <<"error in SinusNormalSurface_DiffRays.createOptixInstance(): Geometry.creatOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << std::endl;
+		std::cout <<"error in SinusNormalSurface_DiffRays.createOptixInstance(): Geometry.creatOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << "...\n";
 		return GEOM_ERR;
 	}
 
@@ -146,7 +146,7 @@ geometryError SinusNormalSurface_DiffRays::updateOptixInstance( RTcontext &conte
 	{
 		if (GEOM_NO_ERR != this->updateOptixInstance(context, geometrygroup, index, simParams, lambda) )
 		{
-			std::cout <<"error in SinusNormalSurface_DiffRays.updateOptixInstance(): Geometry.updateOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << std::endl;
+			std::cout <<"error in SinusNormalSurface_DiffRays.updateOptixInstance(): Geometry.updateOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << "...\n";
 			return GEOM_ERR;
 		}
 

@@ -47,7 +47,7 @@
  */
 geometryError CompoundGeometry::parseXml(pugi::xml_node &geometry, vector<Geometry*> &geomVec)
 {
-	std::cout << "error in CompoundGeometry.parseXml(): not defined" << std::endl;
+	std::cout << "error in CompoundGeometry.parseXml(): not defined" << "...\n";
 	return GEOM_ERR;
 }
 

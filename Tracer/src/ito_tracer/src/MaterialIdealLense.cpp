@@ -100,7 +100,7 @@ MaterialError MaterialIdealLense::createOptiXInstance(RTcontext context, RTgeome
 {
 	if (MAT_NO_ERR != Material::createOptiXInstance(context, instance, index, simParams, lambda) )
 	{
-		std::cout << "error in MaterialIdealLense.createOptiXInstance(): Material.creatOptiXInstance() returned an error" << std::endl;
+		std::cout << "error in MaterialIdealLense.createOptiXInstance(): Material.creatOptiXInstance() returned an error" << "...\n";
 		return MAT_ERR;
 	}
 
@@ -109,7 +109,7 @@ MaterialError MaterialIdealLense::createOptiXInstance(RTcontext context, RTgeome
 	// calc the refractive indices at current wavelength
 	if (MAT_NO_ERR != calcFocalLength(lambda))
 	{
-		std::cout << "error in MaterialIdealLense.createOptixInstance(): calcFocalLength returned an error" << std::endl;
+		std::cout << "error in MaterialIdealLense.createOptixInstance(): calcFocalLength returned an error" << "...\n";
 		return MAT_ERR;
 	}
 	this->params.orientation=this->dispersionParamsPtr->orientation;
@@ -141,7 +141,7 @@ MaterialError MaterialIdealLense::updateOptiXInstance(RTcontext context, RTgeome
 		// calc the refractive indices at current wavelength
 		if (MAT_NO_ERR != calcFocalLength(lambda))
 		{
-			std::cout << "error in MaterialIdealLense.updateOptixInstance(): calcFocalLength returned an error" << std::endl;
+			std::cout << "error in MaterialIdealLense.updateOptixInstance(): calcFocalLength returned an error" << "...\n";
 			return MAT_ERR;
 		}
 		this->params.orientation=this->dispersionParamsPtr->orientation;
@@ -157,7 +157,7 @@ MaterialError MaterialIdealLense::updateOptiXInstance(RTcontext context, RTgeome
 
 	if (MAT_NO_ERR != Material::updateOptiXInstance(context, instance, index, simParams, lambda) )
 	{
-		std::cout << "error in MaterialIdealLense.updateOptiXInstance(): Material.updateOptiXInstance() returned an error" << std::endl;
+		std::cout << "error in MaterialIdealLense.updateOptiXInstance(): Material.updateOptiXInstance() returned an error" << "...\n";
 		return MAT_ERR;
 	}
 
@@ -194,7 +194,7 @@ MaterialError MaterialIdealLense::updateCPUSimInstance(double lambda)
 		// calc the refractive indices at current wavelength
 		if (MAT_NO_ERR != calcFocalLength(lambda))
 		{
-			std::cout << "error in MaterialIdealLense.updateOptixInstance(): calcFocalLength returned an error" << std::endl;
+			std::cout << "error in MaterialIdealLense.updateOptixInstance(): calcFocalLength returned an error" << "...\n";
 			return MAT_ERR;
 		}
 		this->params.orientation=this->dispersionParamsPtr->orientation;
@@ -308,7 +308,7 @@ MaterialError MaterialIdealLense::createCPUSimInstance(double lambda)
 	// calc the refractive indices at current wavelength
 	if (MAT_NO_ERR!=this->calcFocalLength(lambda))
 	{
-		std::cout << "error in MaterialIdealLense.createCPUSimInstance(): calcFocalLength returned an error" << std::endl;
+		std::cout << "error in MaterialIdealLense.createCPUSimInstance(): calcFocalLength returned an error" << "...\n";
 		return MAT_ERR;
 	}
 	this->params.orientation=this->dispersionParamsPtr->orientation;
@@ -317,7 +317,7 @@ MaterialError MaterialIdealLense::createCPUSimInstance(double lambda)
 	// create simulation instance of coating
 	if (MAT_NO_ERR != Material::createCPUSimInstance(lambda) )
 	{
-		std::cout << "error in MaterialIdealLense.createCPUSimInstance(): Material.createCPUSimInstance() returned an error." << std::endl;
+		std::cout << "error in MaterialIdealLense.createCPUSimInstance(): Material.createCPUSimInstance() returned an error." << "...\n";
 		return MAT_ERR;
 	}
 
@@ -365,7 +365,7 @@ MaterialError MaterialIdealLense::parseXml(pugi::xml_node &geometry, SimParams s
 {
 	if (!Material::parseXml(geometry, simParams))
 	{
-		std::cout << "error in MaterialIdealLense.parseXml(): Material.parseXml() returned an error." << std::endl;
+		std::cout << "error in MaterialIdealLense.parseXml(): Material.parseXml() returned an error." << "...\n";
 		return MAT_ERR;
 	}
 

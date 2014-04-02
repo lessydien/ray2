@@ -61,7 +61,7 @@ geometryError ConePipe::setParams(Geometry_Params *paramsIn)
 		*(this->paramsPtr)=*l_ptr;
 	else
 	{
-		std::cout << "error in ConePipe.setParams(): paramsIn seems to not be of type ConePipe_Params" << std::endl;
+		std::cout << "error in ConePipe.setParams(): paramsIn seems to not be of type ConePipe_Params" << "...\n";
 		return GEOM_ERR;
 	}
 
@@ -186,7 +186,7 @@ geometryError ConePipe::hit(rayStruct &ray,double t)
 //	}
 //	else
 //	{
-//		std::cout << "error in ConePipe.hit: rays of gaussian beamlet have inconsistent intersections at geometry:" << this->paramsPtr->geometryID << std::endl;
+//		std::cout << "error in ConePipe.hit: rays of gaussian beamlet have inconsistent intersections at geometry:" << this->paramsPtr->geometryID << "...\n";
 //		return GEOM_GBINCONSISTENTINTERSECTIONS_ERR;// terminate the ray with an error
 //	}
 //};
@@ -235,7 +235,7 @@ geometryError ConePipe::createOptixInstance( RTcontext &context, RTgeometrygroup
 
 	if (GEOM_NO_ERR != Geometry::createOptixInstance(context, geometrygroup, index, simParams, lambda) )
 	{
-		std::cout <<"error in ConePipe.createOptixInstance(): Geometry.creatOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << std::endl;
+		std::cout <<"error in ConePipe.createOptixInstance(): Geometry.creatOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << "...\n";
 		return GEOM_ERR;
 	}
 	/* set the variables of the geometry */
@@ -264,7 +264,7 @@ geometryError ConePipe::updateOptixInstance( RTcontext &context, RTgeometrygroup
 	{
 		if (GEOM_NO_ERR != Geometry::updateOptixInstance(context, geometrygroup, index, simParams, lambda))
 		{
-			std::cout <<"error in ConePipe.updateOptixInstance(): materialList[i] returned an error at geometry: " << this->getParamsPtr()->geometryID << std::endl;
+			std::cout <<"error in ConePipe.updateOptixInstance(): materialList[i] returned an error at geometry: " << this->getParamsPtr()->geometryID << "...\n";
 			return GEOM_ERR;
 		}
 		/* set the variables of the geometry */
@@ -310,7 +310,7 @@ geometryError ConePipe::parseXml(pugi::xml_node &geometry, SimParams simParams, 
 	// parse base class
 	if (GEOM_NO_ERR!=Geometry::parseXml(geometry,simParams, geomVec))
 	{
-		std::cout << "error in PlaneSurface.parseXml(): Geometry.parseXml() returned an error." << std::endl;
+		std::cout << "error in PlaneSurface.parseXml(): Geometry.parseXml() returned an error." << "...\n";
 		return GEOM_ERR;
 	}
 	double3 l_vec=make_double3(0,0,1);

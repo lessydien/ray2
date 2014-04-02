@@ -108,7 +108,7 @@ simAssError SimAssistantParamSweep::updateSimulation( Group *oGroupPtr, RayField
 //		SourceListPtrPtr->createCPUSimInstance();
 //		if (GROUP_NO_ERR != oGroupPtr->createCPUSimInstance(SourceListPtrPtr->getParamsPtr()->lambda, paramsPtr->mode) )
 //		{
-//			std::cout << "error in SimAssistantParamSweep.updateSimulation(): group.createCPUSimInstance() returned an error" << std::endl;
+//			std::cout << "error in SimAssistantParamSweep.updateSimulation(): group.createCPUSimInstance() returned an error" << "...\n";
 //			return SIMASS_ERROR;
 //		}
 //	}
@@ -117,7 +117,7 @@ simAssError SimAssistantParamSweep::updateSimulation( Group *oGroupPtr, RayField
 //			// convert geometry to GPU code
 //			if ( GROUP_NO_ERR != oGroupPtr->updateOptixInstance(context, paramsPtr->mode, SourceListPtrPtr->getParamsPtr()->lambda) )
 //			{
-//				std::cout << "error in SimAssistantParamSweep.updateSimulation(): group.updateOptixInstance returned an error" << std::endl;
+//				std::cout << "error in SimAssistantParamSweep.updateSimulation(): group.updateOptixInstance returned an error" << "...\n";
 //				return ( SIMASS_ERROR );
 //			}
 //				
@@ -125,7 +125,7 @@ simAssError SimAssistantParamSweep::updateSimulation( Group *oGroupPtr, RayField
 ////			initRayField_AsphereTestGPU( context, hfileWaveFront_Qxy, hfileWaveFront_Pxy, SourceList, RadiusSourceReference, zSourceReference, MNmn, width, height, lambda);
 //			if ( FIELD_NO_ERR != (SourceListPtrPtr)->createOptixInstance(context, output_buffer_obj, seed_buffer_obj) )
 //			{
-//				std::cout << "error in SimAssistantParamSweep.updateSimulation(): SourceList[i]-updateOptixInstance returned an error at index:" << 0 << std::endl;
+//				std::cout << "error in SimAssistantParamSweep.updateSimulation(): SourceList[i]-updateOptixInstance returned an error at index:" << 0 << "...\n";
 //				return ( SIMASS_ERROR );
 //			}
 ////			RT_CHECK_ERROR_NOEXIT( rtContextValidate( context ) );
@@ -176,11 +176,11 @@ simAssError SimAssistantParamSweep::run(Group *oGroupPtr, RayField *SourceListPt
 //	// we do not allow for a raydata-detector in paramsweep-mode as this would consume memory too fast...
 //	if (dynamic_cast<DetectorRaydata*>(DetectorListPtrPtr[0]) != NULL)
 //	{
-//		std::cout << "error in SimAssistantParamSweep.run(): DetectorRaydata is not allowed param sweep mode" << std::endl;
+//		std::cout << "error in SimAssistantParamSweep.run(): DetectorRaydata is not allowed param sweep mode" << "...\n";
 //		return SIMASS_ERROR;
 //	}
-//	std::cout << "*****************************************************" << std::endl;
-//	std::cout << "starting parameter sweep..." << std::endl;
+//	std::cout << "*****************************************************" << "...\n";
+//	std::cout << "starting parameter sweep..." << "...\n";
 //	unsigned long long jGeoms;
 //	unsigned long long jSrc;
 //	unsigned long long jDet;
@@ -204,7 +204,7 @@ simAssError SimAssistantParamSweep::run(Group *oGroupPtr, RayField *SourceListPt
 //			for (jDet=0;jDet<=this->paramsPtr->detParamsSweepLength;jDet++)
 //			{
 //				unsigned long long paramSweepNr=jDet+jSrc*(this->paramsPtr->detParamsSweepLength+1)+jGeoms*(this->paramsPtr->detParamsSweepLength+this->paramsPtr->srcParamsSweepLength+1);
-//				std::cout << "param sweep number " << paramSweepNr << " out of " << this->paramsPtr->detParamsSweepLength*this->paramsPtr->srcParamsSweepLength*this->paramsPtr->geomParamsSweepLength << std::endl;
+//				std::cout << "param sweep number " << paramSweepNr << " out of " << this->paramsPtr->detParamsSweepLength*this->paramsPtr->srcParamsSweepLength*this->paramsPtr->geomParamsSweepLength << "...\n";
 //
 //				if (jDet>0)
 //				{
@@ -241,12 +241,12 @@ simAssError SimAssistantParamSweep::run(Group *oGroupPtr, RayField *SourceListPt
 ////	hFileOut = fopen( filepath, "w" ) ;
 ////	if (!hFileOut)
 ////	{
-////		std::cout << "error in SimAssistantParamSweep.run(): could not open output file: " << filepath << std::endl;
+////		std::cout << "error in SimAssistantParamSweep.run(): could not open output file: " << filepath << "...\n";
 ////		return SIMASS_ERROR;
 ////	}
 //
-//	std::cout << "**************************************************************" << std::endl;
-//	std::cout << "starting to save simulation results..." << std::endl;
+//	std::cout << "**************************************************************" << "...\n";
+//	std::cout << "starting to save simulation results..." << "...\n";
 //
 //	start=clock();
 //	// loop over geoemtryParams
@@ -260,7 +260,7 @@ simAssError SimAssistantParamSweep::run(Group *oGroupPtr, RayField *SourceListPt
 //			{
 //				if (FIELD_NO_ERR != (this->FieldPtrList[jDet+jSrc*(this->paramsPtr->detParamsSweepLength+1)+jGeoms*(this->paramsPtr->detParamsSweepLength+this->paramsPtr->srcParamsSweepLength+1)])->write2File(filepath,*(DetectorListPtrPtr[0]->getDetParamsPtr())) )//if (FIELD_NO_ERR != (this->FieldPtrList[jDet+jSrc*(this->paramsPtr->detParamsSweepLength+1)+jGeoms*(this->paramsPtr->detParamsSweepLength+this->paramsPtr->srcParamsSweepLength+1)])->write2TextFile(hFileOut,*(DetectorListPtrPtr[0]->getDetParamsPtr())) )
 //				{
-//					std::cout << "error in SimAssistantParamSweep.run(): Field.write2File() returned an error" << std::endl;
+//					std::cout << "error in SimAssistantParamSweep.run(): Field.write2File() returned an error" << "...\n";
 //					return SIMASS_ERROR;
 //				}
 //			} // end loop detectorParams
@@ -268,7 +268,7 @@ simAssError SimAssistantParamSweep::run(Group *oGroupPtr, RayField *SourceListPt
 //	} // end geometryParams
 //	end =clock();
 //	msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
-//	std::cout << msecs <<"ms to save data." << std::endl;
+//	std::cout << msecs <<"ms to save data." << "...\n";
 
 	return SIMASS_NO_ERROR;
 };

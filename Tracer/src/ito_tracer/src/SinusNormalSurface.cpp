@@ -60,7 +60,7 @@ geometryError SinusNormalSurface::setParams(Geometry_Params *paramsIn)//SinusNor
 		*(this->paramsPtr)=*l_ptr;
 	else
 	{
-		std::cout << "error in SinusNormalSurface.setParams(): paramsIn seems to not be of type SinusNormalSurface_Params" << std::endl;
+		std::cout << "error in SinusNormalSurface.setParams(): paramsIn seems to not be of type SinusNormalSurface_Params" << "...\n";
 		return GEOM_ERR;
 	}
 	this->update=true;
@@ -249,7 +249,7 @@ geometryError SinusNormalSurface::hit(rayStruct &ray, double t)
 //	}
 //	else
 //	{
-//		std::cout <<"error in SinusNormalSurface.hit(): rays of gaussian beamlet have inconsistent intersections on geometry:" << this->paramsPtr->geometryID << std::endl;
+//		std::cout <<"error in SinusNormalSurface.hit(): rays of gaussian beamlet have inconsistent intersections on geometry:" << this->paramsPtr->geometryID << "...\n";
 //		return GEOM_GBINCONSISTENTINTERSECTIONS_ERR;// terminate the ray with an error
 //	}
 // };
@@ -270,7 +270,7 @@ geometryError SinusNormalSurface::createOptixInstance( RTcontext &context, RTgeo
 {
 	if (GEOM_NO_ERR != Geometry::createOptixInstance(context, geometrygroup, index, simParams, lambda) )
 	{
-		std::cout <<"error in SinusNormalSurface.createOptixInstance(): Geometry.creatOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << std::endl;
+		std::cout <<"error in SinusNormalSurface.createOptixInstance(): Geometry.creatOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << "...\n";
 		return GEOM_ERR;
 	}
 
@@ -299,7 +299,7 @@ geometryError SinusNormalSurface::updateOptixInstance( RTcontext &context, RTgeo
 	{
 		if (GEOM_NO_ERR != this->updateOptixInstance(context, geometrygroup, index, simParams, lambda) )
 		{
-			std::cout <<"error in SinusNormalSurface.updateOptixInstance(): Geometry.updateOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << std::endl;
+			std::cout <<"error in SinusNormalSurface.updateOptixInstance(): Geometry.updateOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << "...\n";
 			return GEOM_ERR;
 		}
 

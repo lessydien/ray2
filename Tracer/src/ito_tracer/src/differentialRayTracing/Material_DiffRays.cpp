@@ -41,5 +41,5 @@
 void Material_DiffRays::hit(diffRayStruct &ray, Mat_DiffRays_hitParams hitParams, double t_hit, int geometryID)
 {
 	// dummy function to be overwritten by child class
-	std::cout << "error in Material_DiffRays.hit(): hit is not yet implemented for differential rays for the given material. Material_DiffRays is ignored..." << std::endl;
+	std::cout << "error in Material_DiffRays.hit(): hit is not yet implemented for differential rays for the given material. Material_DiffRays is ignored..." << "...\n";
 };

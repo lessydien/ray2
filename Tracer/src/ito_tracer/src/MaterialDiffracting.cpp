@@ -98,7 +98,7 @@ MaterialError MaterialDiffracting::calcRefrIndices(double lambda)
 	// calc refractive index of glass material for current wavelength
 	if ( (l_lambda<fullParamsPtr->lambdaMin)||(l_lambda>fullParamsPtr->lambdaMax) )
 	{
-		std::cout << "error in MaterialRefracting.calcRefrIndices(): lambda outside of range of glass definition at lambda=" << lambda << std::endl;
+		std::cout << "error in MaterialRefracting.calcRefrIndices(): lambda outside of range of glass definition at lambda=" << lambda << "...\n";
 		return MAT_ERR;
 	}
 	switch (this->fullParamsPtr->dispersionFormula)
@@ -120,7 +120,7 @@ MaterialError MaterialDiffracting::calcRefrIndices(double lambda)
 	// do the same for the immersion medium
 	if ( (l_lambda<immersionDispersionParamsPtr->lambdaMin)||(l_lambda>immersionDispersionParamsPtr->lambdaMax) )
 	{
-		std::cout << "error in MaterialRefracting.calcRefrIndices(): lambda outside of range of immersion definition at lambda=" << lambda << std::endl;
+		std::cout << "error in MaterialRefracting.calcRefrIndices(): lambda outside of range of immersion definition at lambda=" << lambda << "...\n";
 		return MAT_ERR;
 	}
 	switch (this->immersionDispersionParamsPtr->dispersionFormula)
@@ -159,14 +159,14 @@ MaterialError MaterialDiffracting::createOptiXInstance(RTcontext context, RTgeom
 
 	if (MAT_NO_ERR != Material::createOptiXInstance(context, instance, index, simParams, lambda) )
 	{
-		std::cout << "error in MaterialDiffracting.createOptiXInstance(): Material.creatOptiXInstance() returned an error" << std::endl;
+		std::cout << "error in MaterialDiffracting.createOptiXInstance(): Material.creatOptiXInstance() returned an error" << "...\n";
 		return MAT_ERR;
 	}
 
 	// calc the refractive indices at current wavelength
 	if (MAT_NO_ERR != calcRefrIndices(lambda))
 	{
-		std::cout << "error in MaterialDiffracting.createOptiXInstance(): calcRefrIndeices() returned an error" << std::endl;
+		std::cout << "error in MaterialDiffracting.createOptiXInstance(): calcRefrIndeices() returned an error" << "...\n";
 		return MAT_ERR;
 	}
 	params.importanceAreaHalfWidth=this->fullParamsPtr->importanceAreaHalfWidth;
@@ -205,7 +205,7 @@ MaterialError MaterialDiffracting::updateOptiXInstance(RTcontext context, RTgeom
 		// calc the refractive indices at current wavelength
 		if (MAT_NO_ERR != calcRefrIndices(lambda))
 		{
-			std::cout << "error in MaterialLinearGrating1D.updateOptiXInstance(): calcRefrIndeices() returned an error" << std::endl;
+			std::cout << "error in MaterialLinearGrating1D.updateOptiXInstance(): calcRefrIndeices() returned an error" << "...\n";
 			return MAT_ERR;
 		}
 		// if we have no importance object and all cone angles are zero, we set importance cone to full hemisphere
@@ -221,7 +221,7 @@ MaterialError MaterialDiffracting::updateOptiXInstance(RTcontext context, RTgeom
 
 	if (MAT_NO_ERR != Material::updateOptiXInstance(context, instance, index, simParams, lambda) )
 	{
-		std::cout << "error in MaterialDiffracting.updateOptiXInstance(): Material.updateOptiXInstance() returned an error" << std::endl;
+		std::cout << "error in MaterialDiffracting.updateOptiXInstance(): Material.updateOptiXInstance() returned an error" << "...\n";
 		return MAT_ERR;
 	}
 	return MAT_NO_ERR;	
@@ -244,7 +244,7 @@ MaterialError MaterialDiffracting::updateOptiXInstance(double lambda)
 		// calc the refractive indices at current wavelength
 		if (MAT_NO_ERR != calcRefrIndices(lambda))
 		{
-			std::cout << "error in MaterialLinearGrating1D.updateOptiXInstance(): calcRefrIndeices() returned an error" << std::endl;
+			std::cout << "error in MaterialLinearGrating1D.updateOptiXInstance(): calcRefrIndeices() returned an error" << "...\n";
 			return MAT_ERR;
 		}
 		params.importanceAreaHalfWidth=this->fullParamsPtr->importanceAreaHalfWidth;
@@ -363,7 +363,7 @@ MaterialError MaterialDiffracting::createCPUSimInstance(double lambda)
 	// calc the refractive indices at current wavelength
 	if (MAT_NO_ERR != calcRefrIndices(lambda))
 	{
-		std::cout << "error in MaterialLinearGrating1D.createOptiXInstance(): calcRefrIndeices() returned an error" << std::endl;
+		std::cout << "error in MaterialLinearGrating1D.createOptiXInstance(): calcRefrIndeices() returned an error" << "...\n";
 		return MAT_ERR;
 	}
 	params.importanceAreaHalfWidth=this->fullParamsPtr->importanceAreaHalfWidth;
@@ -373,7 +373,7 @@ MaterialError MaterialDiffracting::createCPUSimInstance(double lambda)
 	// create simulation instance of coating
 	if (MAT_NO_ERR != Material::createCPUSimInstance(lambda) )
 	{
-		std::cout << "error in MaterialDiffracting.createCPUSimInstance(): Material.createCPUSimInstance() returned an error." << std::endl;
+		std::cout << "error in MaterialDiffracting.createCPUSimInstance(): Material.createCPUSimInstance() returned an error." << "...\n";
 		return MAT_ERR;
 	}
 
@@ -440,7 +440,7 @@ MaterialError MaterialDiffracting::processParseResults(MaterialParseParamStruct 
 					break;
 				default:
 					immersionDispersionParamsPtr->dispersionFormula=MAT_DISPFORMULA_UNKNOWN;
-					std::cout <<"error in MaterialDiffracting.processParseResults(): unknown dispersion formula" << std::endl;
+					std::cout <<"error in MaterialDiffracting.processParseResults(): unknown dispersion formula" << "...\n";
 					return MAT_ERR;
 					break;
 			}

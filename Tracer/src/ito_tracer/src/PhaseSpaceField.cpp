@@ -71,12 +71,12 @@ fieldError PhaseSpaceField::write2TextFile(char* filename, detParams &oDetParams
 	hFileOut = fopen( t_filename, "w" ) ;
 	if (!hFileOut)
 	{
-		std::cout << "error in PhaseSpaceField.write2TextFile(): could not open output file: " << filename << std::endl;
+		std::cout << "error in PhaseSpaceField.write2TextFile(): could not open output file: " << filename << "...\n";
 		return FIELD_ERR;
 	}
 	if ( IO_NO_ERR != writePhaseSpaceField2File(hFileOut, this) )
 	{
-		std::cout << "error in PhaseSpaceField.write2TextFile(): writePhaseSpaceFIeld2File() returned an error" << std::endl;
+		std::cout << "error in PhaseSpaceField.write2TextFile(): writePhaseSpaceFIeld2File() returned an error" << "...\n";
 		return FIELD_ERR;
 	}
 	fclose(hFileOut);
@@ -104,7 +104,7 @@ fieldError PhaseSpaceField::write2MatFile(char* filename, detParams &oDetParams)
 	pmat = matOpen(t_filename, "w");
 	if (pmat == NULL) 
 	{
-		std::cout << "error in PhaseSpaceField.write2MatFile(): could not open the mat file" << std::endl;
+		std::cout << "error in PhaseSpaceField.write2MatFile(): could not open the mat file" << "...\n";
 		return(FIELD_NO_ERR);
 	}
 
@@ -186,11 +186,11 @@ fieldError PhaseSpaceField::write2MatFile(char* filename, detParams &oDetParams)
 
 	if (matClose(pmat) != 0) 
 	{
-		std::cout << "error in PhaseSpaceField.write2MatFile(): could not close the mat file" << std::endl;
+		std::cout << "error in PhaseSpaceField.write2MatFile(): could not close the mat file" << "...\n";
 		return(FIELD_NO_ERR);
 	}
 #else
-	std::cout << "error in ScalarLightField.write2MatFile(): matlab not supported" << std::endl;
+	std::cout << "error in ScalarLightField.write2MatFile(): matlab not supported" << "...\n";
 	return FIELD_ERR;
 #endif
 	return FIELD_NO_ERR;

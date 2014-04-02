@@ -37,7 +37,7 @@ bool CoatingFab_DiffRays::createCoatInstFromXML(xml_node &node, Coating* &pCoat,
 	const char* coatTypeAscii = (l_parser.attrByName(node,"coatingType"))->value();
 	if (coatTypeAscii == "")
 	{
-		std::cout << "error in CoatingLib.createCoatInstFromXML(): coatingType is not defined" << std::endl;
+		std::cout << "error in CoatingLib.createCoatInstFromXML(): coatingType is not defined" << "...\n";
 		return false;
 	}
 

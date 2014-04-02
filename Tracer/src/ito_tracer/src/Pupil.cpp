@@ -42,7 +42,7 @@
  */
 PupilError Pupil::processParseResults(PupilParseParamStruct &parseResults_Pupil)
 {
-	std::cout << "error in Pupil.processParseResults(): not defined for the given Field representation" << std::endl;
+	std::cout << "error in Pupil.processParseResults(): not defined for the given Field representation" << "...\n";
 	return PUP_ERR;
 };
 
@@ -115,7 +115,7 @@ PupilError Pupil::createPupilAimProgramPtx(RTcontext context, SimMode mode)
  */
 //PupilError Pupil::createOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda)
 //{
-//	std::cout << "error in Pupil.createOptiXInstance(): not defined for the given Pupil" << std::endl;
+//	std::cout << "error in Pupil.createOptiXInstance(): not defined for the given Pupil" << "...\n";
 //	return PupilError;
 //};
 
@@ -131,7 +131,7 @@ PupilError Pupil::createPupilAimProgramPtx(RTcontext context, SimMode mode)
  */
 //PupilError Pupil::updateOptiXInstance(RTcontext context, RTgeometryinstance &instance, int index, SimParams simParams, double lambda)
 //{
-//	std::cout << "error in Pupil.updateOptiXInstance(): not defined for the given Pupil" << std::endl;
+//	std::cout << "error in Pupil.updateOptiXInstance(): not defined for the given Pupil" << "...\n";
 //	return PupilError;
 //};
 
@@ -147,7 +147,7 @@ PupilError Pupil::createPupilAimProgramPtx(RTcontext context, SimMode mode)
  */
 PupilError Pupil::createCPUSimInstance(double lambda)
 {
-	std::cout << "error in Pupil.createCPUSimInstance(): not defined for the given Pupil" << std::endl;
+	std::cout << "error in Pupil.createCPUSimInstance(): not defined for the given Pupil" << "...\n";
 	return PUP_ERR;
 };
 
@@ -163,7 +163,7 @@ PupilError Pupil::createCPUSimInstance(double lambda)
  */
 PupilError Pupil::updateCPUSimInstance(double lambda)
 {
-	std::cout << "error in Pupil.updateCPUSimInstance(): not defined for the given Pupil" << std::endl;
+	std::cout << "error in Pupil.updateCPUSimInstance(): not defined for the given Pupil" << "...\n";
 	return PUP_ERR;
 };
 
@@ -179,7 +179,7 @@ PupilError Pupil::updateCPUSimInstance(double lambda)
  */
 PupilError Pupil::reduceParams(double lambda)
 {
-	std::cout << "error in Pupil.reduceParams(): not defined for the given Pupil" << std::endl;
+	std::cout << "error in Pupil.reduceParams(): not defined for the given Pupil" << "...\n";
 	return PUP_ERR;	// if the function is not overwritten by the child class, we return a standard value of one for the refractive index of the immersion Pupil
 };
 
@@ -196,7 +196,7 @@ PupilError Pupil::reduceParams(double lambda)
 void Pupil::aim(rayStruct &ray, unsigned long long iX, unsigned long long iY)
 {
 	// dummy function to be overwritten by child class
-	std::cout << "error in Pupil.aim(): hit is not yet implemented for geometric rays for the given Pupil. Pupil_DiffRays is ignored..." << std::endl;
+	std::cout << "error in Pupil.aim(): hit is not yet implemented for geometric rays for the given Pupil. Pupil_DiffRays is ignored..." << "...\n";
 };
 
 
@@ -212,7 +212,7 @@ void Pupil::aim(rayStruct &ray, unsigned long long iX, unsigned long long iY)
  */
 void Pupil::setFullParamsPtr(pupilParams *params)
 {
-	std::cout << "error in Pupil.setFullParams(): not defined for the given Pupil" << std::endl;
+	std::cout << "error in Pupil.setFullParams(): not defined for the given Pupil" << "...\n";
 };
 
 /**
@@ -227,6 +227,6 @@ void Pupil::setFullParamsPtr(pupilParams *params)
  */
 pupilParams* Pupil::getFullParamsPtr(void)
 {
-	std::cout << "error in Pupil.getFullParams(): not defined for the given Pupil" << std::endl;
+	std::cout << "error in Pupil.getFullParams(): not defined for the given Pupil" << "...\n";
 	return NULL;
 };

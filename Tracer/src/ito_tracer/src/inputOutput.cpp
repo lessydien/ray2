@@ -33,7 +33,7 @@ InputOutputError writeGeomRayData2File(FILE* hFile, rayStruct* prdPtr, long long
 	/* write CPU results to file */
 	if( (hFile == NULL) )
 	{
-		std::cout << "error in writeGeomRayData2File(): invalid file handle" << std::endl;
+		std::cout << "error in writeGeomRayData2File(): invalid file handle" << "...\n";
 		return IO_FILE_ERR;
 	}
 	else
@@ -70,7 +70,7 @@ InputOutputError writeScalarField2File(FILE* hFile, ScalarLightField *ptrLightFi
 {
 	if( hFile == NULL )
 	{
-		std::cout << "error in writeScalarField2File(): invalid file handle" << std::endl;
+		std::cout << "error in writeScalarField2File(): invalid file handle" << "...\n";
 		return IO_FILE_ERR;
 	}
 	else
@@ -101,7 +101,7 @@ InputOutputError writeIntensityField2File(FILE* hFile, IntensityField *ptrIntens
 {
 	if( hFile == NULL )
 	{
-		std::cout << "error in writeIntensityField2File(): invalid file handle" << std::endl;
+		std::cout << "error in writeIntensityField2File(): invalid file handle" << "...\n";
 		return IO_FILE_ERR;
 	}
 	else
@@ -132,7 +132,7 @@ InputOutputError writePhaseSpaceField2File(FILE* hFile, PhaseSpaceField *ptrPhas
 {
 	if( hFile == NULL )
 	{
-		std::cout << "error in writeIntensityField2File(): invalid file handle" << std::endl;
+		std::cout << "error in writeIntensityField2File(): invalid file handle" << "...\n";
 		return IO_FILE_ERR;
 	}
 	else

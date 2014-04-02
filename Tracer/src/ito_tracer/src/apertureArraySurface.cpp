@@ -61,7 +61,7 @@ geometryError ApertureArraySurface::setParams(Geometry_Params *paramsIn)//PlaneS
 		*(this->paramsPtr)=*l_ptr;
 	else
 	{
-		std::cout << "error in ApertureArraySurface.setParams(): paramsIn seems to not be of type PlaneSurface_Params" << std::endl;
+		std::cout << "error in ApertureArraySurface.setParams(): paramsIn seems to not be of type PlaneSurface_Params" << "...\n";
 		return GEOM_ERR;
 	}
 
@@ -185,7 +185,7 @@ geometryError ApertureArraySurface::hit(rayStruct &ray, double t)
 //	}
 //	else
 //	{
-//		std::cout <<"error in ApertureArraySurface.hit(): rays of gaussian beamlet have inconsistent intersections at geometry:" << this->paramsPtr->geometryID << std::endl;
+//		std::cout <<"error in ApertureArraySurface.hit(): rays of gaussian beamlet have inconsistent intersections at geometry:" << this->paramsPtr->geometryID << "...\n";
 //		return GEOM_GBINCONSISTENTINTERSECTIONS_ERR;// terminate the ray with an error
 //	}
 //};
@@ -233,7 +233,7 @@ geometryError ApertureArraySurface::createOptixInstance( RTcontext &context, RTg
 {
 	if (GEOM_NO_ERR != Geometry::createOptixInstance(context, geometrygroup, index, simParams, lambda) )
 	{
-		std::cout <<"error in ApertureArraySurface.createOptixInstance(): Geometry.creatOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << std::endl;
+		std::cout <<"error in ApertureArraySurface.createOptixInstance(): Geometry.creatOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << "...\n";
 		return GEOM_ERR;
 	}
 
@@ -261,7 +261,7 @@ geometryError ApertureArraySurface::updateOptixInstance( RTcontext &context, RTg
 	{
 		if (GEOM_NO_ERR != this->updateOptixInstance(context, geometrygroup, index, simParams, lambda) )
 		{
-			std::cout <<"error in ApertureArraySurface.updateOptixInstance(): Geometry.updateOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << std::endl;
+			std::cout <<"error in ApertureArraySurface.updateOptixInstance(): Geometry.updateOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << "...\n";
 			return GEOM_ERR;
 		}
 		/* set geometry variables */
@@ -294,7 +294,7 @@ geometryError ApertureArraySurface::parseXml(pugi::xml_node &geometry, SimParams
 	// call base class function
 	if (GEOM_NO_ERR != Geometry::parseXml(geometry, simParams, geomVec))
 	{
-		std::cout << "error in ApertureArraySurface.parseXml(): Geometry.parseXml() returned an error" << std::endl;
+		std::cout << "error in ApertureArraySurface.parseXml(): Geometry.parseXml() returned an error" << "...\n";
 		return GEOM_ERR;
 	}
 
@@ -323,7 +323,7 @@ geometryError ApertureArraySurface::parseXml(pugi::xml_node &geometry, SimParams
 	const char* str=l_parser.attrValByName(geometry, "microAptType");
 	if (str==NULL)
 	{
-		std::cout << "error in ApertureArraySurface.parseXml(): microAptType is not defined" << std::endl;
+		std::cout << "error in ApertureArraySurface.parseXml(): microAptType is not defined" << "...\n";
 		return GEOM_ERR;
 	}
 
@@ -335,7 +335,7 @@ geometryError ApertureArraySurface::parseXml(pugi::xml_node &geometry, SimParams
 			this->paramsPtr->microAptType=AT_ELLIPT;
 		else
 		{
-			std::cout << "error in ApertureArraySurface.parseXml(): unknown microAptType" << std::endl;
+			std::cout << "error in ApertureArraySurface.parseXml(): unknown microAptType" << "...\n";
 			return GEOM_ERR;
 		}
 	}

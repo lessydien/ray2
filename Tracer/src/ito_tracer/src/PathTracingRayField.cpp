@@ -133,7 +133,7 @@ fieldError PathTracingRayField::copyRayList(rayStruct_PathTracing *data, long lo
 {
 	if (length > this->rayListLength)
 	{
-		std::cout << "error in PathTracingRayField.copyRayList(): subset dimensions exceed rayLIst dimension" << std::endl;
+		std::cout << "error in PathTracingRayField.copyRayList(): subset dimensions exceed rayLIst dimension" << "...\n";
 		return FIELD_ERR;
 	}
 	memcpy(this->rayList, data, this->rayParamsPtr->GPUSubset_width*sizeof(rayStruct_PathTracing));
@@ -159,7 +159,7 @@ fieldError PathTracingRayField::copyRayListSubset(rayStruct_PathTracing *data, l
 	//  ----memory range of completed lines---- + ---memory range blocks in given line---
 	if (launchOffset.y*this->rayParamsPtr->width+(subsetDim.x+launchOffset.x)*subsetDim.y > this->rayListLength)
 	{
-		std::cout << "error in PathTracingRayField.copyRayListSubset(): subset dimensions exceed rayLIst dimension" << std::endl;
+		std::cout << "error in PathTracingRayField.copyRayListSubset(): subset dimensions exceed rayLIst dimension" << "...\n";
 		return FIELD_ERR;
 	}
 	// copy the ray list line per line
@@ -229,7 +229,7 @@ fieldError PathTracingRayField::createCPUSimInstance()
 	rayList=(rayStruct_PathTracing*) malloc(GPU_SUBSET_WIDTH_MAX*GPU_SUBSET_HEIGHT_MAX*sizeof(rayStruct_PathTracing));
 	if (!rayList)
 	{
-		std::cout << "error in PathTracingRayField.createLayoutInstance(): memory for rayList could not be allocated. try to reduce ray tiling size" << std::endl;
+		std::cout << "error in PathTracingRayField.createLayoutInstance(): memory for rayList could not be allocated. try to reduce ray tiling size" << "...\n";
 		return FIELD_ERR;
 	}
 	this->rayListLength=GPU_SUBSET_WIDTH_MAX*GPU_SUBSET_HEIGHT_MAX;
@@ -272,7 +272,7 @@ fieldError PathTracingRayField::createOptixInstance(RTcontext &context, RTbuffer
 {
 	if (FIELD_NO_ERR != RayField::createOptixInstance(context, output_buffer_obj, seed_buffer_obj))
 	{
-		std::cout <<"error in PathTracingRayField.createOptixInstance(): RayField.creatOptiXInstance() returned an error." << std::endl;
+		std::cout <<"error in PathTracingRayField.createOptixInstance(): RayField.creatOptiXInstance() returned an error." << "...\n";
 		return FIELD_ERR;
 	}
 
@@ -304,7 +304,7 @@ fieldError PathTracingRayField::createOptixInstance(RTcontext &context, RTbuffer
 
 	if (FIELD_NO_ERR!=this->createCPUSimInstance())
 	{
-		std::cout <<"error in PathTracingRayField.createOptixInstance(): create CPUSimInstance() returned an error." << std::endl;
+		std::cout <<"error in PathTracingRayField.createOptixInstance(): create CPUSimInstance() returned an error." << "...\n";
 		return FIELD_ERR;
 	}
 
@@ -373,7 +373,7 @@ fieldError PathTracingRayField::initCPUSubset()
 			// start timing
 			start=clock();
 
-			std::cout << "initalizing random seed" << std::endl;
+			std::cout << "initalizing random seed" << "...\n";
 
 			int seed = (int)time(0);            // random seed
 			RandomInit(seed, x);
@@ -386,13 +386,13 @@ fieldError PathTracingRayField::initCPUSubset()
 
 			end=clock();
 			msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
-			std::cout << " " << msecs <<" ms to initialize random seeds of " << this->rayParamsPtr->GPUSubset_width*this->rayParamsPtr->GPUSubset_height << " rays." << std::endl;
+			std::cout << " " << msecs <<" ms to initialize random seeds of " << this->rayParamsPtr->GPUSubset_width*this->rayParamsPtr->GPUSubset_height << " rays." << "...\n";
 
 			// start timing
 			start=clock();
 
 			// create all the rays
-		std::cout << "initializing rays on " << numCPU << " cores of CPU." << std::endl;
+		std::cout << "initializing rays on " << numCPU << " cores of CPU." << "...\n";
 
 		omp_set_num_threads(numCPU);
 
@@ -441,7 +441,7 @@ fieldError PathTracingRayField::initCPUSubset()
 				//unsigned long long iGes=jx+this->rayParamsPtr->launchOffsetX+this->rayParamsPtr->launchOffsetY*( floorf(this->rayParamsPtr->width*this->rayParamsPtr->nrRayDirections.x*this->rayParamsPtr->nrRayDirections.y/this->rayParamsPtr->GPUSubset_width+1)*this->rayParamsPtr->GPUSubset_width);
 				unsigned long long iGes=jx+this->rayParamsPtr->launchOffsetX+this->rayParamsPtr->launchOffsetY*this->rayParamsPtr->width*this->rayParamsPtr->nrRayDirections.x*this->rayParamsPtr->nrRayDirections.y;
 
-				//std::cout << "iGes: " << iGes << std::endl;
+				//std::cout << "iGes: " << iGes << "...\n";
 
 				// calc position indices from 1D index
 				unsigned long long iPosX=floorf(iGes/(this->rayParamsPtr->nrRayDirections.x*this->rayParamsPtr->nrRayDirections.y));
@@ -528,7 +528,7 @@ fieldError PathTracingRayField::initCPUSubset()
 						break;
 					default:
 						rayData.position=make_double3(0,0,0);
-						std::cout << "error in PathTraceRayField.initCPUSubset: unknown distribution of rayposition" << std::endl;
+						std::cout << "error in PathTraceRayField.initCPUSubset: unknown distribution of rayposition" << "...\n";
 						// report error
 						break;
 				}
@@ -580,7 +580,7 @@ fieldError PathTracingRayField::initCPUSubset()
 							}
 							else
 							{
-								std::cout << "error in PathTraceRayField.initCPUSubset: importance area for defining ray directions of source is only allowed with objects that have rectangular or elliptical apertures" << std::endl;
+								std::cout << "error in PathTraceRayField.initCPUSubset: importance area for defining ray directions of source is only allowed with objects that have rectangular or elliptical apertures" << "...\n";
 								// report error
 								//return FIELD_ERR; // return is not allowed inside opneMP block!!!
 							}
@@ -667,7 +667,7 @@ fieldError PathTracingRayField::initCPUSubset()
 
 					default:
 						rayData.direction=make_double3(0,0,0);
-						std::cout << "error in PathTracingRayField.initCPUSubset: unknown raydirection distribution" << std::endl;
+						std::cout << "error in PathTracingRayField.initCPUSubset: unknown raydirection distribution" << "...\n";
 						// report error
 						break;
 				}
@@ -694,19 +694,19 @@ fieldError PathTracingRayField::initCPUSubset()
 } // end omp
 			end=clock();
 			msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
-			std::cout << " " << msecs <<" ms to initialize " << this->rayParamsPtr->GPUSubset_width*this->rayParamsPtr->GPUSubset_height << " rays." << std::endl;
+			std::cout << " " << msecs <<" ms to initialize " << this->rayParamsPtr->GPUSubset_width*this->rayParamsPtr->GPUSubset_height << " rays." << "...\n";
 
 		}
 		else if(this->rayParamsPtr->width*this->rayParamsPtr->height<1)
 		{
 			//not Possible. Report error or set n=-n
-			std::cout << "error in PathTracingRayField.initCPUInstance: negative raynumber" << std::endl;
+			std::cout << "error in PathTracingRayField.initCPUInstance: negative raynumber" << "...\n";
 		}
 		this->update=false;
 	}	// end if GPUsubsetwidth*height<rayListLength
 	else
 	{
-		std::cout << "error in DiffRayField.initCPUInstance: rayList is smaller than simulation subset" << std::endl;
+		std::cout << "error in DiffRayField.initCPUInstance: rayList is smaller than simulation subset" << "...\n";
 		return FIELD_ERR;
 	}
 	return FIELD_NO_ERR;
@@ -737,17 +737,17 @@ fieldError PathTracingRayField::traceScene(Group &oGroup, bool RunOnCPU, RTconte
 
 	if (RunOnCPU)
 	{
-		std::cout << "tracing on " << numCPU << " cores of CPU." << std::endl;
+		std::cout << "tracing on " << numCPU << " cores of CPU." << "...\n";
 
 		omp_set_num_threads(numCPU);
 
 		if (FIELD_NO_ERR!= initCPUSubset())
 		{
-			std::cout << "error in PathTracingRayField.traceScene: initCPUSubset returned an error" << std::endl;
+			std::cout << "error in PathTracingRayField.traceScene: initCPUSubset returned an error" << "...\n";
 			return FIELD_ERR;
 		}
 		
-		std::cout << "starting the actual trace..." << std::endl;
+		std::cout << "starting the actual trace..." << "...\n";
 #pragma omp parallel default(shared)
 {
 		#pragma omp for schedule(dynamic, 50)
@@ -762,7 +762,7 @@ fieldError PathTracingRayField::traceScene(Group &oGroup, bool RunOnCPU, RTconte
 					break;
 				oGroup.trace(rayList[j]);
 			}
-			//std::cout << "Iteration " << jy << " running Cur Thread " << omp_get_thread_num() << "Num Threads " << omp_get_num_threads() << "Max Threads " << omp_get_max_threads() << " running" << std::endl;
+			//std::cout << "Iteration " << jy << " running Cur Thread " << omp_get_thread_num() << "Num Threads " << omp_get_num_threads() << "Max Threads " << omp_get_max_threads() << " running" << "...\n";
 		}
 }
 	}
@@ -772,7 +772,7 @@ fieldError PathTracingRayField::traceScene(Group &oGroup, bool RunOnCPU, RTconte
 		void				*data; // pointer to cast output buffer into
  		//rayStruct_PathTracing			*bufferData;
 
-		std::cout << "tracing on GPU." << std::endl;
+		std::cout << "tracing on GPU." << "...\n";
 
 		initGPUSubset(context, seed_buffer_obj);
 		// start current launch
@@ -796,11 +796,11 @@ fieldError PathTracingRayField::traceScene(Group &oGroup, bool RunOnCPU, RTconte
 		//bufferData=(rayStruct_PathTracing*)data;
 		//rayStruct_PathTracing test=bufferData[250];
 		//SourceList->setRayList((rayStruct_PathTracing*)data);
-		//std::cout << "DEBUG: jx=" << jx << " jy=" << jy << std::endl;
+		//std::cout << "DEBUG: jx=" << jx << " jy=" << jy << "...\n";
 		//copyRayListSubset((rayStruct_PathTracing*)data, l_launchOffset, l_GPUSubsetDim);
 		if (FIELD_NO_ERR != copyRayList((rayStruct_PathTracing*)data,this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width) )
 		{
-			std::cout << "error in PathTracingRayField.traceScene(): copyRayList() returned an error" << std::endl;
+			std::cout << "error in PathTracingRayField.traceScene(): copyRayList() returned an error" << "...\n";
 			return FIELD_NO_ERR;
 		}
 		
@@ -811,7 +811,7 @@ fieldError PathTracingRayField::traceScene(Group &oGroup, bool RunOnCPU, RTconte
 	end=clock();
 	msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
 	msecs_Tracing=msecs_Tracing+msecs;
-	std::cout << msecs <<" ms to trace " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays." << std::endl;
+	std::cout << msecs <<" ms to trace " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays." << "...\n";
 
 	return FIELD_NO_ERR;
 };
@@ -839,7 +839,7 @@ fieldError PathTracingRayField::traceStep(Group &oGroup, bool RunOnCPU, RTcontex
 //	this->rayParamsPtr->GPUSubset_width=l_GPUSubsetDim.x;
 //	this->rayParamsPtr->GPUSubset_height=l_GPUSubsetDim.y;
 
-//	std::cout << "tracing on " << numCPU << " cores of CPU." << std::endl;
+//	std::cout << "tracing on " << numCPU << " cores of CPU." << "...\n";
 
 //#pragma omp parallel default(shared)
 //{
@@ -865,7 +865,7 @@ fieldError PathTracingRayField::traceStep(Group &oGroup, bool RunOnCPU, RTcontex
 	end=clock();
 	msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
 	msecs_Tracing=msecs_Tracing+msecs;
-	std::cout << msecs <<" ms to trace " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays." << std::endl;
+	std::cout << msecs <<" ms to trace " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays." << "...\n";
 
 	return FIELD_NO_ERR;
 };
@@ -907,7 +907,7 @@ fieldError PathTracingRayField::write2TextFile(char* filename, detParams &oDetPa
 	hFileOut = fopen( t_filename, "w" ) ;
 	if (!hFileOut)
 	{
-		std::cout << "error in PathTracingRayField.write2TextFile(): could not open output file: " << filename << std::endl;
+		std::cout << "error in PathTracingRayField.write2TextFile(): could not open output file: " << filename << "...\n";
 		return FIELD_ERR;
 	}
 	if (1) // (reducedData==1)
@@ -1066,13 +1066,13 @@ fieldError PathTracingRayField::convert2Intensity(Field* imagePtr, detParams &oD
 	IntensityField* l_IntensityImagePtr=dynamic_cast<IntensityField*>(imagePtr);
 	if (l_IntensityImagePtr == NULL)
 	{
-		std::cout << "error in PathTracingRayField.convert2Intensity(): imagePtr is not of type IntensityField" << std::endl;
+		std::cout << "error in PathTracingRayField.convert2Intensity(): imagePtr is not of type IntensityField" << "...\n";
 		return FIELD_ERR;
 	}
 		
 	if (this->rayParamsPtr->coherence==1) // sum coherently
 	{
-		std::cout << "error in PathTracingRayField.convert2Intensity(): coherent summing not implemented yet" << std::endl;
+		std::cout << "error in PathTracingRayField.convert2Intensity(): coherent summing not implemented yet" << "...\n";
 		return FIELD_ERR;
 
 		//complex<double> i_compl=complex<double>(0,1); // define complex number "i"
@@ -1083,7 +1083,7 @@ fieldError PathTracingRayField::convert2Intensity(Field* imagePtr, detParams &oD
 		//	//unsigned long long iGes=jx+this->rayParamsPtr->launchOffsetX+this->rayParamsPtr->launchOffsetY*( floorf(this->rayParamsPtr->width*this->rayParamsPtr->nrRayDirections.x*this->rayParamsPtr->nrRayDirections.y/this->rayParamsPtr->GPUSubset_width+1)*this->rayParamsPtr->GPUSubset_width);
 		//	unsigned long long iGes=jx+this->rayParamsPtr->launchOffsetX+this->rayParamsPtr->launchOffsetY*this->rayParamsPtr->width*this->rayParamsPtr->nrRayDirections.x*this->rayParamsPtr->nrRayDirections.y;
 
-		//	//std::cout << "iGes: " << iGes << std::endl;
+		//	//std::cout << "iGes: " << iGes << "...\n";
 
 		//	// calc position indices from 1D index
 		//	unsigned long long iPosX=floorf(iGes/(this->rayParamsPtr->nrRayDirections.x*this->rayParamsPtr->nrRayDirections.y));
@@ -1121,7 +1121,7 @@ fieldError PathTracingRayField::convert2Intensity(Field* imagePtr, detParams &oD
 				//unsigned long long iGes=jx+this->rayParamsPtr->launchOffsetX+this->rayParamsPtr->launchOffsetY*( floorf(this->rayParamsPtr->width*this->rayParamsPtr->nrRayDirections.x*this->rayParamsPtr->nrRayDirections.y/this->rayParamsPtr->GPUSubset_width+1)*this->rayParamsPtr->GPUSubset_width);
 				unsigned long long iGes=jx+this->rayParamsPtr->launchOffsetX+this->rayParamsPtr->launchOffsetY*this->rayParamsPtr->width*this->rayParamsPtr->nrRayDirections.x*this->rayParamsPtr->nrRayDirections.y;
 
-				//std::cout << "iGes: " << iGes << std::endl;
+				//std::cout << "iGes: " << iGes << "...\n";
 
 				// calc position indices from 1D index
 				unsigned long long iPosX=floorf(iGes/(this->rayParamsPtr->nrRayDirections.x*this->rayParamsPtr->nrRayDirections.y));
@@ -1135,11 +1135,11 @@ fieldError PathTracingRayField::convert2Intensity(Field* imagePtr, detParams &oD
 					l_IntensityImagePtr->getIntensityPtr()[iPosX+iPosY*l_IntensityImagePtr->getParamsPtr()->nrPixels.x]=l_IntensityImagePtr->getIntensityPtr()[iPosX+iPosY*l_IntensityImagePtr->getParamsPtr()->nrPixels.x]+this->rayList[jx].result/this->rayList[jx].secondary_nr; 
 				}
 			}
-			std::cout << " " << hitNr << " out of " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays in target" << std::endl;
+			std::cout << " " << hitNr << " out of " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays in target" << "...\n";
 		}
 		else
 		{
-			std::cout << "error in PathTracingRayField.convert2Intensity(): partial coherence not implemented yet" << std::endl;
+			std::cout << "error in PathTracingRayField.convert2Intensity(): partial coherence not implemented yet" << "...\n";
 			return FIELD_ERR;
 		}
 
@@ -1148,7 +1148,7 @@ fieldError PathTracingRayField::convert2Intensity(Field* imagePtr, detParams &oD
 	end=clock();
 	msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
 	msecs_Tracing=msecs_Tracing+msecs;
-	std::cout << " " << msecs <<"ms to process " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays." << std::endl;
+	std::cout << " " << msecs <<"ms to process " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays." << "...\n";
 
 	return FIELD_NO_ERR;
 };
@@ -1166,7 +1166,7 @@ fieldError PathTracingRayField::convert2Intensity(Field* imagePtr, detParams &oD
  */
 fieldError PathTracingRayField::convert2ScalarField(Field* imagePtr, detParams &oDetParams)
 {
-	std::cout << "error in PathTracingRayField.convert2ScalarField(): conversion to scalar field not yet implemented" << std::endl;
+	std::cout << "error in PathTracingRayField.convert2ScalarField(): conversion to scalar field not yet implemented" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -1183,7 +1183,7 @@ fieldError PathTracingRayField::convert2ScalarField(Field* imagePtr, detParams &
  */
 fieldError PathTracingRayField::convert2VecField(Field* imagePtr, detParams &oDetParams)
 {
-	std::cout << "error in PathTracingRayField.convert2VecField(): conversion to vectorial field not yet implemented" << std::endl;
+	std::cout << "error in PathTracingRayField.convert2VecField(): conversion to vectorial field not yet implemented" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -1212,7 +1212,7 @@ fieldError PathTracingRayField::convert2RayData(Field** imagePtrPtr, detParams &
 		l_ptr=dynamic_cast<PathTracingRayField*>(*imagePtrPtr);
 		if ( l_ptr->rayListLength < this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width )
 		{
-			std::cout << "error in PathTracingRayField.convert2RayData(): dimensions of image does not fit dimensions of raylist subset" << std::endl;
+			std::cout << "error in PathTracingRayField.convert2RayData(): dimensions of image does not fit dimensions of raylist subset" << "...\n";
 			return FIELD_ERR;
 		}
 	}
@@ -1241,7 +1241,7 @@ fieldError PathTracingRayField::processParseResults(FieldParseParamStruct &parse
 {
 	if ( (parseResults_Src.rayDirDistr == RAYDIR_GRID_RECT) || (parseResults_Src.rayDirDistr == RAYDIR_GRID_RAD) )
 	{
-		std::cout << "error in PathTracingRayField.processParseResults(): RAYDIR_GRID_RAD and RAYDIR_GRID_RECT are not allowed for geometric ray fields" << std::endl;
+		std::cout << "error in PathTracingRayField.processParseResults(): RAYDIR_GRID_RAD and RAYDIR_GRID_RECT are not allowed for geometric ray fields" << "...\n";
 		return FIELD_ERR;
 	}
 	this->rayParamsPtr=new rayFieldParams;
@@ -1317,7 +1317,7 @@ fieldError PathTracingRayField::processParseResults(FieldParseParamStruct &parse
 			immersionDispersionParamsPtr->lambdaMin=0;
 			immersionDispersionParamsPtr->dispersionFormula=MAT_DISPFORMULA_NODISP;
 			l_matRefrPtr->setImmersionDispersionParams(immersionDispersionParamsPtr); // we don't use an immersion medium here but we need to set some value...
-			std::cout <<"warning in PathTracingRayField.processParseResults(): unknown material. Rafracting material with n=1 assumed." << std::endl;
+			std::cout <<"warning in PathTracingRayField.processParseResults(): unknown material. Rafracting material with n=1 assumed." << "...\n";
 			break;
 	}
 	return FIELD_NO_ERR;

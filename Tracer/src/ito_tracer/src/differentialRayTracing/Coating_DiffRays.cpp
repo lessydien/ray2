@@ -89,7 +89,7 @@ Coating_DiffRays_ReducedParams* Coating_DiffRays::getReducedParams(void)
 bool Coating_DiffRays::hit(rayStruct &ray, Mat_hitParams hitParams)
 {
 	// dummy function to be overwritten by child class
-	std::cout << "error in Coating_DiffRays.hit(): hit is not yet implemented for geometric rays for the given coating" << std::endl;
+	std::cout << "error in Coating_DiffRays.hit(): hit is not yet implemented for geometric rays for the given coating" << "...\n";
 	return false;
 }
 
@@ -106,7 +106,7 @@ bool Coating_DiffRays::hit(rayStruct &ray, Mat_hitParams hitParams)
 bool Coating_DiffRays::hit(diffRayStruct &ray, Mat_hitParams hitParams)
 {
 	// dummy function to be overwritten by child class
-	std::cout << "error in Coating_DiffRays.hit(): hit is not yet implemented for differential rays for the given coating. no reflection assumed." << std::endl;
+	std::cout << "error in Coating_DiffRays.hit(): hit is not yet implemented for differential rays for the given coating. no reflection assumed." << "...\n";
 	return false;
 }
 
@@ -123,7 +123,7 @@ bool Coating_DiffRays::hit(diffRayStruct &ray, Mat_hitParams hitParams)
 bool Coating_DiffRays::hit(gaussBeamRayStruct &ray, gaussBeam_geometricNormal normal)
 {
 	// dummy function to be overwritten by child class
-	std::cout << "error in Coating_DiffRays.hit(): hit is not yet implemented for gaussian beamlets for the given coating. no reflection assumed." << std::endl;
+	std::cout << "error in Coating_DiffRays.hit(): hit is not yet implemented for gaussian beamlets for the given coating. no reflection assumed." << "...\n";
 	return false;
 }
 

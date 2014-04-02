@@ -119,7 +119,7 @@ geometryError ConePipe_DiffRays::createOptixInstance( RTcontext &context, RTgeom
 {
 	if (GEOM_NO_ERR != Geometry::createOptixInstance(context, geometrygroup, index, simParams, lambda) )
 	{
-		std::cout <<"error in ConePipe_DiffRays.createOptixInstance(): Geometry.creatOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << std::endl;
+		std::cout <<"error in ConePipe_DiffRays.createOptixInstance(): Geometry.creatOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << "...\n";
 		return GEOM_ERR;
 	}
 	if ( !RT_CHECK_ERROR_NOEXIT( rtVariableSetUserData(params, sizeof(ConePipe_DiffRays_ReducedParams), this->paramsPtr), context) )
@@ -147,7 +147,7 @@ geometryError ConePipe_DiffRays::updateOptixInstance( RTcontext &context, RTgeom
 	{
 		if (GEOM_NO_ERR != Geometry::updateOptixInstance(context, geometrygroup, index, simParams, lambda))
 		{
-			std::cout <<"error in ConePipe_DiffRays.updateOptixInstance(): materialList[i] returned an error at geometry: " << this->getParamsPtr()->geometryID << std::endl;
+			std::cout <<"error in ConePipe_DiffRays.updateOptixInstance(): materialList[i] returned an error at geometry: " << this->getParamsPtr()->geometryID << "...\n";
 			return GEOM_ERR;
 		}
 		/* set the variables of the geometry */

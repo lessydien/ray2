@@ -47,7 +47,7 @@
  */
 long2 RayField::calcSubsetDim(void)
 {
-	std::cout << "error in RayField.calcSubsetDim(): not implemented yet for this RayField type" << std::endl;
+	std::cout << "error in RayField.calcSubsetDim(): not implemented yet for this RayField type" << "...\n";
 	return make_long2(0,0);
 }
 
@@ -63,7 +63,7 @@ long2 RayField::calcSubsetDim(void)
  */
 fieldError RayField::setLambda(double lambda)
 {
-	std::cout << "error in RayField.setLambda(): not implemented yet for this RayField type" << std::endl;
+	std::cout << "error in RayField.setLambda(): not implemented yet for this RayField type" << "...\n";
 	return FIELD_ERR;
 }
 
@@ -103,7 +103,7 @@ fieldError RayField::setRay(rayStructBase ray, unsigned long long index)
 	//{
 	//	return FIELD_INDEXOUTOFRANGE_ERR;
 	//}
-	std::cout << "error in RayField.setRay(): not implemented yet for this RayField type" << std::endl;
+	std::cout << "error in RayField.setRay(): not implemented yet for this RayField type" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -127,7 +127,7 @@ rayStructBase* RayField::getRay(unsigned long long index)
 	//{
 	//	return 0;
 	//}
-	std::cout << "error in RayField.getRay(): not implemented yet for this RayField type" << std::endl;
+	std::cout << "error in RayField.getRay(): not implemented yet for this RayField type" << "...\n";
 	return NULL;
 };
 
@@ -144,7 +144,7 @@ rayStructBase* RayField::getRay(unsigned long long index)
 rayStructBase* RayField::getRayList(void)
 {
 //	return &rayList[0];
-	std::cout << "error in RayField.getRayList(): not implemented yet for this RayField type" << std::endl;
+	std::cout << "error in RayField.getRayList(): not implemented yet for this RayField type" << "...\n";
 	return NULL;
 };
 
@@ -184,7 +184,7 @@ const char* RayField::getPathToPtx(void)
  */
 fieldError RayField::copyRayList(rayStruct *data, long long length)
 {
-	std::cout << "error in RayField.copyRayList(): not implemented yet for this RayField type" << std::endl;
+	std::cout << "error in RayField.copyRayList(): not implemented yet for this RayField type" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -201,7 +201,7 @@ fieldError RayField::copyRayList(rayStruct *data, long long length)
  */
 fieldError RayField::copyRayListSubset(rayStruct *data, long2 launchOffset, long2 subsetDim)
 {
-	std::cout << "error in RayField.copyRayListSubset(): not implemented yet for this RayField type" << std::endl;
+	std::cout << "error in RayField.copyRayListSubset(): not implemented yet for this RayField type" << "...\n";
 	return FIELD_ERR;
 
 };
@@ -217,7 +217,7 @@ fieldError RayField::copyRayListSubset(rayStruct *data, long2 launchOffset, long
  */
 void RayField::createCPUSimInstance(unsigned long long launch_width, unsigned long long launch_height, double3 start, double3 end, double* xGrad, int size_xGrad, double* yGrad, int size_yGrad, double lambda)
 {
-	std::cout << "error in RayField.createCPUSimInstance(): not implemented yet for this RayField type" << std::endl;
+	std::cout << "error in RayField.createCPUSimInstance(): not implemented yet for this RayField type" << "...\n";
 };
 
 /**
@@ -232,7 +232,7 @@ void RayField::createCPUSimInstance(unsigned long long launch_width, unsigned lo
  */
 fieldError RayField::createCPUSimInstance()
 {
-	std::cout << "error in RayField.createCPUSimInstance(): not implemented yet for this RayField type" << std::endl;
+	std::cout << "error in RayField.createCPUSimInstance(): not implemented yet for this RayField type" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -248,7 +248,7 @@ fieldError RayField::createCPUSimInstance()
  */
 fieldError RayField::createLayoutInstance()
 {
-	std::cout << "error in RayField.createLayoutInstance(): not implemented yet for this RayField type" << std::endl;
+	std::cout << "error in RayField.createLayoutInstance(): not implemented yet for this RayField type" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -294,7 +294,7 @@ fieldError RayField::createOptixInstance(RTcontext &context, RTbuffer &output_bu
 		strcat(rayGenName, "_DirGridRad");
 		break;
 	default:
-		std::cout <<"error in RayField.createOptixInstance(): unknown distribution of ray directions." << std::endl;
+		std::cout <<"error in RayField.createOptixInstance(): unknown distribution of ray directions." << "...\n";
 		return FIELD_ERR;
 		break;
 	}
@@ -313,7 +313,7 @@ fieldError RayField::createOptixInstance(RTcontext &context, RTbuffer &output_bu
 		strcat(rayGenName, "_PosGridRad");
 		break;
 	default:
-		std::cout <<"error in RayField.createOptixInstance(): unknown distribution of ray positions." << std::endl;
+		std::cout <<"error in RayField.createOptixInstance(): unknown distribution of ray positions." << "...\n";
 		return FIELD_ERR;
 		break;
 	}
@@ -376,7 +376,7 @@ fieldError RayField::createOptixInstance(RTcontext &context, RTbuffer &output_bu
  */
 fieldError RayField::createOptixInstance(RTcontext* context, unsigned long long width, unsigned long long height, double3 start, double3 end, double* xGrad, int size_xGrad, double* yGrad, int size_yGrad, double RadiusSourceReference)
 {
-	std::cout << "error in RayField.createOptixInstance(): not implemented yet for this RayField type" << std::endl;
+	std::cout << "error in RayField.createOptixInstance(): not implemented yet for this RayField type" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -392,7 +392,7 @@ fieldError RayField::createOptixInstance(RTcontext* context, unsigned long long 
  */
 fieldError RayField::initGPUSubset(RTcontext &context)
 {
-	std::cout << "error in RayField.initGPUSubset(): not implemented yet for this RayField type" << std::endl;
+	std::cout << "error in RayField.initGPUSubset(): not implemented yet for this RayField type" << "...\n";
 	return FIELD_ERR;
 }
 /**
@@ -407,7 +407,7 @@ fieldError RayField::initGPUSubset(RTcontext &context)
  */
 fieldError RayField::traceScene(Group &oGroup)
 {
-	std::cout << "error in RayField.traceScene(): not implemented yet for this RayField type" << std::endl;
+	std::cout << "error in RayField.traceScene(): not implemented yet for this RayField type" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -423,7 +423,7 @@ fieldError RayField::traceScene(Group &oGroup)
 */
 fieldError RayField::initCPUSubset()
 {
-	std::cout << "error in RayField.initCPUSubset(): not implemented yet for this RayField type" << std::endl;
+	std::cout << "error in RayField.initCPUSubset(): not implemented yet for this RayField type" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -517,7 +517,7 @@ fieldError RayField::initCPUSubset()
  */
 fieldError RayField::traceScene(Group &oGroup, bool RunOnCPU)
 {
-	std::cout << "error in RayField.traceScene(): not implemented yet for this RayField type" << std::endl;
+	std::cout << "error in RayField.traceScene(): not implemented yet for this RayField type" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -533,7 +533,7 @@ fieldError RayField::traceScene(Group &oGroup, bool RunOnCPU)
  */
 fieldError RayField::traceStep(Group &oGroup, bool RunOnCPU)
 {
-	std::cout << "error in RayField.traceStep(): not implemented yet for this RayField type" << std::endl;
+	std::cout << "error in RayField.traceStep(): not implemented yet for this RayField type" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -595,12 +595,12 @@ fieldError RayField::initSimulation(Group &oGroup, simAssParams &params)
 	{
 		if (FIELD_NO_ERR!=this->createCPUSimInstance())
 		{
-			std::cout <<"error in RayField.createOptixInstance(): create CPUSimInstance() returned an error." << std::endl;
+			std::cout <<"error in RayField.createOptixInstance(): create CPUSimInstance() returned an error." << "...\n";
 			return FIELD_ERR;
 		}
 		if (GROUP_NO_ERR != oGroup.createCPUSimInstance(this->getParamsPtr()->lambda, params.simParams) )
 		{
-			std::cout << "error in RayField.initSimulation(): group.createCPUSimInstance() returned an error" << std::endl;
+			std::cout << "error in RayField.initSimulation(): group.createCPUSimInstance() returned an error" << "...\n";
 			return FIELD_ERR;
 		}
 	}
@@ -608,19 +608,19 @@ fieldError RayField::initSimulation(Group &oGroup, simAssParams &params)
 	{
 		if (FIELD_NO_ERR != this->createOptiXContext())
 		{
-			std::cout << "error in RayField.initSimulation(): createOptiXInstance() returned an error" << std::endl;
+			std::cout << "error in RayField.initSimulation(): createOptiXInstance() returned an error" << "...\n";
 			return FIELD_ERR;
 		}
 		// convert geometry to GPU code
 		if ( GROUP_NO_ERR != oGroup.createOptixInstance(context, params.simParams, this->getParamsPtr()->lambda) )
 		{
-			std::cout << "error in RayField.initSimulation(): group.createOptixInstance returned an error" << std::endl;
+			std::cout << "error in RayField.initSimulation(): group.createOptixInstance returned an error" << "...\n";
 			return ( FIELD_ERR );
 		}
 			// convert rayfield to GPU code
 			if ( FIELD_NO_ERR != this->createOptixInstance(context, output_buffer_obj, seed_buffer_obj) )
 			{
-				std::cout << "error in RayField.initSimulation(): SourceList[i]->createOptixInstance returned an error at index:" << 0 << std::endl;
+				std::cout << "error in RayField.initSimulation(): SourceList[i]->createOptixInstance returned an error at index:" << 0 << "...\n";
 				return ( FIELD_ERR );
 			}
 			if (!RT_CHECK_ERROR_NOEXIT( rtContextValidate( context ), context ))
@@ -647,7 +647,7 @@ fieldError RayField::initLayout(Group &oGroup, simAssParams &params)
 	this->createLayoutInstance();
 	if (GROUP_NO_ERR != oGroup.createCPUSimInstance(this->getParamsPtr()->lambda, params.simParams) )
 	{
-		std::cout << "error in RayField.initSimulation(): group.createCPUSimInstance() returned an error" << std::endl;
+		std::cout << "error in RayField.initSimulation(): group.createCPUSimInstance() returned an error" << "...\n";
 		return FIELD_ERR;
 	}
 	return FIELD_NO_ERR;
@@ -680,7 +680,7 @@ fieldError RayField::initLayout(Group &oGroup, simAssParams &params)
  */
 void RayField::setParamsPtr(rayFieldParams *paramsPtr)
 {
-	std::cout << "error in RayField.setParamsPtr(): not implemented for given RayField" << std::endl;
+	std::cout << "error in RayField.setParamsPtr(): not implemented for given RayField" << "...\n";
 };
 
 /**
@@ -695,7 +695,7 @@ void RayField::setParamsPtr(rayFieldParams *paramsPtr)
  */
 rayFieldParams* RayField::getParamsPtr(void)
 {
-	std::cout << "error in RayField.getParamsPtr(): not implemented for given RayField" << std::endl;
+	std::cout << "error in RayField.getParamsPtr(): not implemented for given RayField" << "...\n";
 	return NULL;
 };
 
@@ -719,7 +719,7 @@ fieldError RayField::setMaterial(Material *oMaterialPtr, int index)
 		return FIELD_NO_ERR;
 	}
 	/* return error if we end up here */
-	std::cout <<"error in RayField.setMaterial(): invalid material index" << std::endl;
+	std::cout <<"error in RayField.setMaterial(): invalid material index" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -757,7 +757,7 @@ fieldError RayField::setMaterialListLength(int length)
 	}
 	else
 	{
-		std::cout <<"error in RayField.setMaterialListLength(): materialList has been initialized before" << std::endl;
+		std::cout <<"error in RayField.setMaterialListLength(): materialList has been initialized before" << "...\n";
 		return FIELD_ERR;
 	}
 	return FIELD_NO_ERR;
@@ -790,7 +790,7 @@ int RayField::getMaterialListLength(void)
  */
 fieldError  RayField::doSim(Group &oGroup, simAssParams &params, bool &simDone)
 {
-	std::cout <<"error in RayField.doSim(): this has not yet been implemented for the given Field representation" << std::endl;
+	std::cout <<"error in RayField.doSim(): this has not yet been implemented for the given Field representation" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -812,7 +812,7 @@ fieldError RayField::parseXml(pugi::xml_node &field, vector<Field*> &fieldVec, S
 	// call base class function
 	if (FIELD_NO_ERR != Field::parseXml(field, fieldVec, simParams))
 	{
-		std::cout << "error in RayField.parseXml(): Field.parseXml()  returned an error." << std::endl;
+		std::cout << "error in RayField.parseXml(): Field.parseXml()  returned an error." << "...\n";
 		return FIELD_ERR;
 	}
 
@@ -894,7 +894,7 @@ fieldError RayField::parseXml(pugi::xml_node &field, vector<Field*> &fieldVec, S
 	l_pMatNodes=l_parser.childsByTagName(field,"material");
 	if (l_pMatNodes->size() != 1)
 	{
-		std::cout << "error in RayField.parseXml(): there must be exactly 1 material attached to each Rayfield." << std::endl;
+		std::cout << "error in RayField.parseXml(): there must be exactly 1 material attached to each Rayfield." << "...\n";
 		return FIELD_ERR;
 	}
 	// create material
@@ -902,7 +902,7 @@ fieldError RayField::parseXml(pugi::xml_node &field, vector<Field*> &fieldVec, S
 	Material* l_pMaterial;
 	if (!l_matFab.createMatInstFromXML(l_pMatNodes->at(0),l_pMaterial, simParams))
 	{
-		std::cout << "error in Geometry.parseXml(): matFab.createInstFromXML() returned an error." << std::endl;
+		std::cout << "error in Geometry.parseXml(): matFab.createInstFromXML() returned an error." << "...\n";
 		return FIELD_ERR;
 	}
 	this->setMaterialListLength(1);

@@ -231,7 +231,7 @@ fieldError DiffRayField::createOptixInstance(RTcontext &context, RTbuffer &outpu
 		strcat(rayGenName, "_DirGridRad");
 		break;
 	default:
-		std::cout <<"error in DiffRayField.createOptixInstance(): unknown distribution of ray directions." << std::endl;
+		std::cout <<"error in DiffRayField.createOptixInstance(): unknown distribution of ray directions." << "...\n";
 		return FIELD_ERR;
 		break;
 	}
@@ -250,7 +250,7 @@ fieldError DiffRayField::createOptixInstance(RTcontext &context, RTbuffer &outpu
 		strcat(rayGenName, "_PosGridRad");
 		break;
 	default:
-		std::cout <<"error in DiffRayField.createOptixInstance(): unknown distribution of ray positions." << std::endl;
+		std::cout <<"error in DiffRayField.createOptixInstance(): unknown distribution of ray positions." << "...\n";
 		return FIELD_ERR;
 		break;
 	}
@@ -314,7 +314,7 @@ fieldError DiffRayField::createOptixInstance(RTcontext &context, RTbuffer &outpu
 
 	if (FIELD_NO_ERR!=this->createCPUSimInstance())
 	{
-		std::cout <<"error in DiffRayField.createOptixInstance(): create CPUSimInstance() returned an error." << std::endl;
+		std::cout <<"error in DiffRayField.createOptixInstance(): create CPUSimInstance() returned an error." << "...\n";
 		return FIELD_ERR;
 	}
 
@@ -428,13 +428,13 @@ fieldError DiffRayField::initCPUSubset()
 			// start timing
 			start=clock();
 
-			std::cout << "initalizing random seed" << std::endl;
+			std::cout << "initalizing random seed" << "...\n";
 
 			int seed = (int)time(0);            // random seed
 			RandomInit(seed, x);
 
 			// create random seeds for all the rays
-			std::cout << "initializing rays on " << numCPU << " cores of CPU." << std::endl;
+			std::cout << "initializing rays on " << numCPU << " cores of CPU." << "...\n";
 
 			for(signed long long jx=0;jx<this->rayParamsPtr->GPUSubset_width;jx++)
 			{
@@ -442,7 +442,7 @@ fieldError DiffRayField::initCPUSubset()
 			}
 			end=clock();
 			msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
-			std::cout << " " << msecs <<" ms to initialize random seeds of " << this->rayParamsPtr->GPUSubset_width << " rays." << std::endl;
+			std::cout << " " << msecs <<" ms to initialize random seeds of " << this->rayParamsPtr->GPUSubset_width << " rays." << "...\n";
 
 			// start timing
 			start=clock();
@@ -496,7 +496,7 @@ fieldError DiffRayField::initCPUSubset()
 				//unsigned long long iGes=jx+this->rayParamsPtr->launchOffsetX+this->rayParamsPtr->launchOffsetY*( floorf(this->rayParamsPtr->width*this->rayParamsPtr->nrRayDirections.x*this->rayParamsPtr->nrRayDirections.y/this->rayParamsPtr->GPUSubset_width+1)*this->rayParamsPtr->GPUSubset_width);
 				unsigned long long iGes=jx+this->rayParamsPtr->launchOffsetX+this->rayParamsPtr->launchOffsetY*this->rayParamsPtr->width*this->rayParamsPtr->nrRayDirections.x*this->rayParamsPtr->nrRayDirections.y;
 
-				//std::cout << "iGes: " << iGes << std::endl;
+				//std::cout << "iGes: " << iGes << "...\n";
 
 				// calc position indices from 1D index
 				unsigned long long iPosX=floorf(iGes/(this->rayParamsPtr->nrRayDirections.x*this->rayParamsPtr->nrRayDirections.y));
@@ -583,7 +583,7 @@ fieldError DiffRayField::initCPUSubset()
 						break;
 					default:
 						rayData.position=make_double3(0,0,0);
-						std::cout << "error in DiffRayField.initCPUSubset: unknown distribution of rayposition" << std::endl;
+						std::cout << "error in DiffRayField.initCPUSubset: unknown distribution of rayposition" << "...\n";
 						// report error
 						break;
 				}
@@ -651,7 +651,7 @@ fieldError DiffRayField::initCPUSubset()
 						//	}
 						//	else
 						//	{
-						//		std::cout << "error in DiffRayField.initCPUSubset: importance area for defining ray directions of source is only allowed with objects that have rectangular or elliptical apertures" << std::endl;
+						//		std::cout << "error in DiffRayField.initCPUSubset: importance area for defining ray directions of source is only allowed with objects that have rectangular or elliptical apertures" << "...\n";
 						//		// report error
 						//		//return FIELD_ERR; // return is not allowed inside opneMP block!!!
 						//	}
@@ -737,7 +737,7 @@ fieldError DiffRayField::initCPUSubset()
 
 					default:
 						rayData.direction=make_double3(0,0,0);
-						std::cout << "error in Diff.initCPUSubset: unknown raydirection distribution" << std::endl;
+						std::cout << "error in Diff.initCPUSubset: unknown raydirection distribution" << "...\n";
 						// report error
 						break;
 				}
@@ -806,19 +806,19 @@ fieldError DiffRayField::initCPUSubset()
 } // end omp
 			end=clock();
 			msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
-			std::cout << " " << msecs <<" ms to initialize " << this->rayParamsPtr->GPUSubset_width << " rays." << std::endl;
+			std::cout << " " << msecs <<" ms to initialize " << this->rayParamsPtr->GPUSubset_width << " rays." << "...\n";
 		}
 
 		else if(this->rayParamsPtr->width*this->rayParamsPtr->height<1)
 		{
 			//not Possible. Report error or set n=-n
-			std::cout << "error in DiffRayField.initCPUInstance: negative raynumber" << std::endl;
+			std::cout << "error in DiffRayField.initCPUInstance: negative raynumber" << "...\n";
 		}
 		this->update=false;
 	}	// end if GPUsubsetwidth*height<rayListLength
 	else
 	{
-		std::cout << "error in DiffRayField.initCPUInstance: rayList is smaller than simulation subset" << std::endl;
+		std::cout << "error in DiffRayField.initCPUInstance: rayList is smaller than simulation subset" << "...\n";
 		return FIELD_ERR;
 	}
 	return FIELD_NO_ERR;
@@ -880,7 +880,7 @@ fieldError DiffRayField::createCPUSimInstance()
 	rayList=(diffRayStruct*) malloc(GPU_SUBSET_WIDTH_MAX*GPU_SUBSET_HEIGHT_MAX*sizeof(diffRayStruct));
 	if (!rayList)
 	{
-		std::cout << "error in DiffRayField.createLayoutInstance(): memory for rayList could not be allocated. try to reduce ray tiling size" << std::endl;
+		std::cout << "error in DiffRayField.createLayoutInstance(): memory for rayList could not be allocated. try to reduce ray tiling size" << "...\n";
 		return FIELD_ERR;
 	}
 	this->rayListLength=GPU_SUBSET_WIDTH_MAX*GPU_SUBSET_HEIGHT_MAX;
@@ -967,7 +967,7 @@ fieldError DiffRayField::write2TextFile(char* filename, detParams &oDetParams)
 	hFileOut = fopen( t_filename, "a" ) ;
 	if (!hFileOut)
 	{
-		std::cout << "error in DiffRayField.write2TextFile(): could not open output file: " << filename << std::endl;
+		std::cout << "error in DiffRayField.write2TextFile(): could not open output file: " << filename << "...\n";
 		return FIELD_ERR;
 	}
 	// calc the dimensions of the subset
@@ -1039,24 +1039,24 @@ fieldError DiffRayField::traceScene(Group &oGroup, bool RunOnCPU, RTcontext &con
 
 		omp_set_num_threads(numCPU);
 
-		std::cout << "tracing on " << numCPU << " cores of CPU." << std::endl;
+		std::cout << "tracing on " << numCPU << " cores of CPU." << "...\n";
 
 		if (FIELD_NO_ERR!= initCPUSubset())
 		{
-			std::cout << "error in DiffRayField.traceScene: initCPUSubset returned an error" << std::endl;
+			std::cout << "error in DiffRayField.traceScene: initCPUSubset returned an error" << "...\n";
 			return FIELD_ERR;
 		}
 
-		std::cout << "starting the actual trace..." << std::endl;
+		std::cout << "starting the actual trace..." << "...\n";
 
 #pragma omp parallel default(shared)
 {
 //			int id;
 //			id = omp_get_thread_num();
 
-//			std::cout << "Hello World from thread: " << id << std::endl;
+//			std::cout << "Hello World from thread: " << id << "...\n";
 
-//			std::cout << "test: " << std::endl;
+//			std::cout << "test: " << "...\n";
 
 		#pragma omp for schedule(dynamic, 500)
 
@@ -1076,7 +1076,7 @@ fieldError DiffRayField::traceScene(Group &oGroup, bool RunOnCPU, RTcontext &con
 		//RTsize				buffer_width, buffer_height; // get size of output buffer
 		void				*data; // pointer to cast output buffer into
  		//rayStruct			*bufferData;
-		std::cout << "tracing on GPU." << std::endl;
+		std::cout << "tracing on GPU." << "...\n";
 
 		initGPUSubset(context, seed_buffer_obj);
 
@@ -1101,11 +1101,11 @@ fieldError DiffRayField::traceScene(Group &oGroup, bool RunOnCPU, RTcontext &con
 		//bufferData=(rayStruct*)data;
 		//rayStruct test=bufferData[250];
 		//SourceList->setRayList((rayStruct*)data);
-		//std::cout << "DEBUG: jx=" << jx << " jy=" << jy << std::endl;
+		//std::cout << "DEBUG: jx=" << jx << " jy=" << jy << "...\n";
 		//copyRayListSubset((rayStruct*)data, l_launchOffset, l_GPUSubsetDim);
 		if (FIELD_NO_ERR != copyRayList((diffRayStruct*)data,this->rayParamsPtr->GPUSubset_width) )
 		{
-			std::cout << "error in GeometricRayField.traceScene(): copyRayList() returned an error" << std::endl;
+			std::cout << "error in GeometricRayField.traceScene(): copyRayList() returned an error" << "...\n";
 			return FIELD_NO_ERR;
 		}
 		
@@ -1115,7 +1115,7 @@ fieldError DiffRayField::traceScene(Group &oGroup, bool RunOnCPU, RTcontext &con
 
 	end=clock();
 	msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
-	std::cout << " " << msecs <<" ms to trace " << this->rayParamsPtr->GPUSubset_width << " rays." << std::endl;
+	std::cout << " " << msecs <<" ms to trace " << this->rayParamsPtr->GPUSubset_width << " rays." << "...\n";
 
 	return FIELD_NO_ERR;
 };
@@ -1138,7 +1138,7 @@ fieldError DiffRayField::traceStep(Group &oGroup, bool RunOnCPU, RTcontext &cont
 	// start timing
 	start=clock();
 
-		std::cout << "tracing steps on " << numCPU << " cores of CPU." << std::endl;
+		std::cout << "tracing steps on " << numCPU << " cores of CPU." << "...\n";
 
 #pragma omp parallel default(shared)
 {
@@ -1156,7 +1156,7 @@ fieldError DiffRayField::traceStep(Group &oGroup, bool RunOnCPU, RTcontext &cont
 }
 	end=clock();
 	msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
-	std::cout << " " << msecs <<" ms to trace " << this->rayParamsPtr->GPUSubset_width << " rays." << std::endl;
+	std::cout << " " << msecs <<" ms to trace " << this->rayParamsPtr->GPUSubset_width << " rays." << "...\n";
 
 	return FIELD_NO_ERR;
 };
@@ -1176,7 +1176,7 @@ fieldError DiffRayField::copyRayList(diffRayStruct *data, long long length)
 {
 	if (length > this->rayListLength)
 	{
-		std::cout << "error in DiffRayField.copyRayList(): subset dimensions exceed rayLIst dimension" << std::endl;
+		std::cout << "error in DiffRayField.copyRayList(): subset dimensions exceed rayLIst dimension" << "...\n";
 		return FIELD_ERR;
 	}
 	memcpy(this->rayList, data, this->rayParamsPtr->GPUSubset_width*sizeof(diffRayStruct));
@@ -1202,7 +1202,7 @@ fieldError DiffRayField::copyRayListSubset(diffRayStruct *data, long2 launchOffs
 	//  ----memory range of completed lines---- + ---memory range blocks in given line---
 	if (launchOffset.y*this->rayParamsPtr->width+(subsetDim.x+launchOffset.x)*subsetDim.y > this->rayListLength)
 	{
-		std::cout << "error in GeometricRayField.copyRayListSubset(): subset dimensions exceed rayLIst dimension" << std::endl;
+		std::cout << "error in GeometricRayField.copyRayListSubset(): subset dimensions exceed rayLIst dimension" << "...\n";
 		return FIELD_ERR;
 	}
 	// copy the ray list line per line
@@ -1257,7 +1257,7 @@ fieldError DiffRayField::convert2RayData(Field** imagePtrPtr, detParams &oDetPar
 		l_ptr=dynamic_cast<DiffRayField*>(*imagePtrPtr);
 		if ( l_ptr->rayListLength < this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width )
 		{
-			std::cout << "error in GeometricRayField.convert2RayData(): dimensions of image does not fit dimensions of raylist subset" << std::endl;
+			std::cout << "error in GeometricRayField.convert2RayData(): dimensions of image does not fit dimensions of raylist subset" << "...\n";
 			return FIELD_ERR;
 		}
 	}
@@ -1297,7 +1297,7 @@ fieldError DiffRayField::convert2Intensity(Field* imagePtr, detParams &oDetParam
 
 	if (l_IntensityImagePtr == NULL)
 	{
-		std::cout << "error in DiffRayField.convert2Intensity(): imagePtr is not of type IntensityField" << std::endl;
+		std::cout << "error in DiffRayField.convert2Intensity(): imagePtr is not of type IntensityField" << "...\n";
 		return FIELD_ERR;
 	}
 		
@@ -1338,7 +1338,7 @@ fieldError DiffRayField::convert2Intensity(Field* imagePtr, detParams &oDetParam
 
 	complex<double> i_compl=complex<double>(0,1); // define complex number "i"
 
-//	std::cout << "processing on " << numCPU << " cores of CPU." << std::endl;
+//	std::cout << "processing on " << numCPU << " cores of CPU." << "...\n";
 
 //#pragma omp parallel default(shared)
 //{
@@ -1364,7 +1364,7 @@ fieldError DiffRayField::convert2Intensity(Field* imagePtr, detParams &oDetParam
 		}
 		else
 		{
-			std::cout << " ray " << jx << " not in target: " << rayList[jx].position.x << "; " << rayList[jx].position.y << "; " << rayList[jx].position.z << std::endl;
+			std::cout << " ray " << jx << " not in target: " << rayList[jx].position.x << "; " << rayList[jx].position.y << "; " << rayList[jx].position.z << "...\n";
 		}
 
 	}
@@ -1372,7 +1372,7 @@ fieldError DiffRayField::convert2Intensity(Field* imagePtr, detParams &oDetParam
 	// if this is the last subset of the current launch, convert complex amplitude to intensity
 	if ( this->rayParamsPtr->launchOffsetX+this->rayParamsPtr->GPUSubset_width+this->rayParamsPtr->launchOffsetY*this->rayParamsPtr->width*this->rayParamsPtr->nrRayDirections.x*this->rayParamsPtr->nrRayDirections.y >= this->rayParamsPtr->width*this->rayParamsPtr->height*this->rayParamsPtr->nrRayDirections.x*this->rayParamsPtr->nrRayDirections.y )
 	{
-		std::cout << " finally converting scalar field to intensity" << std::endl;
+		std::cout << " finally converting scalar field to intensity" << "...\n";
 		// loop through the pixels and calc intensity from complex amplitudes
 		for (unsigned long long jx=0;jx<nrPixels.x;jx++)
 		{
@@ -1386,13 +1386,13 @@ fieldError DiffRayField::convert2Intensity(Field* imagePtr, detParams &oDetParam
 			}
 		}
 	}
-	std::cout << " " << hitNr << " out of " << this->rayParamsPtr->GPUSubset_width << " rays in target" << std::endl;
+	std::cout << " " << hitNr << " out of " << this->rayParamsPtr->GPUSubset_width << " rays in target" << "...\n";
 
 	// end timing
 	end=clock();
 	msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
 	msecs_Tracing=msecs_Tracing+msecs;
-	std::cout << msecs <<"ms to process " << this->rayParamsPtr->GPUSubset_width << " rays." << std::endl;
+	std::cout << msecs <<"ms to process " << this->rayParamsPtr->GPUSubset_width << " rays." << "...\n";
 
 	return FIELD_NO_ERR;
 };
@@ -1424,7 +1424,7 @@ fieldError DiffRayField::convert2ScalarField(Field* imagePtr, detParams &oDetPar
 
 	if (l_ScalarImagePtr == NULL)
 	{
-		std::cout << "error in DiffRayField.convert2ScalarField(): imagePtr is not of type ScalarField" << std::endl;
+		std::cout << "error in DiffRayField.convert2ScalarField(): imagePtr is not of type ScalarField" << "...\n";
 		return FIELD_ERR;
 	}
 
@@ -1468,7 +1468,7 @@ fieldError DiffRayField::convert2ScalarField(Field* imagePtr, detParams &oDetPar
 
 	complex<double> i_compl=complex<double>(0,1); // define complex number "i"
 
-//	std::cout << "processing on " << numCPU << " cores of CPU." << std::endl;
+//	std::cout << "processing on " << numCPU << " cores of CPU." << "...\n";
 
 //#pragma omp parallel default(shared)
 //{
@@ -1512,19 +1512,19 @@ fieldError DiffRayField::convert2ScalarField(Field* imagePtr, detParams &oDetPar
 		}
 		else
 		{
-			std::cout << " ray " << jx << " not in target: " << rayList[jx].position.x << "; " << rayList[jx].position.y << "; " << rayList[jx].position.z << std::endl;
+			std::cout << " ray " << jx << " not in target: " << rayList[jx].position.x << "; " << rayList[jx].position.y << "; " << rayList[jx].position.z << "...\n";
 		}
 
 	}
 //}
 	//l_ScalarImagePtr->getFieldPtr()[98]=polar(100,0);
 	//l_ScalarImagePtr->getFieldPtr()[99]=polar(100,0);
-	std::cout << " " << hitNr << " out of " << this->rayParamsPtr->GPUSubset_width << " rays in target" << std::endl;
+	std::cout << " " << hitNr << " out of " << this->rayParamsPtr->GPUSubset_width << " rays in target" << "...\n";
 	// end timing
 	end=clock();
 	msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
 	msecs_Tracing=msecs_Tracing+msecs;
-	std::cout << msecs <<"ms to process " << this->rayParamsPtr->GPUSubset_width << " rays." << std::endl;
+	std::cout << msecs <<"ms to process " << this->rayParamsPtr->GPUSubset_width << " rays." << "...\n";
 
 
 	return FIELD_NO_ERR;
@@ -1558,7 +1558,7 @@ fieldError DiffRayField::convert2PhaseSpace(Field* imagePtr, detParams &oDetPara
 	PhaseSpaceField* l_PhaseSpacePtr=dynamic_cast<PhaseSpaceField*>(imagePtr);
 	if (l_PhaseSpacePtr == NULL)
 	{
-		std::cout << "error in GeometricRayField.convert2PhaseSpaceField(): imagePtr is not of type IntensityField" << std::endl;
+		std::cout << "error in GeometricRayField.convert2PhaseSpaceField(): imagePtr is not of type IntensityField" << "...\n";
 		return FIELD_ERR;
 	}
 		
@@ -1599,7 +1599,7 @@ fieldError DiffRayField::convert2PhaseSpace(Field* imagePtr, detParams &oDetPara
 
 	if (this->rayParamsPtr->coherence==1) // sum coherently
 	{
-		std::cout << "error in GeometricRayField.convert2PhaseSpaceField(): coherent conversion is not defined!!" << std::endl;
+		std::cout << "error in GeometricRayField.convert2PhaseSpaceField(): coherent conversion is not defined!!" << "...\n";
 		return FIELD_ERR; //matrix singular
 	}
 	else 
@@ -1675,14 +1675,14 @@ fieldError DiffRayField::convert2PhaseSpace(Field* imagePtr, detParams &oDetPara
 			//	}
 			//	//else
 			//	//{
-			//	//	std::cout <<  "ray number " << j << " did not hit target." << "x: " << rayList[j].position.x << ";y: " << rayList[j].position.y << "z: " << rayList[j].position.z << ";geometryID " << rayList[j].currentGeometryID << std::endl;
+			//	//	std::cout <<  "ray number " << j << " did not hit target." << "x: " << rayList[j].position.x << ";y: " << rayList[j].position.y << "z: " << rayList[j].position.z << ";geometryID " << rayList[j].currentGeometryID << "...\n";
 			//	//}
 			//}
-			std::cout << " " << hitNr << " out of " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays in target" << std::endl;
+			std::cout << " " << hitNr << " out of " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays in target" << "...\n";
 		}
 		else
 		{
-			std::cout << "error in GeometricRayField.convert2PhaseSpaceField(): partial coherence not implemented yet" << std::endl;
+			std::cout << "error in GeometricRayField.convert2PhaseSpaceField(): partial coherence not implemented yet" << "...\n";
 			return FIELD_ERR;
 		}
 
@@ -1691,7 +1691,7 @@ fieldError DiffRayField::convert2PhaseSpace(Field* imagePtr, detParams &oDetPara
 	end=clock();
 	msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
 	msecs_Tracing=msecs_Tracing+msecs;
-	std::cout << " " << msecs <<"ms to process " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays." << std::endl;
+	std::cout << " " << msecs <<"ms to process " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays." << "...\n";
 
 	return FIELD_NO_ERR;
 };
@@ -1728,17 +1728,17 @@ fieldError DiffRayField::processParseResults(FieldParseParamStruct &parseResults
 	// no importance area and direction distribution GRID_RECT is not allowed
 	if ( !parseResults_Src.importanceArea && ( (parseResults_Src.rayDirDistr==RAYDIR_GRID_RECT)||(parseResults_Src.rayDirDistr==RAYDIR_GRID_RAD) ) )
 	{
-		std::cout <<"error in DiffRayField.processParseResults(): direction distribution GRID_RECT and GRID_RAD are not allowed if no importance area is defined" << std::endl;
+		std::cout <<"error in DiffRayField.processParseResults(): direction distribution GRID_RECT and GRID_RAD are not allowed if no importance area is defined" << "...\n";
 		return FIELD_ERR;
 	}
 	//if (parseResults_Src.rayDirDistr == RAYDIR_UNIFORM)
 	//{
-	//	std::cout <<"error in DiffRayField.processParseResults(): direction distribution UNIFORM is not allowed for differential ray fields" << std::endl;
+	//	std::cout <<"error in DiffRayField.processParseResults(): direction distribution UNIFORM is not allowed for differential ray fields" << "...\n";
 	//	return FIELD_ERR;
 	//}
 	if ( (parseResults_Src.nrRayDirections.x*parseResults_Src.nrRayDirections.y > GPU_SUBSET_WIDTH_MAX*GPU_SUBSET_WIDTH_MAX) && (parseResults_Src.rayDirDistr == RAYDIR_RAND_RECT) && ( (parseResults_Src.rayPosDistr == RAYPOS_RAND_RECT) || (parseResults_Src.rayPosDistr == RAYPOS_RAND_RAD) ) )
 	{
-		std::cout <<"warning in DiffRayField.processParseResults(): a number of ray directions that is bigger than the size of a GPU subset in combination with random position and direction distribution leads to a situation where some rays per point source point into the same direction when tracing on GPU." << std::endl;
+		std::cout <<"warning in DiffRayField.processParseResults(): a number of ray directions that is bigger than the size of a GPU subset in combination with random position and direction distribution leads to a situation where some rays per point source point into the same direction when tracing on GPU." << "...\n";
 	}
 
 //	this->rayParamsPtr=new diffRayFieldParams;
@@ -1816,7 +1816,7 @@ fieldError DiffRayField::processParseResults(FieldParseParamStruct &parseResults
 			immersionDispersionParamsPtr->lambdaMin=0;
 			immersionDispersionParamsPtr->dispersionFormula=MAT_DISPFORMULA_NODISP;
 			l_matRefrPtr->setImmersionDispersionParams(immersionDispersionParamsPtr); // we don't use an immersion medium here but we need to set some value...
-			std::cout <<"warning in GeometricRayField.processParseResults(): unknown material. Rafracting material with n=1 assumed." << std::endl;
+			std::cout <<"warning in GeometricRayField.processParseResults(): unknown material. Rafracting material with n=1 assumed." << "...\n";
 			break;
 	}
 	return FIELD_NO_ERR;
@@ -1846,7 +1846,7 @@ fieldError  DiffRayField::parseXml(pugi::xml_node &det, vector<Field*> &fieldVec
 	// call base class function
 	if (FIELD_NO_ERR != RayField::parseXml(det, fieldVec, simParams))
 	{
-		std::cout << "error in DiffRayField.parseXml(): RayField.parseXml()  returned an error." << std::endl;
+		std::cout << "error in DiffRayField.parseXml(): RayField.parseXml()  returned an error." << "...\n";
 		return FIELD_ERR;
 	}
 	return FIELD_NO_ERR;

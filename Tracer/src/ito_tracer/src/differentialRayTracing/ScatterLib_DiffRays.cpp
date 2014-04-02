@@ -37,7 +37,7 @@ bool ScatterFab_DiffRays::createScatInstFromXML(xml_node &node, Scatter* &pScat,
 	const char* scatTypeAscii = (l_parser.attrByName(node,"scatterType"))->value();
 	if (scatTypeAscii == "")
 	{
-		std::cout << "error in ScatterLib.createScatInstFromXML(): scatterType is not defined" << std::endl;
+		std::cout << "error in ScatterLib.createScatInstFromXML(): scatterType is not defined" << "...\n";
 		return false;
 	}
 

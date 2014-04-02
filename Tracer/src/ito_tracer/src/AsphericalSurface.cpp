@@ -61,7 +61,7 @@ geometryError AsphericalSurface::setParams(Geometry_Params *paramsIn)//PlaneSurf
 		*(this->paramsPtr)=*l_ptr;
 	else
 	{
-		std::cout << "error in AsphericalSurface.setParams(): paramsIn seems to not be of type AsphericalSurface_Params" << std::endl;
+		std::cout << "error in AsphericalSurface.setParams(): paramsIn seems to not be of type AsphericalSurface_Params" << "...\n";
 		return GEOM_ERR;
 	}
 
@@ -218,7 +218,7 @@ geometryError AsphericalSurface::hit(rayStruct &ray,double t)
 //	else
 //	{
 //		return GEOM_GBINCONSISTENTINTERSECTIONS_ERR;// terminate the ray with an error
-//		std::cout << "error in AsphericalSurface.hit: rays of gaussian beamlet have inconsistent intersections at geometry:" << this->paramsPtr->geometryID << std::endl;
+//		std::cout << "error in AsphericalSurface.hit: rays of gaussian beamlet have inconsistent intersections at geometry:" << this->paramsPtr->geometryID << "...\n";
 //	}
 //};
 
@@ -238,7 +238,7 @@ geometryError AsphericalSurface::createOptixInstance( RTcontext &context, RTgeom
 {
 	if (GEOM_NO_ERR != Geometry::createOptixInstance(context, geometrygroup, index, simParams, lambda) )
 	{
-		std::cout <<"error in AsphericalSurface_DiffRays.createOptixInstance(): Geometry.creatOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << std::endl;
+		std::cout <<"error in AsphericalSurface_DiffRays.createOptixInstance(): Geometry.creatOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << "...\n";
 		return GEOM_ERR;
 	}
 	if ( !RT_CHECK_ERROR_NOEXIT( rtVariableSetUserData(params, sizeof(AsphericalSurface_ReducedParams), this->reducedParamsPtr), context) )
@@ -265,7 +265,7 @@ geometryError AsphericalSurface::updateOptixInstance( RTcontext &context, RTgeom
 	{
 		if (GEOM_NO_ERR != Geometry::updateOptixInstance(context, geometrygroup, index, simParams, lambda))
 		{
-			std::cout <<"error in ApertureStop_DiffRays.updateOptixInstance(): materialList[i] returned an error at geometry: " << this->getParamsPtr()->geometryID << std::endl;
+			std::cout <<"error in ApertureStop_DiffRays.updateOptixInstance(): materialList[i] returned an error at geometry: " << this->getParamsPtr()->geometryID << "...\n";
 			return GEOM_ERR;
 		}
 		/* set geometry variables */
@@ -318,7 +318,7 @@ geometryError AsphericalSurface::parseXml(pugi::xml_node &geometry, SimParams si
 	// parse base class
 	if (GEOM_NO_ERR!=Geometry::parseXml(geometry,simParams, geomVec))
 	{
-		std::cout << "error in PlaneSurface.parseXml(): Geometry.parseXml() returned an error." << std::endl;
+		std::cout << "error in PlaneSurface.parseXml(): Geometry.parseXml() returned an error." << "...\n";
 		return GEOM_ERR;
 	}
 	double3 l_vec=make_double3(0,0,1);

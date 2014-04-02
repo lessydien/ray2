@@ -43,6 +43,27 @@ public:
 	double apodisationRadius;		// 1/e-radius of a gaussian apodisation function
 };
 
+/* declare class */
+/**
+  *\class	ConfPointObject_KernelParams
+  *\brief	  
+  *
+  *         
+  *
+  *         \todo
+  *         \remarks           
+  *         \sa       NA
+  *         \date     17.041.2013
+  *         \author  Mauch
+  *
+  */
+class ConfPointObject_Params
+{
+public:
+	double A;					// amplitude of sinusoidal surface
+	double kN;					// wavenumber of sinusoidal surface
+};
+
 typedef enum 
 {
   PROP_NO_ERR,
@@ -65,7 +86,7 @@ propError cu_scalar_RichardsonWolf2(complex<double>* Uin_ptr, unsigned int dimx,
 
 propError cu_scalar_RichardsonWolf(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double f, double Dz, double** x2_ptrptr, double** y2_ptrptr);
 
-propError cu_ft2(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double delta);
+propError cu_ft2(cuDoubleComplex* Uin_ptr, unsigned int dimx, unsigned int dimy);
 
 //propError fftshift(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy);
 propError fresnel_two_step_1D(complex<double>* Uin_ptr, unsigned int dimx, double wvl, double* x1_ptr, double dx2, double Dz, double** x2_ptrptr );
@@ -93,7 +114,9 @@ propError scalar_RichardsonWolf_ts(complex<double>* Uin_ptr, unsigned int dimx, 
 propError fraunhofer_ts(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double Dz, double** x2_ptrptr, double** y2_ptrptr, fftw_plan &p);
 propError fraunhofer_1D_ts(complex<double>* Uin_ptr, unsigned int dimx, double wvl, double* x1_ptr, double Dz, double** x2_ptrptr, fftw_plan &p);
 
-propError simConfPointRawSig(double **ppRawSig, ConfPoint_Params params, bool runOnCPU);
+propError simConfRawSig(double **ppRawSig, ConfPoint_Params params, bool runOnCPU);
+propError simConfSensorSig(double **ppRawSig, ConfPoint_Params params, ConfPointObject_Params paramsObject, bool runOnCPU);
+propError simConfSensorSig(double **ppRawSig, ConfPoint_Params params, bool runOnCPU);
 
 inline propError ft1(complex<double>* Uin_ptr, unsigned int dimx, double delta)
 {

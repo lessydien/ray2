@@ -43,6 +43,27 @@ struct Lock
 
 /* declare class */
 /**
+  *\class	ConfPoint_KernelObjectParams
+  *\brief	  
+  *
+  *         
+  *
+  *         \todo
+  *         \remarks           
+  *         \sa       NA
+  *         \date     17.041.2013
+  *         \author  Mauch
+  *
+  */
+class ConfPoint_KernelObjectParams
+{
+public:
+	double A;						// amplitude of sinusoidal surface
+	double kN;					    // wavenumber of sinusoidal surface
+};
+
+/* declare class */
+/**
   *\class	ConfPoint_KernelParams
   *\brief	  
   *
@@ -82,6 +103,7 @@ public:
 };
 
 double cu_testReduce_wrapper();
+bool cu_simConfPointSensorSig_wrapper(double** ppRawSig, ConfPoint_KernelParams params, ConfPoint_KernelObjectParams paramsObject);
 bool cu_simConfPointRawSig_wrapper(double** ppRawSig, ConfPoint_KernelParams params);
 bool cu_simConfPointRawSig_wrapper1(double** ppRawSig, ConfPoint_KernelParams params);
 bool cu_simConfPointRawSig_wrapperTest(double** ppRawSig, ConfPoint_KernelParams params);
@@ -112,7 +134,7 @@ inline __host__ __device__ uint2 calc2DIndices(uint3 blockIndex, dim3 blockDimen
 inline bool __myCufftSafeCall( cufftResult err, const char *file, const int line )
 {
     if( CUFFT_SUCCESS != err) {
-		//std::cout << "cufftSafeCall() Runtime API error in file " << file << " line " << line << std::endl;
+		//std::cout << "cufftSafeCall() Runtime API error in file " << file << " line " << line << "...\n";
         return false;
     }
 	return true;

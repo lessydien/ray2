@@ -48,7 +48,7 @@
  */
 detError Detector::processParseResults(DetectorParseParamStruct &parseResults_Det)
 {
-	std::cout << "error in Detector.processParseResults(): not defined for the given detector" << std::endl;
+	std::cout << "error in Detector.processParseResults(): not defined for the given detector" << "...\n";
 	return DET_ERROR;
 };
 
@@ -130,7 +130,7 @@ detParams* Detector::getDetParamsPtr(void)
  */
 detError Detector::detect2TextFile(FILE* hFile, Field* rayFieldPtr)
 {
-	std::cout << "error in Detector.detect2TextFile(): not defined for the given detector" << std::endl;
+	std::cout << "error in Detector.detect2TextFile(): not defined for the given detector" << "...\n";
 	return DET_ERROR;
 };
 
@@ -148,7 +148,7 @@ detError Detector::detect2TextFile(FILE* hFile, Field* rayFieldPtr)
  */
 detError Detector::detect(Field* FieldPtr, Field **imagePtrPtr)
 {
-	std::cout << "error in Detector.detect(): not defined for the given detector" << std::endl;
+	std::cout << "error in Detector.detect(): not defined for the given detector" << "...\n";
 	return DET_ERROR;
 };
 
@@ -169,7 +169,7 @@ detError Detector::parseXml(pugi::xml_node &det, vector<Detector*> &detVec)
 	const char* l_fileName=l_parser.attrValByName(det, "fileName");
 	if (l_fileName==NULL)
 	{
-		std::cout << "error in Detector.parseXml(): fileName is not defined" << std::endl;
+		std::cout << "error in Detector.parseXml(): fileName is not defined" << "...\n";
 		return DET_ERROR;
 	}
 	this->getDetParamsPtr()->filenamePtr=(char*)malloc(512*sizeof(char));

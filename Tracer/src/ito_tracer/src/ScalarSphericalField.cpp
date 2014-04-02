@@ -49,33 +49,33 @@ fieldError  ScalarSphericalField::parseXml(pugi::xml_node &field, vector<Field*>
 	// call base class function
 	if (FIELD_NO_ERR != ScalarLightField::parseXml(field, fieldVec, simParams))
 	{
-		std::cout << "error in ScalarSphericalField.parseXml(): ScalarLightField.parseXml()  returned an error." << std::endl;
+		std::cout << "error in ScalarSphericalField.parseXml(): ScalarLightField.parseXml()  returned an error." << "...\n";
 		return FIELD_ERR;
 	}
 	Parser_XML l_parser;
 	if (!l_parser.attrByNameToDouble(field, "amplMax", this->paramsPtr->amplMax))
 	{
-		std::cout << "error in ScalarLightField.parseXml(): amplMax is not defined" << std::endl;
+		std::cout << "error in ScalarLightField.parseXml(): amplMax is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	if (!l_parser.attrByNameToDouble(field, "radius.x", this->paramsPtr->radius.x))
 	{
-		std::cout << "error in ScalarGaussianField.parseXml(): radius.x is not defined" << std::endl;
+		std::cout << "error in ScalarGaussianField.parseXml(): radius.x is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	if (!l_parser.attrByNameToDouble(field, "radius.y", this->paramsPtr->radius.y))
 	{
-		std::cout << "error in ScalarGaussianField.parseXml(): radius.y is not defined" << std::endl;
+		std::cout << "error in ScalarGaussianField.parseXml(): radius.y is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	if (!l_parser.attrByNameToDouble(field, "numApt.x", this->paramsPtr->numApt.x))
 	{
-		std::cout << "error in ScalarGaussianField.parseXml(): numApt.x is not defined" << std::endl;
+		std::cout << "error in ScalarGaussianField.parseXml(): numApt.x is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	if (!l_parser.attrByNameToDouble(field, "numApt.y", this->paramsPtr->numApt.y))
 	{
-		std::cout << "error in ScalarGaussianField.parseXml(): numApt.y is not defined" << std::endl;
+		std::cout << "error in ScalarGaussianField.parseXml(): numApt.y is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	return FIELD_NO_ERR;

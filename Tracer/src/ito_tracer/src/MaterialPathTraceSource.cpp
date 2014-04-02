@@ -77,7 +77,7 @@ MaterialError MaterialPathTraceSource::createOptiXInstance(RTcontext context, RT
 {
 	if (MAT_NO_ERR != Material::createOptiXInstance(context, instance, index, simParams, lambda) )
 	{
-		std::cout << "error in MaterialPathTraceSource.createOptiXInstance(): Material.creatOptiXInstance() returned an error" << std::endl;
+		std::cout << "error in MaterialPathTraceSource.createOptiXInstance(): Material.creatOptiXInstance() returned an error" << "...\n";
 		return MAT_ERR;
 	}
 	/* set the variables of the geometry */
@@ -113,7 +113,7 @@ MaterialError MaterialPathTraceSource::updateOptiXInstance(RTcontext context, RT
 	}
 	if (MAT_NO_ERR != Material::updateOptiXInstance(context, instance, index, simParams, lambda) )
 	{
-		std::cout << "error in MaterialLinearGrating1D.updateOptiXInstance(): Material.updateOptiXInstance() returned an error" << std::endl;
+		std::cout << "error in MaterialLinearGrating1D.updateOptiXInstance(): Material.updateOptiXInstance() returned an error" << "...\n";
 		return MAT_ERR;
 	}
 	return MAT_NO_ERR;	

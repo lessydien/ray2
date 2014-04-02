@@ -112,8 +112,8 @@ const char* SimAssistantLayout::getPathToPtx(void)
 // */
 //simAssError SimAssistantLayout::initSimulation( Group *oGroupPtr, Field *SourceListPtrPtr)
 //{
-//	std::cout << "*****************************************************" << std::endl;
-//	std::cout << "starting to initialize Simulation..." << std::endl;
+//	std::cout << "*****************************************************" << "...\n";
+//	std::cout << "starting to initialize Simulation..." << "...\n";
 //
 //	clock_t start, end;
 //	start=clock();
@@ -121,14 +121,14 @@ const char* SimAssistantLayout::getPathToPtx(void)
 //	SourceListPtrPtr->createLayoutInstance();
 //	if (GROUP_NO_ERR != oGroupPtr->createCPUSimInstance(SourceListPtrPtr->getParamsPtr()->lambda, paramsPtr->mode) )
 //	{
-//		std::cout << "error in SimAssistant.initSimulation(): group.createCPUSimInstance() returned an error" << std::endl;
+//		std::cout << "error in SimAssistant.initSimulation(): group.createCPUSimInstance() returned an error" << "...\n";
 //		return SIMASS_ERROR;
 //	}
 //
 //	end=clock();
 //	double msecs;
 //	msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
-//	std::cout << msecs <<"ms to initialize Simulation." << std::endl;
+//	std::cout << msecs <<"ms to initialize Simulation." << "...\n";
 //
 //	return SIMASS_NO_ERROR;
 //};
@@ -151,8 +151,8 @@ simAssError SimAssistantLayout::run(Group *oGroupPtr, RayField *SourceListPtrPtr
 //	//void				*data; // pointer to cast output buffer into
 // //	rayStruct			*bufferData;
 
-	std::cout << "*****************************************************" << std::endl;
-	std::cout << "starting simulation..." << std::endl;
+	std::cout << "*****************************************************" << "...\n";
+	std::cout << "starting simulation..." << "...\n";
 
 	clock_t start, end;
 	double msecs_Saving=0;
@@ -186,7 +186,7 @@ simAssError SimAssistantLayout::run(Group *oGroupPtr, RayField *SourceListPtrPtr
 
 			if (FIELD_NO_ERR!=SourceListPtrPtr->initCPUSubset())
 			{
-				std::cout << "error in SimAssistantLayout.traceScene: initCPUSubset returned an error" << std::endl;
+				std::cout << "error in SimAssistantLayout.traceScene: initCPUSubset returned an error" << "...\n";
 				return SIMASS_ERROR;
 			}
 
@@ -232,7 +232,7 @@ simAssError SimAssistantLayout::run(Group *oGroupPtr, RayField *SourceListPtrPtr
 			{
 				if (FIELD_NO_ERR != SourceListPtrPtr->traceStep(*oGroupPtr, this->paramsPtr->RunOnCPU) )
 				{
-					std::cout << "error in SimAssistant.run(): Source.traceStep() returned an error" << std::endl;
+					std::cout << "error in SimAssistant.run(): Source.traceStep() returned an error" << "...\n";
 					return SIMASS_ERROR;
 				}
 				anythingRunning=false;
@@ -285,8 +285,8 @@ simAssError SimAssistantLayout::run(Group *oGroupPtr, RayField *SourceListPtrPtr
 			SourceListPtrPtr->getParamsPtr()->launchOffsetX=SourceListPtrPtr->getParamsPtr()->launchOffsetX+SourceListPtrPtr->getParamsPtr()->GPUSubset_width;				
 				
 			tracedRayNr=tracedRayNr+l_GPUSubsetDim.x*l_GPUSubsetDim.y;
-			std::cout << " " << tracedRayNr <<" out of " << width*height << " rays traced in total" << std::endl;
-			//std::cout << std::endl;
+			std::cout << " " << tracedRayNr <<" out of " << width*height << " rays traced in total" << "...\n";
+			//std::cout << "...\n";
 
 			count++;
 		}
@@ -297,32 +297,32 @@ simAssError SimAssistantLayout::run(Group *oGroupPtr, RayField *SourceListPtrPtr
 	}
 	end = clock();
 	msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
-	std::cout << std::endl;
-	std::cout << "****************************************************** " << std::endl;
-	std::cout << "summary:  " << std::endl;
-	std::cout << msecs <<"ms to trace and process " << tracedRayNr << " rays." << std::endl;
+	std::cout << "...\n";
+	std::cout << "****************************************************** " << "...\n";
+	std::cout << "summary:  " << "...\n";
+	std::cout << msecs <<"ms to trace and process " << tracedRayNr << " rays." << "...\n";
 
 	return SIMASS_NO_ERROR;
 };
 
 simAssError SimAssistantLayout::initSimulation( Group *oGroupPtr, Field *SourceListPtrPtr)
 {
-	std::cout << "*****************************************************" << std::endl;
-	std::cout << "starting to initialize Simulation..." << std::endl;
+	std::cout << "*****************************************************" << "...\n";
+	std::cout << "starting to initialize Simulation..." << "...\n";
 
 	clock_t start, end;
 	start=clock();
 
 	if (SIMASS_NO_ERROR != SourceListPtrPtr->initLayout(*oGroupPtr, *(this->getParamsPtr())))
 	{
-		std::cout << "error in SimAssistant.initSimulation(): field.initSimulation() returned an error." << std::endl;
+		std::cout << "error in SimAssistant.initSimulation(): field.initSimulation() returned an error." << "...\n";
 		return SIMASS_ERROR;
 	}
 
 	end=clock();
 	double msecs;
 	msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
-	std::cout << msecs <<"ms to initialize Simulation." << std::endl;
+	std::cout << msecs <<"ms to initialize Simulation." << "...\n";
 
 	return SIMASS_NO_ERROR;
 }

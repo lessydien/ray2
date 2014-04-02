@@ -90,7 +90,7 @@ bool MaterialFab::createMatInstFromXML(xml_node &node, Material* &pMat, SimParam
 
 	if (MAT_NO_ERR != pMat->parseXml(node, simParams) )
 	{
-		std::cout <<"error in MaterialFab.createMatInstFromXML(): mat.parseXML() returned an error" << std::endl;
+		std::cout <<"error in MaterialFab.createMatInstFromXML(): mat.parseXML() returned an error" << "...\n";
 		return false;
 	}
 

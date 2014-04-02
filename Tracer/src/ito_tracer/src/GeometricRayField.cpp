@@ -165,7 +165,7 @@ fieldError GeometricRayField::copyRayList(rayStruct *data, long long length)
 {
 	if (length > this->rayListLength)
 	{
-		std::cout << "error in GeometricRayField.copyRayList(): subset dimensions exceed rayLIst dimension" << std::endl;
+		std::cout << "error in GeometricRayField.copyRayList(): subset dimensions exceed rayLIst dimension" << "...\n";
 		return FIELD_ERR;
 	}
 
@@ -197,7 +197,7 @@ fieldError GeometricRayField::copyRayListSubset(rayStruct *data, long2 launchOff
 	//  ----memory range of completed lines---- + ---memory range blocks in given line---
 	if (launchOffset.y*this->rayParamsPtr->width+(subsetDim.x+launchOffset.x)*subsetDim.y > this->rayListLength)
 	{
-		std::cout << "error in GeometricRayField.copyRayListSubset(): subset dimensions exceed rayLIst dimension" << std::endl;
+		std::cout << "error in GeometricRayField.copyRayListSubset(): subset dimensions exceed rayLIst dimension" << "...\n";
 		return FIELD_ERR;
 	}
 	// copy the ray list line per line
@@ -272,7 +272,7 @@ fieldError GeometricRayField::createOptixInstance(RTcontext &context, RTbuffer &
 
 	//if (FIELD_NO_ERR != RayField::createOptixInstance(context, output_buffer_obj, seed_buffer_obj) )
 	//{
-	//	std::cout <<"error in GeometricRayField.createOptixInstance(): RayField.createOptixInstance() returned an error." << std::endl;
+	//	std::cout <<"error in GeometricRayField.createOptixInstance(): RayField.createOptixInstance() returned an error." << "...\n";
 	//	return FIELD_ERR;
 	//}
 
@@ -303,7 +303,7 @@ fieldError GeometricRayField::createOptixInstance(RTcontext &context, RTbuffer &
 		strcat(rayGenName, "_DirGridRad");
 		break;
 	default:
-		std::cout <<"error in PathTracingRayField.createOptixInstance(): unknown distribution of ray directions." << std::endl;
+		std::cout <<"error in PathTracingRayField.createOptixInstance(): unknown distribution of ray directions." << "...\n";
 		return FIELD_ERR;
 		break;
 	}
@@ -322,7 +322,7 @@ fieldError GeometricRayField::createOptixInstance(RTcontext &context, RTbuffer &
 		strcat(rayGenName, "_PosGridRad");
 		break;
 	default:
-		std::cout <<"error in RayField.createOptixInstance(): unknown distribution of ray positions." << std::endl;
+		std::cout <<"error in RayField.createOptixInstance(): unknown distribution of ray positions." << "...\n";
 		return FIELD_ERR;
 		break;
 	}
@@ -359,7 +359,7 @@ fieldError GeometricRayField::createOptixInstance(RTcontext &context, RTbuffer &
 
 	if (FIELD_NO_ERR!=this->createCPUSimInstance())
 	{
-		std::cout <<"error in PathTracingRayField.createOptixInstance(): create CPUSimInstance() returned an error." << std::endl;
+		std::cout <<"error in PathTracingRayField.createOptixInstance(): create CPUSimInstance() returned an error." << "...\n";
 		return FIELD_ERR;
 	}
 
@@ -530,7 +530,7 @@ fieldError GeometricRayField::initCPUSubset()
 			// start timing
 			start=clock();
 
-			std::cout << "initalizing random seed" << std::endl;
+			std::cout << "initalizing random seed" << "...\n";
 
 			int seed = (int)time(0);            // random seed
 			RandomInit(seed, x);
@@ -543,13 +543,13 @@ fieldError GeometricRayField::initCPUSubset()
 
 			end=clock();
 			msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
-			std::cout << " " << msecs <<" ms to initialize random seeds of " << this->rayParamsPtr->GPUSubset_width*this->rayParamsPtr->GPUSubset_height << " rays." << std::endl;
+			std::cout << " " << msecs <<" ms to initialize random seeds of " << this->rayParamsPtr->GPUSubset_width*this->rayParamsPtr->GPUSubset_height << " rays." << "...\n";
 
 			// start timing
 			start=clock();
 
 			// create all the rays
-		std::cout << "initializing rays on " << numCPU << " cores of CPU." << std::endl;
+		std::cout << "initializing rays on " << numCPU << " cores of CPU." << "...\n";
 
 		omp_set_num_threads(numCPU);
 
@@ -676,7 +676,7 @@ fieldError GeometricRayField::initCPUSubset()
 							break;
 						default:
 							rayData.position=make_double3(0,0,0);
-							std::cout << "error in GeometricRayField.initCPUSubset: unknown distribution of rayposition" << std::endl;
+							std::cout << "error in GeometricRayField.initCPUSubset: unknown distribution of rayposition" << "...\n";
 							// report error
 							break;
 					}
@@ -776,7 +776,7 @@ fieldError GeometricRayField::initCPUSubset()
 						//	}
 						//	else
 						//	{
-						//		std::cout << "error in RayField.createCPUInstance: importance area for defining ray directions of source is only allowed with objects that have rectangular or elliptical apertures" << std::endl;
+						//		std::cout << "error in RayField.createCPUInstance: importance area for defining ray directions of source is only allowed with objects that have rectangular or elliptical apertures" << "...\n";
 						//		return FIELD_ERR;
 						//	}
 						//}
@@ -843,7 +843,7 @@ fieldError GeometricRayField::initCPUSubset()
 							break;
 						default:
 							rayData.direction=make_double3(0,0,0);
-							std::cout << "error in GeometricRayField.initCPUSubset: unknown raydirection distribution" << std::endl;
+							std::cout << "error in GeometricRayField.initCPUSubset: unknown raydirection distribution" << "...\n";
 							// report error
 							break;
 					}
@@ -856,20 +856,20 @@ fieldError GeometricRayField::initCPUSubset()
 } // end omp
 			end=clock();
 			msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
-			std::cout << " " << msecs <<" ms to initialize " << this->rayParamsPtr->GPUSubset_width*this->rayParamsPtr->GPUSubset_height << " rays." << std::endl;
+			std::cout << " " << msecs <<" ms to initialize " << this->rayParamsPtr->GPUSubset_width*this->rayParamsPtr->GPUSubset_height << " rays." << "...\n";
 
 		}
 		else if(this->rayParamsPtr->width*this->rayParamsPtr->height<1)
 		{
 			//not Possible. Report error or set n=-n
-			std::cout << "error in GeometricRayField.initCPUInstance: negative raynumber" << std::endl;
+			std::cout << "error in GeometricRayField.initCPUInstance: negative raynumber" << "...\n";
 			return FIELD_ERR;
 		}
 		this->update=false;
 	}	// end if GPUsubsetwidth*height<rayListLength
 	else
 	{
-		std::cout << "error in GeometricRayField.initCPUInstance: rayList is smaller than simulation subset" << std::endl;
+		std::cout << "error in GeometricRayField.initCPUInstance: rayList is smaller than simulation subset" << "...\n";
 		return FIELD_ERR;
 	}
 	return FIELD_NO_ERR;
@@ -1073,7 +1073,7 @@ fieldError GeometricRayField::createCPUSimInstance()
 	rayList=(rayStruct*) malloc(GPU_SUBSET_WIDTH_MAX*GPU_SUBSET_HEIGHT_MAX*sizeof(rayStruct));
 	if (!rayList)
 	{
-		std::cout << "error in GeometricRayField.createLayoutInstance(): memory for rayList could not be allocated" << std::endl;
+		std::cout << "error in GeometricRayField.createLayoutInstance(): memory for rayList could not be allocated" << "...\n";
 		return FIELD_ERR;
 	}
 	this->rayListLength=GPU_SUBSET_WIDTH_MAX*GPU_SUBSET_HEIGHT_MAX;
@@ -1129,7 +1129,7 @@ fieldError GeometricRayField::createLayoutInstance()
 	rayList=(rayStruct*) malloc(GPU_SUBSET_WIDTH_MAX*GPU_SUBSET_HEIGHT_MAX*sizeof(rayStruct));
 	if (!rayList)
 	{
-		std::cout << "error in GeometricRayField.createLayoutInstance(): memory for rayList could not be allocated. try to reduce ray tiling size" << std::endl;
+		std::cout << "error in GeometricRayField.createLayoutInstance(): memory for rayList could not be allocated. try to reduce ray tiling size" << "...\n";
 		return FIELD_ERR;
 	}
 	this->rayListLength=GPU_SUBSET_WIDTH_MAX*GPU_SUBSET_HEIGHT_MAX;
@@ -1255,15 +1255,15 @@ fieldError GeometricRayField::traceScene(Group &oGroup, bool RunOnCPU)
 
 	if (RunOnCPU)
 	{
-		std::cout << "tracing on " << numCPU << " cores of CPU." << std::endl;
+		std::cout << "tracing on " << numCPU << " cores of CPU." << "...\n";
 
 		if (FIELD_NO_ERR!= initCPUSubset())
 		{
-			std::cout << "error in GeometrciRayField.traceScene(): initCPUSubset() returned an error." << std::endl;
+			std::cout << "error in GeometrciRayField.traceScene(): initCPUSubset() returned an error." << "...\n";
 			return FIELD_ERR;
 		}
 
-		std::cout << "starting the actual trace..." << std::endl;		
+		std::cout << "starting the actual trace..." << "...\n";		
 
 		omp_set_num_threads(numCPU);
 
@@ -1290,12 +1290,12 @@ fieldError GeometricRayField::traceScene(Group &oGroup, bool RunOnCPU)
 					break;
 				oGroup.trace(rayList[rayListIndex]);
 			}
-			//std::cout << "Iteration " << jy << " running Cur Thread " << omp_get_thread_num() << "Num Threads " << omp_get_num_threads() << "Max Threads " << omp_get_max_threads() << " running" << std::endl;
+			//std::cout << "Iteration " << jy << " running Cur Thread " << omp_get_thread_num() << "Num Threads " << omp_get_num_threads() << "Max Threads " << omp_get_max_threads() << " running" << "...\n";
 		}
 }
 		//for (int i=0;i<20;i++)
 		//{
-		//	std::cout << "Thread number " << i << " has run " << threadCounter[i] << " times" << std::endl;
+		//	std::cout << "Thread number " << i << " has run " << threadCounter[i] << " times" << "...\n";
 		//}
 	}
 	else
@@ -1304,7 +1304,7 @@ fieldError GeometricRayField::traceScene(Group &oGroup, bool RunOnCPU)
 		void				*data; // pointer to cast output buffer into
  		//rayStruct			*bufferData;
 
-		std::cout << "tracing on GPU." << std::endl;
+		std::cout << "tracing on GPU." << "...\n";
 
 		initGPUSubset(context, seed_buffer_obj);
 		// start current launch
@@ -1328,11 +1328,11 @@ fieldError GeometricRayField::traceScene(Group &oGroup, bool RunOnCPU)
 		//bufferData=(rayStruct*)data;
 		//rayStruct test=bufferData[250];
 		//SourceList->setRayList((rayStruct*)data);
-		//std::cout << "DEBUG: jx=" << jx << " jy=" << jy << std::endl;
+		//std::cout << "DEBUG: jx=" << jx << " jy=" << jy << "...\n";
 		//copyRayListSubset((rayStruct*)data, l_launchOffset, l_GPUSubsetDim);
 		if (FIELD_NO_ERR != copyRayList((rayStruct*)data,this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width) )
 		{
-			std::cout << "error in GeometricRayField.traceScene(): copyRayList() returned an error" << std::endl;
+			std::cout << "error in GeometricRayField.traceScene(): copyRayList() returned an error" << "...\n";
 			return FIELD_NO_ERR;
 		}
 		
@@ -1343,7 +1343,7 @@ fieldError GeometricRayField::traceScene(Group &oGroup, bool RunOnCPU)
 	end=clock();
 	msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
 	msecs_Tracing=msecs_Tracing+msecs;
-	std::cout << msecs <<" ms to trace " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays." << std::endl;
+	std::cout << msecs <<" ms to trace " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays." << "...\n";
 
 	return FIELD_NO_ERR;
 };
@@ -1361,7 +1361,7 @@ fieldError GeometricRayField::traceScene(Group &oGroup, bool RunOnCPU)
 fieldError GeometricRayField::traceStep(Group &oGroup, bool RunOnCPU)
 {
 	if (!RunOnCPU)
-		std::cout << "warning in GeometricRayField.traceStep(): GPU acceleration is not implemented, continuing on CPU anyways..." << std::endl;
+		std::cout << "warning in GeometricRayField.traceStep(): GPU acceleration is not implemented, continuing on CPU anyways..." << "...\n";
 
 	clock_t start, end;
 	double msecs_Tracing=0;
@@ -1373,7 +1373,7 @@ fieldError GeometricRayField::traceStep(Group &oGroup, bool RunOnCPU)
 //	long2 l_GPUSubsetDim=calcSubsetDim();
 //	this->rayParamsPtr->GPUSubset_width=l_GPUSubsetDim.x;
 //	this->rayParamsPtr->GPUSubset_height=l_GPUSubsetDim.y;
-	std::cout << "tracing on " << numCPU << " cores of CPU." << std::endl;
+	std::cout << "tracing on " << numCPU << " cores of CPU." << "...\n";
 
 //#pragma omp parallel default(shared)
 //{
@@ -1399,7 +1399,7 @@ fieldError GeometricRayField::traceStep(Group &oGroup, bool RunOnCPU)
 	end=clock();
 	msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
 	msecs_Tracing=msecs_Tracing+msecs;
-	std::cout << msecs <<" ms to trace " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays." << std::endl;
+	std::cout << msecs <<" ms to trace " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays." << "...\n";
 
 	return FIELD_NO_ERR;
 };
@@ -1422,9 +1422,9 @@ fieldError GeometricRayField::doSim(Group &oGroup, simAssParams &params, bool &s
 	unsigned long long roughNrOfSubsets=std::floorf(width*height/(this->getSubsetWidthMax()*this->getSubsetHeightMax()))+1;
 
 
-	std::cout << "****************************************************** " << std::endl;
-	std::cout << "starting subset.......... " << std::endl;
-	std::cout << std::endl;
+	std::cout << "****************************************************** " << "...\n";
+	std::cout << "starting subset.......... " << "...\n";
+	std::cout << "...\n";
 	/***********************************************
 	/	trace rays
 	/***********************************************/
@@ -1433,7 +1433,7 @@ fieldError GeometricRayField::doSim(Group &oGroup, simAssParams &params, bool &s
 
 	if (FIELD_NO_ERR != this->traceScene(oGroup, params.RunOnCPU) )//, context, output_buffer_obj, seed_buffer_obj) )
 	{
-		std::cout << "error in GeometricRayField.doSim(): GeometricRayField.traceScene() returned an error" << std::endl;
+		std::cout << "error in GeometricRayField.doSim(): GeometricRayField.traceScene() returned an error" << "...\n";
 		return FIELD_ERR;
 	}
 	this->subsetCounter++;
@@ -1454,7 +1454,7 @@ fieldError GeometricRayField::doSim(Group &oGroup, simAssParams &params, bool &s
 	}
 
 	tracedRayNr=tracedRayNr+l_GPUSubsetDim.x*l_GPUSubsetDim.y;
-	std::cout << " " << tracedRayNr <<" out of " << width*height << " rays traced in total" << std::endl;
+	std::cout << " " << tracedRayNr <<" out of " << width*height << " rays traced in total" << "...\n";
 
 	if (simDone)
 	{
@@ -1507,7 +1507,7 @@ fieldError GeometricRayField::write2TextFile(char* filename, detParams &oDetPara
 	hFileOut = fopen( t_filename, "w" ) ;
 	if (!hFileOut)
 	{
-		std::cout << "error in GeometricRayField.write2TextFile(): could not open output file: " << filename << std::endl;
+		std::cout << "error in GeometricRayField.write2TextFile(): could not open output file: " << filename << "...\n";
 		return FIELD_ERR;
 	}
 	if (1) //(oDetParams.reduceData==1)
@@ -1666,7 +1666,7 @@ fieldError GeometricRayField::convert2Intensity(Field* imagePtr, detParams &oDet
 	IntensityField* l_IntensityImagePtr=dynamic_cast<IntensityField*>(imagePtr);
 	if (l_IntensityImagePtr == NULL)
 	{
-		std::cout << "error in GeometricRayField.convert2Intensity(): imagePtr is not of type IntensityField" << std::endl;
+		std::cout << "error in GeometricRayField.convert2Intensity(): imagePtr is not of type IntensityField" << "...\n";
 		return FIELD_ERR;
 	}
 		
@@ -1831,13 +1831,13 @@ fieldError GeometricRayField::convert2Intensity(Field* imagePtr, detParams &oDet
 			//	}
 			//	//else
 			//	//{
-			//	//	std::cout <<  "ray number " << j << " did not hit target." << "x: " << rayList[j].position.x << ";y: " << rayList[j].position.y << "z: " << rayList[j].position.z << ";geometryID " << rayList[j].currentGeometryID << std::endl;
+			//	//	std::cout <<  "ray number " << j << " did not hit target." << "x: " << rayList[j].position.x << ";y: " << rayList[j].position.y << "z: " << rayList[j].position.z << ";geometryID " << rayList[j].currentGeometryID << "...\n";
 			//	//}
 			//}
 		}
 		else
 		{
-			std::cout << "error in GeometricRayField.convert2Intensity(): partial coherence not implemented yet" << std::endl;
+			std::cout << "error in GeometricRayField.convert2Intensity(): partial coherence not implemented yet" << "...\n";
 			return FIELD_ERR;
 		}
 
@@ -1846,9 +1846,9 @@ fieldError GeometricRayField::convert2Intensity(Field* imagePtr, detParams &oDet
 	end=clock();
 	msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
 	msecs_Tracing=msecs_Tracing+msecs;
-	std::cout << " " << msecs <<"ms to process " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays." << std::endl;
+	std::cout << " " << msecs <<"ms to process " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays." << "...\n";
 
-	std::cout << " " << hitNr << " out of " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays in target" << std::endl;
+	std::cout << " " << hitNr << " out of " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays in target" << "...\n";
 
 	return FIELD_NO_ERR;
 };
@@ -1866,7 +1866,7 @@ fieldError GeometricRayField::convert2Intensity(Field* imagePtr, detParams &oDet
  */
 fieldError GeometricRayField::convert2ScalarField(Field* imagePtr, detParams &oDetParams)
 {
-	std::cout << "error in GeometricRayField.convert2ScalarField(): conversion to scalar field not yet implemented" << std::endl;
+	std::cout << "error in GeometricRayField.convert2ScalarField(): conversion to scalar field not yet implemented" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -1883,7 +1883,7 @@ fieldError GeometricRayField::convert2ScalarField(Field* imagePtr, detParams &oD
  */
 fieldError GeometricRayField::convert2VecField(Field* imagePtr, detParams &oDetParams)
 {
-	std::cout << "error in GeometricRayField.convert2VecField(): conversion to vectorial field not yet implemented" << std::endl;
+	std::cout << "error in GeometricRayField.convert2VecField(): conversion to vectorial field not yet implemented" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -1915,7 +1915,7 @@ fieldError GeometricRayField::convert2PhaseSpace(Field* imagePtr, detParams &oDe
 	PhaseSpaceField* l_PhaseSpacePtr=dynamic_cast<PhaseSpaceField*>(imagePtr);
 	if (l_PhaseSpacePtr == NULL)
 	{
-		std::cout << "error in GeometricRayField.convert2PhaseSpaceField(): imagePtr is not of type IntensityField" << std::endl;
+		std::cout << "error in GeometricRayField.convert2PhaseSpaceField(): imagePtr is not of type IntensityField" << "...\n";
 		return FIELD_ERR;
 	}
 		
@@ -1956,7 +1956,7 @@ fieldError GeometricRayField::convert2PhaseSpace(Field* imagePtr, detParams &oDe
 
 	if (this->rayParamsPtr->coherence==1) // sum coherently
 	{
-		std::cout << "error in GeometricRayField.convert2PhaseSpaceField(): coherent conversion is not defined!!" << std::endl;
+		std::cout << "error in GeometricRayField.convert2PhaseSpaceField(): coherent conversion is not defined!!" << "...\n";
 		return FIELD_ERR; //matrix singular
 	}
 	else 
@@ -2032,14 +2032,14 @@ fieldError GeometricRayField::convert2PhaseSpace(Field* imagePtr, detParams &oDe
 			//	}
 			//	//else
 			//	//{
-			//	//	std::cout <<  "ray number " << j << " did not hit target." << "x: " << rayList[j].position.x << ";y: " << rayList[j].position.y << "z: " << rayList[j].position.z << ";geometryID " << rayList[j].currentGeometryID << std::endl;
+			//	//	std::cout <<  "ray number " << j << " did not hit target." << "x: " << rayList[j].position.x << ";y: " << rayList[j].position.y << "z: " << rayList[j].position.z << ";geometryID " << rayList[j].currentGeometryID << "...\n";
 			//	//}
 			//}
-			std::cout << " " << hitNr << " out of " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays in target" << std::endl;
+			std::cout << " " << hitNr << " out of " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays in target" << "...\n";
 		}
 		else
 		{
-			std::cout << "error in GeometricRayField.convert2PhaseSpaceField(): partial coherence not implemented yet" << std::endl;
+			std::cout << "error in GeometricRayField.convert2PhaseSpaceField(): partial coherence not implemented yet" << "...\n";
 			return FIELD_ERR;
 		}
 
@@ -2048,7 +2048,7 @@ fieldError GeometricRayField::convert2PhaseSpace(Field* imagePtr, detParams &oDe
 	end=clock();
 	msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
 	msecs_Tracing=msecs_Tracing+msecs;
-	std::cout << " " << msecs <<"ms to process " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays." << std::endl;
+	std::cout << " " << msecs <<"ms to process " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays." << "...\n";
 
 	return FIELD_NO_ERR;
 };
@@ -2080,7 +2080,7 @@ fieldError GeometricRayField::convert2RayData(Field** imagePtrPtr, detParams &oD
 		l_ptr=dynamic_cast<GeometricRayField*>(*imagePtrPtr);
 		if ( l_ptr->rayListLength < this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width )
 		{
-			std::cout << "error in GeometricRayField.convert2RayData(): dimensions of image does not fit dimensions of raylist subset" << std::endl;
+			std::cout << "error in GeometricRayField.convert2RayData(): dimensions of image does not fit dimensions of raylist subset" << "...\n";
 			return FIELD_ERR;
 		}
 	}
@@ -2109,7 +2109,7 @@ fieldError GeometricRayField::processParseResults(FieldParseParamStruct &parseRe
 {
 	if ( (parseResults_Src.rayDirDistr == RAYDIR_GRID_RECT) || (parseResults_Src.rayDirDistr == RAYDIR_GRID_RAD) )
 	{
-		std::cout << "error in GeometricRayField.processParseResults(): RAYDIR_GRID_RAD and RAYDIR_GRID_RECT are not allowed for geometric ray fields" << std::endl;
+		std::cout << "error in GeometricRayField.processParseResults(): RAYDIR_GRID_RAD and RAYDIR_GRID_RECT are not allowed for geometric ray fields" << "...\n";
 		return FIELD_ERR;
 	}
 //	this->rayParamsPtr=new rayFieldParams;
@@ -2186,7 +2186,7 @@ fieldError GeometricRayField::processParseResults(FieldParseParamStruct &parseRe
 			immersionDispersionParamsPtr->lambdaMin=0;
 			immersionDispersionParamsPtr->dispersionFormula=MAT_DISPFORMULA_NODISP;
 			l_matRefrPtr->setImmersionDispersionParams(immersionDispersionParamsPtr); // we don't use an immersion medium here but we need to set some value...
-			std::cout <<"warning in GeometricRayField.processParseResults(): unknown material. Rafracting material with n=1 assumed." << std::endl;
+			std::cout <<"warning in GeometricRayField.processParseResults(): unknown material. Rafracting material with n=1 assumed." << "...\n";
 			break;
 	}
 	return FIELD_NO_ERR;
@@ -2216,13 +2216,13 @@ fieldError  GeometricRayField::parseXml(pugi::xml_node &field, vector<Field*> &f
 	// call base class function
 	if (FIELD_NO_ERR != RayField::parseXml(field, fieldVec, simParams))
 	{
-		std::cout << "error in GeometricRayField.parseXml(): RayField.parseXml()  returned an error." << std::endl;
+		std::cout << "error in GeometricRayField.parseXml(): RayField.parseXml()  returned an error." << "...\n";
 		return FIELD_ERR;
 	}
 
 	if ( (this->rayParamsPtr->dirDistrType == RAYDIR_GRID_RECT) || (this->rayParamsPtr->dirDistrType == RAYDIR_GRID_RAD) )
 	{
-		std::cout << "error in GeometricRayField.parseXml(): RAYDIR_GRID_RAD and RAYDIR_GRID_RECT are not allowed for geometric ray fields" << std::endl;
+		std::cout << "error in GeometricRayField.parseXml(): RAYDIR_GRID_RAD and RAYDIR_GRID_RECT are not allowed for geometric ray fields" << "...\n";
 		return FIELD_ERR;
 	}
 

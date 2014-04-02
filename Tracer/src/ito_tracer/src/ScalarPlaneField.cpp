@@ -52,7 +52,7 @@ fieldParams* ScalarPlaneField::getParamsPtr()
  */
 fieldError ScalarPlaneField::initGPUSubset(RTcontext &context)
 {
-	std::cout << "error in ScalarLightField.initGPUSubset(): not defined for the given field representation" << std::endl;
+	std::cout << "error in ScalarLightField.initGPUSubset(): not defined for the given field representation" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -68,7 +68,7 @@ fieldError ScalarPlaneField::initGPUSubset(RTcontext &context)
  */
 fieldError ScalarPlaneField::initCPUSubset()
 {
-//	std::cout << "error in ScalarLightField.initCPUSubset(): not defined for the given field representation" << std::endl;
+//	std::cout << "error in ScalarLightField.initCPUSubset(): not defined for the given field representation" << "...\n";
 	return FIELD_NO_ERR;
 };
 
@@ -89,7 +89,7 @@ fieldError ScalarPlaneField::createCPUSimInstance()
 		fftw_complex *in=(fftw_complex*) fftw_malloc(sizeof(fftw_complex) * paramsPtr->nrPixels.x*paramsPtr->nrPixels.y*paramsPtr->nrPixels.z);
 		if (!in)
 		{
-			std::cout << "error in ScalarPlaneField.createCPUSimInstance(): memory could not be allocated" << std::endl;
+			std::cout << "error in ScalarPlaneField.createCPUSimInstance(): memory could not be allocated" << "...\n";
 			return FIELD_ERR;
 		}
 		ScalarLightField::U=reinterpret_cast<complex<double>*>(in);
@@ -128,7 +128,7 @@ fieldError ScalarPlaneField::createCPUSimInstance()
  */
 fieldError ScalarPlaneField::createOptixInstance(RTcontext &context, RTbuffer &output_buffer_obj, RTbuffer &seed_buffer_obj)
 {
-	std::cout << "error in ScalarLightField.createOptixInstance(): not defined for the given field representation" << std::endl;
+	std::cout << "error in ScalarLightField.createOptixInstance(): not defined for the given field representation" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -148,12 +148,12 @@ fieldError ScalarPlaneField::initSimulation(Group &oGroup, simAssParams &params)
 	{
 		if (FIELD_NO_ERR!=this->createCPUSimInstance())
 		{
-			std::cout <<"error in ScalarPlaneField.createOptixInstance(): create CPUSimInstance() returned an error." << std::endl;
+			std::cout <<"error in ScalarPlaneField.createOptixInstance(): create CPUSimInstance() returned an error." << "...\n";
 			return FIELD_ERR;
 		}
 		if (GROUP_NO_ERR != oGroup.createCPUSimInstance(this->getParamsPtr()->lambda, params.simParams) )
 		{
-			std::cout << "error in RayField.initSimulation(): group.createCPUSimInstance() returned an error" << std::endl;
+			std::cout << "error in RayField.initSimulation(): group.createCPUSimInstance() returned an error" << "...\n";
 			return FIELD_ERR;
 		}
 	}
@@ -161,19 +161,19 @@ fieldError ScalarPlaneField::initSimulation(Group &oGroup, simAssParams &params)
 	{
 		//if (FIELD_NO_ERR != this->createOptiXContext())
 		//{
-		//	std::cout << "error in RayField.initSimulation(): createOptiXInstance() returned an error" << std::endl;
+		//	std::cout << "error in RayField.initSimulation(): createOptiXInstance() returned an error" << "...\n";
 		//	return FIELD_ERR;
 		//}
 		//// convert geometry to GPU code
 		//if ( GROUP_NO_ERR != oGroup.createOptixInstance(context, params.mode, this->getParamsPtr()->lambda) )
 		//{
-		//	std::cout << "error in RayField.initSimulation(): group.createOptixInstance returned an error" << std::endl;
+		//	std::cout << "error in RayField.initSimulation(): group.createOptixInstance returned an error" << "...\n";
 		//	return ( FIELD_ERR );
 		//}
 		//	// convert rayfield to GPU code
 		//	if ( FIELD_NO_ERR != this->createOptixInstance(context, output_buffer_obj, seed_buffer_obj) )
 		//	{
-		//		std::cout << "error in RayField.initSimulation(): SourceList[i]->createOptixInstance returned an error at index:" << 0 << std::endl;
+		//		std::cout << "error in RayField.initSimulation(): SourceList[i]->createOptixInstance returned an error at index:" << 0 << "...\n";
 		//		return ( FIELD_ERR );
 		//	}
 		//	if (!RT_CHECK_ERROR_NOEXIT( rtContextValidate( context ), context ))
@@ -199,18 +199,18 @@ fieldError  ScalarPlaneField::parseXml(pugi::xml_node &field, vector<Field*> &fi
 	// call base class function
 	if (FIELD_NO_ERR != ScalarLightField::parseXml(field, fieldVec, simParams))
 	{
-		std::cout << "error in ScalarPlaneField.parseXml(): ScalarLightField.parseXml()  returned an error." << std::endl;
+		std::cout << "error in ScalarPlaneField.parseXml(): ScalarLightField.parseXml()  returned an error." << "...\n";
 		return FIELD_ERR;
 	}
 	Parser_XML l_parser;
 	if (!l_parser.attrByNameToDouble(field, "fieldWidth.x", this->paramsPtr->fieldWidth.x))
 	{
-		std::cout << "error in ScalarGaussianField.parseXml(): fieldWidth.x is not defined" << std::endl;
+		std::cout << "error in ScalarGaussianField.parseXml(): fieldWidth.x is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	if (!l_parser.attrByNameToDouble(field, "fieldWidth.y", this->paramsPtr->fieldWidth.y))
 	{
-		std::cout << "error in ScalarGaussianField.parseXml(): fieldWidth.y is not defined" << std::endl;
+		std::cout << "error in ScalarGaussianField.parseXml(): fieldWidth.y is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 

@@ -106,7 +106,7 @@ detError DetectorRaydata::detect(Field* rayFieldPtr, Field **imagePtrPtr)
 {
 	if (FIELD_NO_ERR!=rayFieldPtr->convert2RayData(imagePtrPtr, *(this->detParamsPtr)) )
 	{
-		std::cout << "error in DetectorRaydata.detect(): convert2RayData() returned an error" << std::endl;
+		std::cout << "error in DetectorRaydata.detect(): convert2RayData() returned an error" << "...\n";
 		return DET_ERROR;
 	}
 	//GeometricRayField* l_RayFieldPtr=dynamic_cast<GeometricRayField*>(imagePtrPtr);
@@ -115,7 +115,7 @@ detError DetectorRaydata::detect(Field* rayFieldPtr, Field **imagePtrPtr)
 	sprintf(filepath, "%s", OUTPUT_FILEPATH);
 	if (FIELD_NO_ERR != rayFieldPtr->write2File(filepath, *(this->detParamsPtr)) )
 	{
-		std::cout << "error in DetectorRaydata.detect(): Field.write2File() returned an error" << std::endl;
+		std::cout << "error in DetectorRaydata.detect(): Field.write2File() returned an error" << "...\n";
 		return DET_ERROR;
 	}
 
@@ -164,7 +164,7 @@ detError DetectorRaydata::processParseResults(DetectorParseParamStruct &parseRes
 			this->detParamsPtr->geomID=-1;
 			break;
 		default:
-			std::cout << "error in DetectorRaydata.processParseResults(): unknown detector type" << std::endl;
+			std::cout << "error in DetectorRaydata.processParseResults(): unknown detector type" << "...\n";
 			return DET_ERROR;
 			break;
 	}
@@ -187,7 +187,7 @@ detError DetectorRaydata::parseXml(pugi::xml_node &det, vector<Detector*> &detVe
 	// parse base class
 	if (DET_NO_ERROR != Detector::parseXml(det, detVec))
 	{
-		std::cout << "error in PlaneSurface.parseXml(): Geometry.parseXml() returned an error." << std::endl;
+		std::cout << "error in PlaneSurface.parseXml(): Geometry.parseXml() returned an error." << "...\n";
 		return DET_ERROR;
 	}
 
@@ -202,7 +202,7 @@ detError DetectorRaydata::parseXml(pugi::xml_node &det, vector<Detector*> &detVe
 	}
 	else
 	{
-		std::cout << "error in Detector.parseXml(): listAllRays equal to false is not implemented yet..." << std::endl;
+		std::cout << "error in Detector.parseXml(): listAllRays equal to false is not implemented yet..." << "...\n";
 		return DET_ERROR;
 	}
 

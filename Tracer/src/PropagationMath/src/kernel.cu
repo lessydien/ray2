@@ -120,7 +120,7 @@ void getNumBlocksAndThreads(int whichKernel, int n, int maxBlocks, int maxThread
 
     if (error != cudaSuccess)
     {
-        std::cout << "error in cu_simConfPointRawSig_wrapper: cudaGetDeviceProperties returned error code " << error << " line: " << __LINE__ << std::endl;
+        std::cout << "error in cu_simConfPointRawSig_wrapper: cudaGetDeviceProperties returned error code " << error << " line: " << __LINE__ << "...\n";
     }
 
     if (whichKernel < 3)
@@ -180,40 +180,81 @@ void getNumBlocksAndThreads(int whichKernel, int n, int maxBlocks, int maxThread
 // our field is a 1D-vector representation of a 2D-field in row major format. x is along rows
 __global__ void defocField_kernel(cuDoubleComplex* d_pField, ConfPoint_KernelParams *d_pParams)
 {
-	__shared__ unsigned int s_n;
-	__shared__ double s_k, s_gridWidth, s_deltaZ, s_f;
+    unsigned int xGes=(blockIdx.x*blockDim.x+threadIdx.x);
+    unsigned int yGes=(blockIdx.y*blockDim.y+threadIdx.y);
+    //unsigned int yGesBase=(blockIdx.y*blockDim.y+threadIdx.y);
+    //while (xGes<s_n)
+    //{
+	   // unsigned int yGes=yGesBase;
+    //    while (yGes <s_n)
+    //    {
+	        if (xGes+yGes*d_pParams->n < d_pParams->n*d_pParams->n)
+	        {
+	            double x=double(xGes)*(d_pParams->gridWidth/d_pParams->n)-d_pParams->gridWidth/2;
+	            double y=double(yGes)*(d_pParams->gridWidth/d_pParams->n)-d_pParams->gridWidth/2;
+                double sigmaX=sin(atan(-x/(160/d_pParams->magnif)));
+	            double sigmaY=sin(atan(-y/(160/d_pParams->magnif)));
+                double sigmaZ=(1-sigmaX*sigmaX-sigmaY*sigmaY);
+                if (sigmaZ<0)
+                    sigmaZ=0;
+                else
+                    sigmaZ=sqrt(sigmaZ);
+	            // calc defocus
+	            if (xGes+yGes*d_pParams->n < d_pParams->n*d_pParams->n)
+	            {
+		            // calc defocus phase
+		            double phase=-2*PI/d_pParams->wvl*sigmaZ*d_pParams->scanStep.z;
+		            d_pField[xGes+d_pParams->n*yGes]=cuCmul(d_pField[xGes+d_pParams->n*yGes],make_cuDoubleComplex(cos(phase),sin(phase)));
+		            //d_pField[xGes+s_n*yGes]=make_cuDoubleComplex(cos(phase),sin(phase));
+	            }
+            }
+    //        yGes+=blockDim.y*gridDim.y;
+    //    }
+    //    xGes+=blockDim.x*gridDim.x;  
+    //}
+}
+
+__global__ void objectInteractionTEA(cuDoubleComplex* pObjField, ConfPoint_KernelParams* pParams, ConfPoint_KernelObjectParams* pObjParams, unsigned int jx)
+{
+    __shared__ unsigned int s_n;
+	__shared__ double s_k, s_NA, s_gridWidth, s_f, s_kN, s_A, s_delta1;
 
 	// load shared memory
 	if (threadIdx.x==0)
 	{
-		s_n=d_pParams->n;
-		s_k=2*PI/d_pParams->wvl;
-		s_gridWidth=d_pParams->gridWidth;
-		s_deltaZ=d_pParams->scanStep.z;
-		s_f=160/d_pParams->magnif;
+		s_k=2*PI/pParams->wvl;
+		s_NA=pParams->NA;
+        s_gridWidth=pParams->gridWidth;
+        s_f=160/pParams->magnif; // we assume a tubus length of 160mm here
+        s_n=pParams->n;
+        s_kN=pObjParams->kN;
+        s_A=pObjParams->A;
+        s_delta1=pParams->scanStep.x;
 	}
+
 	__syncthreads();
 
-	// calc transverse component of direction vector
-	unsigned int xGes=(blockIdx.x*blockDim.x+threadIdx.x);
-	unsigned int yGes=(blockIdx.y*blockDim.y+threadIdx.y);
-	// calc coordinates in pupil grid
-	double x=double(xGes)*(s_gridWidth/s_n)-s_gridWidth/2;
-	double y=double(yGes)*(s_gridWidth/s_n)-s_gridWidth/2;
-	double sigmaX=sin(atan(-x/s_f));
-	double sigmaY=sin(atan(-y/s_f));
-    double sigmaZ=(1-sigmaX*sigmaX-sigmaY*sigmaY);
-    if (sigmaZ<0)
-        sigmaZ=0;
-    else
-        sigmaZ=sqrt(sigmaZ);
-	// calc defocus
+    unsigned int xGes=(blockIdx.x*blockDim.x+threadIdx.x);
+    unsigned int yGes=(blockIdx.y*blockDim.y+threadIdx.y);
+    unsigned int xGesObj;
+
 	if (xGes+yGes*s_n < s_n*s_n)
 	{
-		// calc defocus phase
-		double phase=-s_k*sigmaZ*s_deltaZ;
-		d_pField[xGes+s_n*yGes]=cuCmul(d_pField[xGes+s_n*yGes],make_cuDoubleComplex(cos(phase),sin(phase)));
-		//d_pField[xGes+s_n*yGes]=make_cuDoubleComplex(cos(phase),sin(phase));
+        // calc sampling distance in object grid
+        double delta2=(2*PI/s_k)*s_f/s_gridWidth;
+
+        // we have to consider the fact that pObjField is not fftshifted...
+        if (xGes < s_n/2)
+            xGesObj=xGes+s_n/2;
+        else
+            xGesObj=xGes-s_n/2;
+
+	    // calc coordinates in fftshifted object grid
+		double x=jx*s_delta1+((-double(s_n)/2)+xGesObj)*delta2;
+
+        double phase_obj=-s_k*s_A*cos(s_kN*x);
+		// multiply field with object phase phase
+		pObjField[xGes+yGes*s_n]=cuCmul(pObjField[xGes+yGes*s_n],make_cuDoubleComplex(cos(phase_obj),sin(phase_obj))); 
 	}
 }
 
@@ -242,61 +283,72 @@ __global__ void createField_kernel(cuDoubleComplex* pPupField, ConfPoint_KernelP
 
 	__syncthreads();
 
-	unsigned int xGes=(blockIdx.x*blockDim.x+threadIdx.x);
-	unsigned int yGes=(blockIdx.y*blockDim.y+threadIdx.y);
+    unsigned int xGes=(blockIdx.x*blockDim.x+threadIdx.x);
+    unsigned int yGes=(blockIdx.y*blockDim.y+threadIdx.y);
+    //unsigned int xGes=(blockIdx.x*blockDim.x+threadIdx.x);
+    //unsigned int yGesBase=(blockIdx.y*blockDim.y+threadIdx.y);
+    //while (xGes<s_n)
+    //{
+	   // unsigned int yGes=yGesBase;
+    //    while (yGes <s_n)
+    //    {
+	        if (xGes+yGes*s_n < s_n*s_n)
+	        {
+		        // calc coordinates in pupil grid
+		        double x=double(xGes)*(s_gridWidth/s_n)-s_gridWidth/2;
+		        double y=double(yGes)*(s_gridWidth/s_n)-s_gridWidth/2;
+		        // calc width of pupil
+		        double wPup=tan(asin(s_NA))*2*s_f;
+		        double rho=sqrt(x*x+y*y)/(wPup/2); // normalized radial coordinate in pupil
+		        double apodRad=s_apodRadius/(wPup/2); // normalized apodisation radius
+		        double phi=atan2(y,x);
 
-	if (xGes+yGes*s_n < s_n*s_n)
-	{
-		// calc coordinates in pupil grid
-		double x=double(xGes)*(s_gridWidth/s_n)-s_gridWidth/2;
-		double y=double(yGes)*(s_gridWidth/s_n)-s_gridWidth/2;
-		// calc width of pupil
-		double wPup=tan(asin(s_NA))*2*s_f;
-		double rho=sqrt(x*x+y*y)/(wPup/2); // normalized radial coordinate in pupil
-		double apodRad=s_apodRadius/(wPup/2); // normalized apodisation radius
-		double phi=atan2(y,x);
+		        // calc initial defocus
+		        double sigmaX=sin(atan(-x/s_f));
+		        double sigmaY=sin(atan(-y/s_f));
+		        double sigmaZ=(1-sigmaX*sigmaX-sigmaY*sigmaY);
+		        if (sigmaZ>=0)
+			        sigmaZ=sqrt(sigmaZ);
+		        else
+			        sigmaZ=0;
 
-		// calc initial defocus
-		double sigmaX=sin(atan(-x/s_f));
-		double sigmaY=sin(atan(-y/s_f));
-		double sigmaZ=(1-sigmaX*sigmaX-sigmaY*sigmaY);
-		if (sigmaZ>=0)
-			sigmaZ=sqrt(sigmaZ);
-		else
-			sigmaZ=0;
+                double cosThetaZ=abs(s_f/sqrt(x*x+y*y+s_f*s_f));
+                double apod=sqrt(cosThetaZ);
 
-        double cosThetaZ=abs(s_f/sqrt(x*x+y*y+s_f*s_f));
-        double apod=sqrt(cosThetaZ);
+		        if (rho<=1)
+		        {
+			        // calc defocus phase
+			        double phase_defoc=-s_k*sigmaZ*s_deltaZ;
 
-		if (rho<=1)
-		{
-			// calc defocus phase
-			double phase_defoc=-s_k*sigmaZ*s_deltaZ;
+			        double phase_aberr=s_k*(pParams->pAberrVec[0]
+							        +pParams->pAberrVec[1]*rho*cos(phi)
+							        +pParams->pAberrVec[2]*rho*sin(phi)
+							        +pParams->pAberrVec[3]*(2*rho*rho-1)
+							        +pParams->pAberrVec[4]*(rho*rho*cos(2*phi))
+							        +pParams->pAberrVec[5]*(rho*rho*sin(2*phi))
+							        +pParams->pAberrVec[6]*(3*pow(rho,3)-2*rho)*cos(phi)
+							        +pParams->pAberrVec[7]*(3*pow(rho,3)-2*rho)*sin(phi)
+							        +pParams->pAberrVec[8]*(6*pow(rho,4)-6*rho*rho+1)
+							        +pParams->pAberrVec[9]*pow(rho,3)*cos(3*phi)
+							        +pParams->pAberrVec[10]*pow(rho,3)*sin(3*phi)
+							        +pParams->pAberrVec[11]*(4*pow(rho,4)-3*pow(rho,2))*cos(2*phi)
+							        +pParams->pAberrVec[12]*(4*pow(rho,4)-3*pow(rho,2))*sin(2*phi)
+							        +pParams->pAberrVec[13]*(10*pow(rho,5)-12*pow(rho,3)+3*rho)*cos(phi)
+							        +pParams->pAberrVec[14]*(10*pow(rho,5)-12*pow(rho,3)+3*rho)*sin(phi)
+							        +pParams->pAberrVec[15]*(20*pow(rho,6)-30*pow(rho,4)+12*pow(rho,2)-1));
+			        double ampl=exp(-rho*rho/(apodRad*apodRad));
+			        // create real and imaginary part of field with unity modulus and our phase
+			        pPupField[xGes+yGes*s_n]=make_cuDoubleComplex(apod*ampl*cos(phase_aberr+phase_defoc),apod*ampl*sin(phase_aberr+phase_defoc)); 
+                    //pPupField[xGes+yGes*pParams->n]=make_cuDoubleComplex(1.0,0.0); 
+		        }
+		        else
+			        pPupField[xGes+yGes*s_n]=make_cuDoubleComplex(0, 0);
+            }
+    //        yGes+=blockDim.y*gridDim.y;
 
-			double phase_aberr=s_k*(pParams->pAberrVec[0]
-							+pParams->pAberrVec[1]*rho*cos(phi)
-							+pParams->pAberrVec[2]*rho*sin(phi)
-							+pParams->pAberrVec[3]*(2*rho*rho-1)
-							+pParams->pAberrVec[4]*(rho*rho*cos(2*phi))
-							+pParams->pAberrVec[5]*(rho*rho*sin(2*phi))
-							+pParams->pAberrVec[6]*(3*pow(rho,3)-2*rho)*cos(phi)
-							+pParams->pAberrVec[7]*(3*pow(rho,3)-2*rho)*sin(phi)
-							+pParams->pAberrVec[8]*(6*pow(rho,4)-6*rho*rho+1)
-							+pParams->pAberrVec[9]*pow(rho,3)*cos(3*phi)
-							+pParams->pAberrVec[10]*pow(rho,3)*sin(3*phi)
-							+pParams->pAberrVec[11]*(4*pow(rho,4)-3*pow(rho,2))*cos(2*phi)
-							+pParams->pAberrVec[12]*(4*pow(rho,4)-3*pow(rho,2))*sin(2*phi)
-							+pParams->pAberrVec[13]*(10*pow(rho,5)-12*pow(rho,3)+3*rho)*cos(phi)
-							+pParams->pAberrVec[14]*(10*pow(rho,5)-12*pow(rho,3)+3*rho)*sin(phi)
-							+pParams->pAberrVec[15]*(20*pow(rho,6)-30*pow(rho,4)+12*pow(rho,2)-1));
-			double ampl=exp(-rho*rho/(apodRad*apodRad));
-			// create real and imaginary part of field with unity modulus and our phase
-			pPupField[xGes+yGes*pParams->n]=make_cuDoubleComplex(apod*ampl*cos(phase_aberr+phase_defoc),apod*ampl*sin(phase_aberr+phase_defoc)); 
-            //pPupField[xGes+yGes*pParams->n]=make_cuDoubleComplex(1.0,0.0); 
-		}
-		else
-			pPupField[xGes+yGes*pParams->n]=make_cuDoubleComplex(0, 0);
-	}
+	   // }
+    //    xGes+=blockDim.x*gridDim.x;        
+    //}
 }
 
 //__global__ void kernel(int *a, int*b)
@@ -983,7 +1035,7 @@ double cu_testReduce_wrapper()
 
     if (error != cudaSuccess)
     {
-        std::cout << "error in cu_simConfPointRawSig_wrapper: cudaGetDeviceProperties returned error code " << error << " line: " << __LINE__ << std::endl;
+        std::cout << "error in cu_simConfPointRawSig_wrapper: cudaGetDeviceProperties returned error code " << error << " line: " << __LINE__ << "...\n";
         return 0;
     }
 	// use a larger block size for Fermi and above
@@ -1000,7 +1052,7 @@ double cu_testReduce_wrapper()
 	}
 	if (cudaSuccess != cudaMalloc((void**)&d_inData, n*sizeof(cuDoubleComplex)))
 	{
-		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << std::endl;
+		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << "...\n";
 		return 0;
 	}
 
@@ -1010,12 +1062,12 @@ double cu_testReduce_wrapper()
 
 	if (cudaSuccess != cudaMalloc((void**)&d_rawSig, sizeof(double)))
 	{
-		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << std::endl;
+		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << "...\n";
 		return 0;
 	}
 	if (cudaSuccess != cudaMemcpy(d_rawSig, &rawSig, sizeof(double), cudaMemcpyHostToDevice))
 	{
-		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMemcpy returned an error " << error << " line: " << __LINE__ << std::endl;
+		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMemcpy returned an error " << error << " line: " << __LINE__ << "...\n";
 		return 0;
 	}
 
@@ -1025,12 +1077,12 @@ double cu_testReduce_wrapper()
 
 	if (cudaSuccess != cudaMalloc((void**)&d_index, sizeof(unsigned int)))
 	{
-		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << std::endl;
+		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << "...\n";
 		return 0;
 	}
 	if (cudaSuccess != cudaMemcpy(d_index, &index, sizeof(unsigned int), cudaMemcpyHostToDevice))
 	{
-		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMemcpy returned an error " << error << " line: " << __LINE__ << std::endl;
+		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMemcpy returned an error " << error << " line: " << __LINE__ << "...\n";
 		return 0;
 	}
 
@@ -1049,7 +1101,7 @@ double cu_testReduce_wrapper()
 	cuDoubleComplex *d_outData;
 	if (cudaSuccess != cudaMalloc((void**)&d_outData, blocksReduction*sizeof(cuDoubleComplex)))
 	{
-		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << std::endl;
+		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << "...\n";
 		return 0;
 	}
 	double outData=0;
@@ -1107,17 +1159,6 @@ __global__ void innerProduct(Lock lock, cuDoubleComplex *field, cuDoubleComplex 
         out[*outIdx]=cuCadd(out[*outIdx], cache[0]);
         lock.unlock();
     }
-
-    //__syncthreads();
-
-    //if (threadIdx.x + blockIdx.x * blockDim.x==0)
-    //{
-    //    lock.lock();
-    //    //*outIdx+=1;
-    //    lock.unlock();
-    //}
-
-    //__syncthreads();
 }
 
 __global__ void incrementIdx(int *idx)
@@ -1176,7 +1217,7 @@ bool cu_simConfPointRawSig_wrapperTest(double** ppRawSig, ConfPoint_KernelParams
     error = cudaGetDeviceProperties(&deviceProp, 0);
     if (error != cudaSuccess)
     {
-        std::cout << "error in cu_simConfPointRawSig_wrapper: cudaGetDeviceProperties returned error code " << error << " line: " << __LINE__ << std::endl;
+        std::cout << "error in cu_simConfPointRawSig_wrapper: cudaGetDeviceProperties returned error code " << error << " line: " << __LINE__ << "...\n";
         return 0;
     }
 
@@ -1194,7 +1235,7 @@ bool cu_simConfPointRawSig_wrapperTest(double** ppRawSig, ConfPoint_KernelParams
 	// transfer data to GPU
 	if (error != cudaSuccess)
     {
-        std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMemcpy returned error code " << error << " line: " << __LINE__ << std::endl;
+        std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMemcpy returned error code " << error << " line: " << __LINE__ << "...\n";
         return 0;
     }
 
@@ -1204,12 +1245,12 @@ bool cu_simConfPointRawSig_wrapperTest(double** ppRawSig, ConfPoint_KernelParams
 	cuDoubleComplex *l_pDeviceOutData;
 	if (cudaSuccess != cudaMalloc((void**)&l_pDeviceOutData, sizeof(cuDoubleComplex)))
 	{
-		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << std::endl;
+		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << "...\n";
 		return 0;
 	}
     if (cudaSuccess != cudaMemcpy(l_pDeviceOutData, &l_hostOutData, sizeof(cuDoubleComplex), cudaMemcpyHostToDevice) )
     {
-		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << std::endl;
+		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << "...\n";
 		return 0;
     }
 
@@ -1220,7 +1261,7 @@ bool cu_simConfPointRawSig_wrapperTest(double** ppRawSig, ConfPoint_KernelParams
     // copy data back from GPU
     if (cudaSuccess != cudaMemcpy(&l_hostOutData, l_pDeviceOutData, sizeof(cuDoubleComplex), cudaMemcpyDeviceToHost) )
     {
-		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << std::endl;
+		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << "...\n";
 		return 0;
     }
     (*ppRawSig)[0]=cuCabs(l_hostOutData);
@@ -1233,15 +1274,15 @@ bool cu_simConfPointRawSig_wrapperTest(double** ppRawSig, ConfPoint_KernelParams
     return true;
 }
 
-
-bool cu_simConfPointRawSig_wrapper(double** ppRawSig, ConfPoint_KernelParams params)
+bool cu_simConfPointSensorSig_wrapper(double** ppSensorSig, ConfPoint_KernelParams params, ConfPoint_KernelObjectParams paramsObject)
 {
     cudaDeviceProp deviceProp;
     cudaError_t error;
 
-    // timing stuff
+     // timing stuff
     clock_t start, end, startGes, endGes;
 	double msecs_DataTransfer=0;
+    double msecs_ObjectInteraction=0;
 	double msecs_Defoc=0;
     double msecs_FFT=0;
     double msecs_Reduce=0;
@@ -1256,9 +1297,33 @@ bool cu_simConfPointRawSig_wrapper(double** ppRawSig, ConfPoint_KernelParams par
 
     if (error != cudaSuccess)
     {
-        std::cout << "error in cu_simConfPointRawSig_wrapper: cudaGetDeviceProperties returned error code " << error << " line: " << __LINE__ << std::endl;
+        std::cout << "error in cu_simConfPointSensorSig_wrapper: cudaGetDeviceProperties returned error code " << error << " line: " << __LINE__ << "...\n";
         return false;
     }
+
+	// allocate host memory for raw signal
+	(*ppSensorSig)=(double*)calloc(params.scanNumber.x*params.scanNumber.y,sizeof(double));
+
+    // allocate host memory for complex raw signal
+    cuDoubleComplex* l_pRawSig=(cuDoubleComplex*)calloc(params.scanNumber.z,sizeof(cuDoubleComplex));
+    cuDoubleComplex* l_pRawSigInit=(cuDoubleComplex*)calloc(params.scanNumber.z,sizeof(cuDoubleComplex));
+
+    double* l_pAbsVal=(double*)calloc(params.scanNumber.z,sizeof(double));
+
+    // allocate device memory for raw signal
+	cuDoubleComplex* d_pRawSig;
+	if (cudaSuccess != cudaMalloc((void**)&d_pRawSig, params.scanNumber.z*sizeof(cuDoubleComplex)))
+	{
+		std::cout << "error in cu_simConfPointSensorSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << "...\n";
+		return false;
+	}
+	// transfer rawSig to device
+	//if (cudaSuccess != cudaMemcpy(d_pRawSig, l_pRawSig, params.scanNumber.z*sizeof(cuDoubleComplex), cudaMemcpyHostToDevice))
+	//{
+	//	std::cout << "error in cu_simConfPointSensorSig_wrapper: cudaMemcpy returned an error " << error << " line: " << __LINE__ << "...\n";
+	//	return false;
+	//}
+
 	// use a larger block size for Fermi and above
 	int block_size = (deviceProp.major < 2) ? 16 : 32;
 
@@ -1266,13 +1331,27 @@ bool cu_simConfPointRawSig_wrapper(double** ppRawSig, ConfPoint_KernelParams par
 	ConfPoint_KernelParams* d_pParams;
 	if (cudaSuccess != cudaMalloc((void**)&d_pParams, sizeof(ConfPoint_KernelParams)))
 	{
-		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << std::endl;
+		std::cout << "error in cu_simConfPointSensorSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << "...\n";
 		return false;
 	}
 	// transfer params to device
 	if (cudaSuccess != cudaMemcpy(d_pParams, &params, sizeof(ConfPoint_KernelParams), cudaMemcpyHostToDevice))
 	{
-		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMemcpy returned an error " << error << " line: " << __LINE__ << std::endl;
+		std::cout << "error in cu_simConfPointSensorSig_wrapper: cudaMemcpy returned an error " << error << " line: " << __LINE__ << "...\n";
+		return false;
+	}
+
+	// allocate device meory for params
+	ConfPoint_KernelObjectParams* d_pObjParams;
+	if (cudaSuccess != cudaMalloc((void**)&d_pObjParams, sizeof(ConfPoint_KernelObjectParams)))
+	{
+		std::cout << "error in cu_simConfPointSensorSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << "...\n";
+		return false;
+	}
+	// transfer params to device
+	if (cudaSuccess != cudaMemcpy(d_pObjParams, &paramsObject, sizeof(ConfPoint_KernelObjectParams), cudaMemcpyHostToDevice))
+	{
+		std::cout << "error in cu_simConfPointSensorSig_wrapper: cudaMemcpy returned an error " << error << " line: " << __LINE__ << "...\n";
 		return false;
 	}
 
@@ -1280,16 +1359,403 @@ bool cu_simConfPointRawSig_wrapper(double** ppRawSig, ConfPoint_KernelParams par
 	cuDoubleComplex* d_pPupField;
 	if (cudaSuccess != cudaMalloc((void**)&d_pPupField, params.n*params.n*sizeof(cuDoubleComplex)))
 	{
-		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << std::endl;
+		std::cout << "error in cu_simConfPointSensorSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << "...\n";
 		return false;
 	}
 	// allocate device memory for object field
 	cuDoubleComplex* d_pObjField;
 	if (cudaSuccess != cudaMalloc((void**)&d_pObjField, params.n*params.n*sizeof(cuDoubleComplex)))
 	{
-		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << std::endl;
+		std::cout << "error in cu_simConfPointSensorSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << "...\n";
 		return false;
 	}
+
+
+	// calc dimensions of kernel launch when have one kernel per element in the pupil field
+    dim3 dimBlock(block_size,block_size,1); // number of threads within each block in x,y,z (maximum of 512 or 1024 in total. I.e. 512,1,1 or 8,16,2 or ...
+	unsigned int mod= params.n % block_size;
+	unsigned int dimGridx;
+	if (mod==0)
+		dimGridx=params.n/(1*block_size);
+	else
+		dimGridx=params.n/(1*block_size+1);
+	unsigned int dimGridy;
+	if (mod==0)
+		dimGridy=params.n/(1*block_size);
+	else
+		dimGridy=params.n/(1*block_size+1);
+	dim3 dimGrid(std::max(dimGridx,unsigned int(1)),std::max(dimGridy,unsigned int(1)),1); // number of blocks in x,y,z (maximum of 65535 for each dimension)
+
+    cudaDeviceSynchronize();
+    end=clock();
+	msecs_DataTransfer=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
+
+    start=clock();
+
+    cufftHandle plan;
+	if (!myCufftSafeCall(cufftPlan2d(&plan,params.n, params.n, CUFFT_Z2Z)))
+	{
+		std::cout << "error in cu_simConfPointSensorSig_wrapper: cufftPlan2d returned an error " << error << " line: " << __LINE__ << "...\n";
+		return false;
+	}
+
+    // create rawSigIdx on GPU
+    int rawSigIdx=0;
+    int *d_pRawSigIdx;
+	if (cudaSuccess != cudaMalloc((void**)&d_pRawSigIdx, sizeof(int)))
+	{
+		std::cout << "error in cu_simConfPointSensorSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << "...\n";
+		return 0;
+	}
+	// transfer rawSig to device
+	if (cudaSuccess != cudaMemcpy(d_pRawSigIdx, &rawSigIdx, sizeof(int), cudaMemcpyHostToDevice))
+	{
+		std::cout << "error in cu_simConfPointSensorSig_wrapper: cudaMemcpy returned an error " << error << " line: " << __LINE__ << "...\n";
+		return false;
+	}
+    // create cog on GPU
+    double cog=0;
+    double *d_pCog;
+	if (cudaSuccess != cudaMalloc((void**)&d_pCog, sizeof(double)))
+	{
+		std::cout << "error in cu_simConfPointSensorSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << "...\n";
+		return 0;
+	}
+	// transfer cog to device
+	if (cudaSuccess != cudaMemcpy(d_pCog, &cog, sizeof(int), cudaMemcpyHostToDevice))
+	{
+		std::cout << "error in cu_simConfPointSensorSig_wrapper: cudaMemcpy returned an error " << error << " line: " << __LINE__ << "...\n";
+		return false;
+	}
+
+    cudaDeviceSynchronize();
+    end=clock();
+    msecs_DataTransfer+=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
+
+    Lock lock;
+    int blocksPerGrid=(params.n*params.n+THREADSPERBLOCK-1)/THREADSPERBLOCK;
+
+   	// allocate host memory for pupil field
+	cuDoubleComplex* h_pPupField=(cuDoubleComplex*)malloc(params.n*params.n*sizeof(cuDoubleComplex));
+
+
+	// do the simulation
+	for (unsigned int jy=0; jy<params.scanNumber.y; jy++)
+	{
+		for (unsigned int jx=0; jx<params.scanNumber.x; jx++)
+		{
+            start=clock();
+	        // create pupil field according to aberrations
+	        createField_kernel<<<dimGrid,dimBlock>>>(d_pPupField, d_pParams);
+            cudaDeviceSynchronize();
+            end=clock();
+            msecs_createField+=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
+	        // reset rawSigIdx
+	        if (cudaSuccess != cudaMemcpy(d_pRawSigIdx, &rawSigIdx, sizeof(int), cudaMemcpyHostToDevice))
+	        {
+		        std::cout << "error in cu_simConfPointSensorSig_wrapper: cudaMemcpy returned an error " << error << " line: " << __LINE__ << "...\n";
+		        return false;
+	        }
+            cudaDeviceSynchronize();
+            // reset rawSig
+	        if (cudaSuccess != cudaMemcpy(d_pRawSig, l_pRawSigInit, params.scanNumber.z*sizeof(cuDoubleComplex), cudaMemcpyHostToDevice))
+	        {
+		        std::cout << "error in cu_simConfPointSensorSig_wrapper: cudaMemcpy returned an error " << error << " line: " << __LINE__ << "...\n";
+		        return false;
+	        }
+            cudaDeviceSynchronize();
+            for (unsigned int jz=0; jz<params.scanNumber.z; jz++)
+			{
+                start=clock();
+				// apply defocus
+				defocField_kernel<<<dimGrid,dimBlock>>>(d_pPupField, d_pParams);
+                cudaDeviceSynchronize();
+                end=clock();
+                msecs_Defoc+=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
+
+	// transfer pupil field from device
+	if (cudaSuccess != cudaMemcpy(h_pPupField, d_pPupField, params.n*params.n*sizeof(cuDoubleComplex), cudaMemcpyDeviceToHost))
+		return false;
+
+	char t_filename[512];
+	sprintf(t_filename, "E:\\pupReal%i.txt", jz);
+	FILE* hFile;
+	hFile = fopen( t_filename, "w" ) ;
+
+
+	if ( (hFile == NULL) )
+		return 1;
+
+
+	for (unsigned int jy=0; jy<params.n; jy++)
+	{
+		for (unsigned int jx=0; jx<params.n; jx++)
+		{
+			fprintf(hFile, " %.16e;\n", h_pPupField[jx+jy*params.n].x);
+		}
+	}
+
+	fclose(hFile);
+
+	sprintf(t_filename, "E:\\pupImag%i.txt", jz);
+	hFile = fopen( t_filename, "w" ) ;
+
+
+	if ( (hFile == NULL) )
+		return 1;
+
+
+	for (unsigned int jy=0; jy<params.n; jy++)
+	{
+		for (unsigned int jx=0; jx<params.n; jx++)
+		{
+			fprintf(hFile, " %.16e;\n", h_pPupField[jx+jy*params.n].y);
+		}
+	}
+
+	fclose(hFile);
+
+                start=clock();
+				// note that object field is not fftshifted after call to cufft !!
+				if (!myCufftSafeCall(cufftExecZ2Z(plan, (cufftDoubleComplex *)d_pPupField, (cufftDoubleComplex *)d_pObjField, CUFFT_FORWARD)))
+				{
+                    // try again, just to be sure...
+                    if (!myCufftSafeCall(cufftExecZ2Z(plan, (cufftDoubleComplex *)d_pPupField, (cufftDoubleComplex *)d_pObjField, CUFFT_FORWARD)))
+                    {
+					    cudaFree(d_pParams);
+					    cudaFree(d_pPupField);
+					    cudaFree(d_pObjField);
+                        cudaFree(d_pRawSig);
+                        cudaFree(d_pObjParams);
+                        cudaFree(d_pRawSigIdx);
+					    cufftDestroy (plan);
+                        delete l_pRawSig;
+                        delete l_pRawSigInit;
+					    //thrust::device_free(d_pObjField_thrust);
+					    std::cout << "error in cu_simConfPointSensorSig_wrapper: cufftExecZ2Z returned an error " << error << " line: " << __LINE__ << "...\n";
+					    return false;
+                    }
+				}
+                cudaDeviceSynchronize();
+                end=clock();
+                msecs_FFT+=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
+
+	// transfer object field from device
+	if (cudaSuccess != cudaMemcpy(h_pPupField, d_pObjField, params.n*params.n*sizeof(cuDoubleComplex), cudaMemcpyDeviceToHost))
+		return false;
+
+	sprintf(t_filename, "E:\\objInReal%i.txt", jz);
+	hFile = fopen( t_filename, "w" ) ;
+
+
+	if ( (hFile == NULL) )
+		return 1;
+
+
+	for (unsigned int jy=0; jy<params.n; jy++)
+	{
+		for (unsigned int jx=0; jx<params.n; jx++)
+		{
+			fprintf(hFile, " %.16e;\n", h_pPupField[jx+jy*params.n].x);
+		}
+	}
+
+	fclose(hFile);
+
+	sprintf(t_filename, "E:\\objInImag%i.txt", jz);
+	hFile = fopen( t_filename, "w" ) ;
+
+
+	if ( (hFile == NULL) )
+		return 1;
+
+
+	for (unsigned int jy=0; jy<params.n; jy++)
+	{
+		for (unsigned int jx=0; jx<params.n; jx++)
+		{
+			fprintf(hFile, " %.16e;\n", h_pPupField[jx+jy*params.n].y);
+		}
+	}
+
+	fclose(hFile);
+    
+                // do the object interaction in TEA
+                objectInteractionTEA<<<dimGrid,dimBlock>>>(d_pObjField, d_pParams, d_pObjParams, jx);
+
+	// allocate host memory for pupil field
+	// transfer pupil field from device
+	if (cudaSuccess != cudaMemcpy(h_pPupField, d_pObjField, params.n*params.n*sizeof(cuDoubleComplex), cudaMemcpyDeviceToHost))
+		return false;
+
+	sprintf(t_filename, "E:\\objOutReal%i.txt", jz);
+	hFile = fopen( t_filename, "w" ) ;
+
+
+	if ( (hFile == NULL) )
+		return 1;
+
+
+	for (unsigned int jy=0; jy<params.n; jy++)
+	{
+		for (unsigned int jx=0; jx<params.n; jx++)
+		{
+			fprintf(hFile, " %.16e;\n", h_pPupField[jx+jy*params.n].x);
+		}
+	}
+
+	fclose(hFile);
+
+	sprintf(t_filename, "E:\\objOutImag%i.txt", jz);
+	hFile = fopen( t_filename, "w" ) ;
+
+
+	if ( (hFile == NULL) )
+		return 1;
+
+
+	for (unsigned int jy=0; jy<params.n; jy++)
+	{
+		for (unsigned int jx=0; jx<params.n; jx++)
+		{
+			fprintf(hFile, " %.16e;\n", h_pPupField[jx+jy*params.n].y);
+		}
+	}
+
+	fclose(hFile);
+
+                start=clock();
+                // calc the inner product on GPU
+                innerProduct<<<blocksPerGrid, THREADSPERBLOCK>>>(lock, d_pObjField, d_pRawSig, d_pRawSigIdx, params.n*params.n);
+                incrementIdx<<<1,1>>>(d_pRawSigIdx);
+                cudaDeviceSynchronize();
+                end=clock();
+                msecs_Reduce+=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
+
+			}
+
+            start=clock();
+            // copy data back from GPU
+            if (cudaSuccess != cudaMemcpy(l_pRawSig, d_pRawSig, params.scanNumber.z*sizeof(cuDoubleComplex), cudaMemcpyDeviceToHost) )
+            {
+                std::cout << "error in cu_simConfPointSensorSig_wrapper: cudaMemcpy returned an error " << error << " line: " << __LINE__ << "...\n";
+                return 0;
+            }
+            cudaDeviceSynchronize();
+            end=clock();
+            msecs_DataTransfer+=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
+
+
+                    char t_filename[512];
+	                sprintf(t_filename, "E:\\rawSigReal%i.txt", jx);
+	                FILE* hFile;
+	                hFile = fopen( t_filename, "w" ) ;
+
+
+	                if ( (hFile == NULL) )
+		                return 1;
+
+
+                        for (unsigned int idz=0; idz<params.scanNumber.z; idz++)
+		                {
+                            fprintf(hFile, " %.16e;\n", l_pRawSig[idz].x);
+		                }
+
+	                fclose(hFile);
+
+	                sprintf(t_filename, "E:\\rawSigImag%i.txt", jx);
+	                hFile = fopen( t_filename, "w" ) ;
+
+
+	                if ( (hFile == NULL) )
+		                return 1;
+
+
+                        for (unsigned int idz=0; idz<params.scanNumber.z; idz++)
+		                {
+                            fprintf(hFile, " %.16e;\n", l_pRawSig[idz].y);
+		                }
+
+	                fclose(hFile);
+
+            // find signal maxmium
+            double sigMax=0;
+            for (unsigned int idx=0; idx<params.scanNumber.z; idx++)
+            {
+                l_pAbsVal[idx]=pow(cuCabs(l_pRawSig[idx]),2);
+                sigMax=(sigMax > l_pAbsVal[idx]) ? sigMax : l_pAbsVal[idx];
+            }
+
+            // calc cog
+            double nom=0;
+            double denom=0;
+            for (unsigned int idx=0; idx<params.scanNumber.z; idx++)
+            {
+                if (l_pAbsVal[idx] > sigMax/2)
+                {
+                    nom+=double(idx)*l_pAbsVal[idx];
+                    denom+=l_pAbsVal[idx];
+                }
+            }
+            double x=jx*params.scanStep.x;
+            double z0=paramsObject.A*cos(paramsObject.kN*x);
+            (*ppSensorSig)[jx+jy*params.scanNumber.y]=nom/denom*params.scanStep.z-params.scanStep.z*params.scanNumber.z/2+z0;
+		}
+	}
+
+    std::cout << msecs_DataTransfer << "msec for data transfer between CPU and GPU" << "\n";
+    std::cout << msecs_FFT << "msec for fft" << "\n";
+    std::cout << msecs_Defoc << "msec for defocus kernel" << "\n";
+    std::cout << msecs_createField << "msec to create the field" << "\n";
+    std::cout << msecs_Reduce << "msec to calculate the reduction" << "\n";    
+    std::cout << msecs_ObjectInteraction << "msec for calculating object interaction" << "\n";
+
+	// end timing
+	endGes=clock();
+	msecs=((endGes-startGes)/(double)CLOCKS_PER_SEC*1000.0);
+	std::cout << msecs <<" ms to simulate confocal raw signal"<< "...\n";
+
+    cudaFree(d_pObjParams);
+	cudaFree(d_pParams);
+	cudaFree(d_pPupField);
+	cudaFree(d_pObjField);
+    cudaFree(d_pObjParams);
+    cudaFree(d_pRawSigIdx);
+    delete l_pRawSig;
+    delete l_pRawSigInit;
+
+	cufftDestroy (plan);
+
+	return true;
+}
+
+bool cu_simConfPointRawSig_wrapper(double** ppRawSig, ConfPoint_KernelParams params)
+{
+    cudaDeviceProp deviceProp;
+    cudaError_t error;
+
+     // timing stuff
+    clock_t start, end, startGes, endGes;
+	double msecs_DataTransfer=0;
+    double msecs_DataTransfer1=0;
+	double msecs_Defoc=0;
+    double msecs_FFT=0;
+    double msecs_Reduce=0;
+    double msecs_createField=0;
+	double msecs=0;
+	// start timing
+	start=clock();
+    startGes=clock();
+
+	// check device
+    error = cudaGetDeviceProperties(&deviceProp, 0);
+
+    if (error != cudaSuccess)
+    {
+        std::cout << "error in cu_simConfPointRawSig_wrapper: cudaGetDeviceProperties returned error code " << error << " line: " << __LINE__ << "...\n";
+        return false;
+    }
+
 	// allocate host memory for raw signal
 	*ppRawSig=(double*)calloc(params.scanNumber.x*params.scanNumber.y*params.scanNumber.z,sizeof(double));
 
@@ -1300,37 +1766,73 @@ bool cu_simConfPointRawSig_wrapper(double** ppRawSig, ConfPoint_KernelParams par
 	cuDoubleComplex* d_pRawSig;
 	if (cudaSuccess != cudaMalloc((void**)&d_pRawSig, params.scanNumber.x*params.scanNumber.y*params.scanNumber.z*sizeof(cuDoubleComplex)))
 	{
-		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << std::endl;
+		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << "...\n";
 		return false;
 	}
 	// transfer rawSig to device
 	if (cudaSuccess != cudaMemcpy(d_pRawSig, l_pRawSig, params.scanNumber.x*params.scanNumber.y*params.scanNumber.z*sizeof(cuDoubleComplex), cudaMemcpyHostToDevice))
 	{
-		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMemcpy returned an error " << error << " line: " << __LINE__ << std::endl;
+		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMemcpy returned an error " << error << " line: " << __LINE__ << "...\n";
 		return false;
 	}
+
+	// use a larger block size for Fermi and above
+	int block_size = (deviceProp.major < 2) ? 16 : 32;
+
+	// allocate device meory for params
+	ConfPoint_KernelParams* d_pParams;
+	if (cudaSuccess != cudaMalloc((void**)&d_pParams, sizeof(ConfPoint_KernelParams)))
+	{
+		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << "...\n";
+		return false;
+	}
+	// transfer params to device
+	if (cudaSuccess != cudaMemcpy(d_pParams, &params, sizeof(ConfPoint_KernelParams), cudaMemcpyHostToDevice))
+	{
+		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMemcpy returned an error " << error << " line: " << __LINE__ << "...\n";
+		return false;
+	}
+
+	// allocate device memory for pupil field
+	cuDoubleComplex* d_pPupField;
+	if (cudaSuccess != cudaMalloc((void**)&d_pPupField, params.n*params.n*sizeof(cuDoubleComplex)))
+	{
+		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << "...\n";
+		return false;
+	}
+	// allocate device memory for object field
+	cuDoubleComplex* d_pObjField;
+	if (cudaSuccess != cudaMalloc((void**)&d_pObjField, params.n*params.n*sizeof(cuDoubleComplex)))
+	{
+		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << "...\n";
+		return false;
+	}
+
 
 	// calc dimensions of kernel launch when have one kernel per element in the pupil field
     dim3 dimBlock(block_size,block_size,1); // number of threads within each block in x,y,z (maximum of 512 or 1024 in total. I.e. 512,1,1 or 8,16,2 or ...
 	unsigned int mod= params.n % block_size;
 	unsigned int dimGridx;
 	if (mod==0)
-		dimGridx=params.n/block_size;
+		//dimGridx=params.n/(8*block_size);
+        dimGridx=params.n/(1*block_size);
 	else
-		dimGridx=params.n/block_size+1;
+		dimGridx=params.n/(1*block_size+1);
 	unsigned int dimGridy;
 	if (mod==0)
-		dimGridy=params.n/block_size;
+		dimGridy=params.n/(1*block_size);
 	else
-		dimGridy=params.n/block_size+1;
+		dimGridy=params.n/(1*block_size+1);
 	dim3 dimGrid(std::max(dimGridx,unsigned int(1)),std::max(dimGridy,unsigned int(1)),1); // number of blocks in x,y,z (maximum of 65535 for each dimension)
 
+    cudaDeviceSynchronize();
     end=clock();
 	msecs_DataTransfer=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
 
     start=clock();
 	// create pupil field according to aberrations
 	createField_kernel<<<dimGrid,dimBlock>>>(d_pPupField, d_pParams);
+    cudaDeviceSynchronize();
     end=clock();
     msecs_createField=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
 
@@ -1383,7 +1885,7 @@ bool cu_simConfPointRawSig_wrapper(double** ppRawSig, ConfPoint_KernelParams par
     cufftHandle plan;
 	if (!myCufftSafeCall(cufftPlan2d(&plan,params.n, params.n, CUFFT_Z2Z)))
 	{
-		std::cout << "error in cu_simConfPointRawSig_wrapper: cufftPlan2d returned an error " << error << " line: " << __LINE__ << std::endl;
+		std::cout << "error in cu_simConfPointRawSig_wrapper: cufftPlan2d returned an error " << error << " line: " << __LINE__ << "...\n";
 		return false;
 	}
 
@@ -1392,24 +1894,21 @@ bool cu_simConfPointRawSig_wrapper(double** ppRawSig, ConfPoint_KernelParams par
     int *d_pRawSigIdx;
 	if (cudaSuccess != cudaMalloc((void**)&d_pRawSigIdx, sizeof(int)))
 	{
-		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << std::endl;
+		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << "...\n";
 		return 0;
 	}
 	// transfer rawSig to device
 	if (cudaSuccess != cudaMemcpy(d_pRawSigIdx, &rawSigIdx, sizeof(int), cudaMemcpyHostToDevice))
 	{
-		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMemcpy returned an error " << error << " line: " << __LINE__ << std::endl;
+		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMemcpy returned an error " << error << " line: " << __LINE__ << "...\n";
 		return false;
 	}
-
+    cudaDeviceSynchronize();
     end=clock();
     msecs_DataTransfer+=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
 
     Lock lock;
     int blocksPerGrid=(params.n*params.n+THREADSPERBLOCK-1)/THREADSPERBLOCK;
-
-	// allocate host memory for pupil field
-	cuDoubleComplex* h_pObjField=(cuDoubleComplex*)malloc(params.n*params.n*sizeof(cuDoubleComplex));
 
 	// do the simulation
 	for (unsigned int jy=0; jy<params.scanNumber.y; jy++)
@@ -1421,7 +1920,7 @@ bool cu_simConfPointRawSig_wrapper(double** ppRawSig, ConfPoint_KernelParams par
                 start=clock();
 				// apply defocus
 				defocField_kernel<<<dimGrid,dimBlock>>>(d_pPupField, d_pParams);
-
+                cudaDeviceSynchronize();
                 end=clock();
                 msecs_Defoc+=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
 
@@ -1435,12 +1934,15 @@ bool cu_simConfPointRawSig_wrapper(double** ppRawSig, ConfPoint_KernelParams par
 					    cudaFree(d_pParams);
 					    cudaFree(d_pPupField);
 					    cudaFree(d_pObjField);
+                        cudaFree(d_pRawSig);
+                        cudaFree(d_pRawSigIdx);
 					    cufftDestroy (plan);
 					    //thrust::device_free(d_pObjField_thrust);
-					    std::cout << "error in cu_simConfPointRawSig_wrapper: cufftExecZ2Z returned an error " << error << " line: " << __LINE__ << std::endl;
+					    std::cout << "error in cu_simConfPointRawSig_wrapper: cufftExecZ2Z returned an error " << error << " line: " << __LINE__ << "...\n";
 					    return false;
                     }
 				}
+                cudaDeviceSynchronize();
                 end=clock();
                 msecs_FFT+=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
 
@@ -1448,27 +1950,31 @@ bool cu_simConfPointRawSig_wrapper(double** ppRawSig, ConfPoint_KernelParams par
                 // calc the inner product on GPU
                 innerProduct<<<blocksPerGrid, THREADSPERBLOCK>>>(lock, d_pObjField, d_pRawSig, d_pRawSigIdx, params.n*params.n);
                 incrementIdx<<<1,1>>>(d_pRawSigIdx);
+                cudaDeviceSynchronize();
                 end=clock();
                 msecs_Reduce+=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
 			}
 		}
 	}
 
-    start=clock();
+    clock_t start1=clock();
     // copy data back from GPU
     if (cudaSuccess != cudaMemcpy(l_pRawSig, d_pRawSig, params.scanNumber.x*params.scanNumber.y*params.scanNumber.z*sizeof(cuDoubleComplex), cudaMemcpyDeviceToHost) )
     {
-        std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMemcpy returned an error " << error << " line: " << __LINE__ << std::endl;
+        std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMemcpy returned an error " << error << " line: " << __LINE__ << "...\n";
         return 0;
     }
-    end=clock();
-    msecs_DataTransfer+=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
+    cudaDeviceSynchronize();
+    clock_t end1=clock();
+    msecs_DataTransfer1=((end1-start1)/(double)CLOCKS_PER_SEC*1000.0);
 
-    std::cout << msecs_DataTransfer << "msec for data transfer between CPU and GPU" << std::endl;
-    std::cout << msecs_FFT << "msec for fft" << std::endl;
-    std::cout << msecs_Defoc << "msec for defocus kernel" << std::endl;
-    std::cout << msecs_createField << "msec to create the field" << std::endl;
-    std::cout << msecs_Reduce << "msec to calculate the reduction" << std::endl;    
+    std::cout << msecs_DataTransfer << "msec for data transfer between CPU and GPU" << "\n";
+    std::cout << msecs_DataTransfer1 << "msec for data transfer1 between CPU and GPU" << "\n";
+    std::cout << msecs_FFT << "msec for fft" << "\n";
+    std::cout << msecs_Defoc << "msec for defocus kernel" << "\n";
+    std::cout << msecs_createField << "msec to create the field" << "\n";
+    std::cout << msecs_Reduce << "msec to calculate the reduction" << "\n";    
+
 
     // calc magnitude square
     for (unsigned int idx=0; idx<params.scanNumber.x*params.scanNumber.y*params.scanNumber.z; idx++)
@@ -1479,13 +1985,15 @@ bool cu_simConfPointRawSig_wrapper(double** ppRawSig, ConfPoint_KernelParams par
 	// end timing
 	endGes=clock();
 	msecs=((endGes-startGes)/(double)CLOCKS_PER_SEC*1000.0);
-	std::cout << msecs <<" ms to simulate confocal raw signal"<< std::endl;
+	std::cout << msecs <<" ms to simulate confocal raw signal"<< "...\n";
 
-	cudaFree(d_pParams);
-	cudaFree(d_pPupField);
-	cudaFree(d_pObjField);
+    cudaFree(d_pParams);
+    cudaFree(d_pPupField);
+    cudaFree(d_pObjField);
+    cudaFree(d_pRawSig);
+    cudaFree(d_pRawSigIdx);
 
-    delete h_pObjField;
+    delete l_pRawSig;
 
 	cufftDestroy (plan);
 
@@ -1502,7 +2010,7 @@ bool cu_simConfPointRawSig_wrapper1(double** ppRawSig, ConfPoint_KernelParams pa
 
     if (error != cudaSuccess)
     {
-        std::cout << "error in cu_simConfPointRawSig_wrapper: cudaGetDeviceProperties returned error code " << error << " line: " << __LINE__ << std::endl;
+        std::cout << "error in cu_simConfPointRawSig_wrapper: cudaGetDeviceProperties returned error code " << error << " line: " << __LINE__ << "...\n";
         return false;
     }
 	// use a larger block size for Fermi and above
@@ -1512,13 +2020,13 @@ bool cu_simConfPointRawSig_wrapper1(double** ppRawSig, ConfPoint_KernelParams pa
 	ConfPoint_KernelParams* d_pParams;
 	if (cudaSuccess != cudaMalloc((void**)&d_pParams, sizeof(ConfPoint_KernelParams)))
 	{
-		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << std::endl;
+		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << "...\n";
 		return false;
 	}
 	// transfer params to device
 	if (cudaSuccess != cudaMemcpy(d_pParams, &params, sizeof(ConfPoint_KernelParams), cudaMemcpyHostToDevice))
 	{
-		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMemcpy returned an error " << error << " line: " << __LINE__ << std::endl;
+		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMemcpy returned an error " << error << " line: " << __LINE__ << "...\n";
 		return false;
 	}
 
@@ -1526,14 +2034,14 @@ bool cu_simConfPointRawSig_wrapper1(double** ppRawSig, ConfPoint_KernelParams pa
 	cuDoubleComplex* d_pPupField;
 	if (cudaSuccess != cudaMalloc((void**)&d_pPupField, params.n*params.n*sizeof(cuDoubleComplex)))
 	{
-		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << std::endl;
+		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << "...\n";
 		return false;
 	}
 	// allocate device memory for object field
 	cuDoubleComplex* d_pObjField;
 	if (cudaSuccess != cudaMalloc((void**)&d_pObjField, params.n*params.n*sizeof(cuDoubleComplex)))
 	{
-		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << std::endl;
+		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << "...\n";
 		return false;
 	}
 
@@ -1557,7 +2065,7 @@ bool cu_simConfPointRawSig_wrapper1(double** ppRawSig, ConfPoint_KernelParams pa
     cufftHandle plan;
 	if (!myCufftSafeCall(cufftPlan2d(&plan,params.n, params.n, CUFFT_Z2Z)))
 	{
-		std::cout << "error in cu_simConfPointRawSig_wrapper: cufftPlan2d returned an error " << error << " line: " << __LINE__ << std::endl;
+		std::cout << "error in cu_simConfPointRawSig_wrapper: cufftPlan2d returned an error " << error << " line: " << __LINE__ << "...\n";
 		return false;
 	}
 	
@@ -1573,7 +2081,7 @@ bool cu_simConfPointRawSig_wrapper1(double** ppRawSig, ConfPoint_KernelParams pa
 	cuDoubleComplex *d_pOutData;
 	if (cudaSuccess != cudaMalloc((void**)&d_pOutData, blocksReduction*sizeof(cuDoubleComplex)))
 	{
-		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << std::endl;
+		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << "...\n";
 		return 100;
 	}
 
@@ -1587,7 +2095,7 @@ bool cu_simConfPointRawSig_wrapper1(double** ppRawSig, ConfPoint_KernelParams pa
 	double* d_pRawSig;
 	if (cudaSuccess != cudaMalloc((void**)&d_pRawSig, params.scanNumber.x*params.scanNumber.y*params.scanNumber.z*sizeof(double)))
 	{
-		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << std::endl;
+		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << "...\n";
 		return false;
 	}
 
@@ -1597,12 +2105,12 @@ bool cu_simConfPointRawSig_wrapper1(double** ppRawSig, ConfPoint_KernelParams pa
 
 	if (cudaSuccess != cudaMalloc((void**)&d_index, sizeof(unsigned int)))
 	{
-		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << std::endl;
+		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMalloc returned an error " << error << " line: " << __LINE__ << "...\n";
 		return 0;
 	}
 	if (cudaSuccess != cudaMemcpy(d_index, &index, sizeof(unsigned int), cudaMemcpyHostToDevice))
 	{
-		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMemcpy returned an error " << error << " line: " << __LINE__ << std::endl;
+		std::cout << "error in cu_simConfPointRawSig_wrapper: cudaMemcpy returned an error " << error << " line: " << __LINE__ << "...\n";
 		return 0;
 	}
 
@@ -1633,7 +2141,7 @@ bool cu_simConfPointRawSig_wrapper1(double** ppRawSig, ConfPoint_KernelParams pa
 					cudaFree(d_pRawSig);
 					cufftDestroy (plan);
 					{
-						std::cout << "error in cu_simConfPointRawSig_wrapper: cufftExecZ2Z returned an error " << error << " line: " << __LINE__ << std::endl;
+						std::cout << "error in cu_simConfPointRawSig_wrapper: cufftExecZ2Z returned an error " << error << " line: " << __LINE__ << "...\n";
 						return false;
 					}
 				}
@@ -1648,7 +2156,7 @@ bool cu_simConfPointRawSig_wrapper1(double** ppRawSig, ConfPoint_KernelParams pa
 	// end timing
 	end=clock();
 	msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
-	std::cout << msecs <<" ms to simulate confocal raw signal"<< std::endl;
+	std::cout << msecs <<" ms to simulate confocal raw signal"<< "...\n";
 
 	cudaFree(d_pParams);
 	cudaFree(d_pPupField);

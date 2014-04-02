@@ -48,7 +48,7 @@
  */
 MaterialError Material::processParseResults(MaterialParseParamStruct &parseResults_Mat)
 {
-	std::cout << "error in Material.processParseResults(): not defined for the given Field representation" << std::endl;
+	std::cout << "error in Material.processParseResults(): not defined for the given Field representation" << "...\n";
 	return MAT_ERR;
 };
 
@@ -73,7 +73,7 @@ MaterialError Material::parseXml(pugi::xml_node &material, SimParams simParams)
 	l_pScatNodes=l_parser.childsByTagName(material,"scatter");
 	if ((l_pScatNodes->size()!=1) || (l_pCoatNodes->size()!=1))
 	{
-		std::cout << "error in Material.parseXml(): there must be exactly 1 scatter and 1 coating attached to each material." << std::endl;
+		std::cout << "error in Material.parseXml(): there must be exactly 1 scatter and 1 coating attached to each material." << "...\n";
 		return MAT_ERR;
 	}
 	ScatterFab* l_pScatFab;
@@ -89,7 +89,7 @@ MaterialError Material::parseXml(pugi::xml_node &material, SimParams simParams)
         l_pCoatFab=new CoatingFab_DiffRays();
         break;
     default:
-        std::cout << "error in Material.parseXml(): unknown simulation mode." << std::endl;
+        std::cout << "error in Material.parseXml(): unknown simulation mode." << "...\n";
         return MAT_ERR;
         break;
     }
@@ -97,7 +97,7 @@ MaterialError Material::parseXml(pugi::xml_node &material, SimParams simParams)
 	Scatter* l_pScatter;
 	if (!l_pScatFab->createScatInstFromXML(l_pScatNodes->at(0),l_pScatter, simParams))
 	{
-		std::cout << "error in Material.parseXml(): ScatFab.createScatInstFromXML() returned an error." << std::endl;
+		std::cout << "error in Material.parseXml(): ScatFab.createScatInstFromXML() returned an error." << "...\n";
 		return MAT_ERR;
 	}
 	this->setScatter(l_pScatter);
@@ -105,7 +105,7 @@ MaterialError Material::parseXml(pugi::xml_node &material, SimParams simParams)
 	Coating* l_pCoat;
 	if (!l_pCoatFab->createCoatInstFromXML(l_pCoatNodes->at(0),l_pCoat, simParams))
 	{
-		std::cout << "error in Material.parseXml(): CoatFab.createCoatInstFromXML() returned an error." << std::endl;
+		std::cout << "error in Material.parseXml(): CoatFab.createCoatInstFromXML() returned an error." << "...\n";
 		return MAT_ERR;
 	}
 	this->setCoating(l_pCoat);
@@ -193,19 +193,19 @@ MaterialError Material::createOptiXInstance(RTcontext context, RTgeometryinstanc
 	// create simulation instance of scatter
 	if (SCAT_NO_ERROR != this->getScatter()->createOptiXInstance(lambda, &(this->path_to_ptx)) )
 	{
-		std::cout << "error in Material.createOptiXInstance(): Scatter.createOptiXInstance() returned an error" << std::endl;
+		std::cout << "error in Material.createOptiXInstance(): Scatter.createOptiXInstance() returned an error" << "...\n";
 		return MAT_ERR;
 	}
 	// create simulation instance of coating
 	if (COAT_NO_ERROR != this->getCoating()->createOptiXInstance(lambda, &(this->path_to_ptx)) )
 	{
-		std::cout << "error in Material.createOptiXInstance(): Coating.createOptiXInstance() returned an error" << std::endl;
+		std::cout << "error in Material.createOptiXInstance(): Coating.createOptiXInstance() returned an error" << "...\n";
 		return MAT_ERR;
 	}
 
 	if (MAT_NO_ERR != createMaterialHitProgramPtx(context, simParams))
 	{
-		std::cout << "error in Material.createOptiXInstance(): createMaterialHitProgramPtx() returned an error" << std::endl;
+		std::cout << "error in Material.createOptiXInstance(): createMaterialHitProgramPtx() returned an error" << "...\n";
 		return MAT_ERR;
 	}
 
@@ -290,13 +290,13 @@ MaterialError Material::createCPUSimInstance(double lambda)
 	// create simulation instance of coating
 	if (COAT_NO_ERROR != this->getCoating()->createCPUSimInstance(lambda) )
 	{
-		std::cout << "error in Material.createCPUSimInstance(): Coating.createCPUSimInstance() returned an error." << std::endl;
+		std::cout << "error in Material.createCPUSimInstance(): Coating.createCPUSimInstance() returned an error." << "...\n";
 		return MAT_ERR;
 	}
 	// create simulation instance of scatter
 	if (SCAT_NO_ERROR != this->getScatter()->createCPUSimInstance(lambda))
 	{
-		std::cout << "error in Material.createCPUSimInstance(): Scatter.createCPUSimInstance() returned an error." << std::endl;
+		std::cout << "error in Material.createCPUSimInstance(): Scatter.createCPUSimInstance() returned an error." << "...\n";
 		return MAT_ERR;
 	}
 	this->update=false;
@@ -315,7 +315,7 @@ MaterialError Material::createCPUSimInstance(double lambda)
  */
 MaterialError Material::updateCPUSimInstance(double lambda)
 {
-	std::cout << "error in Material.updateCPUSimInstance(): not defined for the given Material" << std::endl;
+	std::cout << "error in Material.updateCPUSimInstance(): not defined for the given Material" << "...\n";
 	return MAT_ERR;
 };
 
@@ -331,7 +331,7 @@ MaterialError Material::updateCPUSimInstance(double lambda)
  */
 double Material::calcSourceImmersion(double lambda)
 {
-	std::cout << "error in Material.calcSourceImmersion(): not defined for the given Material" << std::endl;
+	std::cout << "error in Material.calcSourceImmersion(): not defined for the given Material" << "...\n";
 	return 0;	// if the function is not overwritten by the child class, we return a standard value of one for the refractive index of the immersion material
 };
 
@@ -410,7 +410,7 @@ Scatter* Material::getScatter(void)
 void Material::hit(rayStruct &ray, Mat_hitParams hitParams, double t, int geometryID)
 {
 	// dummy function to be overwritten by child class
-	std::cout << "error in Material.hit(): hit is not yet implemented for geometric rays for the given material. Material_DiffRays is ignored..." << std::endl;
+	std::cout << "error in Material.hit(): hit is not yet implemented for geometric rays for the given material. Material_DiffRays is ignored..." << "...\n";
 };
 
 /**
@@ -426,7 +426,7 @@ void Material::hit(rayStruct &ray, Mat_hitParams hitParams, double t, int geomet
 void Material::hit(diffRayStruct &ray, Mat_DiffRays_hitParams hitParams, double t_hit, int geometryID)
 {
 	// dummy function to be overwritten by child class
-	std::cout << "error in Material.hit(): hit is not yet implemented for differential rays for the given material. Material is ignored..." << std::endl;
+	std::cout << "error in Material.hit(): hit is not yet implemented for differential rays for the given material. Material is ignored..." << "...\n";
 };
 
 /**
@@ -441,7 +441,7 @@ void Material::hit(diffRayStruct &ray, Mat_DiffRays_hitParams hitParams, double 
  */
 void Material::hit(gaussBeamRayStruct &ray, gaussBeam_geometricNormal normal, int geometryID)
 {
-	std::cout << "error in Material_DiffRays.hit(): hit is not yet implemented for differential rays for the given material. Material_DiffRays is ignored..." << std::endl;
+	std::cout << "error in Material_DiffRays.hit(): hit is not yet implemented for differential rays for the given material. Material_DiffRays is ignored..." << "...\n";
 	// dummy function to be overwritten by child class
 };
 
@@ -457,7 +457,7 @@ void Material::hit(gaussBeamRayStruct &ray, gaussBeam_geometricNormal normal, in
  */
 void Material::setGlassDispersionParams(MatDispersionParams *params)
 {
-	std::cout << "error in Material.setGlassDispersionParams(): not defined for the given Material" << std::endl;
+	std::cout << "error in Material.setGlassDispersionParams(): not defined for the given Material" << "...\n";
 };
 
 /**
@@ -472,7 +472,7 @@ void Material::setGlassDispersionParams(MatDispersionParams *params)
  */
 MatDispersionParams* Material::getGlassDispersionParams(void)
 {
-	std::cout << "error in Material.getGlassDispersionParams(): not defined for the given Material" << std::endl;
+	std::cout << "error in Material.getGlassDispersionParams(): not defined for the given Material" << "...\n";
 	return NULL;
 };
 
@@ -488,7 +488,7 @@ MatDispersionParams* Material::getGlassDispersionParams(void)
  */
 void Material::setImmersionDispersionParams(MatDispersionParams *params)
 {
-	std::cout << "error in Material.setImmersionDispersionParams(): not defined for the given Material" << std::endl;
+	std::cout << "error in Material.setImmersionDispersionParams(): not defined for the given Material" << "...\n";
 };
 
 /**
@@ -503,7 +503,7 @@ void Material::setImmersionDispersionParams(MatDispersionParams *params)
  */
 MatDispersionParams* Material::getImmersionDispersionParams(void)
 {
-	std::cout << "error in Material.getImmersionDispersionParams(): not defined for the given Material" << std::endl;
+	std::cout << "error in Material.getImmersionDispersionParams(): not defined for the given Material" << "...\n";
 	return NULL;
 };
 

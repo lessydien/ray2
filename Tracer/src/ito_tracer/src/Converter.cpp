@@ -30,7 +30,7 @@ converterError convertGaussBeamRayField2ScalarLightFieldCPU(GaussBeamRayField *r
 {
 	if( !gaussBeams2ScalarFieldCPU(rayFieldPtr->getRayList(), rayFieldPtr->getRayListLength(), lightFieldPtr->getFieldPtr(), lightFieldPtr->getParamsPtr()) )
 	{
-		std::cout << "error in convertGaussBeamRayField2ScalarLightFieldCPU(): gaussBeams2ScalarFieldCPU() returned an error." << std::endl;
+		std::cout << "error in convertGaussBeamRayField2ScalarLightFieldCPU(): gaussBeams2ScalarFieldCPU() returned an error." << "...\n";
 		return CONVERTER_ERR;
 	}
 	return CONVERTER_NO_ERR;
@@ -40,7 +40,7 @@ converterError convertGeomRayField2IntensityCPU(GeometricRayField *geomRayFieldP
 {
 	if( !geomRays2IntensityCPU(geomRayFieldPtr->getRayList(), geomRayFieldPtr->getRayListLength(), intensityFieldPtr->getIntensityPtr(), intensityFieldPtr->getParamsPtr()->MTransform, intensityFieldPtr->getParamsPtr()->scale, intensityFieldPtr->getParamsPtr()->nrPixels, geomRayFieldPtr->getParamsPtr()->coherence) )
 	{
-		std::cout << "error in convertGeomRayField2IntensityCPU(): geomRays2IntensityCPU() returned an error." << std::endl;
+		std::cout << "error in convertGeomRayField2IntensityCPU(): geomRays2IntensityCPU() returned an error." << "...\n";
 		return CONVERTER_ERR;
 	}
 	return CONVERTER_NO_ERR;

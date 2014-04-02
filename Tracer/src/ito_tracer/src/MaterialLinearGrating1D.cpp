@@ -199,7 +199,7 @@ MaterialError MaterialLinearGrating1D::calcRefrIndices(double lambda)
 	// calc refractive index of glass material for current wavelength
 	if ( (l_lambda<glassDispersionParamsPtr->lambdaMin)||(l_lambda>glassDispersionParamsPtr->lambdaMax) )
 	{
-		std::cout << "error in MaterialLinearGrating1D.calcRefrIndices(): lambda outside definition range of glass at" << lambda << std::endl;
+		std::cout << "error in MaterialLinearGrating1D.calcRefrIndices(): lambda outside definition range of glass at" << lambda << "...\n";
 		return MAT_ERR;
 	}
 	switch (this->glassDispersionParamsPtr->dispersionFormula)
@@ -221,7 +221,7 @@ MaterialError MaterialLinearGrating1D::calcRefrIndices(double lambda)
 	// do the same for the immersion medium
 	if ( (l_lambda<immersionDispersionParamsPtr->lambdaMin)||(l_lambda>immersionDispersionParamsPtr->lambdaMax) )
 	{
-		std::cout << "error in MaterialLinearGrating1D.calcRefrIndices(): lambda outside definition range of immersion at" << lambda << std::endl;
+		std::cout << "error in MaterialLinearGrating1D.calcRefrIndices(): lambda outside definition range of immersion at" << lambda << "...\n";
 		return MAT_ERR;
 	}
 	switch (this->immersionDispersionParamsPtr->dispersionFormula)
@@ -317,19 +317,19 @@ MaterialError MaterialLinearGrating1D::createOptiXInstance(RTcontext context, RT
 	// calc the refractive indices at current wavelength
 	if (MAT_NO_ERR != calcRefrIndices(lambda))
 	{
-		std::cout << "error in MaterialLinearGrating1D.createOptiXInstance(): calcRefrIndices() returned an error" << std::endl;
+		std::cout << "error in MaterialLinearGrating1D.createOptiXInstance(): calcRefrIndices() returned an error" << "...\n";
 		return MAT_ERR;
 	}
 	// calc the diffraction efficiencies at the current wavelength
 	if (MAT_NO_ERR != calcDiffEffs(lambda))
 	{
-		std::cout << "error in MaterialLinearGrating1D.createOptiXInstance(): calcDiffEffs() returned an error" << std::endl;
+		std::cout << "error in MaterialLinearGrating1D.createOptiXInstance(): calcDiffEffs() returned an error" << "...\n";
 		return MAT_ERR;
 	}
 
 	if (MAT_NO_ERR != Material::createOptiXInstance(context, instance, index, simParams, lambda) )
 	{
-		std::cout << "error in MaterialLinearGrating1D.createOptiXInstance(): Material.creatOptiXInstance() returned an error" << std::endl;
+		std::cout << "error in MaterialLinearGrating1D.createOptiXInstance(): Material.creatOptiXInstance() returned an error" << "...\n";
 		return MAT_ERR;
 	}
 
@@ -361,13 +361,13 @@ MaterialError MaterialLinearGrating1D::updateOptiXInstance(RTcontext context, RT
 		// calc the refractive indices at current wavelength
 		if (MAT_NO_ERR != calcRefrIndices(lambda))
 		{
-			std::cout << "error in MaterialLinearGrating1D.updateOptiXInstance(): calcRefrIndices() returned an error" << std::endl;
+			std::cout << "error in MaterialLinearGrating1D.updateOptiXInstance(): calcRefrIndices() returned an error" << "...\n";
 			return MAT_ERR;
 		}
 		// calc the diffraction efficiencies at the current wavelength
 		if (MAT_NO_ERR != calcDiffEffs(lambda))
 		{
-			std::cout << "error in MaterialLinearGrating1D.createOptiXInstance(): calcDiffEffs() returned an error" << std::endl;
+			std::cout << "error in MaterialLinearGrating1D.createOptiXInstance(): calcDiffEffs() returned an error" << "...\n";
 			return MAT_ERR;
 		}
 		this->update=false;
@@ -375,7 +375,7 @@ MaterialError MaterialLinearGrating1D::updateOptiXInstance(RTcontext context, RT
 
 	if (MAT_NO_ERR != Material::updateOptiXInstance(context, instance, index, simParams, lambda) )
 	{
-		std::cout << "error in MaterialLinearGrating1D.updateOptiXInstance(): Material.updateOptiXInstance() returned an error" << std::endl;
+		std::cout << "error in MaterialLinearGrating1D.updateOptiXInstance(): Material.updateOptiXInstance() returned an error" << "...\n";
 		return MAT_ERR;
 	}
 
@@ -397,20 +397,20 @@ MaterialError MaterialLinearGrating1D::createCPUSimInstance(double lambda)
 	// calc the refractive indices at current wavelength
 	if (MAT_NO_ERR != calcRefrIndices(lambda))
 	{
-		std::cout << "error in MaterialLinearGrating1D.createCPUSimInstance(): calcRefrIndices() returned an error" << std::endl;
+		std::cout << "error in MaterialLinearGrating1D.createCPUSimInstance(): calcRefrIndices() returned an error" << "...\n";
 		return MAT_ERR;
 	}
 
 	if (MAT_NO_ERR != calcDiffEffs(lambda))
 	{
-		std::cout << "error in MaterialLinearGrating1D.createCPUSimInstance(): calcDiffEffs() returned an error" << std::endl;
+		std::cout << "error in MaterialLinearGrating1D.createCPUSimInstance(): calcDiffEffs() returned an error" << "...\n";
 		return MAT_ERR;
 	}
 
 	// create simulation instance of coating
 	if (MAT_NO_ERR != Material::createCPUSimInstance(lambda) )
 	{
-		std::cout << "error in MaterialLinearGrating1D.createCPUSimInstance(): Material.createCPUSimInstance() returned an error." << std::endl;
+		std::cout << "error in MaterialLinearGrating1D.createCPUSimInstance(): Material.createCPUSimInstance() returned an error." << "...\n";
 		return MAT_ERR;
 	}
 
@@ -466,13 +466,13 @@ MaterialError MaterialLinearGrating1D::updateCPUSimInstance(double lambda)
 		// calc the refractive indices at current wavelength
 		if (MAT_NO_ERR != calcRefrIndices(lambda))
 		{
-			std::cout << "error in MaterialLinearGrating1D.updateCPUSimInstance(): calcRefrIndices() returned an error" << std::endl;
+			std::cout << "error in MaterialLinearGrating1D.updateCPUSimInstance(): calcRefrIndices() returned an error" << "...\n";
 			return MAT_ERR;
 		}
 		// calc the diffraction efficiencies at the current wavelength
 		if (MAT_NO_ERR != calcDiffEffs(lambda))
 		{
-			std::cout << "error in MaterialLinearGrating1D.updateCPUSimInstance(): calcDiffEffs() returned an error" << std::endl;
+			std::cout << "error in MaterialLinearGrating1D.updateCPUSimInstance(): calcDiffEffs() returned an error" << "...\n";
 			return MAT_ERR;
 		}
 		this->update=false;
@@ -481,7 +481,7 @@ MaterialError MaterialLinearGrating1D::updateCPUSimInstance(double lambda)
 	{
 		if (SCAT_NO_ERROR != this->scatterPtr->createCPUSimInstance(lambda) )
 		{
-			std::cout << "error in MaterialLinearGrating1D.updateCPUSimInstance(): Scatter.createCPUSimInstance() returned an error" << std::endl;
+			std::cout << "error in MaterialLinearGrating1D.updateCPUSimInstance(): Scatter.createCPUSimInstance() returned an error" << "...\n";
 			return MAT_ERR;
 		}
 	}
@@ -490,7 +490,7 @@ MaterialError MaterialLinearGrating1D::updateCPUSimInstance(double lambda)
 		// create simulation instance of coating
 		if (COAT_NO_ERROR != this->coatingPtr->createCPUSimInstance(lambda) )
 		{
-			std::cout << "error in MaterialLinearGrating1D.updateCPUSimInstance(): Coating.createCPUSimInstance() returned an error" << std::endl;
+			std::cout << "error in MaterialLinearGrating1D.updateCPUSimInstance(): Coating.createCPUSimInstance() returned an error" << "...\n";
 			return MAT_ERR;
 		}
 		this->coatingPtr->update=false;
@@ -554,7 +554,7 @@ MaterialError MaterialLinearGrating1D::processParseResults(MaterialParseParamStr
 					glassDispersionParamsPtr->dispersionFormula=MAT_DISPFORMULA_SELLMEIER1;
 					break;
 				default:
-					std::cout <<"error in MaterialLinearGrating1D.processParseResults(): unknown dispersion formula" << std::endl;
+					std::cout <<"error in MaterialLinearGrating1D.processParseResults(): unknown dispersion formula" << "...\n";
 					glassDispersionParamsPtr->dispersionFormula=MAT_DISPFORMULA_UNKNOWN;
 					return MAT_ERR;
 					break;
@@ -594,7 +594,7 @@ MaterialError MaterialLinearGrating1D::processParseResults(MaterialParseParamStr
 					this->immersionDispersionParamsPtr->dispersionFormula=MAT_DISPFORMULA_SELLMEIER1;
 					break;
 				default:
-					std::cout <<"error in MaterialLinearGrating1D.processParseResults(): unknown material dispersion formula" << std::endl;
+					std::cout <<"error in MaterialLinearGrating1D.processParseResults(): unknown material dispersion formula" << "...\n";
 					this->immersionDispersionParamsPtr->dispersionFormula=MAT_DISPFORMULA_UNKNOWN;
 					break;
 			}
@@ -699,7 +699,7 @@ MaterialError MaterialLinearGrating1D::parseXml(pugi::xml_node &material, SimPar
 {
 	if (!Material::parseXml(material, simParams))
 	{
-		std::cout << "error in MaterialLinearGrating1D.parseXml(): Material.parseXml() returned an error." << std::endl;
+		std::cout << "error in MaterialLinearGrating1D.parseXml(): Material.parseXml() returned an error." << "...\n";
 		return MAT_ERR;
 	}
 
@@ -711,7 +711,7 @@ MaterialError MaterialLinearGrating1D::parseXml(pugi::xml_node &material, SimPar
 	const char* l_glassName=l_parser.attrValByName(material, "glassName");
 	if (l_glassName==NULL)
 	{
-		std::cout << "error in MaterialLinearGrating1D.parseXml(): glassName is not defined" << std::endl;
+		std::cout << "error in MaterialLinearGrating1D.parseXml(): glassName is not defined" << "...\n";
 		return MAT_ERR;
 	}
 	if ( !strcmp(l_glassName,"MIRROR") )
@@ -748,14 +748,14 @@ MaterialError MaterialLinearGrating1D::parseXml(pugi::xml_node &material, SimPar
 			FILE* hfileGlass = fopen(FILE_GLASSCATALOG, "r");
 			if (!hfileGlass)
 			{
-				std::cout <<"error in MaterialLinearGrating1D.parseXml(): could not open glass catalog at: " << FILE_GLASSCATALOG  << std::endl;
+				std::cout <<"error in MaterialLinearGrating1D.parseXml(): could not open glass catalog at: " << FILE_GLASSCATALOG  << "...\n";
 				return MAT_ERR;
 			}
 			parseGlassResultStruct* parseResultsGlassPtr;
 			/* parse Zemax glass catalog */
 			if ( PARSER_NO_ERR != parseZemaxGlassCatalog(&parseResultsGlassPtr, hfileGlass, l_glassName) )
 			{
-				std::cout <<"error in MaterialLinearGrating1D.parseXml(): parseZemaxGlassCatalogOld() returned an error." << std::endl;
+				std::cout <<"error in MaterialLinearGrating1D.parseXml(): parseZemaxGlassCatalogOld() returned an error." << "...\n";
 				return MAT_ERR;
 			}
 			this->glassDispersionParamsPtr->lambdaMax=parseResultsGlassPtr->lambdaMax;
@@ -772,7 +772,7 @@ MaterialError MaterialLinearGrating1D::parseXml(pugi::xml_node &material, SimPar
 					break;
 				default:
 					this->glassDispersionParamsPtr->dispersionFormula=MAT_DISPFORMULA_UNKNOWN;
-					std::cout <<"error in MaterialLinearGrating1D.parseXml(): unknown material dispersion formula" << std::endl;
+					std::cout <<"error in MaterialLinearGrating1D.parseXml(): unknown material dispersion formula" << "...\n";
 					return MAT_ERR;
 					break;
 			}
@@ -786,7 +786,7 @@ MaterialError MaterialLinearGrating1D::parseXml(pugi::xml_node &material, SimPar
 	const char* l_immersionName=l_parser.attrValByName(material, "immersionName");
 	if (l_immersionName==NULL)
 	{
-		std::cout << "error in MaterialLinearGrating1D.parseXml(): glassName is not defined" << std::endl;
+		std::cout << "error in MaterialLinearGrating1D.parseXml(): glassName is not defined" << "...\n";
 		return MAT_ERR;
 	}
 	// if we have a user defined glass we simply take the values of n1 and n2 defined in the prescription file and set no dispersion
@@ -808,14 +808,14 @@ MaterialError MaterialLinearGrating1D::parseXml(pugi::xml_node &material, SimPar
 		FILE* hfileGlass = fopen(FILE_GLASSCATALOG, "r");
 		if (!hfileGlass)
 		{
-			std::cout <<"error in MaterialLinearGrating1D.parseXml(): could not open glass catalog at: " << filepath  << std::endl;
+			std::cout <<"error in MaterialLinearGrating1D.parseXml(): could not open glass catalog at: " << filepath  << "...\n";
 			return MAT_ERR;
 		}
 		parseGlassResultStruct* parseResultsGlassPtr;
 		/* parse Zemax glass catalog */
 		if ( PARSER_NO_ERR != parseZemaxGlassCatalog(&parseResultsGlassPtr, hfileGlass, l_immersionName) )
 		{
-			std::cout <<"error in MaterialLinearGrating1D.parseXml(): parseZemaxGlassCatalogOld() returned an error." << std::endl;
+			std::cout <<"error in MaterialLinearGrating1D.parseXml(): parseZemaxGlassCatalogOld() returned an error." << "...\n";
 			return MAT_ERR;
 		}
 		this->immersionDispersionParamsPtr->lambdaMax=parseResultsGlassPtr->lambdaMax;
@@ -832,7 +832,7 @@ MaterialError MaterialLinearGrating1D::parseXml(pugi::xml_node &material, SimPar
 				break;
 			default:
 				this->immersionDispersionParamsPtr->dispersionFormula=MAT_DISPFORMULA_UNKNOWN;
-				std::cout <<"error in MaterialLinearGrating1D.parseXml(): unknown material dispersion formula" << std::endl;
+				std::cout <<"error in MaterialLinearGrating1D.parseXml(): unknown material dispersion formula" << "...\n";
 				return MAT_ERR;
 				break;
 		}
@@ -897,7 +897,7 @@ MaterialError MaterialLinearGrating1D::parseXml(pugi::xml_node &material, SimPar
 	const char* l_DiffFileName=l_parser.attrValByName(material, "diffFileName");
 	if (l_DiffFileName==NULL)
 	{
-		std::cout << "error in MaterialLinearGrating1D.parseXml(): diffFileName is not defined" << std::endl;
+		std::cout << "error in MaterialLinearGrating1D.parseXml(): diffFileName is not defined" << "...\n";
 		return MAT_ERR;
 	}
 	// if we have a user defined glass we simply take the values of n1 and n2 defined in the prescription file and set no dispersion
@@ -951,14 +951,14 @@ MaterialError MaterialLinearGrating1D::parseXml(pugi::xml_node &material, SimPar
 		FILE* hfileGlass = fopen(l_diffFile, "r");
 		if (!hfileGlass)
 		{
-			std::cout <<"error in MaterialLinearGrating1D.parseXml(): could not open diff file at: " << l_diffFile  << std::endl;
+			std::cout <<"error in MaterialLinearGrating1D.parseXml(): could not open diff file at: " << l_diffFile  << "...\n";
 			return MAT_ERR;
 		}
 		ParseGratingResultStruct* parseResultsGratingPtr;
 		/* parse Zemax glass catalog */
 		if ( PARSER_NO_ERR != parseMicroSimGratingData(&parseResultsGratingPtr, hfileGlass) )
 		{
-			std::cout <<"error in MaterialLinearGrating1D.parseXml(): parseZemaxGlassCatalogOld() returned an error." << std::endl;
+			std::cout <<"error in MaterialLinearGrating1D.parseXml(): parseZemaxGlassCatalogOld() returned an error." << "...\n";
 			return MAT_ERR;
 		}
 		this->diffractionParamsPtr->g=parseResultsGratingPtr->g;

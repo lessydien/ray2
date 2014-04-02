@@ -44,7 +44,7 @@
  */
 fieldError VectorLightField::write2TextFile(FILE* hFile, detParams &oDetParams)
 {
-	std::cout << "error in VectorLightField.write2TextFile(): not implemented yet" << std::endl;
+	std::cout << "error in VectorLightField.write2TextFile(): not implemented yet" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -62,7 +62,7 @@ fieldError VectorLightField::write2TextFile(FILE* hFile, detParams &oDetParams)
  */
 fieldError VectorLightField::write2MatFile(char* filename, detParams &oDetParams)
 {
-	std::cout << "error in Field.write2MatFile(): not defined for the given field representation" << std::endl;
+	std::cout << "error in Field.write2MatFile(): not defined for the given field representation" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -81,7 +81,7 @@ fieldError  VectorLightField::parseXml(pugi::xml_node &det, vector<Field*> &fiel
 	// call base class function
 	if (FIELD_NO_ERR != Field::parseXml(det, fieldVec, simParams))
 	{
-		std::cout << "error in VectorLightField.parseXml(): Field.parseXml()  returned an error." << std::endl;
+		std::cout << "error in VectorLightField.parseXml(): Field.parseXml()  returned an error." << "...\n";
 		return FIELD_ERR;
 	}
 	return FIELD_NO_ERR;

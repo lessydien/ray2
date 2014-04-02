@@ -45,7 +45,7 @@ void Scatter_Lambert2D_DiffRays::hit(diffRayStruct &ray, Mat_DiffRays_hitParams 
 	}
 	else
 	{
-		std::cout <<"error in ScatterDoubleCauchy1D.hit(): hitDoubleCauchy1D returned an error." << std::endl;
+		std::cout <<"error in ScatterDoubleCauchy1D.hit(): hitDoubleCauchy1D returned an error." << "...\n";
 		// some error mechanism !!
 	}
 

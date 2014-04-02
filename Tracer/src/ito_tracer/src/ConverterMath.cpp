@@ -72,7 +72,7 @@ bool geomRays2IntensityCPU(rayStruct* rayListPtr, unsigned long long rayListLeng
 	double3x3 Matrix=make_double3x3(t_ex,t_ey,t_ez);
 	if (optix::det(Matrix)==0)
 	{
-		std::cout << "error in ConverterMath.geomRays2Intensity(): Matrix is unitary!!" << std::endl;
+		std::cout << "error in ConverterMath.geomRays2Intensity(): Matrix is unitary!!" << "...\n";
 		return false; //matrix singular
 	}
 	double3x3 MatrixInv=inv(Matrix);
@@ -132,7 +132,7 @@ bool geomRays2IntensityCPU(rayStruct* rayListPtr, unsigned long long rayListLeng
 		}
 		else
 		{
-			std::cout << "error in geomRays2Intensity(): partial coherence not implemented yet" << std::endl;
+			std::cout << "error in geomRays2Intensity(): partial coherence not implemented yet" << "...\n";
 			return false;
 		}
 	}

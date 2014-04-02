@@ -60,7 +60,7 @@ geometryError CylLenseSurface::setParams(Geometry_Params *paramsIn)
 		*(this->paramsPtr)=*l_ptr;
 	else
 	{
-		std::cout << "error in CylLenseSurface.setParams(): paramsIn seems to not be of type CylLenseSurface_Params" << std::endl;
+		std::cout << "error in CylLenseSurface.setParams(): paramsIn seems to not be of type CylLenseSurface_Params" << "...\n";
 		return GEOM_ERR;
 	}
 	this->update=true;
@@ -184,7 +184,7 @@ geometryError CylLenseSurface::hit(rayStruct &ray,double t)
 //	}
 //	else
 //	{
-//		std::cout << "error in CylLenseSurface.hit: rays of gaussian beamlet have inconsistent intersections at geometry:" << this->paramsPtr->geometryID << std::endl;
+//		std::cout << "error in CylLenseSurface.hit: rays of gaussian beamlet have inconsistent intersections at geometry:" << this->paramsPtr->geometryID << "...\n";
 //		return GEOM_GBINCONSISTENTINTERSECTIONS_ERR;// terminate the ray with an error
 //	}
 //};
@@ -232,7 +232,7 @@ geometryError CylLenseSurface::createOptixInstance( RTcontext &context, RTgeomet
 {
 	if (GEOM_NO_ERR != Geometry::createOptixInstance(context, geometrygroup, index, simParams, lambda) )
 	{
-		std::cout <<"error in CylLenseSurface.createOptixInstance(): Geometry.creatOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << std::endl;
+		std::cout <<"error in CylLenseSurface.createOptixInstance(): Geometry.creatOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << "...\n";
 		return GEOM_ERR;
 	}
 
@@ -260,7 +260,7 @@ geometryError CylLenseSurface::updateOptixInstance( RTcontext &context, RTgeomet
 	{
 		if (GEOM_NO_ERR != Geometry::updateOptixInstance(context, geometrygroup, index, simParams, lambda))
 		{
-			std::cout <<"error in CylLenseSurface.updateOptixInstance(): materialList[i] returned an error at geometry: " << this->getParamsPtr()->geometryID << std::endl;
+			std::cout <<"error in CylLenseSurface.updateOptixInstance(): materialList[i] returned an error at geometry: " << this->getParamsPtr()->geometryID << "...\n";
 			return GEOM_ERR;
 		}
 		/* set the variables of the geometry */

@@ -37,7 +37,7 @@ bool DetectorFab::createDetInstFromXML(xml_node &detNode, vector<Detector*> &det
 	// if we don't have an geometry, return NULL
 	if (strcmp((l_parser.attrByName(detNode, "objectType"))->value(),"DETECTOR"))
 	{
-		std::cout << "error in DetectorFab.createDetInstanceFromXML(): objectType is not defined for given node." << std::endl;
+		std::cout << "error in DetectorFab.createDetInstanceFromXML(): objectType is not defined for given node." << "...\n";
 		return false; // return empty vector
 	}
 
@@ -45,7 +45,7 @@ bool DetectorFab::createDetInstFromXML(xml_node &detNode, vector<Detector*> &det
 	const char* l_detTypeAscii = (l_parser.attrByName(detNode,"detType"))->value();
 	if (l_detTypeAscii==NULL)
 	{
-		std::cout << "error in DetectorFab.createInstanceFromXML(): geomType is not defined for given node." << std::endl;
+		std::cout << "error in DetectorFab.createInstanceFromXML(): geomType is not defined for given node." << "...\n";
 		return false;
 	}
 	detType l_detType=l_parser.asciiToDetectorType(l_detTypeAscii);

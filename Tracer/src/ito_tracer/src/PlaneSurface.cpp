@@ -61,7 +61,7 @@ geometryError PlaneSurface::setParams(Geometry_Params *paramsIn)//PlaneSurface_P
 		*(this->paramsPtr)=*l_ptr;
 	else
 	{
-		std::cout << "error in PlaneSurface.setParams(): paramsIn seems to not be of type PlaneSurface_Params" << std::endl;
+		std::cout << "error in PlaneSurface.setParams(): paramsIn seems to not be of type PlaneSurface_Params" << "...\n";
 		return GEOM_ERR;
 	}
 	this->update=true;
@@ -245,7 +245,7 @@ geometryError PlaneSurface::hit(gaussBeamRayStruct &ray, gaussBeam_t t)
 	}
 	else
 	{
-		std::cout <<"error in PlaneSurface.hit(): rays of gaussian beamlet have inconsistent intersections on geometry:" << this->paramsPtr->geometryID << std::endl;
+		std::cout <<"error in PlaneSurface.hit(): rays of gaussian beamlet have inconsistent intersections on geometry:" << this->paramsPtr->geometryID << "...\n";
 		return GEOM_GBINCONSISTENTINTERSECTIONS_ERR;// terminate the ray with an error
 	}
  };
@@ -266,7 +266,7 @@ geometryError PlaneSurface::createOptixInstance( RTcontext &context, RTgeometryg
 {
 	if (GEOM_NO_ERR != Geometry::createOptixInstance(context, geometrygroup, index, simParams, lambda) )
 	{
-		std::cout <<"error in PlaneSurface.createOptixInstance(): Geometry.creatOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << std::endl;
+		std::cout <<"error in PlaneSurface.createOptixInstance(): Geometry.creatOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << "...\n";
 		return GEOM_ERR;
 	}
 
@@ -294,7 +294,7 @@ geometryError PlaneSurface::updateOptixInstance( RTcontext &context, RTgeometryg
 	{
 		if (GEOM_NO_ERR != this->updateOptixInstance(context, geometrygroup, index, simParams, lambda) )
 		{
-			std::cout <<"error in PlaneSurface.updateOptixInstance(): Geometry.updateOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << std::endl;
+			std::cout <<"error in PlaneSurface.updateOptixInstance(): Geometry.updateOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << "...\n";
 			return GEOM_ERR;
 		}
 		/* set the variables of the geometry */
@@ -336,7 +336,7 @@ geometryError PlaneSurface::parseXml(pugi::xml_node &geometry, SimParams simPara
 	// parse base class
 	if (GEOM_NO_ERR!=Geometry::parseXml(geometry,simParams, geomVec))
 	{
-		std::cout << "error in PlaneSurface.parseXml(): Geometry.parseXml() returned an error." << std::endl;
+		std::cout << "error in PlaneSurface.parseXml(): Geometry.parseXml() returned an error." << "...\n";
 		return GEOM_ERR;
 	}
 	double3 l_vec=make_double3(0,0,1);

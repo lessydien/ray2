@@ -49,35 +49,35 @@ fieldError  ScalarGaussianField::parseXml(pugi::xml_node &field, vector<Field*> 
 	// call base class function
 	if (FIELD_NO_ERR != ScalarLightField::parseXml(field, fieldVec, simParams))
 	{
-		std::cout << "error in ScalarGaussianField.parseXml(): ScalarLightField.parseXml()  returned an error." << std::endl;
+		std::cout << "error in ScalarGaussianField.parseXml(): ScalarLightField.parseXml()  returned an error." << "...\n";
 		return FIELD_ERR;
 	}
 
 	Parser_XML l_parser;
 	if (!l_parser.attrByNameToDouble(field, "amplMax", this->paramsPtr->amplMax))
 	{
-		std::cout << "error in ScalarLightField.parseXml(): amplMax is not defined" << std::endl;
+		std::cout << "error in ScalarLightField.parseXml(): amplMax is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 
 	if (!l_parser.attrByNameToDouble(field, "focusWidth.x", this->paramsPtr->focusWidth.x))
 	{
-		std::cout << "error in ScalarGaussianField.parseXml(): focusWidth.x is not defined" << std::endl;
+		std::cout << "error in ScalarGaussianField.parseXml(): focusWidth.x is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	if (!l_parser.attrByNameToDouble(field, "focusWidth.y", this->paramsPtr->focusWidth.y))
 	{
-		std::cout << "error in ScalarGaussianField.parseXml(): focusWidth.y is not defined" << std::endl;
+		std::cout << "error in ScalarGaussianField.parseXml(): focusWidth.y is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	if (!l_parser.attrByNameToDouble(field, "distToFocus.x", this->paramsPtr->distToFocus.x))
 	{
-		std::cout << "error in ScalarGaussianField.parseXml(): distToFocus.x is not defined" << std::endl;
+		std::cout << "error in ScalarGaussianField.parseXml(): distToFocus.x is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	if (!l_parser.attrByNameToDouble(field, "distToFocus.y", this->paramsPtr->distToFocus.y))
 	{
-		std::cout << "error in ScalarGaussianField.parseXml(): distToFocus.y is not defined" << std::endl;
+		std::cout << "error in ScalarGaussianField.parseXml(): distToFocus.y is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 

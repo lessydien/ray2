@@ -347,7 +347,7 @@ inline RT_HOSTDEVICE bool hitDOE(rayStruct &ray, Mat_hitParams hitParams, MatDOE
 			prob_vector[k]=prob_vector[k-1] + prob_vector_temp[k];
 	}
 
-//std::cout << "order 1, efficiency: " << prob_vector[0] << std::endl;
+//std::cout << "order 1, efficiency: " << prob_vector[0] << "...\n";
 
 uint32_t x1[5];
 RandomInit(ray.currentSeed, x1); // init random variable

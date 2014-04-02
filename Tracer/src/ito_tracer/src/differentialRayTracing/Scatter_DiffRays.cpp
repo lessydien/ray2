@@ -51,18 +51,18 @@ Scatter_DiffRays_ReducedParams* Scatter_DiffRays::getReducedParams(void)
 
 void Scatter_DiffRays::hit(rayStruct &ray, Mat_hitParams hitParams)
 {
-	std::cout << "error in Scatter_DiffRays.hit(): hit is not yet implemented for geometric rays for the given scatter. no scatter assumed." << std::endl;
+	std::cout << "error in Scatter_DiffRays.hit(): hit is not yet implemented for geometric rays for the given scatter. no scatter assumed." << "...\n";
 	// dummy function to be overwritten by child class
 }
 
 void Scatter_DiffRays::hit(diffRayStruct &ray, Mat_hitParams hitParams)
 {
-	std::cout << "error in Scatter_DiffRays.hit(): hit is not yet implemented for differential rays for the given scatter. no scatter assumed." << std::endl;
+	std::cout << "error in Scatter_DiffRays.hit(): hit is not yet implemented for differential rays for the given scatter. no scatter assumed." << "...\n";
 	// dummy function to be overwritten by child class
 }
 
 void Scatter_DiffRays::hit(gaussBeamRayStruct &ray, gaussBeam_geometricNormal normal)
 {
-	std::cout << "error in Scatter_DiffRays.hit(): hit is not yet implemented for gaussian beamlets for the given scatter. no scatter assumed." << std::endl;
+	std::cout << "error in Scatter_DiffRays.hit(): hit is not yet implemented for gaussian beamlets for the given scatter. no scatter assumed." << "...\n";
 	// dummy function to be overwritten by child class
 }

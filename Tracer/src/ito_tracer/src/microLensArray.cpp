@@ -52,7 +52,7 @@ geometryError MicroLensArray::parseXml(pugi::xml_node &geometry, SimParams simPa
 
 	if (! ((l_pXmlGeomList->size() == 3) || (l_pXmlGeomList->size() == 6)) )
 	{
-		std::cout << "error in MicroLensArray.parseXML(): xml_node contains not enough subnodes" << std::endl;
+		std::cout << "error in MicroLensArray.parseXML(): xml_node contains not enough subnodes" << "...\n";
 		return GEOM_ERR;
 	}
 
@@ -64,7 +64,7 @@ geometryError MicroLensArray::parseXml(pugi::xml_node &geometry, SimParams simPa
 		str=l_parser.attrValByName(l_pXmlGeomList->at(i), "faceType");
 		if (str==NULL)
 		{
-			std::cout << "error in MicroLensArray.parseXML(): faceType is not defined for face " << i << std::endl;
+			std::cout << "error in MicroLensArray.parseXML(): faceType is not defined for face " << i << "...\n";
 			return GEOM_ERR;
 		}
 		// if we are in sequential mode, we ignore the side face
@@ -73,7 +73,7 @@ geometryError MicroLensArray::parseXml(pugi::xml_node &geometry, SimParams simPa
 		else
 			if (!l_GeomFab.createGeomInstFromXML(l_pXmlGeomList->at(i), simParams, geomVec))
 			{
-				std::cout << "error in MicroLensArray.parseXML(): geomFab.createGeomInstFromXml() returned an error." << std::endl;
+				std::cout << "error in MicroLensArray.parseXML(): geomFab.createGeomInstFromXml() returned an error." << "...\n";
 				return GEOM_ERR;
 			}
 	}

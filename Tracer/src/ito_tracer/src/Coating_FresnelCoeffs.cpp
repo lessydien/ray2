@@ -44,7 +44,7 @@ CoatingError Coating_FresnelCoeffs::calcRefrIndices(double lambda)
 	// calc refractive index of glass material for current wavelength
 	if ( (l_lambda<this->fullParamsPtr->glassDispersionParamsPtr->lambdaMin)||(l_lambda>this->fullParamsPtr->glassDispersionParamsPtr->lambdaMax) )
 	{
-		std::cout << "error in Coating_FresnelCoeffs.calcRefrIndices(): lambda outside of range of glass definition at lambda=" << lambda << std::endl;
+		std::cout << "error in Coating_FresnelCoeffs.calcRefrIndices(): lambda outside of range of glass definition at lambda=" << lambda << "...\n";
 		return COAT_ERROR;
 	}
 	switch (this->fullParamsPtr->glassDispersionParamsPtr->dispersionFormula)
@@ -66,7 +66,7 @@ CoatingError Coating_FresnelCoeffs::calcRefrIndices(double lambda)
 	// do the same for the immersion medium
 	if ( (l_lambda<this->fullParamsPtr->immersionDispersionParamsPtr->lambdaMin)||(l_lambda>this->fullParamsPtr->immersionDispersionParamsPtr->lambdaMax) )
 	{
-		std::cout << "error in Coating_FresnelCoeffs.calcRefrIndices(): lambda outside of range of immersion definition at lambda=" << lambda << std::endl;
+		std::cout << "error in Coating_FresnelCoeffs.calcRefrIndices(): lambda outside of range of immersion definition at lambda=" << lambda << "...\n";
 		return COAT_ERROR;
 	}
 	switch (this->fullParamsPtr->immersionDispersionParamsPtr->dispersionFormula)
@@ -104,7 +104,7 @@ CoatingError Coating_FresnelCoeffs::createCPUSimInstance(double lambda)
 	// calc the refractive indices at current wavelength
 	if (COAT_NO_ERROR!=this->calcRefrIndices(lambda))
 	{
-		std::cout << "error in Coating_FresnelCoeffs.createCPUSimInstance(): calcRefrIndices() returned an error."<< std::endl;
+		std::cout << "error in Coating_FresnelCoeffs.createCPUSimInstance(): calcRefrIndices() returned an error."<< "...\n";
 		return COAT_ERROR;
 	}
 	this->update=false;
@@ -255,7 +255,7 @@ CoatingError Coating_FresnelCoeffs::processParseResults(MaterialParseParamStruct
 				break;
 			default:
 				this->fullParamsPtr->glassDispersionParamsPtr->dispersionFormula=MAT_DISPFORMULA_UNKNOWN;
-				std::cout <<"error in Coating_FresnelCoeffs.processParseResults(): unknown material dispersion formula" << std::endl;
+				std::cout <<"error in Coating_FresnelCoeffs.processParseResults(): unknown material dispersion formula" << "...\n";
 				return COAT_ERROR;
 				break;
 		}
@@ -294,7 +294,7 @@ CoatingError Coating_FresnelCoeffs::processParseResults(MaterialParseParamStruct
 					break;
 				default:
 					this->fullParamsPtr->immersionDispersionParamsPtr->dispersionFormula=MAT_DISPFORMULA_UNKNOWN;
-					std::cout <<"error in Coating_FresnelCoeffs.processParseResults(): unknown material dispersion formula" << std::endl;
+					std::cout <<"error in Coating_FresnelCoeffs.processParseResults(): unknown material dispersion formula" << "...\n";
 					return COAT_ERROR;
 					break;
 			}

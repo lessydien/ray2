@@ -72,12 +72,12 @@ fieldError IntensityField::write2TextFile(char* filename, detParams &oDetParams)
 
 	if (!hFileOut)
 	{
-		std::cout << "error in IntensityField.write2TextFile(): could not open output file: " << filename << std::endl;
+		std::cout << "error in IntensityField.write2TextFile(): could not open output file: " << filename << "...\n";
 		return FIELD_ERR;
 	}
 	if ( IO_NO_ERR != writeIntensityField2File(hFileOut, this) )
 	{
-		std::cout << "error in IntensityField.write2TextFile(): writeIntensityFIeld2File() returned an error" << std::endl;
+		std::cout << "error in IntensityField.write2TextFile(): writeIntensityFIeld2File() returned an error" << "...\n";
 		return FIELD_ERR;
 	}
 	fclose(hFileOut);
@@ -106,7 +106,7 @@ fieldError IntensityField::write2MatFile(char* filename, detParams &oDetParams)
 //	pmat = matOpen( oDetParams.filenamePtr, "w" );
 	if (pmat == NULL) 
 	{
-		std::cout << "error in IntensityField.write2MatFile(): could not open the mat file" << std::endl;
+		std::cout << "error in IntensityField.write2MatFile(): could not open the mat file" << "...\n";
 		return(FIELD_NO_ERR);
 	}
 
@@ -172,11 +172,11 @@ fieldError IntensityField::write2MatFile(char* filename, detParams &oDetParams)
 
 	if (matClose(pmat) != 0) 
 	{
-		std::cout << "error in ScalarLightField.write2MatFile(): could not close the mat file" << std::endl;
+		std::cout << "error in ScalarLightField.write2MatFile(): could not close the mat file" << "...\n";
 		return(FIELD_NO_ERR);
 	}
 #else
-	std::cout << "error in ScalarLightField.write2MatFile(): matlab not supported" << std::endl;
+	std::cout << "error in ScalarLightField.write2MatFile(): matlab not supported" << "...\n";
 	return FIELD_ERR;
 #endif
 	return FIELD_NO_ERR;
@@ -220,7 +220,7 @@ fieldError  IntensityField::parseXml(pugi::xml_node &det, vector<Field*> &fieldV
 	// call base class function
 	if (FIELD_NO_ERR != Field::parseXml(det, fieldVec, simParams))
 	{
-		std::cout << "error in IntensityField.parseXml(): Field.parseXml()  returned an error." << std::endl;
+		std::cout << "error in IntensityField.parseXml(): Field.parseXml()  returned an error." << "...\n";
 		return FIELD_ERR;
 	}
 	return FIELD_NO_ERR;

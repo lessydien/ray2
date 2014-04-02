@@ -102,7 +102,7 @@ MaterialError MaterialReflecting_CovGlass::createOptiXInstance(RTcontext context
 {
 	if (MAT_NO_ERR != Material::createOptiXInstance(context, instance, index, simParams, lambda) )
 	{
-		std::cout << "error in MaterialReflecting_CovGlass.createOptiXInstance(): Material.creatOptiXInstance() returned an error" << std::endl;
+		std::cout << "error in MaterialReflecting_CovGlass.createOptiXInstance(): Material.creatOptiXInstance() returned an error" << "...\n";
 		return MAT_ERR;
 	}
 	/* set the variables of the geometry */
@@ -138,7 +138,7 @@ MaterialError MaterialReflecting_CovGlass::updateOptiXInstance(RTcontext context
 
 	if (MAT_NO_ERR != Material::updateOptiXInstance(context, instance, index, simParams, lambda) )
 	{
-		std::cout << "error in MaterialReflecting_CovGlass.updateOptiXInstance(): Material.updateOptiXInstance() returned an error" << std::endl;
+		std::cout << "error in MaterialReflecting_CovGlass.updateOptiXInstance(): Material.updateOptiXInstance() returned an error" << "...\n";
 		return MAT_ERR;
 	}
 
@@ -162,7 +162,7 @@ MaterialError MaterialReflecting_CovGlass::processParseResults(MaterialParsePara
 	this->params.geomID=parseResults_Det.geomID;
 	if (parseResults_Mat.coating_r <= 0)
 	{
-		std::cout << "error in MaterialReflecting_CovGlass.processParseResults(): cover glass material is not allowed with an reflection coefficient equal to zero" << std::endl;
+		std::cout << "error in MaterialReflecting_CovGlass.processParseResults(): cover glass material is not allowed with an reflection coefficient equal to zero" << "...\n";
 		return MAT_ERR;
 	}
 	else

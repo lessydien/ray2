@@ -60,7 +60,7 @@ fieldParams* ScalarLightField::getParamsPtr()
  */
 fieldError ScalarLightField::write2TextFile(char* filename, detParams &oDetParams)
 {
-	std::cout << "error in ScalarLightField.write2TextFile(): not implemented yet" << std::endl;
+	std::cout << "error in ScalarLightField.write2TextFile(): not implemented yet" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -86,7 +86,7 @@ fieldError ScalarLightField::write2MatFile(char* filename, detParams &oDetParams
 //	pmat = matOpen( oDetParams.filenamePtr, "w" );
 	if (pmat == NULL) 
 	{
-		std::cout << "error in IntensityField.write2MatFile(): could not open the mat file" << std::endl;
+		std::cout << "error in IntensityField.write2MatFile(): could not open the mat file" << "...\n";
 		return(FIELD_NO_ERR);
 	}
 //	MatlabInterface oMatInterface;
@@ -163,12 +163,12 @@ fieldError ScalarLightField::write2MatFile(char* filename, detParams &oDetParams
 
 	if (matClose(pmat) != 0) 
 	{
-		std::cout << "error in ScalarLightField.write2MatFile(): could not close the mat file" << std::endl;
+		std::cout << "error in ScalarLightField.write2MatFile(): could not close the mat file" << "...\n";
 		return(FIELD_NO_ERR);
 	}
 
 #else
-	std::cout << "error in ScalarLightField.write2MatFile(): matlab not supported" << std::endl;
+	std::cout << "error in ScalarLightField.write2MatFile(): matlab not supported" << "...\n";
 	return FIELD_ERR;
 #endif
 	return FIELD_NO_ERR;
@@ -186,7 +186,7 @@ fieldError ScalarLightField::write2MatFile(char* filename, detParams &oDetParams
  */
 fieldError ScalarLightField::initGPUSubset(RTcontext &context)
 {
-	std::cout << "error in ScalarLightField.initGPUSubset(): not defined for the given field representation" << std::endl;
+	std::cout << "error in ScalarLightField.initGPUSubset(): not defined for the given field representation" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -202,7 +202,7 @@ fieldError ScalarLightField::initGPUSubset(RTcontext &context)
  */
 fieldError ScalarLightField::initCPUSubset()
 {
-	std::cout << "error in ScalarLightField.initCPUSubset(): not defined for the given field representation" << std::endl;
+	std::cout << "error in ScalarLightField.initCPUSubset(): not defined for the given field representation" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -218,7 +218,7 @@ fieldError ScalarLightField::initCPUSubset()
  */
 fieldError ScalarLightField::createCPUSimInstance()
 {
-	std::cout << "error in ScalarLightField.createCPUSimInstance(): not defined for the given field representation" << std::endl;
+	std::cout << "error in ScalarLightField.createCPUSimInstance(): not defined for the given field representation" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -234,7 +234,7 @@ fieldError ScalarLightField::createCPUSimInstance()
  */
 fieldError ScalarLightField::createOptixInstance(RTcontext &context, RTbuffer &output_buffer_obj, RTbuffer &seed_buffer_obj)
 {
-	std::cout << "error in ScalarLightField.createOptixInstance(): not defined for the given field representation" << std::endl;
+	std::cout << "error in ScalarLightField.createOptixInstance(): not defined for the given field representation" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -266,10 +266,10 @@ fieldError ScalarLightField::traceScene(Group &oGroup, bool RunOnCPU)
 
 	if (PROP_NO_ERR != fraunhofer(this->U, this->getParamsPtr()->nrPixels.x, this->getParamsPtr()->nrPixels.y, this->getParamsPtr()->lambda, l_px1, l_py1, l_dz, &l_px2, &l_py2))
 	{
-		std::cout << "error in ScalarLightField.traceScene(): fraunhofer() returned an error" << std::endl;
+		std::cout << "error in ScalarLightField.traceScene(): fraunhofer() returned an error" << "...\n";
 		return FIELD_ERR;
 	}
-	//std::cout <<"error in ScalarLightField.traceScene(): this has not yet been implemented for the given Field representation" << std::endl;
+	//std::cout <<"error in ScalarLightField.traceScene(): this has not yet been implemented for the given Field representation" << "...\n";
 	return FIELD_NO_ERR;
 }
 
@@ -289,7 +289,7 @@ fieldError ScalarLightField::convert2ScalarField(Field* imagePtr, detParams &oDe
 	ScalarLightField* l_ScalarImagePtr=dynamic_cast<ScalarLightField*>(imagePtr);
 	if (l_ScalarImagePtr == NULL)
 	{
-		std::cout << "error in ScalarLightField.convert2ScalarField(): imagePtr is not of type ScalarLightField" << std::endl;
+		std::cout << "error in ScalarLightField.convert2ScalarField(): imagePtr is not of type ScalarLightField" << "...\n";
 		return FIELD_ERR;
 	}
 
@@ -300,7 +300,7 @@ fieldError ScalarLightField::convert2ScalarField(Field* imagePtr, detParams &oDe
 		|| (imagePtr->getParamsPtr()->scale.y != this->getParamsPtr()->scale.y)
 		|| (imagePtr->getParamsPtr()->scale.z != this->getParamsPtr()->scale.z) )
 	{
-		std::cout << "warning in ScalarLightField.convert2ScalarField(): detector image has different sampling than field. Resampling is necessary..." << std::endl;
+		std::cout << "warning in ScalarLightField.convert2ScalarField(): detector image has different sampling than field. Resampling is necessary..." << "...\n";
 		return FIELD_ERR;
 	}
 	else
@@ -350,16 +350,16 @@ fieldError ScalarLightField::convert2Intensity(Field* imagePtr, detParams &oDetP
  */
 fieldError  ScalarLightField::doSim(Group &oGroup, simAssParams &params, bool &simDone)
 {
-	std::cout << "****************************************************** " << std::endl;
-	std::cout << "starting subset.......... " << std::endl;
-	std::cout << std::endl;
+	std::cout << "****************************************************** " << "...\n";
+	std::cout << "starting subset.......... " << "...\n";
+	std::cout << "...\n";
 	/***********************************************
 	/	trace ...
 	/***********************************************/
 
 	if (FIELD_NO_ERR != this->traceScene(oGroup, params.RunOnCPU) )
 	{
-		std::cout << "error in ScalarLightField.doSim(): ScalarLightField.traceScene() returned an error" << std::endl;
+		std::cout << "error in ScalarLightField.doSim(): ScalarLightField.traceScene() returned an error" << "...\n";
 		return FIELD_ERR;
 	}
 
@@ -394,7 +394,7 @@ fieldError  ScalarLightField::parseXml(pugi::xml_node &field, vector<Field*> &fi
 	// call base class function
 	if (FIELD_NO_ERR != Field::parseXml(field, fieldVec, simParams))
 	{
-		std::cout << "error in ScalarLightField.parseXml(): Field.parseXml()  returned an error." << std::endl;
+		std::cout << "error in ScalarLightField.parseXml(): Field.parseXml()  returned an error." << "...\n";
 		return FIELD_ERR;
 	}
 	this->paramsPtr->unitLambda=metric_mm;
@@ -409,17 +409,17 @@ fieldError  ScalarLightField::parseXml(pugi::xml_node &field, vector<Field*> &fi
 	scalarFieldParams *l_pParams=reinterpret_cast<scalarFieldParams*>(this->getParamsPtr());
 	if (!l_parser.attrByNameToDouble(field, "amplMax", l_pParams->amplMax))
 	{
-		std::cout << "error in ScalarLightField.parseXml(): amplMax is not defined" << std::endl;
+		std::cout << "error in ScalarLightField.parseXml(): amplMax is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	if (!l_parser.attrByNameToSLong(field, "numberOfPixels.x", this->getParamsPtr()->nrPixels.x))
 	{
-		std::cout << "error in ScalarLightField.parseXml(): numberOfPixels.x is not defined" << std::endl;
+		std::cout << "error in ScalarLightField.parseXml(): numberOfPixels.x is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	if (!l_parser.attrByNameToSLong(field, "numberOfPixels.y", this->getParamsPtr()->nrPixels.y))
 	{
-		std::cout << "error in ScalarLightField.parseXml(): numberOfPixels.y is not defined" << std::endl;
+		std::cout << "error in ScalarLightField.parseXml(): numberOfPixels.y is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	this->getParamsPtr()->nrPixels.z=1;
@@ -427,12 +427,12 @@ fieldError  ScalarLightField::parseXml(pugi::xml_node &field, vector<Field*> &fi
 	double2 l_aprtHalfWidth;
 	if (!l_parser.attrByNameToDouble(field, "apertureHalfWidth.x", l_aprtHalfWidth.x))
 	{
-		std::cout << "error in ScalarLightField.parseXml(): apertureHalfWidth.x is not defined" << std::endl;
+		std::cout << "error in ScalarLightField.parseXml(): apertureHalfWidth.x is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	if (!l_parser.attrByNameToDouble(field, "apertureHalfWidth.y", l_aprtHalfWidth.y))
 	{
-		std::cout << "error in ScalarLightField.parseXml(): apertureHalfWidth.y is not defined" << std::endl;
+		std::cout << "error in ScalarLightField.parseXml(): apertureHalfWidth.y is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	this->getParamsPtr()->scale.x=2*l_aprtHalfWidth.x/this->getParamsPtr()->nrPixels.x;
@@ -443,34 +443,34 @@ fieldError  ScalarLightField::parseXml(pugi::xml_node &field, vector<Field*> &fi
 
 	if (!l_parser.attrByNameToDouble(field, "root.x", l_root.x))
 	{
-		std::cout << "error in ScalarLightField.parseXml(): root.x is not defined" << std::endl;
+		std::cout << "error in ScalarLightField.parseXml(): root.x is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	if (!l_parser.attrByNameToDouble(field, "root.y", l_root.y))
 	{
-		std::cout << "error in ScalarLightField.parseXml(): root.y is not defined" << std::endl;
+		std::cout << "error in ScalarLightField.parseXml(): root.y is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	if (!l_parser.attrByNameToDouble(field, "root.z", l_root.z))
 	{
-		std::cout << "error in ScalarLightField.parseXml(): root.z is not defined" << std::endl;
+		std::cout << "error in ScalarLightField.parseXml(): root.z is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	if (!l_parser.attrByNameToDouble(field, "tilt.x", l_tilt.x))
 	{
-		std::cout << "error in ScalarLightField.parseXml(): tilt.x is not defined" << std::endl;
+		std::cout << "error in ScalarLightField.parseXml(): tilt.x is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	l_tilt.x=l_tilt.x/360*2*PI;
 	if (!l_parser.attrByNameToDouble(field, "tilt.y", l_tilt.y))
 	{
-		std::cout << "error in ScalarLightField.parseXml(): tilt.y is not defined" << std::endl;
+		std::cout << "error in ScalarLightField.parseXml(): tilt.y is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	l_tilt.y=l_tilt.y/360*2*PI;
 	if (!l_parser.attrByNameToDouble(field, "tilt.z", l_tilt.z))
 	{
-		std::cout << "error in ScalarLightField.parseXml(): tilt.z is not defined" << std::endl;
+		std::cout << "error in ScalarLightField.parseXml(): tilt.z is not defined" << "...\n";
 		return FIELD_ERR;
 	}
 	l_tilt.z=l_tilt.z/360*2*PI;

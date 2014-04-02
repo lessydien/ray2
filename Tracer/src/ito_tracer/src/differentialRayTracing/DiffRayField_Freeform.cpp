@@ -191,7 +191,7 @@ fieldError DiffRayField_Freeform::createOptixInstance(RTcontext &context, RTbuff
 
 	if (FIELD_NO_ERR != RayField::createOptixInstance(context, output_buffer_obj, seed_buffer_obj))
 	{
-		std::cout <<"error in DiffRayField_Freeform.createOptixInstance(): RayField.creatOptiXInstance() returned an error." << std::endl;
+		std::cout <<"error in DiffRayField_Freeform.createOptixInstance(): RayField.creatOptiXInstance() returned an error." << "...\n";
 		return FIELD_ERR;
 	}
 
@@ -278,7 +278,7 @@ fieldError DiffRayField_Freeform::createOptixInstance(RTcontext &context, RTbuff
 	// make sure the filestream is good
 	if (!inFile)
 	{
-		std::cout << "error in DiffRayField_Freeform.createOptiXInstance(): failed to open freeform file " << std::endl;
+		std::cout << "error in DiffRayField_Freeform.createOptiXInstance(): failed to open freeform file " << "...\n";
 		return FIELD_ERR;
 	}
 
@@ -297,7 +297,7 @@ fieldError DiffRayField_Freeform::createOptixInstance(RTcontext &context, RTbuff
 	{
 		if (inFile.eof())
 		{
-			std::cout << "error in DiffRayField_Freeform.createOptiXInstance(): end of file of freeform file before all points were read " << std::endl;
+			std::cout << "error in DiffRayField_Freeform.createOptiXInstance(): end of file of freeform file before all points were read " << "...\n";
 			return FIELD_ERR;
 		}
 		inFile >> freeForm_buffer_CPU[i];
@@ -420,7 +420,7 @@ fieldError DiffRayField_Freeform::createOptixInstance(RTcontext &context, RTbuff
 
 	if (FIELD_NO_ERR!=this->createCPUSimInstance())
 	{
-		std::cout <<"error in DiffRayField_Freeform.createOptixInstance(): create CPUSimInstance() returned an error." << std::endl;
+		std::cout <<"error in DiffRayField_Freeform.createOptixInstance(): create CPUSimInstance() returned an error." << "...\n";
 		return FIELD_ERR;
 	}
 	//// calc the dimensions of the simulation subset
@@ -486,7 +486,7 @@ fieldError DiffRayField_Freeform::initCPUSubset()
 			// start timing
 			start=clock();
 
-			std::cout << "initalizing random seed" << std::endl;
+			std::cout << "initalizing random seed" << "...\n";
 
 			int seed = (int)time(0);            // random seed
 			RandomInit(seed, x);
@@ -500,13 +500,13 @@ fieldError DiffRayField_Freeform::initCPUSubset()
 
 			end=clock();
 			msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
-			std::cout << " " << msecs <<" ms to initialize random seeds of " << this->rayParamsPtr->GPUSubset_width << " rays." << std::endl;
+			std::cout << " " << msecs <<" ms to initialize random seeds of " << this->rayParamsPtr->GPUSubset_width << " rays." << "...\n";
 
 			// start timing
 			start=clock();
 
 			// create all the rays
-		std::cout << "initializing rays on " << numCPU << " cores of CPU." << std::endl;
+		std::cout << "initializing rays on " << numCPU << " cores of CPU." << "...\n";
 		omp_set_num_threads(numCPU);
 
 #pragma omp parallel default(shared)
@@ -558,7 +558,7 @@ fieldError DiffRayField_Freeform::initCPUSubset()
 				//unsigned long long iGes=jx+this->rayParamsPtr->launchOffsetX+this->rayParamsPtr->launchOffsetY*( floorf(this->rayParamsPtr->width*this->rayParamsPtr->nrRayDirections.x*this->rayParamsPtr->nrRayDirections.y/this->rayParamsPtr->GPUSubset_width+1)*this->rayParamsPtr->GPUSubset_width);
 				unsigned long long iGes=jx+this->rayParamsPtr->launchOffsetX+this->rayParamsPtr->launchOffsetY*this->rayParamsPtr->width*this->rayParamsPtr->nrRayDirections.x*this->rayParamsPtr->nrRayDirections.y;
 
-				//std::cout << "iGes: " << iGes << std::endl;
+				//std::cout << "iGes: " << iGes << "...\n";
 
 				// calc position indices from 1D index
 				unsigned long long iPosX=floorf(iGes/(this->rayParamsPtr->nrRayDirections.x*this->rayParamsPtr->nrRayDirections.y));
@@ -647,7 +647,7 @@ fieldError DiffRayField_Freeform::initCPUSubset()
 						break;
 					default:
 						rayData.position=make_double3(0,0,0);
-						std::cout << "error in DiffRayField_Freeform.createCPUInstance: unknown distribution of rayposition" << std::endl;
+						std::cout << "error in DiffRayField_Freeform.createCPUInstance: unknown distribution of rayposition" << "...\n";
 						// report error
 						break;
 				}
@@ -711,7 +711,7 @@ fieldError DiffRayField_Freeform::initCPUSubset()
 //							}
 //							else
 //							{
-//								std::cout << "error in DiffRayField_Freeform.createCPUInstance: importance area for defining ray directions of source is only allowed with objects that have rectangular or elliptical apertures" << std::endl;
+//								std::cout << "error in DiffRayField_Freeform.createCPUInstance: importance area for defining ray directions of source is only allowed with objects that have rectangular or elliptical apertures" << "...\n";
 ////								return FIELD_ERR;
 //							}
 //						}
@@ -797,7 +797,7 @@ fieldError DiffRayField_Freeform::initCPUSubset()
 
 					default:
 						rayData.direction=make_double3(0,0,0);
-						std::cout << "error in GeometricRayField.updateCPUInstance: unknown raydirection distribution" << std::endl;
+						std::cout << "error in GeometricRayField.updateCPUInstance: unknown raydirection distribution" << "...\n";
 						// report error
 						break;
 				}
@@ -865,19 +865,19 @@ fieldError DiffRayField_Freeform::initCPUSubset()
 } // end omp
 			end=clock();
 			msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
-			std::cout << " " << msecs <<" ms to initialize " << this->rayParamsPtr->GPUSubset_width << " rays." << std::endl;
+			std::cout << " " << msecs <<" ms to initialize " << this->rayParamsPtr->GPUSubset_width << " rays." << "...\n";
 
 		}
 		else if(this->rayParamsPtr->width*this->rayParamsPtr->height<1)
 		{
 			//not Possible. Report error or set n=-n
-			std::cout << "error in DiffRayField_Freeform.initCPUInstance: negative raynumber" << std::endl;
+			std::cout << "error in DiffRayField_Freeform.initCPUInstance: negative raynumber" << "...\n";
 		}
 		this->update=false;
 	}	// end if GPUsubsetwidth*height<rayListLength
 	else
 	{
-		std::cout << "error in DiffRayField_Freeform.initCPUInstance: rayList is smaller than simulation subset" << std::endl;
+		std::cout << "error in DiffRayField_Freeform.initCPUInstance: rayList is smaller than simulation subset" << "...\n";
 		return FIELD_ERR;
 	}
 	return FIELD_NO_ERR;
@@ -939,7 +939,7 @@ fieldError DiffRayField_Freeform::createCPUSimInstance()
 	rayList=(diffRayStruct*) malloc(GPU_SUBSET_WIDTH_MAX*GPU_SUBSET_HEIGHT_MAX*sizeof(diffRayStruct));
 	if (!rayList)
 	{
-		std::cout << "error in DiffRayField_Freeform.createLayoutInstance(): memory for rayList could not be allocated. try to reduce ray tiling size" << std::endl;
+		std::cout << "error in DiffRayField_Freeform.createLayoutInstance(): memory for rayList could not be allocated. try to reduce ray tiling size" << "...\n";
 		return FIELD_ERR;
 	}
 	this->rayListLength=GPU_SUBSET_WIDTH_MAX*GPU_SUBSET_HEIGHT_MAX;
@@ -970,7 +970,7 @@ fieldError DiffRayField_Freeform::createCPUSimInstance()
 	// make sure the filestream is good
 	if (!inFile)
 	{
-		std::cout << "error in DiffRayFreeform.createOptiXInstance(): failed to open freeform file " << std::endl;
+		std::cout << "error in DiffRayFreeform.createOptiXInstance(): failed to open freeform file " << "...\n";
 		//return FIELD_ERR;
 	}
 
@@ -981,7 +981,7 @@ fieldError DiffRayField_Freeform::createCPUSimInstance()
 	{
 		if (inFile.eof())
 		{
-			std::cout << "error in DiffRayFreeform.createOptiXInstance(): end of file of freeform file before all points were read " << std::endl;
+			std::cout << "error in DiffRayFreeform.createOptiXInstance(): end of file of freeform file before all points were read " << "...\n";
 			//return FIELD_ERR;
 		}
 		inFile >> freeForm_buffer_CPU[i];
@@ -1067,7 +1067,7 @@ void DiffRayField_Freeform::splint(double *xa, double *ya, double *y2a, const un
 	h=xa[khi]-xa[klo];
 	if (h==0.0) 
 	{
-		std::cout << "error in DiffRayField_Freeform.splint(): the tabulated x-values must be distinct" << std::endl;
+		std::cout << "error in DiffRayField_Freeform.splint(): the tabulated x-values must be distinct" << "...\n";
 	}
 	a=(xa[khi]-x)/h;
 	b=(x-xa[klo])/h;

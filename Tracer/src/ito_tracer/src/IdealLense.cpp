@@ -195,7 +195,7 @@ geometryError IdealLense::hit(gaussBeamRayStruct &ray, gaussBeam_t t)
 	}
 	else
 	{
-		std::cout << "error in IdealLense.hit: rays of gaussian beamlet have inconsistent intersections" << std::endl;
+		std::cout << "error in IdealLense.hit: rays of gaussian beamlet have inconsistent intersections" << "...\n";
 		return GEOM_GBINCONSISTENTINTERSECTIONS_ERR;// terminate the ray with an error
 	}
  };
@@ -216,7 +216,7 @@ geometryError IdealLense::createOptixInstance( RTcontext &context, RTgeometrygro
 {
 	if (GEOM_NO_ERR != Geometry::createOptixInstance(context, geometrygroup, index, simParams, lambda) )
 	{
-		std::cout <<"error in IdealLense.createOptixInstance(): Geometry.creatOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << std::endl;
+		std::cout <<"error in IdealLense.createOptixInstance(): Geometry.creatOptiXInstacne() returned an error at geometry: " << this->paramsPtr->geometryID << "...\n";
 		return GEOM_ERR;
 	}
 
@@ -245,7 +245,7 @@ geometryError IdealLense::updateOptixInstance( RTcontext &context, RTgeometrygro
 	{
 		if (GEOM_NO_ERR != Geometry::updateOptixInstance(context, geometrygroup, index, simParams, lambda))
 		{
-			std::cout <<"error in IdealLense.updateOptixInstance(): materialList[i] returned an error at geometry: " << this->getParamsPtr()->geometryID << std::endl;
+			std::cout <<"error in IdealLense.updateOptixInstance(): materialList[i] returned an error at geometry: " << this->getParamsPtr()->geometryID << "...\n";
 			return GEOM_ERR;
 		}
 
@@ -288,7 +288,7 @@ geometryError IdealLense::parseXml(pugi::xml_node &geometry, SimParams simParams
 	// parse base class
 	if (GEOM_NO_ERR!=Geometry::parseXml(geometry,simParams, geomVec))
 	{
-		std::cout << "error in PlaneSurface.parseXml(): Geometry.parseXml() returned an error." << std::endl;
+		std::cout << "error in PlaneSurface.parseXml(): Geometry.parseXml() returned an error." << "...\n";
 		return GEOM_ERR;
 	}
 	double3 l_vec=make_double3(0,0,1);

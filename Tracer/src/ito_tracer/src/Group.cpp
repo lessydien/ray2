@@ -154,7 +154,7 @@ groupError Group::createOptixInstance(RTcontext &context, SimParams simParams, d
 	/* check wether a geometry OptiX_group is present */
 	if (this->geometryGroupListLength==0)
 	{
-		std::cout << "error in Group.createOptixSimInstance(): no geometryGroups attached to group" << std::endl;
+		std::cout << "error in Group.createOptixSimInstance(): no geometryGroups attached to group" << "...\n";
 		return GROUP_NOGEOMGROUP_ERR;
 	}
 
@@ -178,7 +178,7 @@ groupError Group::createOptixInstance(RTcontext &context, SimParams simParams, d
 		{
 			if ( GEOMGROUP_NO_ERR != geometryGroupList[i]->createOptixInstance(context, selector, i, simParams, lambda) )
 			{
-				std::cout << "error in Group.createOptixInstance: geometryGroupList[i]->createOptixInstance returned an error at index:" << i << std::endl;
+				std::cout << "error in Group.createOptixInstance: geometryGroupList[i]->createOptixInstance returned an error at index:" << i << "...\n";
 				return GROUP_ERR;
 			}
 		}
@@ -224,7 +224,7 @@ groupError Group::createOptixInstance(RTcontext &context, SimParams simParams, d
 		{
 			if ( GEOMGROUP_NO_ERR != geometryGroupList[i]->createOptixInstance(context, OptiX_group, i, simParams, lambda) )
 			{
-				std::cout << "error in Group.createOptixInstance: geometryGroupList[i]->createOptixInstance returned an error at index:" << i << std::endl;
+				std::cout << "error in Group.createOptixInstance: geometryGroupList[i]->createOptixInstance returned an error at index:" << i << "...\n";
 				return GROUP_ERR;
 			}
 		}
@@ -249,7 +249,7 @@ groupError Group::updateOptixInstance(RTcontext &context, SimParams simParams, d
 	/* check wether a geometry OptiX_group is present */
 	if (this->geometryGroupListLength==0)
 	{
-		std::cout << "error in Group.updateOptixSimInstance(): no geometryGroups attached to group" << std::endl;
+		std::cout << "error in Group.updateOptixSimInstance(): no geometryGroups attached to group" << "...\n";
 		return GROUP_NOGEOMGROUP_ERR;
 	}
 
@@ -322,7 +322,7 @@ groupError Group::createCPUSimInstance(double lambda, SimParams simParams )
 	/* check wether a geometry OptiX_group is present */
 	if (this->geometryGroupListLength==0)
 	{
-		std::cout << "error in Group.createCPUSimInstance(): no geometryGroups attached to group" << std::endl;
+		std::cout << "error in Group.createCPUSimInstance(): no geometryGroups attached to group" << "...\n";
 		return GROUP_NOGEOMGROUP_ERR;
 	}
 		
@@ -332,7 +332,7 @@ groupError Group::createCPUSimInstance(double lambda, SimParams simParams )
 	{
 		if ( GEOMGROUP_NO_ERR != geometryGroupList[i]->createCPUSimInstance(lambda, simParams) )
 		{
-			std::cout << "error in Group.createCPUSimInstance(): geometryGroup[i].createCPUSimInstance() returned an error at index" << i << std::endl;
+			std::cout << "error in Group.createCPUSimInstance(): geometryGroup[i].createCPUSimInstance() returned an error at index" << i << "...\n";
 			return GROUP_ERR;
 		}
 	}
@@ -354,7 +354,7 @@ groupError Group::updateCPUSimInstance(double lambda, SimParams simParams )
 	/* check wether a geometry OptiX_group is present */
 	if (this->geometryGroupListLength==0)
 	{
-		std::cout << "error in Group.updateCPUSimInstance(): no geometryGroups attached to group" << std::endl;
+		std::cout << "error in Group.updateCPUSimInstance(): no geometryGroups attached to group" << "...\n";
 		return GROUP_NOGEOMGROUP_ERR;
 	}
 		
@@ -364,7 +364,7 @@ groupError Group::updateCPUSimInstance(double lambda, SimParams simParams )
 	{
 		if ( GEOMGROUP_NO_ERR != geometryGroupList[i]->updateCPUSimInstance(lambda, simParams) )
 		{
-			std::cout << "error in Group.updateCPUSimInstance(): geometryGroup[i].updateCPUSimInstance() returned an error at index" << i << std::endl;
+			std::cout << "error in Group.updateCPUSimInstance(): geometryGroup[i].updateCPUSimInstance() returned an error at index" << i << "...\n";
 			return GROUP_ERR;
 		}
 	}
@@ -392,7 +392,7 @@ groupError Group::setGeometryGroupListLength(int length)
 	}
 	else
 	{
-		std::cout << "error in Group.setGeometryGroupListLength(): geometryGroupList has been initialized before." << std::endl;
+		std::cout << "error in Group.setGeometryGroupListLength(): geometryGroupList has been initialized before." << "...\n";
 		return GROUP_LISTCREATION_ERR;
 	}
 	return GROUP_NO_ERR;
@@ -417,7 +417,7 @@ groupError Group::createGeometryGroup(int index)
 	}
 	else
 	{
-		std::cout << "error in Group.createGeometryGroup(): invalid index" << index << std::endl;
+		std::cout << "error in Group.createGeometryGroup(): invalid index" << index << "...\n";
 		return GROUP_LISTCREATION_ERR;
 	}
 };

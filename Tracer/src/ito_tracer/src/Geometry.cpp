@@ -48,7 +48,7 @@
  */
 geometryError Geometry::processParseResults(GeometryParseParamStruct &parseResults_Geom, int geomID)
 {
-	std::cout << "error in Geometry.processParseResults(): not defined for the given Field representation" << std::endl;
+	std::cout << "error in Geometry.processParseResults(): not defined for the given Field representation" << "...\n";
 	return GEOM_ERR;
 };
 
@@ -92,7 +92,7 @@ geometryError Geometry::parseXml(pugi::xml_node &geometry, SimParams simParams, 
 		return GEOM_ERR;
 	//if (!l_parser.attrByNameToInt(geometry, "geometryID", this->getParamsPtr()->geometryID))
 	//{
-	//	std::cout << "error in Geometry.parseXml(): geometryID is not defined" << std::endl;
+	//	std::cout << "error in Geometry.parseXml(): geometryID is not defined" << "...\n";
 	//	return GEOM_ERR;
 	//}
 	// look for material material
@@ -100,7 +100,7 @@ geometryError Geometry::parseXml(pugi::xml_node &geometry, SimParams simParams, 
 	l_pMatNodes=l_parser.childsByTagName(geometry,"material");
 	if (l_pMatNodes->size() != 1)
 	{
-		std::cout << "error in Geometry.parseXml() of Geometry " << this->name << ": there must be exactly 1 material attached to each geometry." << std::endl;
+		std::cout << "error in Geometry.parseXml() of Geometry " << this->name << ": there must be exactly 1 material attached to each geometry." << "...\n";
 		return GEOM_ERR;
 	}
 	// create material
@@ -114,14 +114,14 @@ geometryError Geometry::parseXml(pugi::xml_node &geometry, SimParams simParams, 
             l_pMatFab=new MaterialFab_DiffRays();
             break;
         default:
-            std::cout << "error in Geometry.parseXml(): unknown simulation mode." << std::endl;
+            std::cout << "error in Geometry.parseXml(): unknown simulation mode." << "...\n";
             return GEOM_ERR;
             break;
     }
 	Material* l_pMaterial;
 	if (!l_pMatFab->createMatInstFromXML(l_pMatNodes->at(0),l_pMaterial, simParams))
 	{
-		std::cout << "error in Geometry.parseXml() of Geometry " << this->name << ": matFab.createInstFromXML() returned an error." << std::endl;
+		std::cout << "error in Geometry.parseXml() of Geometry " << this->name << ": matFab.createInstFromXML() returned an error." << "...\n";
 		return GEOM_ERR;
 	}
 
@@ -378,7 +378,7 @@ geometryError Geometry::createCPUSimInstance(double lambda, SimParams simParams 
 	/* check wether any material is present */
 	if (this->materialListLength==0)
 	{
-		std::cout << "error in Geometry.createCPUInstance(): no material attached to surface at geometry:" << this->getParamsPtr()->geometryID << std::endl;
+		std::cout << "error in Geometry.createCPUInstance(): no material attached to surface at geometry:" << this->getParamsPtr()->geometryID << "...\n";
 		return GEOM_NOMATERIAL_ERR;
 	}
 	this->mode=simParams.traceMode;
@@ -388,7 +388,7 @@ geometryError Geometry::createCPUSimInstance(double lambda, SimParams simParams 
 	{
 		if ( MAT_NO_ERR != this->materialList[i]->createCPUSimInstance(lambda) )
 		{
-			std::cout << "error in Geometry.createCPUInstance(): material.createCPUSimInstance() returned an error at geometry:" << this->getParamsPtr()->geometryID << std::endl;
+			std::cout << "error in Geometry.createCPUInstance(): material.createCPUSimInstance() returned an error at geometry:" << this->getParamsPtr()->geometryID << "...\n";
 			return GEOM_ERR;
 		}
 	}
@@ -407,7 +407,7 @@ geometryError Geometry::createCPUSimInstance(double lambda, SimParams simParams 
  */
 geometryError Geometry::reduceParams(void)
 {
-	std::cout << "error in Geometry.reduceParams(): method seems to not be overwritten in child class." << std::endl;
+	std::cout << "error in Geometry.reduceParams(): method seems to not be overwritten in child class." << "...\n";
 	return GEOM_ERR;
 };
 
@@ -428,7 +428,7 @@ geometryError Geometry::updateCPUSimInstance(double lambda, SimParams simParams 
 	/* check wether any material is present */
 	if (this->materialListLength==0)
 	{
-		std::cout << "error in Geometry.updateCPUSimInstance(): no material attached to surface at geometry:" << this->getParamsPtr()->geometryID << std::endl;
+		std::cout << "error in Geometry.updateCPUSimInstance(): no material attached to surface at geometry:" << this->getParamsPtr()->geometryID << "...\n";
 		return GEOM_NOMATERIAL_ERR;
 	}
 	this->mode=simParams.traceMode;
@@ -438,7 +438,7 @@ geometryError Geometry::updateCPUSimInstance(double lambda, SimParams simParams 
 	{
 		if ( MAT_NO_ERR != this->materialList[i]->updateCPUSimInstance(lambda) )
 		{
-			std::cout << "error in Geometry.updateCPUSimInstance(): material.createCPUSimInstance() returned an error at geometry:" << this->getParamsPtr()->geometryID << std::endl;
+			std::cout << "error in Geometry.updateCPUSimInstance(): material.createCPUSimInstance() returned an error at geometry:" << this->getParamsPtr()->geometryID << "...\n";
 			return GEOM_ERR;
 		}
 	}
@@ -466,7 +466,7 @@ geometryError Geometry::setMaterial(Material *oMaterialPtr, int index)
 		return GEOM_NO_ERR;
 	}
 	/* return error if we end up here */
-	std::cout << "error in Geometry.setMaterial: invalid material index" << std::endl;
+	std::cout << "error in Geometry.setMaterial: invalid material index" << "...\n";
 	return GEOM_LISTCREATION_ERR;
 };
 
@@ -491,7 +491,7 @@ geometryError Geometry::createMaterial(int index)
 	}
 	else
 	{
-		std::cout << "error in Geometry.createMaterial(): invalid material index at geometry:" << this->getParamsPtr()->geometryID << std::endl;
+		std::cout << "error in Geometry.createMaterial(): invalid material index at geometry:" << this->getParamsPtr()->geometryID << "...\n";
 		return GEOM_LISTCREATION_ERR;
 	}
 }
@@ -529,7 +529,7 @@ geometryError Geometry::createOptixInstance(RTcontext &context, RTgeometrygroup 
 	/* check wether any material is present */
 	if (this->materialListLength==0)
 	{
-		std::cout <<"error in Geometry.createOptixInstance(): no material attached to surface at geometry:" << this->getParamsPtr()->geometryID << std::endl;
+		std::cout <<"error in Geometry.createOptixInstance(): no material attached to surface at geometry:" << this->getParamsPtr()->geometryID << "...\n";
 		return GEOM_NOMATERIAL_ERR;
 	}
 	if ( !RT_CHECK_ERROR_NOEXIT( rtGeometryCreate( context, &geometry ), context) )
@@ -550,7 +550,7 @@ geometryError Geometry::createOptixInstance(RTcontext &context, RTgeometrygroup 
 	{
 		if (MAT_NO_ERR != this->materialList[i]->createOptiXInstance(context, instance, i, simParams, lambda) )
 		{
-			std::cout <<"error in Geometry.createOptixInstance(): materialList[i]->createOptiXInstance() returned an error at index:" << i << " at geometry: " << this->getParamsPtr()->geometryID << std::endl;
+			std::cout <<"error in Geometry.createOptixInstance(): materialList[i]->createOptiXInstance() returned an error at index:" << i << " at geometry: " << this->getParamsPtr()->geometryID << "...\n";
 			return GEOM_ERR;
 		}
 	}
@@ -581,7 +581,7 @@ geometryError Geometry::createOptixInstance(RTcontext &context, RTgeometrygroup 
 	/* set bounding box program */
 	if (GEOM_NO_ERR != this->createOptixBoundingBox( context, geometry ) )
 	{
-		std::cout <<"error in Geometry.createOptixInstance(): createOptixBoundingBox() returned an error at geometry:" << this->getParamsPtr()->geometryID << std::endl;
+		std::cout <<"error in Geometry.createOptixInstance(): createOptixBoundingBox() returned an error at geometry:" << this->getParamsPtr()->geometryID << "...\n";
 		return GEOM_ERR;
 	}
 
@@ -613,7 +613,7 @@ geometryError Geometry::updateOptixInstance(RTcontext &context, RTgeometrygroup 
 		/* check wether any geometry is present */
 		if (this->materialListLength==0)
 		{
-			std::cout <<"error in PlaneSurface.updateOptixInstance(): no material attached to surface at geometry:" << this->getParamsPtr()->geometryID << std::endl;
+			std::cout <<"error in PlaneSurface.updateOptixInstance(): no material attached to surface at geometry:" << this->getParamsPtr()->geometryID << "...\n";
 			return GEOM_NOMATERIAL_ERR;
 		}
 
@@ -623,7 +623,7 @@ geometryError Geometry::updateOptixInstance(RTcontext &context, RTgeometrygroup 
 		{
 			if (MAT_NO_ERR != this->materialList[i]->updateOptiXInstance(context, instance, i, simParams, lambda) )
 			{
-				std::cout <<"error in PlaneSurface.updateOptixInstance(): materialList[i] returned an error at index:" << i << " at geometry: " << this->getParamsPtr()->geometryID << std::endl;
+				std::cout <<"error in PlaneSurface.updateOptixInstance(): materialList[i] returned an error at index:" << i << " at geometry: " << this->getParamsPtr()->geometryID << "...\n";
 				return GEOM_ERR;
 			}
 		}
@@ -679,7 +679,7 @@ double  Geometry::intersect(rayStruct *ray)
 double  Geometry::intersect(diffRayStruct *ray)
 {
 	/* dummy function to be overwritten by child class */
-	std::cout << "error in Geometry.intersect(): intersect is not yet implemented for differential rays for the given geometry. Geometry is ignored..." << std::endl;
+	std::cout << "error in Geometry.intersect(): intersect is not yet implemented for differential rays for the given geometry. Geometry is ignored..." << "...\n";
 	return -1;
 };
 
@@ -698,7 +698,7 @@ double  Geometry::intersect(diffRayStruct *ray)
  */
 geometryError  Geometry::hit(rayStruct &ray, double t)
 {
-	std::cout << "error in Geometry.hit(): hit is not yet implemented for geometric rays for the given geometry" << std::endl;
+	std::cout << "error in Geometry.hit(): hit is not yet implemented for geometric rays for the given geometry" << "...\n";
 	/* dummy function to be overwritten by child class */
 	return GEOM_ERR;
 };
@@ -718,7 +718,7 @@ geometryError  Geometry::hit(rayStruct &ray, double t)
  */
 geometryError  Geometry::hit(diffRayStruct &ray, double t)
 {
-	std::cout << "error in Geometry.hit(): hit is not yet implemented for differential rays for the given geometry" << std::endl;
+	std::cout << "error in Geometry.hit(): hit is not yet implemented for differential rays for the given geometry" << "...\n";
 	/* dummy function to be overwritten by child class */
 	return GEOM_ERR;
 };
@@ -814,7 +814,7 @@ geometryError Geometry::setMaterialListLength(int length)
 	}
 	else
 	{
-		std::cout << "error in Geometry.setMaterialListLength(): materialList already defined at geometry:" << this->getParamsPtr()->geometryID << std::endl;
+		std::cout << "error in Geometry.setMaterialListLength(): materialList already defined at geometry:" << this->getParamsPtr()->geometryID << "...\n";
 		return GEOM_LISTCREATION_ERR;
 	}
 	return GEOM_NO_ERR;

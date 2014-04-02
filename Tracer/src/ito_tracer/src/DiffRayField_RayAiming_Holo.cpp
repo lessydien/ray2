@@ -189,7 +189,7 @@ fieldError DiffRayField_RayAiming_Holo::createOptixInstance(RTcontext &context, 
 {
 	if (FIELD_NO_ERR != RayField::createOptixInstance(context, output_buffer_obj, seed_buffer_obj))
 	{
-		std::cout <<"error in DiffRayField_RayAiming_Holo.createOptixInstance(): RayField.creatOptiXInstance() returned an error." << std::endl;
+		std::cout <<"error in DiffRayField_RayAiming_Holo.createOptixInstance(): RayField.creatOptiXInstance() returned an error." << "...\n";
 		return FIELD_ERR;
 	}
 	RTvariable output_buffer;
@@ -236,7 +236,7 @@ fieldError DiffRayField_RayAiming_Holo::createOptixInstance(RTcontext &context, 
 	// make sure the filestream is good
 	if (!inFile)
 	{
-		std::cout << "error in DiffRayField_RayAiming_Holo.createOptiXInstance(): failed to open holo angle file " << std::endl;
+		std::cout << "error in DiffRayField_RayAiming_Holo.createOptiXInstance(): failed to open holo angle file " << "...\n";
 		return FIELD_ERR;
 	}
 
@@ -258,7 +258,7 @@ fieldError DiffRayField_RayAiming_Holo::createOptixInstance(RTcontext &context, 
 		{
 			if (inFile.eof())
 			{
-				std::cout << "error in DiffRayField_RayAiming_Holo.createOptiXInstance(): end of file of freeform file before all points were read " << std::endl;
+				std::cout << "error in DiffRayField_RayAiming_Holo.createOptiXInstance(): end of file of freeform file before all points were read " << "...\n";
 				return FIELD_ERR;
 			}
 			inFile >> holoAngle_buffer_CPU[j+i*buffer_width];
@@ -292,7 +292,7 @@ fieldError DiffRayField_RayAiming_Holo::createOptixInstance(RTcontext &context, 
 	// make sure the filestream is good
 	if (!inFileAbs)
 	{
-		std::cout << "error in DiffRayField_RayAiming_Holo.createOptiXInstance(): failed to open holo abs file " << std::endl;
+		std::cout << "error in DiffRayField_RayAiming_Holo.createOptiXInstance(): failed to open holo abs file " << "...\n";
 		return FIELD_ERR;
 	}
 
@@ -309,7 +309,7 @@ fieldError DiffRayField_RayAiming_Holo::createOptixInstance(RTcontext &context, 
 		{
 			if (inFileAbs.eof())
 			{
-				std::cout << "error in DiffRayField_RayAiming_Holo.createOptiXInstance(): end of file of holo abs file before all points were read " << std::endl;
+				std::cout << "error in DiffRayField_RayAiming_Holo.createOptiXInstance(): end of file of holo abs file before all points were read " << "...\n";
 				return FIELD_ERR;
 			}
 			inFileAbs >> holoAbs_buffer_CPU[j+i*buffer_width];
@@ -328,7 +328,7 @@ fieldError DiffRayField_RayAiming_Holo::createOptixInstance(RTcontext &context, 
 
 	if (FIELD_NO_ERR!=this->createCPUSimInstance())
 	{
-		std::cout <<"error in DiffRayField_RayAiming_Holo.createOptixInstance(): create CPUSimInstance() returned an error." << std::endl;
+		std::cout <<"error in DiffRayField_RayAiming_Holo.createOptixInstance(): create CPUSimInstance() returned an error." << "...\n";
 		return FIELD_ERR;
 	}
 
@@ -402,7 +402,7 @@ fieldError DiffRayField_RayAiming_Holo::initCPUSubset()
 			// start timing
 			start=clock();
 
-			std::cout << "initalizing random seed" << std::endl;
+			std::cout << "initalizing random seed" << "...\n";
 
 			int seed = (int)time(0);            // random seed
 			RandomInit(seed, x);
@@ -415,7 +415,7 @@ fieldError DiffRayField_RayAiming_Holo::initCPUSubset()
 			}
 			end=clock();
 			msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
-			std::cout << " " << msecs <<" ms to initialize random seeds of " << this->rayParamsPtr->GPUSubset_width << " rays." << std::endl;
+			std::cout << " " << msecs <<" ms to initialize random seeds of " << this->rayParamsPtr->GPUSubset_width << " rays." << "...\n";
 
 			// start timing
 			start=clock();
@@ -483,7 +483,7 @@ fieldError DiffRayField_RayAiming_Holo::initCPUSubset()
 				//unsigned long long iGes=jx+this->rayParamsPtr->launchOffsetX+this->rayParamsPtr->launchOffsetY*( floorf(this->rayParamsPtr->width*this->rayParamsPtr->nrRayDirections.x*this->rayParamsPtr->nrRayDirections.y/this->rayParamsPtr->GPUSubset_width+1)*this->rayParamsPtr->GPUSubset_width);
 				unsigned long long iGes=jx+this->rayParamsPtr->launchOffsetX+this->rayParamsPtr->launchOffsetY*this->rayParamsPtr->width*this->rayParamsPtr->nrRayDirections.x*this->rayParamsPtr->nrRayDirections.y;
 
-				//std::cout << "iGes: " << iGes << std::endl;
+				//std::cout << "iGes: " << iGes << "...\n";
 
 				// calc position indices from 1D index
 				unsigned long long iPosX=floorf(iGes/(this->rayParamsPtr->nrRayDirections.x*this->rayParamsPtr->nrRayDirections.y));
@@ -570,7 +570,7 @@ fieldError DiffRayField_RayAiming_Holo::initCPUSubset()
 						break;
 					default:
 						rayData.position=make_double3(0,0,0);
-						std::cout << "error in DiffRayField_RayAiming_Holo.initCPUSubset: unknown distribution of rayposition" << std::endl;
+						std::cout << "error in DiffRayField_RayAiming_Holo.initCPUSubset: unknown distribution of rayposition" << "...\n";
 						// report error
 						break;
 				}
@@ -653,7 +653,7 @@ fieldError DiffRayField_RayAiming_Holo::initCPUSubset()
 						//	}
 						//	else
 						//	{
-						//		std::cout << "error in DiffRayField.initCPUSubset: importance area for defining ray directions of source is only allowed with objects that have rectangular or elliptical apertures" << std::endl;
+						//		std::cout << "error in DiffRayField.initCPUSubset: importance area for defining ray directions of source is only allowed with objects that have rectangular or elliptical apertures" << "...\n";
 						//		// report error
 						//		//return FIELD_ERR; // return is not allowed inside opneMP block!!!
 						//	}
@@ -755,7 +755,7 @@ fieldError DiffRayField_RayAiming_Holo::initCPUSubset()
 
 					default:
 						rayData.direction=make_double3(0,0,0);
-						std::cout << "error in Diff.initCPUSubset: unknown raydirection distribution" << std::endl;
+						std::cout << "error in Diff.initCPUSubset: unknown raydirection distribution" << "...\n";
 						// report error
 						break;
 				}
@@ -813,19 +813,19 @@ fieldError DiffRayField_RayAiming_Holo::initCPUSubset()
 } // end omp
 			end=clock();
 			msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
-			std::cout << " " << msecs <<" ms to initialize " << this->rayParamsPtr->GPUSubset_width << " rays." << std::endl;
+			std::cout << " " << msecs <<" ms to initialize " << this->rayParamsPtr->GPUSubset_width << " rays." << "...\n";
 		}
 
 		else if(this->rayParamsPtr->width*this->rayParamsPtr->height<1)
 		{
 			//not Possible. Report error or set n=-n
-			std::cout << "error in DiffRayField_RayAiming_Holo.initCPUInstance: negative raynumber" << std::endl;
+			std::cout << "error in DiffRayField_RayAiming_Holo.initCPUInstance: negative raynumber" << "...\n";
 		}
 		this->update=false;
 	}	// end if GPUsubsetwidth*height<rayListLength
 	else
 	{
-		std::cout << "error in DiffRayField_RayAiming_Holo.initCPUInstance: rayList is smaller than simulation subset" << std::endl;
+		std::cout << "error in DiffRayField_RayAiming_Holo.initCPUInstance: rayList is smaller than simulation subset" << "...\n";
 		return FIELD_ERR;
 	}
 	return FIELD_NO_ERR;
@@ -887,7 +887,7 @@ fieldError DiffRayField_RayAiming_Holo::createCPUSimInstance()
 	rayList=(diffRayStruct*) malloc(GPU_SUBSET_WIDTH_MAX*GPU_SUBSET_HEIGHT_MAX*sizeof(diffRayStruct));
 	if (!rayList)
 	{
-		std::cout << "error in DiffRayField_RayAiming_Holo.createLayoutInstance(): memory for rayList could not be allocated. try to reduce ray tiling size" << std::endl;
+		std::cout << "error in DiffRayField_RayAiming_Holo.createLayoutInstance(): memory for rayList could not be allocated. try to reduce ray tiling size" << "...\n";
 		return FIELD_ERR;
 	}
 	this->rayListLength=GPU_SUBSET_WIDTH_MAX*GPU_SUBSET_HEIGHT_MAX;
@@ -918,7 +918,7 @@ fieldError DiffRayField_RayAiming_Holo::createCPUSimInstance()
 	// make sure the filestream is good
 	if (!inFile)
 	{
-		std::cout << "error in DiffRayField_RayAiming_Holo.createCPUSimInstance(): failed to open freeform file " << std::endl;
+		std::cout << "error in DiffRayField_RayAiming_Holo.createCPUSimInstance(): failed to open freeform file " << "...\n";
 		//return FIELD_ERR;
 	}
 
@@ -931,7 +931,7 @@ fieldError DiffRayField_RayAiming_Holo::createCPUSimInstance()
 		{
 			if (inFile.eof())
 			{
-				std::cout << "error in DiffRayField_RayAiming_Holo.createCPUSimInstance(): end of file of freeform file before all points were read " << std::endl;
+				std::cout << "error in DiffRayField_RayAiming_Holo.createCPUSimInstance(): end of file of freeform file before all points were read " << "...\n";
 				//return FIELD_ERR;
 			}
 			inFile >> holoAngle_buffer_CPU[j+i*WIDTH_HOLO_BUFFER];
@@ -947,7 +947,7 @@ fieldError DiffRayField_RayAiming_Holo::createCPUSimInstance()
 	// make sure the filestream is good
 	if (!inFileAbs)
 	{
-		std::cout << "error in DiffRayField_RayAiming_Holo.createCPUSimInstance(): failed to open holo abs file " << std::endl;
+		std::cout << "error in DiffRayField_RayAiming_Holo.createCPUSimInstance(): failed to open holo abs file " << "...\n";
 		//return FIELD_ERR;
 	}
 
@@ -959,7 +959,7 @@ fieldError DiffRayField_RayAiming_Holo::createCPUSimInstance()
 		{
 			if (inFileAbs.eof())
 			{
-				std::cout << "error in DiffRayField_RayAiming_Holo.createCPUSimInstance(): end of file of holo abs file before all points were read " << std::endl;
+				std::cout << "error in DiffRayField_RayAiming_Holo.createCPUSimInstance(): end of file of holo abs file before all points were read " << "...\n";
 				//return FIELD_ERR;
 			}
 			inFile >> holoAbs_buffer_CPU[j+i*WIDTH_HOLO_BUFFER];
@@ -1030,7 +1030,7 @@ fieldError DiffRayField_RayAiming_Holo::write2TextFile(char* filename, detParams
 	hFileOut = fopen( t_filename, "a" ) ;
 	if (!hFileOut)
 	{
-		std::cout << "error in DiffRayField_RayAiming_Holo.write2TextFile(): could not open output file: " << filename << std::endl;
+		std::cout << "error in DiffRayField_RayAiming_Holo.write2TextFile(): could not open output file: " << filename << "...\n";
 		return FIELD_ERR;
 	}
 	// calc the dimensions of the subset
@@ -1102,15 +1102,15 @@ fieldError DiffRayField_RayAiming_Holo::traceScene(Group &oGroup, bool RunOnCPU,
 
 		omp_set_num_threads(numCPU);
 
-		std::cout << "tracing on " << numCPU << " cores of CPU." << std::endl;
+		std::cout << "tracing on " << numCPU << " cores of CPU." << "...\n";
 
 		if (FIELD_NO_ERR!= initCPUSubset())
 		{
-			std::cout << "error in DiffRayField_RayAiming_Holo.traceScene: initCPUSubset returned an error" << std::endl;
+			std::cout << "error in DiffRayField_RayAiming_Holo.traceScene: initCPUSubset returned an error" << "...\n";
 			return FIELD_ERR;
 		}
 
-		std::cout << "starting the actual trace..." << std::endl;
+		std::cout << "starting the actual trace..." << "...\n";
 
 #pragma omp parallel default(shared)
 {
@@ -1183,18 +1183,18 @@ fieldError DiffRayField_RayAiming_Holo::traceScene(Group &oGroup, bool RunOnCPU,
 				do
 				{
 					index++;
-//					std::cout << "index: " << index << std::endl;
+//					std::cout << "index: " << index << "...\n";
 					if (index>151)
 					{
-						std::cout << "error in DiffRayField_RayAiming_Holo.traceScene(): ray aiming loop canceled after " << index << " iterations for ray " << jx << std::endl;
-						std::cout << "old hitpos: " << recentHitPos.x << " " << recentHitPos.y << " " << recentHitPos.z << std::endl;
-						std::cout << "targetpos: " << targetHitPos.x << " " << targetHitPos.y << " " << targetHitPos.z << std::endl;
+						std::cout << "error in DiffRayField_RayAiming_Holo.traceScene(): ray aiming loop canceled after " << index << " iterations for ray " << jx << "...\n";
+						std::cout << "old hitpos: " << recentHitPos.x << " " << recentHitPos.y << " " << recentHitPos.z << "...\n";
+						std::cout << "targetpos: " << targetHitPos.x << " " << targetHitPos.y << " " << targetHitPos.z << "...\n";
 //						return FIELD_ERR;
 						break;
 					}
 
-//					std::cout << "startpos: " << this->rayList[jx].position.x << " " << this->rayList[jx].position.y << " " <<this->rayList[jx].position.z << std::endl;
-//					std::cout << "startdir: " << this->rayList[jx].direction.x << " " << this->rayList[jx].direction.y << " " << this->rayList[jx].direction.z << std::endl;
+//					std::cout << "startpos: " << this->rayList[jx].position.x << " " << this->rayList[jx].position.y << " " <<this->rayList[jx].position.z << "...\n";
+//					std::cout << "startdir: " << this->rayList[jx].direction.x << " " << this->rayList[jx].direction.y << " " << this->rayList[jx].direction.z << "...\n";
 
 					// save raydata for next iteration
 					startingRay=this->rayList[jx];
@@ -1204,10 +1204,10 @@ fieldError DiffRayField_RayAiming_Holo::traceScene(Group &oGroup, bool RunOnCPU,
 						if(!this->rayList[jx].running) 
 							break;
 						oGroup.trace(rayList[jx]);
-//						std::cout << std::endl;
+//						std::cout << "...\n";
 					}
-//					std::cout << "hitpos: " << this->rayList[jx].position.x << " " << this->rayList[jx].position.y << " " << this->rayList[jx].position.z << std::endl;
-//					std::cout << "targetpos: " << targetHitPos.x << " " << targetHitPos.y << " " << targetHitPos.z << std::endl;
+//					std::cout << "hitpos: " << this->rayList[jx].position.x << " " << this->rayList[jx].position.y << " " << this->rayList[jx].position.z << "...\n";
+//					std::cout << "targetpos: " << targetHitPos.x << " " << targetHitPos.y << " " << targetHitPos.z << "...\n";
 					// calc difference of current hitPos to target hitPos
 					double3 diffPos=targetHitPos-this->rayList[jx].position;
 					recentHitPos=this->rayList[jx].position;
@@ -1302,7 +1302,7 @@ fieldError DiffRayField_RayAiming_Holo::traceScene(Group &oGroup, bool RunOnCPU,
 		//RTsize				buffer_width, buffer_height; // get size of output buffer
 		void				*data; // pointer to cast output buffer into
  		//rayStruct			*bufferData;
-		std::cout << "tracing on GPU." << std::endl;
+		std::cout << "tracing on GPU." << "...\n";
 
 		initGPUSubset(context, seed_buffer_obj);
 
@@ -1327,11 +1327,11 @@ fieldError DiffRayField_RayAiming_Holo::traceScene(Group &oGroup, bool RunOnCPU,
 		//bufferData=(rayStruct*)data;
 		//rayStruct test=bufferData[250];
 		//SourceList->setRayList((rayStruct*)data);
-		//std::cout << "DEBUG: jx=" << jx << " jy=" << jy << std::endl;
+		//std::cout << "DEBUG: jx=" << jx << " jy=" << jy << "...\n";
 		//copyRayListSubset((rayStruct*)data, l_launchOffset, l_GPUSubsetDim);
 		if (FIELD_NO_ERR != copyRayList((diffRayStruct*)data,this->rayParamsPtr->GPUSubset_width) )
 		{
-			std::cout << "error in GeometricRayField.traceScene(): copyRayList() returned an error" << std::endl;
+			std::cout << "error in GeometricRayField.traceScene(): copyRayList() returned an error" << "...\n";
 			return FIELD_NO_ERR;
 		}
 		
@@ -1341,7 +1341,7 @@ fieldError DiffRayField_RayAiming_Holo::traceScene(Group &oGroup, bool RunOnCPU,
 
 	end=clock();
 	msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
-	std::cout << " " << msecs <<" ms to trace " << this->rayParamsPtr->GPUSubset_width << " rays." << std::endl;
+	std::cout << " " << msecs <<" ms to trace " << this->rayParamsPtr->GPUSubset_width << " rays." << "...\n";
 
 	return FIELD_NO_ERR;
 };
@@ -1364,7 +1364,7 @@ fieldError DiffRayField_RayAiming_Holo::traceStep(Group &oGroup, bool RunOnCPU, 
 	// start timing
 	start=clock();
 
-		std::cout << "tracing on " << numCPU << " cores of CPU." << std::endl;
+		std::cout << "tracing on " << numCPU << " cores of CPU." << "...\n";
 
 #pragma omp parallel default(shared)
 {
@@ -1382,7 +1382,7 @@ fieldError DiffRayField_RayAiming_Holo::traceStep(Group &oGroup, bool RunOnCPU, 
 }
 	end=clock();
 	msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
-	std::cout << " " << msecs <<" ms to trace " << this->rayParamsPtr->GPUSubset_width << " rays." << std::endl;
+	std::cout << " " << msecs <<" ms to trace " << this->rayParamsPtr->GPUSubset_width << " rays." << "...\n";
 
 	return FIELD_NO_ERR;
 };
@@ -1402,7 +1402,7 @@ fieldError DiffRayField_RayAiming_Holo::copyRayList(diffRayStruct *data, long lo
 {
 	if (length > this->rayListLength)
 	{
-		std::cout << "error in DiffRayField_RayAiming_Holo.copyRayList(): subset dimensions exceed rayLIst dimension" << std::endl;
+		std::cout << "error in DiffRayField_RayAiming_Holo.copyRayList(): subset dimensions exceed rayLIst dimension" << "...\n";
 		return FIELD_ERR;
 	}
 	memcpy(this->rayList, data, this->rayParamsPtr->GPUSubset_width*sizeof(diffRayStruct));
@@ -1428,7 +1428,7 @@ fieldError DiffRayField_RayAiming_Holo::copyRayListSubset(diffRayStruct *data, l
 	//  ----memory range of completed lines---- + ---memory range blocks in given line---
 	if (launchOffset.y*this->rayParamsPtr->width+(subsetDim.x+launchOffset.x)*subsetDim.y > this->rayListLength)
 	{
-		std::cout << "error in GeometricRayField.copyRayListSubset(): subset dimensions exceed rayLIst dimension" << std::endl;
+		std::cout << "error in GeometricRayField.copyRayListSubset(): subset dimensions exceed rayLIst dimension" << "...\n";
 		return FIELD_ERR;
 	}
 	// copy the ray list line per line
@@ -1483,7 +1483,7 @@ fieldError DiffRayField_RayAiming_Holo::convert2RayData(Field** imagePtrPtr, det
 		l_ptr=dynamic_cast<DiffRayField_RayAiming_Holo*>(*imagePtrPtr);
 		if ( l_ptr->rayListLength < this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width )
 		{
-			std::cout << "error in GeometricRayField.convert2RayData(): dimensions of image does not fit dimensions of raylist subset" << std::endl;
+			std::cout << "error in GeometricRayField.convert2RayData(): dimensions of image does not fit dimensions of raylist subset" << "...\n";
 			return FIELD_ERR;
 		}
 	}
@@ -1523,7 +1523,7 @@ fieldError DiffRayField_RayAiming_Holo::convert2Intensity(Field* imagePtr, detPa
 
 	if (l_IntensityImagePtr == NULL)
 	{
-		std::cout << "error in DiffRayField_RayAiming_Holo.convert2Intensity(): imagePtr is not of type IntensityField" << std::endl;
+		std::cout << "error in DiffRayField_RayAiming_Holo.convert2Intensity(): imagePtr is not of type IntensityField" << "...\n";
 		return FIELD_ERR;
 	}
 		
@@ -1576,7 +1576,7 @@ fieldError DiffRayField_RayAiming_Holo::convert2Intensity(Field* imagePtr, detPa
 	double3x3 Matrix=make_double3x3(t_ex,t_ey,t_ez);
 	if (optix::det(Matrix)==0)
 	{
-		std::cout << "error in GeometricRayField.convert2Intensity(): Matrix is unitary!!" << std::endl;
+		std::cout << "error in GeometricRayField.convert2Intensity(): Matrix is unitary!!" << "...\n";
 		return FIELD_ERR; //matrix singular
 	}
 	double3x3 MatrixInv=inv(Matrix);
@@ -1588,7 +1588,7 @@ fieldError DiffRayField_RayAiming_Holo::convert2Intensity(Field* imagePtr, detPa
 
 	unsigned long long hitNr=0;
 
-//	std::cout << "processing on " << numCPU << " cores of CPU." << std::endl;
+//	std::cout << "processing on " << numCPU << " cores of CPU." << "...\n";
 
 //#pragma omp parallel default(shared)
 //{
@@ -1632,7 +1632,7 @@ fieldError DiffRayField_RayAiming_Holo::convert2Intensity(Field* imagePtr, detPa
 		}
 		else
 		{
-			std::cout << " ray " << jx << " not in target: " << rayList[jx].position.x << "; " << rayList[jx].position.y << "; " << rayList[jx].position.z << std::endl;
+			std::cout << " ray " << jx << " not in target: " << rayList[jx].position.x << "; " << rayList[jx].position.y << "; " << rayList[jx].position.z << "...\n";
 		}
 
 	}
@@ -1640,7 +1640,7 @@ fieldError DiffRayField_RayAiming_Holo::convert2Intensity(Field* imagePtr, detPa
 	// if this is the last subset of the current launch, convert complex amplitude to intensity
 	if ( this->rayParamsPtr->launchOffsetX+this->rayParamsPtr->GPUSubset_width+this->rayParamsPtr->launchOffsetY*this->rayParamsPtr->width*this->rayParamsPtr->nrRayDirections.x*this->rayParamsPtr->nrRayDirections.y >= this->rayParamsPtr->width*this->rayParamsPtr->height*this->rayParamsPtr->nrRayDirections.x*this->rayParamsPtr->nrRayDirections.y )
 	{
-		std::cout << " finally converting scalar field to intensity" << std::endl;
+		std::cout << " finally converting scalar field to intensity" << "...\n";
 		// loop through the pixels and calc intensity from complex amplitudes
 		for (unsigned long long jx=0;jx<nrPixels.x;jx++)
 		{
@@ -1654,13 +1654,13 @@ fieldError DiffRayField_RayAiming_Holo::convert2Intensity(Field* imagePtr, detPa
 			}
 		}
 	}
-	std::cout << " " << hitNr << " out of " << this->rayParamsPtr->GPUSubset_width << " rays in target" << std::endl;
+	std::cout << " " << hitNr << " out of " << this->rayParamsPtr->GPUSubset_width << " rays in target" << "...\n";
 
 	// end timing
 	end=clock();
 	msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
 	msecs_Tracing=msecs_Tracing+msecs;
-	std::cout << msecs <<"ms to process " << this->rayParamsPtr->GPUSubset_width << " rays." << std::endl;
+	std::cout << msecs <<"ms to process " << this->rayParamsPtr->GPUSubset_width << " rays." << "...\n";
 
 	return FIELD_NO_ERR;
 };
@@ -1692,7 +1692,7 @@ fieldError DiffRayField_RayAiming_Holo::convert2ScalarField(Field* imagePtr, det
 
 	if (l_ScalarImagePtr == NULL)
 	{
-		std::cout << "error in DiffRayField_RayAiming_Holo.convert2ScalarField(): imagePtr is not of type ScalarField" << std::endl;
+		std::cout << "error in DiffRayField_RayAiming_Holo.convert2ScalarField(): imagePtr is not of type ScalarField" << "...\n";
 		return FIELD_ERR;
 	}
 
@@ -1746,7 +1746,7 @@ fieldError DiffRayField_RayAiming_Holo::convert2ScalarField(Field* imagePtr, det
 	double3x3 Matrix=make_double3x3(t_ex,t_ey,t_ez);
 	if (optix::det(Matrix)==0)
 	{
-		std::cout << "error in GeometricRayField.convert2Intensity(): Matrix is unitary!!" << std::endl;
+		std::cout << "error in GeometricRayField.convert2Intensity(): Matrix is unitary!!" << "...\n";
 		return FIELD_ERR; //matrix singular
 	}
 	double3x3 MatrixInv=inv(Matrix);
@@ -1758,7 +1758,7 @@ fieldError DiffRayField_RayAiming_Holo::convert2ScalarField(Field* imagePtr, det
 
 	unsigned long long hitNr=0;
 
-//	std::cout << "processing on " << numCPU << " cores of CPU." << std::endl;
+//	std::cout << "processing on " << numCPU << " cores of CPU." << "...\n";
 
 //#pragma omp parallel default(shared)
 //{
@@ -1804,19 +1804,19 @@ fieldError DiffRayField_RayAiming_Holo::convert2ScalarField(Field* imagePtr, det
 		}
 		else
 		{
-			std::cout << " ray " << jx << " not in target: " << rayList[jx].position.x << "; " << rayList[jx].position.y << "; " << rayList[jx].position.z << std::endl;
+			std::cout << " ray " << jx << " not in target: " << rayList[jx].position.x << "; " << rayList[jx].position.y << "; " << rayList[jx].position.z << "...\n";
 		}
 
 	}
 //}
 	//l_ScalarImagePtr->getFieldPtr()[98]=polar(100,0);
 	//l_ScalarImagePtr->getFieldPtr()[99]=polar(100,0);
-	std::cout << " " << hitNr << " out of " << this->rayParamsPtr->GPUSubset_width << " rays in target" << std::endl;
+	std::cout << " " << hitNr << " out of " << this->rayParamsPtr->GPUSubset_width << " rays in target" << "...\n";
 	// end timing
 	end=clock();
 	msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
 	msecs_Tracing=msecs_Tracing+msecs;
-	std::cout << msecs <<"ms to process " << this->rayParamsPtr->GPUSubset_width << " rays." << std::endl;
+	std::cout << msecs <<"ms to process " << this->rayParamsPtr->GPUSubset_width << " rays." << "...\n";
 
 
 	return FIELD_NO_ERR;
@@ -1850,7 +1850,7 @@ fieldError DiffRayField_RayAiming_Holo::convert2PhaseSpace(Field* imagePtr, detP
 	PhaseSpaceField* l_PhaseSpacePtr=dynamic_cast<PhaseSpaceField*>(imagePtr);
 	if (l_PhaseSpacePtr == NULL)
 	{
-		std::cout << "error in GeometricRayField.convert2PhaseSpaceField(): imagePtr is not of type IntensityField" << std::endl;
+		std::cout << "error in GeometricRayField.convert2PhaseSpaceField(): imagePtr is not of type IntensityField" << "...\n";
 		return FIELD_ERR;
 	}
 		
@@ -1895,7 +1895,7 @@ fieldError DiffRayField_RayAiming_Holo::convert2PhaseSpace(Field* imagePtr, detP
 	double3x3 Matrix=make_double3x3(t_ex_scaled,t_ey_scaled,t_ez_scaled);
 	if (optix::det(Matrix)==0)
 	{
-		std::cout << "error in GeometricRayField.convert2PhaseSpaceField(): Matrix is unitary!!" << std::endl;
+		std::cout << "error in GeometricRayField.convert2PhaseSpaceField(): Matrix is unitary!!" << "...\n";
 		return FIELD_ERR; //matrix singular
 	}
 	double3x3 MatrixInv=inv(Matrix);
@@ -1904,7 +1904,7 @@ fieldError DiffRayField_RayAiming_Holo::convert2PhaseSpace(Field* imagePtr, detP
 //	long3 index;
 	if (this->rayParamsPtr->coherence==1) // sum coherently
 	{
-		std::cout << "error in GeometricRayField.convert2PhaseSpaceField(): coherent conversion is not defined!!" << std::endl;
+		std::cout << "error in GeometricRayField.convert2PhaseSpaceField(): coherent conversion is not defined!!" << "...\n";
 		return FIELD_ERR; //matrix singular
 	}
 	else 
@@ -1980,14 +1980,14 @@ fieldError DiffRayField_RayAiming_Holo::convert2PhaseSpace(Field* imagePtr, detP
 			//	}
 			//	//else
 			//	//{
-			//	//	std::cout <<  "ray number " << j << " did not hit target." << "x: " << rayList[j].position.x << ";y: " << rayList[j].position.y << "z: " << rayList[j].position.z << ";geometryID " << rayList[j].currentGeometryID << std::endl;
+			//	//	std::cout <<  "ray number " << j << " did not hit target." << "x: " << rayList[j].position.x << ";y: " << rayList[j].position.y << "z: " << rayList[j].position.z << ";geometryID " << rayList[j].currentGeometryID << "...\n";
 			//	//}
 			//}
-			std::cout << " " << hitNr << " out of " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays in target" << std::endl;
+			std::cout << " " << hitNr << " out of " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays in target" << "...\n";
 		}
 		else
 		{
-			std::cout << "error in GeometricRayField.convert2PhaseSpaceField(): partial coherence not implemented yet" << std::endl;
+			std::cout << "error in GeometricRayField.convert2PhaseSpaceField(): partial coherence not implemented yet" << "...\n";
 			return FIELD_ERR;
 		}
 
@@ -1996,7 +1996,7 @@ fieldError DiffRayField_RayAiming_Holo::convert2PhaseSpace(Field* imagePtr, detP
 	end=clock();
 	msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
 	msecs_Tracing=msecs_Tracing+msecs;
-	std::cout << " " << msecs <<"ms to process " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays." << std::endl;
+	std::cout << " " << msecs <<"ms to process " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays." << "...\n";
 
 	return FIELD_NO_ERR;
 };
@@ -2033,17 +2033,17 @@ fieldError DiffRayField_RayAiming_Holo::processParseResults(FieldParseParamStruc
 	// no importance area and direction distribution GRID_RECT is not allowed
 	if ( !parseResults_Src.importanceArea && ( (parseResults_Src.rayDirDistr==RAYDIR_GRID_RECT)||(parseResults_Src.rayDirDistr==RAYDIR_GRID_RAD) ) )
 	{
-		std::cout <<"error in DiffRayField_RayAiming_Holo.processParseResults(): direction distribution GRID_RECT and GRID_RAD are not allowed if no importance area is defined" << std::endl;
+		std::cout <<"error in DiffRayField_RayAiming_Holo.processParseResults(): direction distribution GRID_RECT and GRID_RAD are not allowed if no importance area is defined" << "...\n";
 		return FIELD_ERR;
 	}
 	//if (parseResults_Src.rayDirDistr == RAYDIR_UNIFORM)
 	//{
-	//	std::cout <<"error in DiffRayField_RayAiming_Holo.processParseResults(): direction distribution UNIFORM is not allowed for differential ray fields" << std::endl;
+	//	std::cout <<"error in DiffRayField_RayAiming_Holo.processParseResults(): direction distribution UNIFORM is not allowed for differential ray fields" << "...\n";
 	//	return FIELD_ERR;
 	//}
 	if ( (parseResults_Src.nrRayDirections.x*parseResults_Src.nrRayDirections.y > GPU_SUBSET_WIDTH_MAX*GPU_SUBSET_WIDTH_MAX) && (parseResults_Src.rayDirDistr == RAYDIR_RAND_RECT) && ( (parseResults_Src.rayPosDistr == RAYPOS_RAND_RECT) || (parseResults_Src.rayPosDistr == RAYPOS_RAND_RAD) ) )
 	{
-		std::cout <<"warning in DiffRayField_RayAiming_Holo.processParseResults(): a number of ray directions that is bigger than the size of a GPU subset in combination with random position and direction distribution leads to a situation where some rays per point source point into the same direction when tracing on GPU." << std::endl;
+		std::cout <<"warning in DiffRayField_RayAiming_Holo.processParseResults(): a number of ray directions that is bigger than the size of a GPU subset in combination with random position and direction distribution leads to a situation where some rays per point source point into the same direction when tracing on GPU." << "...\n";
 	}
 
 	//this->rayParamsPtr=new DiffRayField_RayAiming_HoloParams;
@@ -2128,7 +2128,7 @@ fieldError DiffRayField_RayAiming_Holo::processParseResults(FieldParseParamStruc
 			immersionDispersionParamsPtr->lambdaMin=0;
 			immersionDispersionParamsPtr->dispersionFormula=MAT_DISPFORMULA_NODISP;
 			l_matRefrPtr->setImmersionDispersionParams(immersionDispersionParamsPtr); // we don't use an immersion medium here but we need to set some value...
-			std::cout <<"warning in GeometricRayField.processParseResults(): unknown material. Rafracting material with n=1 assumed." << std::endl;
+			std::cout <<"warning in GeometricRayField.processParseResults(): unknown material. Rafracting material with n=1 assumed." << "...\n";
 			break;
 	}
 	return FIELD_NO_ERR;
@@ -2149,7 +2149,7 @@ fieldError  DiffRayField_RayAiming_Holo::parseXml(pugi::xml_node &det, vector<Fi
 	// call base class function
 	if (FIELD_NO_ERR != DiffRayField_RayAiming::parseXml(det, fieldVec, simParams))
 	{
-		std::cout << "error in DiffRayField_RayAiming_Holo.parseXml(): RayField_RayAiming.parseXml()  returned an error." << std::endl;
+		std::cout << "error in DiffRayField_RayAiming_Holo.parseXml(): RayField_RayAiming.parseXml()  returned an error." << "...\n";
 		return FIELD_ERR;
 	}
 	return FIELD_NO_ERR;

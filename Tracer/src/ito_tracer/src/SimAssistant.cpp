@@ -116,7 +116,7 @@ simAssParams* SimAssistant::getParamsPtr(void)
  */
 simAssError SimAssistant::run(Group *oGroupPtr, Field *SourceListPtrPtr, Detector **DetectorListPtrPtr)
 {
-	std::cout << "error in SimAssistant.run(): not implemented yet for given SimAssistant" << std::endl;
+	std::cout << "error in SimAssistant.run(): not implemented yet for given SimAssistant" << "...\n";
 	return SIMASS_ERROR;
 };
 
@@ -124,7 +124,7 @@ simAssError SimAssistant::run(Group *oGroupPtr, Field *SourceListPtrPtr, Detecto
 //{
 //	if (SIMASS_NO_ERROR != SourceListPtrPtr->initSimulation(*oGroupPtr, *paramsPtr))
 //	{
-//		std::cout << "error in SimAssistant.initSimulationBaseClass(): field.initSimulation() returned an error." << std::endl;
+//		std::cout << "error in SimAssistant.initSimulationBaseClass(): field.initSimulation() returned an error." << "...\n";
 //		return SIMASS_ERROR;
 //	}
 ////	RTprogram			exception_program;
@@ -133,7 +133,7 @@ simAssError SimAssistant::run(Group *oGroupPtr, Field *SourceListPtrPtr, Detecto
 ////		SourceListPtrPtr->createCPUSimInstance();
 ////		if (GROUP_NO_ERR != oGroupPtr->createCPUSimInstance(SourceListPtrPtr->getParamsPtr()->lambda, paramsPtr->mode) )
 ////		{
-////			std::cout << "error in SimAssistant.initSimulation(): group.createCPUSimInstance() returned an error" << std::endl;
+////			std::cout << "error in SimAssistant.initSimulation(): group.createCPUSimInstance() returned an error" << "...\n";
 ////			return SIMASS_ERROR;
 ////		}
 ////	}
@@ -142,7 +142,7 @@ simAssError SimAssistant::run(Group *oGroupPtr, Field *SourceListPtrPtr, Detecto
 ////		// create Context with maximum size
 ////		if (SIMASS_NO_ERROR != createOptiXContext() )
 ////		{
-////			std::cout << "error in SimAssistant.initSimulation(): createOptiXContext() returned an error" << std::endl;
+////			std::cout << "error in SimAssistant.initSimulation(): createOptiXContext() returned an error" << "...\n";
 ////			return SIMASS_ERROR;
 ////		}
 ////
@@ -168,7 +168,7 @@ simAssError SimAssistant::run(Group *oGroupPtr, Field *SourceListPtrPtr, Detecto
 ////			// convert geometry to GPU code
 ////			if ( GROUP_NO_ERR != oGroupPtr->createOptixInstance(context, paramsPtr->mode, SourceListPtrPtr->getParamsPtr()->lambda) )
 ////			{
-////				std::cout << "error in SimAssistant.initSimulation(): group.createOptixInstance returned an error" << std::endl;
+////				std::cout << "error in SimAssistant.initSimulation(): group.createOptixInstance returned an error" << "...\n";
 ////				return ( SIMASS_ERROR );
 ////			}
 ////				
@@ -176,7 +176,7 @@ simAssError SimAssistant::run(Group *oGroupPtr, Field *SourceListPtrPtr, Detecto
 //////			initRayField_AsphereTestGPU( context, hfileWaveFront_Qxy, hfileWaveFront_Pxy, SourceList, RadiusSourceReference, zSourceReference, MNmn, width, height, lambda);
 ////			if ( FIELD_NO_ERR != (SourceListPtrPtr)->createOptixInstance(context, output_buffer_obj, seed_buffer_obj) )
 ////			{
-////				std::cout << "error in SimAssistant.initSimulation(): SourceList[i]->createOptixInstance returned an error at index:" << 0 << std::endl;
+////				std::cout << "error in SimAssistant.initSimulation(): SourceList[i]->createOptixInstance returned an error at index:" << 0 << "...\n";
 ////				return ( SIMASS_ERROR );
 ////			}
 ////			if (!RT_CHECK_ERROR_NOEXIT( rtContextValidate( context ), context ))
@@ -190,22 +190,22 @@ simAssError SimAssistant::run(Group *oGroupPtr, Field *SourceListPtrPtr, Detecto
 
 simAssError SimAssistant::initSimulation( Group *oGroupPtr, Field *SourceListPtrPtr)
 {
-	std::cout << "*****************************************************" << std::endl;
-	std::cout << "starting to initialize Simulation..." << std::endl;
+	std::cout << "*****************************************************" << "...\n";
+	std::cout << "starting to initialize Simulation..." << "...\n";
 
 	clock_t start, end;
 	start=clock();
 
 	if (SIMASS_NO_ERROR != SourceListPtrPtr->initSimulation(*oGroupPtr, *(this->getParamsPtr())))
 	{
-		std::cout << "error in SimAssistant.initSimulation(): field.initSimulation() returned an error." << std::endl;
+		std::cout << "error in SimAssistant.initSimulation(): field.initSimulation() returned an error." << "...\n";
 		return SIMASS_ERROR;
 	}
 
 	end=clock();
 	double msecs;
 	msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
-	std::cout << msecs <<"ms to initialize Simulation." << std::endl;
+	std::cout << msecs <<"ms to initialize Simulation." << "...\n";
 
 	return SIMASS_NO_ERROR;
 }
@@ -268,13 +268,13 @@ simAssError SimAssistant::doSim(Group &oGroup, Field *SourceListPtrPtr, Detector
 		if (FIELD_NO_ERR != SourceListPtrPtr->doSim(oGroup, *this->getParamsPtr(), simDone))
 		{
 			simDone=true;
-			std::cout << "error in SimAssistant.doSim(): Field.doSim() returned an error" << std::endl;
+			std::cout << "error in SimAssistant.doSim(): Field.doSim() returned an error" << "...\n";
 			return SIMASS_ERROR;
 		}
 
 		//end = clock();
 		//msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
-		//std::cout << msecs << "ms for tracing of current subset..." << std::endl;
+		//std::cout << msecs << "ms for tracing of current subset..." << "...\n";
 
 		/***********************************************
 		/	do the detection
@@ -285,12 +285,12 @@ simAssError SimAssistant::doSim(Group &oGroup, Field *SourceListPtrPtr, Detector
 
 		if (DET_NO_ERROR != DetectorListPtrPtr[0]->detect(SourceListPtrPtr, (ResultFieldPtrPtr)) )
 		{
-			std::cout << "error in SimAssistant.doSim(): Detector.detect() returned an error" << std::endl;
+			std::cout << "error in SimAssistant.doSim(): Detector.detect() returned an error" << "...\n";
 			return SIMASS_ERROR;
 		}
 		//end = clock();
 		//msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
-		//std::cout << msecs << "for detection of current subset..." << std::endl;
+		//std::cout << msecs << "for detection of current subset..." << "...\n";
 
 		count++;
 	}

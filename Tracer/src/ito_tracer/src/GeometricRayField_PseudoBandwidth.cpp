@@ -63,7 +63,7 @@ fieldError GeometricRayField_PseudoBandwidth::convert2Intensity(Field* imagePtr,
 	IntensityField* l_IntensityImagePtr=dynamic_cast<IntensityField*>(imagePtr);
 	if (l_IntensityImagePtr == NULL)
 	{
-		std::cout << "error in GeometricRayField_PseudoBandwidth.convert2Intensity(): imagePtr is not of type IntensityField" << std::endl;
+		std::cout << "error in GeometricRayField_PseudoBandwidth.convert2Intensity(): imagePtr is not of type IntensityField" << "...\n";
 		return FIELD_ERR;
 	}
 		
@@ -100,7 +100,7 @@ fieldError GeometricRayField_PseudoBandwidth::convert2Intensity(Field* imagePtr,
 
 	if (optix::det(Matrix)==0)
 	{
-		std::cout << "error in GeometricRayField_PseudoBandwidth.convert2Intensity(): Matrix is unitary!!" << std::endl;
+		std::cout << "error in GeometricRayField_PseudoBandwidth.convert2Intensity(): Matrix is unitary!!" << "...\n";
 		return FIELD_ERR; //matrix singular
 	}
 	double3x3 MatrixInv=inv(Matrix);
@@ -259,13 +259,13 @@ fieldError GeometricRayField_PseudoBandwidth::convert2Intensity(Field* imagePtr,
 			//	}
 			//	//else
 			//	//{
-			//	//	std::cout <<  "ray number " << j << " did not hit target." << "x: " << rayList[j].position.x << ";y: " << rayList[j].position.y << "z: " << rayList[j].position.z << ";geometryID " << rayList[j].currentGeometryID << std::endl;
+			//	//	std::cout <<  "ray number " << j << " did not hit target." << "x: " << rayList[j].position.x << ";y: " << rayList[j].position.y << "z: " << rayList[j].position.z << ";geometryID " << rayList[j].currentGeometryID << "...\n";
 			//	//}
 			//}
 		}
 		else
 		{
-			std::cout << "error in GeometricRayField_PseudoBandwidth.convert2Intensity(): partial coherence not implemented yet" << std::endl;
+			std::cout << "error in GeometricRayField_PseudoBandwidth.convert2Intensity(): partial coherence not implemented yet" << "...\n";
 			return FIELD_ERR;
 		}
 
@@ -274,9 +274,9 @@ fieldError GeometricRayField_PseudoBandwidth::convert2Intensity(Field* imagePtr,
 	end=clock();
 	msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
 	msecs_Tracing=msecs_Tracing+msecs;
-	std::cout << " " << msecs <<"ms to process " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays." << std::endl;
+	std::cout << " " << msecs <<"ms to process " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays." << "...\n";
 
-	std::cout << " " << hitNr << " out of " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays in target" << std::endl;
+	std::cout << " " << hitNr << " out of " << this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width << " rays in target" << "...\n";
 
 	return FIELD_NO_ERR;
 };
@@ -294,7 +294,7 @@ fieldError GeometricRayField_PseudoBandwidth::convert2Intensity(Field* imagePtr,
  */
 fieldError GeometricRayField_PseudoBandwidth::convert2ScalarField(Field* imagePtr, detParams &oDetParams)
 {
-	std::cout << "error in GeometricRayField_PseudoBandwidth.convert2ScalarField(): conversion to scalar field not yet implemented" << std::endl;
+	std::cout << "error in GeometricRayField_PseudoBandwidth.convert2ScalarField(): conversion to scalar field not yet implemented" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -311,7 +311,7 @@ fieldError GeometricRayField_PseudoBandwidth::convert2ScalarField(Field* imagePt
  */
 fieldError GeometricRayField_PseudoBandwidth::convert2VecField(Field* imagePtr, detParams &oDetParams)
 {
-	std::cout << "error in GeometricRayField_PseudoBandwidth.convert2VecField(): conversion to vectorial field not yet implemented" << std::endl;
+	std::cout << "error in GeometricRayField_PseudoBandwidth.convert2VecField(): conversion to vectorial field not yet implemented" << "...\n";
 	return FIELD_ERR;
 };
 
@@ -332,13 +332,13 @@ fieldError  GeometricRayField_PseudoBandwidth::parseXml(pugi::xml_node &field, v
 	// call base class function
 	if (FIELD_NO_ERR != GeometricRayField::parseXml(field, fieldVec, simParams))
 	{
-		std::cout << "error in GeometricRayField_PseudoBandwidth.parseXml(): RayField.parseXml()  returned an error." << std::endl;
+		std::cout << "error in GeometricRayField_PseudoBandwidth.parseXml(): RayField.parseXml()  returned an error." << "...\n";
 		return FIELD_ERR;
 	}
 
 	if ( (this->rayParamsPtr->dirDistrType == RAYDIR_GRID_RECT) || (this->rayParamsPtr->dirDistrType == RAYDIR_GRID_RAD) )
 	{
-		std::cout << "error in GeometricRayField_PseudoBandwidth.parseXml(): RAYDIR_GRID_RAD and RAYDIR_GRID_RECT are not allowed for geometric ray fields" << std::endl;
+		std::cout << "error in GeometricRayField_PseudoBandwidth.parseXml(): RAYDIR_GRID_RAD and RAYDIR_GRID_RECT are not allowed for geometric ray fields" << "...\n";
 		return FIELD_ERR;
 	}
 
