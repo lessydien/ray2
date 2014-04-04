@@ -31,8 +31,6 @@
 #include "rayTracingMath.h"
 
 #include "Parser_XML.h"
-#include "Parser.h"
-
 
 /**
  * \detail hit function of material for geometric rays

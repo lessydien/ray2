@@ -183,6 +183,9 @@ ImpAreaType Parser_XML::asciiToImpAreaType(const char* ascii) const
 
 fieldType Parser_XML::asciiToFieldType(const char* ascii) const
 {
+	if (!strcmp(ascii, "GEOMRENDERFIELD"))
+		return GEOMRENDERFIELD;
+
 	if (!strcmp(ascii, "GEOMRAYFIELD"))
 		return GEOMRAYFIELD;
 
@@ -359,8 +362,10 @@ MaterialType Parser_XML::asciiToMaterialType(const char* ascii) const
 		return MT_VOLUMESCATTERBOX;
 	if (!strcmp(ascii,"VOLUMEABSORBING"))
 		return MT_VOLUMEABSORB;
+    if (!strcmp(ascii,"RENDERLIGHT"))
+        return MT_RENDERLIGHT;
 
-	cout << "error in Parser_XML.asciiToMaterialType: unknown material type: "  << ascii << endl;
+	cout << "warning in Parser_XML.asciiToMaterialType: unknown material type: "  << ascii << endl;
 	return MT_UNKNOWNMATERIAL;
 }
 

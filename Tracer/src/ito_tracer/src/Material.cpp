@@ -31,6 +31,8 @@
 #include "CoatingLib.h"
 #include "differentialRayTracing\ScatterLib_DiffRays.h"
 #include "differentialRayTracing\CoatingLib_DiffRays.h"
+#include "geometricRender\ScatterLib_GeomRender.h"
+#include "geometricRender\CoatingLib_GeomRender.h"
 
 #include "Parser_XML.h"
 
@@ -87,6 +89,10 @@ MaterialError Material::parseXml(pugi::xml_node &material, SimParams simParams)
     case SIM_DIFF_RT:
         l_pScatFab=new ScatterFab_DiffRays();
         l_pCoatFab=new CoatingFab_DiffRays();
+        break;
+    case SIM_GEOM_RENDER:
+        l_pScatFab=new ScatterFab_GeomRender();
+        l_pCoatFab=new CoatingFab_GeomRender();
         break;
     default:
         std::cout << "error in Material.parseXml(): unknown simulation mode." << "...\n";

@@ -34,6 +34,7 @@
 #include "ScalarUserField.h"
 #include "VectorLightField.h"
 #include "GeometricRayField.h"
+#include "geometricRender/GeometricRenderField.h"
 #include "GeometricRayField_PseudoBandwidth.h"
 #include "GaussBeamRayField.h"
 #include "DiffRayField.h"

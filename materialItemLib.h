@@ -31,6 +31,7 @@
 #include "materialDOEItem.h"
 #include "materialVolumeScatterItem.h"
 #include "materialVolumeAbsorbingItem.h"
+#include "materialRenderLightItem.h"
 //#include "materialAbsorbingItem.h"
 //#include "geometryItem.h"
 

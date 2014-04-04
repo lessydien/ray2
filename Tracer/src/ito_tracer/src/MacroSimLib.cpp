@@ -41,6 +41,7 @@
 //#include "differentialRayTracing\MaterialLib_DiffRays.h"
 //#include "differentialRayTracing\CoatingLib_DiffRays.h"
 //#include "differentialRayTracing\ScatterLib_DiffRays.h"
+#include "geometricRender\GeometryLib_GeomRender.h"
 #include "SimAssistantLib.h"
 #include "DetectorLib.h"
 #include "Scatter.h"
@@ -542,6 +543,9 @@ bool createSceneFromXML(Group **oGroupPtrPtr, char *sceneChar, Field ***sourceLi
         case SIM_DIFF_RT:
             l_pGeomFab=new GeometryFab_DiffRays();
             break;
+        case SIM_GEOM_RENDER:
+            l_pGeomFab=new GeometryFab_GeomRender();
+            break;
         default:
 			std::cout <<"error in Parser_XML.createSceneFromXML(): unknown trace mode"  << "...\n";
 			return false;
@@ -578,7 +582,7 @@ bool createSceneFromXML(Group **oGroupPtrPtr, char *sceneChar, Field ***sourceLi
 	l_pDetectors=l_pParser->childsByTagName(scene, "detector");
 
 	// so far we only allow for exactly one detector
-	if (l_pDetectors->size() != 1)
+	if ( (l_pDetectors->size() != 1) )
 	{
 		cout << "error in createSceneFromXML: the scene has to have exactly one detector to be vaild!" << endl;
 		return false;

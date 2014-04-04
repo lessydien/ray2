@@ -55,6 +55,9 @@ bool FieldFab::createFieldInstFromXML(xml_node &fieldNode, vector<Field*> &field
 	// create instance of geometry according to geomType
 	switch (l_fieldType)
 	{
+    case GEOMRENDERFIELD:
+        l_pField=new GeometricRenderField();
+        break;
 	case GEOMRAYFIELD:
 		l_pField=new GeometricRayField();
 		break;

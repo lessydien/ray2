@@ -239,6 +239,7 @@ detError DetectorIntensity::parseXml(pugi::xml_node &det, vector<Detector*> &det
 		return DET_ERROR;
 	if (!this->checkParserError(l_parser.attrByNameToLong(det, "detPixel.y", this->getDetParamsPtr()->detPixel.y)))
 		return DET_ERROR;
+    this->getDetParamsPtr()->detPixel.z=1;
 	if (!this->checkParserError(l_parser.attrByNameToInt(det, "ignoreDepth", this->getDetParamsPtr()->ignoreDepth)))
 		return DET_ERROR;
 

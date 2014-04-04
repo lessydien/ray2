@@ -45,6 +45,7 @@ typedef struct
 typedef enum 
 {
   GEOMRAYFIELD,
+  GEOMRENDERFIELD,
   GEOMRAYFIELD_PSEUDOBANDWIDTH,
   DIFFRAYFIELD,
   DIFFRAYFIELDRAYAIM,
@@ -102,7 +103,8 @@ typedef enum
 typedef enum 
 {
     SIM_GEOM_RT,
-    SIM_DIFF_RT
+    SIM_DIFF_RT,
+    SIM_GEOM_RENDER
 } SimMode;
 
 typedef struct

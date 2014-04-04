@@ -19,6 +19,7 @@
 #define FIELDITEMLIB
 
 #include "geomRayFieldItem.h"
+#include "geomRenderFieldItem.h"
 #include "geomRayFieldItem_PseudoBandwidth.h"
 #include "diffRayFieldItem.h"
 #include "diffRayField_RayAiming_Item.h"

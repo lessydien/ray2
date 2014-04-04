@@ -31,6 +31,7 @@
 #include "Material.h"
 #include "MaterialLib.h"
 #include "differentialRayTracing\MaterialLib_DiffRays.h"
+#include "geometricRender\MaterialLib_GeomRender.h"
 
 #include "Parser_XML.h"
 
@@ -112,6 +113,9 @@ geometryError Geometry::parseXml(pugi::xml_node &geometry, SimParams simParams, 
             break;
         case SIM_DIFF_RT:
             l_pMatFab=new MaterialFab_DiffRays();
+            break;
+        case SIM_GEOM_RENDER:
+            l_pMatFab=new MaterialFab_GeomRender();
             break;
         default:
             std::cout << "error in Geometry.parseXml(): unknown simulation mode." << "...\n";

@@ -374,58 +374,16 @@ bool MainWinMacroSim::writeSceneToXML()
 	root.setAttribute("rayTilingWidth", QString::number(m_guiSimParams.subsetWidth));
 	root.setAttribute("rayTilingHeight", QString::number(m_guiSimParams.subsetWidth));
 
-	// write the sources
+	// write everything
 	for (int i=0; i<m_pSceneModel->rowCount(QModelIndex()); i++)
 	{
 		AbstractItem* t_pItem=m_pSceneModel->getItem(m_pSceneModel->index(i,0,QModelIndex()));
-		//// we only write the field items here
-		//if (t_pItem->getObjectType() == AbstractItem::FIELD)
-		//{
 			if (!t_pItem->writeToXML(document, root))
 			{
 				cout << "error writing element " << i << " to XML" << endl;
 				return false;
 			}
-//		}
 	}
-
-	//// create the geometryGroup
-	//QDomElement geometryGroup = document.createElement("geometryGroup");
-
-	//// add the geometries to our document
-	//for(int i = 0; i < m_pSceneModel->rowCount(QModelIndex()); i++)
-	//{
-	//	AbstractItem* t_pItem=m_pSceneModel->getItem(m_pSceneModel->index(i,0,QModelIndex()));
-
-	//	// we only write the geometry items items here
-	//	if (t_pItem->getObjectType() == AbstractItem::GEOMETRY)
-	//	{
-	//		if (!t_pItem->writeToXML(document, geometryGroup))
-	//		{
-	//			cout << "error writing element " << i << " to XML" << endl;
-	//			return false;
-	//		}
-	//	}
-	//}
-	//// add geometryGroup to the scene
-	//root.appendChild(geometryGroup);
-
-
-	//// write the detectors
-	//for (int i=0; i<m_pSceneModel->rowCount(QModelIndex()); i++)
-	//{
-	//	AbstractItem* t_pItem=m_pSceneModel->getItem(m_pSceneModel->index(i,0,QModelIndex()));
-	//	// we only write the field items here
-	//	if (t_pItem->getObjectType() == AbstractItem::DETECTOR)
-	//	{
-	//		if (!t_pItem->writeToXML(document, root))
-	//		{
-	//			cout << "error writing element " << i << " to XML" << endl;
-	//			return false;
-	//		}
-	//	}
-	//}
-
 
 	// add scene to the document
 	document.appendChild(root);
@@ -549,12 +507,14 @@ bool MainWinMacroSim::loadScene()
 	FieldItemLib l_fieldItemLib;
 
 	QDomNodeList l_fieldNodeList = sceneElement.elementsByTagName("field");
+    FieldItem::FieldType l_fieldType;
 	for (int iField=0; iField<l_fieldNodeList.count(); iField++)
 	{
 		QDomElement l_fieldElement=l_fieldNodeList.at(iField).toElement();
 
 		QString l_fieldTypeStr=l_fieldElement.attribute("fieldType");
-		FieldItem *l_pField=l_fieldItemLib.createField(l_fieldItemLib.stringToFieldType(l_fieldTypeStr));
+        l_fieldType=l_fieldItemLib.stringToFieldType(l_fieldTypeStr);
+		FieldItem *l_pField=l_fieldItemLib.createField(l_fieldType);
 		if (l_pField==NULL)
 		{
 			string str=l_fieldTypeStr.toAscii();
@@ -594,25 +554,27 @@ bool MainWinMacroSim::loadScene()
 
 	// load all fields in the scene and add them to our sceneModel
 	DetectorItemLib l_detItemLib;
+    // if we have a render field we do not need to read the detector as it is already defined by the field
+    if (l_fieldType!=FieldItem::GEOMRENDERFIELD)
+    {
+	    QDomNodeList l_detNodeList = sceneElement.elementsByTagName("detector");
+	    for (int iDet=0; iDet<l_detNodeList.count(); iDet++)
+	    {
+		    QDomElement l_detElement=l_detNodeList.at(iDet).toElement();
 
-	QDomNodeList l_detNodeList = sceneElement.elementsByTagName("detector");
-	for (int iDet=0; iDet<l_detNodeList.count(); iDet++)
-	{
-		QDomElement l_detElement=l_detNodeList.at(iDet).toElement();
-
-		QString l_detTypeStr=l_detElement.attribute("detType");
-		DetectorItem *l_pDet=l_detItemLib.createDetector(l_detItemLib.stringToDetType(l_detTypeStr));
-		if (l_pDet==NULL)
-		{
-			string str=l_detTypeStr.toAscii();
-			cout << "error in MainWinMacoSim.loadScene(): could not create detector of type: " << str << endl;
-			return false;
-		}
-		bool test=connect(this, SIGNAL(simulationFinished(ito::DataObject)), l_pDet, SLOT(simulationFinished(ito::DataObject)));
-		l_pDet->readFromXML(l_detElement);
-		m_pSceneModel->appendItem(l_pDet, this->m_pQVTKWidget->getRenderer());
-	}
-
+		    QString l_detTypeStr=l_detElement.attribute("detType");
+		    DetectorItem *l_pDet=l_detItemLib.createDetector(l_detItemLib.stringToDetType(l_detTypeStr));
+		    if (l_pDet==NULL)
+		    {
+			    string str=l_detTypeStr.toAscii();
+			    cout << "error in MainWinMacoSim.loadScene(): could not create detector of type: " << str << endl;
+			    return false;
+		    }
+		    bool test=connect(this, SIGNAL(simulationFinished(ito::DataObject)), l_pDet, SLOT(simulationFinished(ito::DataObject)));
+		    l_pDet->readFromXML(l_detElement);
+		    m_pSceneModel->appendItem(l_pDet, this->m_pQVTKWidget->getRenderer());
+	    }
+    }
 	// save filename for future calls to save the scene
 	m_fileName=filename;
 

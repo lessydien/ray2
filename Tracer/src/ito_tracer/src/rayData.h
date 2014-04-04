@@ -135,6 +135,28 @@ public:
 
 /* declare class */
 /**
+  *\class   geomRenderRayStruct
+  *\brief   classe that defines the datastructure of the ray for rendering
+  *
+  *         
+  *
+  *         \todo
+  *         \remarks           
+  *         \sa       NA
+  *         \date     04.01.2011
+  *         \author  Mauch
+  *
+  */
+class geomRenderRayStruct : public rayStruct
+{
+public:
+  double cumFlux;
+  short secondary_nr;
+  bool secondary;
+};
+
+/* declare class */
+/**
   *\class   rayStruct_PathTracing
   *\brief   classes that defines the datastructure of the ray for path tracing
   *

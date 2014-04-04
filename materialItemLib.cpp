@@ -64,6 +64,9 @@ MaterialItem* MaterialItemLib::createMaterial(MaterialItem::MaterialType type)
 		case MaterialItem::VOLUMEABSORBING:
 			l_pItem=new MaterialVolumeAbsorbingItem();
 			break;
+        case MaterialItem::RENDERLIGHT:
+            l_pItem=new MaterialRenderLightItem();
+            break;
 		default:
 			break;
 		}
@@ -100,6 +103,8 @@ MaterialItem::MaterialType MaterialItemLib::stringToMaterialType(const QString s
 		return MaterialItem::VOLUMEABSORBING;
 	if (!str.compare("VOLUMESCATTERBOX"))
 		return MaterialItem::VOLUMESCATTER;
+	if (!str.compare("RENDERLIGHT"))
+		return MaterialItem::RENDERLIGHT;
 
 	return MaterialItem::ABSORBING;
 }
@@ -144,6 +149,9 @@ QString MaterialItemLib::materialTypeToString(const MaterialItem::MaterialType t
 		break;
 	case MaterialItem::VOLUMEABSORBING:
 		str = "VOLUMEABSORBING";
+		break;
+	case MaterialItem::RENDERLIGHT:
+		str = "RENDERLIGHT";
 		break;
 	default:
 		break;
@@ -277,6 +285,9 @@ MaterialItem::MaterialType MaterialItemLib::abstractMatTypeToMatType(const Abstr
 	case AbstractItem::VOLUMEABSORBING:
 		typeOut = MaterialItem::VOLUMEABSORBING;
 		break;
+	case AbstractItem::RENDERLIGHT:
+		typeOut = MaterialItem::RENDERLIGHT;
+		break;
 	default:
 		break;
 	}
@@ -323,6 +334,9 @@ AbstractItem::Abstract_MaterialType MaterialItemLib::matTypeToAbstractMatType(co
 		break;
 	case MaterialItem::VOLUMEABSORBING:
 		typeOut = AbstractItem::VOLUMEABSORBING;
+		break;
+	case MaterialItem::RENDERLIGHT:
+		typeOut = AbstractItem::RENDERLIGHT;
 		break;
 	default:
 		break;

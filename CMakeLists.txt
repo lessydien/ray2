@@ -199,6 +199,7 @@ IF(CUDA_FOUND)
         ${CMAKE_CURRENT_SOURCE_DIR}/geomPlaneSurfaceItem.h
         ${CMAKE_CURRENT_SOURCE_DIR}/geomParabolicSurfaceItem.h
         ${CMAKE_CURRENT_SOURCE_DIR}/geomRayFieldItem.h
+		${CMAKE_CURRENT_SOURCE_DIR}/geomRenderFieldItem.h
 		${CMAKE_CURRENT_SOURCE_DIR}/geomRayFieldItem_PseudoBandwidth.h
 		${CMAKE_CURRENT_SOURCE_DIR}/diffRayFieldItem.h
 		${CMAKE_CURRENT_SOURCE_DIR}/diffRayField_RayAiming_Item.h
@@ -226,6 +227,7 @@ IF(CUDA_FOUND)
         ${CMAKE_CURRENT_SOURCE_DIR}/materialReflectingItem.h
         ${CMAKE_CURRENT_SOURCE_DIR}/materialRefractingItem.h
 		${CMAKE_CURRENT_SOURCE_DIR}/materialDOEItem.h
+		${CMAKE_CURRENT_SOURCE_DIR}/materialRenderLightItem.h
 		${CMAKE_CURRENT_SOURCE_DIR}/materialVolumeScatterItem.h
 #        ${CMAKE_CURRENT_SOURCE_DIR}/MyDelegate.h
 #        ${CMAKE_CURRENT_SOURCE_DIR}/myGraphicsScene.h
@@ -315,6 +317,7 @@ IF(CUDA_FOUND)
         ${CMAKE_CURRENT_SOURCE_DIR}/geomPlaneSurfaceItem.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/geomParabolicSurfaceItem.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/geomRayFieldItem.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/geomRenderFieldItem.cpp
 		${CMAKE_CURRENT_SOURCE_DIR}/geomRayFieldItem_PseudoBandwidth.cpp
 		${CMAKE_CURRENT_SOURCE_DIR}/diffRayFieldItem.cpp
 		${CMAKE_CURRENT_SOURCE_DIR}/diffRayField_RayAiming_Item.cpp
@@ -342,6 +345,7 @@ IF(CUDA_FOUND)
         ${CMAKE_CURRENT_SOURCE_DIR}/materialReflectingItem.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/materialRefractingItem.cpp
 		${CMAKE_CURRENT_SOURCE_DIR}/materialDOEItem.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/materialRenderLightItem.cpp
 		${CMAKE_CURRENT_SOURCE_DIR}/materialVolumeScatterItem.cpp
 #        ${CMAKE_CURRENT_SOURCE_DIR}/MyDelegate.cpp
 #        ${CMAKE_CURRENT_SOURCE_DIR}/myGraphicsScene.cpp

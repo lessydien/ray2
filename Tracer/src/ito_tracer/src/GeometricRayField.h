@@ -60,7 +60,7 @@ class GeometricRayField : public RayField
 	rayFieldParams *rayParamsPtr;
 //	fieldError write2MatFile(char* filename, detParams &oDetParams);
 	fieldError write2TextFile(char* filename, detParams &oDetParams);
-	
+    	
   public:
     /* standard constructor */
     GeometricRayField()
@@ -138,7 +138,7 @@ class GeometricRayField : public RayField
 	virtual fieldError createLayoutInstance();
 
 	fieldError initGPUSubset(RTcontext &context, RTbuffer &seed_buffer_obj);
-	fieldError initCPUSubset();
+    fieldError initCPUSubset();
 
     fieldError createOptixInstance(RTcontext &context, RTbuffer &output_buffer_obj, RTbuffer &seed_buffer_obj);
 	fieldError createOptixInstance(RTcontext* context, unsigned long long width, unsigned long long height, double3 start, double3 end, double* xGrad, int size_xGrad, double* yGrad, int size_yGrad, double RadiusSourceReference);

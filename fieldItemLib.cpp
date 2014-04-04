@@ -25,6 +25,9 @@ FieldItem* FieldItemLib::createField(FieldItem::FieldType type)
 		// if material changed, we need to create an instance of the new material and append it
 		switch (type)
 		{
+        case FieldItem::GEOMRENDERFIELD:
+            l_pItem=new GeomRenderFieldItem();
+            break;
 		case FieldItem::GEOMRAYFIELD:
 			l_pItem=new GeomRayFieldItem();
 			break;
@@ -68,6 +71,9 @@ QString FieldItemLib::fieldTypeToString(const FieldItem::FieldType type) const
 	QString str;
 	switch (type)
 	{
+    case FieldItem::GEOMRENDERFIELD:
+        str="GEOMRENDERFIELD";
+        break;
 	case FieldItem::GEOMRAYFIELD:
 		str="GEOMRAYFIELD";
 		break;
@@ -109,6 +115,8 @@ FieldItem::FieldType FieldItemLib::stringToFieldType(const QString str) const
 {
 	if (str.isNull())
 		return FieldItem::UNDEFINED;
+	if (!str.compare("GEOMRENDERFIELD") )
+		return FieldItem::GEOMRENDERFIELD;
 	if (!str.compare("GEOMRAYFIELD_PSEUDOBANDWIDTH") )
 		return FieldItem::GEOMRAYFIELD_PSEUDOBANDWIDTH;
 	if (!str.compare("GEOMRAYFIELD") )
@@ -140,6 +148,7 @@ QList<AbstractItem*> FieldItemLib::fillLibrary() const
 	l_list.append(new GeomRayFieldItem_PseudoBandwidth());
 	l_list.append(new DiffRayFieldItem());
 	l_list.append(new DiffRayField_RayAiming_Item());
+    l_list.append(new GeomRenderFieldItem());
 	//l_list.append(new IntensityFieldItem());
 	//l_list.append(new ScalarPlaneFieldItem());
 	//l_list.append(new ScalarSphericalFieldItem());

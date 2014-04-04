@@ -245,6 +245,8 @@ GeometryItem::Abstract_MaterialType GeometryItemLib::stringToGeomMatType(const Q
 		return GeometryItem::VOLUMESCATTER;
 	if (!str.compare("VOLUMEABSORBING"))
 		return GeometryItem::VOLUMEABSORBING;
+    if (!str.compare("RENDERLIGHT"))
+		return GeometryItem::RENDERLIGHT;
 
 	return GeometryItem::ABSORBING;
 }
