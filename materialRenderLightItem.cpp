@@ -73,6 +73,8 @@ bool MaterialRenderLightItem::readFromXML(const QDomElement &node)
     m_pupilAptRad.X=node.attribute("pupilAptRad.x").toDouble();
     m_pupilAptRad.Y=node.attribute("pupilAptRad.y").toDouble();
 
+    m_power=node.attribute("power").toDouble();
+
 	return true;
 }
 

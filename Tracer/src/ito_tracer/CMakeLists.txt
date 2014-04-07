@@ -26,10 +26,10 @@ include_directories(
 # See top level CMakeLists.txt file for documentation of OPTIX_add_sample_executable.
 OPTIX_add_sample_executable( ITO-MacroSim
 
-  src/geometricRender/GeometryLib_GeomRender.cpp
-  src/geometricRender/GeometryLib_GeomRender.h
-  src/geometricRender/MaterialLib_GeomRender.cpp
-  src/geometricRender/MaterialLib_GeomRender.h
+#  src/geometricRender/GeometryLib_GeomRender.cpp
+#  src/geometricRender/GeometryLib_GeomRender.h
+#  src/geometricRender/MaterialLib_GeomRender.cpp
+#  src/geometricRender/MaterialLib_GeomRender.h
   src/geometricRender/CoatingLib_GeomRender.cpp
   src/geometricRender/CoatingLib_GeomRender.h
   src/geometricRender/ScatterLib_GeomRender.cpp
@@ -39,10 +39,13 @@ OPTIX_add_sample_executable( ITO-MacroSim
   src/geometricRender/ScatterLib_GeomRender.h
   src/geometricRender/GeometricRenderField.cpp
   src/geometricRender/GeometricRenderField.h
-  src/geometricRender/PlaneSurface_GeomRender.cpp
-  src/geometricRender/PlaneSurface_GeomRender.h
-  src/geometricRender/planeSurface_GeomRender.cu
-  src/geometricRender/PlaneSurface_GeomRender_intersect.h
+  src/geometricRender/MaterialFringeProj_GeomRender.cpp
+  src/geometricRender/MaterialFringeProj_GeomRender.h
+  src/geometricRender/MaterialFringeProj_GeomRender_hit.h
+#  src/geometricRender/PlaneSurface_GeomRender.cpp
+#  src/geometricRender/PlaneSurface_GeomRender.h
+#  src/geometricRender/planeSurface_GeomRender.cu
+#  src/geometricRender/PlaneSurface_GeomRender_intersect.h
   src/geometricRender/Material_GeomRender_hit.h
 
   

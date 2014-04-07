@@ -68,7 +68,7 @@ public:
 		impAreaHalfWidth=make_double2(0,0);
 		impAreaRoot=make_double3(0,0,0);
 		impAreaTilt=make_double3(0,0,0);
-		impAreaType=AT_UNKNOWNATYPE;
+		impAreaType=AT_INFTY;
 		type=ST_NOSCATTER;
 	}
 	~Scatter_Params()
@@ -100,8 +100,8 @@ class Scatter
 {
   protected:
     char* path_to_ptx;
-	Scatter_Params *fullParamsPtr;
-	Scatter_ReducedParams reducedParams;
+//	Scatter_Params *fullParamsPtr;
+//	Scatter_ReducedParams reducedParams;
 		
   public:
     bool update;
@@ -109,7 +109,7 @@ class Scatter
 	/* standard constructor */
     Scatter()
 	{
-		this->fullParamsPtr=new Scatter_Params();
+//		this->fullParamsPtr=new Scatter_Params();
 		path_to_ptx=(char*)malloc(512*sizeof(char));
 		sprintf( this->path_to_ptx, "" );
 	}
@@ -117,11 +117,11 @@ class Scatter
 	virtual ~Scatter()
 	{
 		delete path_to_ptx;
-		if (this->fullParamsPtr != NULL)
-		{
-			delete (this->fullParamsPtr);
-			this->fullParamsPtr=NULL;
-		}
+		//if (this->fullParamsPtr != NULL)
+		//{
+		//	delete (this->fullParamsPtr);
+		//	this->fullParamsPtr=NULL;
+		//}
 	}
 	virtual void setPathToPtx(char* path);
 	virtual char* getPathToPtx(void);

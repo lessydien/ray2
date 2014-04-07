@@ -39,11 +39,25 @@ bool ScatterTorrSparr2DItem::writeToXML(QDomDocument &document, QDomElement &roo
 
 	scatter.setAttribute("scatterType", "TORRSPARR2D");
 	scatter.setAttribute("kDl", QString::number(m_kDl));
-	scatter.setAttribute("kSl", QString::number(m_kSp));
+	scatter.setAttribute("kSl", QString::number(m_kSl));
 	scatter.setAttribute("kSp", QString::number(m_kSp));
 	scatter.setAttribute("sigmaSp", QString::number(m_sigmaSp));
 	scatter.setAttribute("sigmaSl", QString::number(m_sigmaSl));
 
 	root.appendChild(scatter);
+	return true;
+}
+
+bool ScatterTorrSparr2DItem::readFromXML(const QDomElement &node)
+{
+	if (!ScatterItem::readFromXML(node))
+		return false;
+
+	m_kDl=node.attribute("kDl").toDouble();
+	m_kSl=node.attribute("kSl").toDouble();
+    m_kSp=node.attribute("kSp").toDouble();
+    m_sigmaSl=node.attribute("sigmaSl").toDouble();
+    m_sigmaSp=node.attribute("sigmaSp").toDouble();
+
 	return true;
 }

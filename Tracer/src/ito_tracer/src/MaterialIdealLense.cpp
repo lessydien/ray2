@@ -30,6 +30,8 @@
 #include <string.h>
 #include "rayTracingMath.h"
 
+#include "Parser_XML.h"
+
 
 /**
  * \detail hit function of material for geometric rays
@@ -361,13 +363,42 @@ MaterialError MaterialIdealLense::processParseResults(MaterialParseParamStruct &
  * \remarks 
  * \author Mauch
  */
-MaterialError MaterialIdealLense::parseXml(pugi::xml_node &geometry, SimParams simParams)
+MaterialError MaterialIdealLense::parseXml(pugi::xml_node &material, SimParams simParams)
 {
-	if (!Material::parseXml(geometry, simParams))
+	if (!Material::parseXml(material, simParams))
 	{
 		std::cout << "error in MaterialIdealLense.parseXml(): Material.parseXml() returned an error." << "...\n";
 		return MAT_ERR;
 	}
+
+    Parser_XML l_parser;
+    if (!this->checkParserError(l_parser.attrByNameToDouble(material, "f0", this->getDispersionParams()->f0)))
+		return MAT_ERR;
+    if (!this->checkParserError(l_parser.attrByNameToDouble(material, "lambda0", this->getDispersionParams()->lambda0)))
+		return MAT_ERR;
+    if (!this->checkParserError(l_parser.attrByNameToDouble(material, "dispConst", this->getDispersionParams()->A)))
+		return MAT_ERR;
+    if (!this->checkParserError(l_parser.attrByNameToDouble(material, "geomRoot.x", this->getDispersionParams()->root.x)))
+		return MAT_ERR;
+    if (!this->checkParserError(l_parser.attrByNameToDouble(material, "geomRoot.y", this->getDispersionParams()->root.y)))
+		return MAT_ERR;
+    if (!this->checkParserError(l_parser.attrByNameToDouble(material, "geomRoot.z", this->getDispersionParams()->root.z)))
+		return MAT_ERR;
+    
+    double3 l_tilt;
+    if (!this->checkParserError(l_parser.attrByNameToDouble(material, "geomTilt.x", l_tilt.x)))
+		return MAT_ERR;
+    l_tilt.x=l_tilt.x/360*2*M_PI;
+    if (!this->checkParserError(l_parser.attrByNameToDouble(material, "geomTilt.y", l_tilt.y)))
+		return MAT_ERR;
+    l_tilt.y=l_tilt.y/360*2*M_PI;
+    if (!this->checkParserError(l_parser.attrByNameToDouble(material, "geomTilt.z", l_tilt.z)))
+		return MAT_ERR;
+    l_tilt.z=l_tilt.z/360*2*M_PI;
+
+    this->getDispersionParams()->orientation=make_double3(0,0,1);
+    rotateRay(&(this->getDispersionParams()->orientation), l_tilt);
+    
 
 	return MAT_NO_ERR;
 };

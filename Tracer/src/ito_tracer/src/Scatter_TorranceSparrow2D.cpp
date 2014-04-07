@@ -30,6 +30,8 @@
 #include <string.h>
 #include "rayTracingMath.h"
 
+#include "Parser_XML.h"
+
 ScatterError Scatter_TorranceSparrow2D::setFullParams(ScatTorranceSparrow2D_scatParams* ptrIn)
 {
 	this->fullParamsPtr=ptrIn;
@@ -100,16 +102,16 @@ ScatterError Scatter_TorranceSparrow2D::setParams2Program( RTcontext context, RT
 ScatterError Scatter_TorranceSparrow2D::createCPUSimInstance(double lambda)
 {
 	// calc the refractive indices at current wavelength
-	this->reducedParams.Kdl=this->fullParamsPtr->Kdl;
-	this->reducedParams.Ksl=this->fullParamsPtr->Ksl;
-	this->reducedParams.Ksp=this->fullParamsPtr->Ksp;
-	this->reducedParams.scatAxis=this->fullParamsPtr->scatAxis;
-	this->reducedParams.sigmaXsl=this->fullParamsPtr->sigmaXsl;
-	this->reducedParams.sigmaXsp=this->fullParamsPtr->sigmaXsp;
-	this->reducedParams.impAreaHalfWidth=this->fullParamsPtr->impAreaHalfWidth;
-	this->reducedParams.impAreaRoot=this->fullParamsPtr->impAreaRoot;
-	this->reducedParams.impAreaTilt=this->fullParamsPtr->impAreaTilt;
-	this->reducedParams.impAreaType=this->fullParamsPtr->impAreaType;
+    this->getReducedParams()->Kdl=this->getFullParams()->Kdl;
+	this->getReducedParams()->Ksl=this->getFullParams()->Ksl;
+	this->getReducedParams()->Ksp=this->getFullParams()->Ksp;
+	this->getReducedParams()->scatAxis=this->getFullParams()->scatAxis;
+	this->getReducedParams()->sigmaXsl=this->getFullParams()->sigmaXsl;
+	this->getReducedParams()->sigmaXsp=this->getFullParams()->sigmaXsp;
+	this->getReducedParams()->impAreaHalfWidth=this->getFullParams()->impAreaHalfWidth;
+	this->getReducedParams()->impAreaRoot=this->getFullParams()->impAreaRoot;
+	this->getReducedParams()->impAreaTilt=this->getFullParams()->impAreaTilt;
+	this->getReducedParams()->impAreaType=this->getFullParams()->impAreaType;
 
 	return SCAT_NO_ERROR;
 };
@@ -149,4 +151,31 @@ ScatterError Scatter_TorranceSparrow2D::processParseResults(MaterialParseParamSt
 	return SCAT_NO_ERROR;
 };
 
+/**
+ * \detail parseXml 
+ *
+ * sets the parameters of the scatter according to the given xml node
+ *
+ * \param[in] xml_node &geometry
+ * 
+ * \return geometryError
+ * \sa 
+ * \remarks 
+ * \author Mauch
+ */
+ScatterError Scatter_TorranceSparrow2D::parseXml(pugi::xml_node &geometry, SimParams simParams)
+{
+	Parser_XML l_parser;
+    if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "kDl", this->getFullParams()->Kdl)))
+		return SCAT_ERROR;
+    if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "kSl", this->getFullParams()->Ksl)))
+		return SCAT_ERROR;
+    if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "kSp", this->getFullParams()->Ksp)))
+		return SCAT_ERROR;
+    if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "sigmaSp", this->getFullParams()->sigmaXsp)))
+		return SCAT_ERROR;
+    if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "sigmaSl", this->getFullParams()->sigmaXsl)))
+		return SCAT_ERROR;
 
+	return SCAT_NO_ERROR;
+}

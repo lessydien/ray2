@@ -364,7 +364,8 @@ MaterialType Parser_XML::asciiToMaterialType(const char* ascii) const
 		return MT_VOLUMEABSORB;
     if (!strcmp(ascii,"RENDERLIGHT"))
         return MT_RENDERLIGHT;
-
+    if (!strcmp(ascii,"RENDERFRINGEPROJ"))
+        return MT_RENDERFRINGEPROJ;
 	cout << "warning in Parser_XML.asciiToMaterialType: unknown material type: "  << ascii << endl;
 	return MT_UNKNOWNMATERIAL;
 }

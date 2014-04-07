@@ -247,6 +247,8 @@ GeometryItem::Abstract_MaterialType GeometryItemLib::stringToGeomMatType(const Q
 		return GeometryItem::VOLUMEABSORBING;
     if (!str.compare("RENDERLIGHT"))
 		return GeometryItem::RENDERLIGHT;
+    if (!str.compare("RENDERFRINGEPROJ"))
+        return GeometryItem::RENDERFRINGEPROJ;
 
 	return GeometryItem::ABSORBING;
 }
@@ -289,6 +291,12 @@ QString GeometryItemLib::geomMatTypeToString(const GeometryItem::Abstract_Materi
 	case GeometryItem::VOLUMESCATTER:
 		str = "VOLUMESCATTER";
 		break;
+    case GeometryItem::RENDERLIGHT:
+        str = "RENDERLIGHT";
+        break;
+    case GeometryItem::RENDERFRINGEPROJ:
+        str="RENDERFRINGEPROJ";
+        break;
 
 	default:
 		break;

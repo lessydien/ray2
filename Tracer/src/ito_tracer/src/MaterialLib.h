@@ -39,6 +39,8 @@
 #include "MaterialVolumeScatter.h"
 #include "MaterialVolumeScatterBox.h"
 #include "MaterialVolumeAbsorbing.h"
+#include "geometricRender/MaterialLight_GeomRender.h"
+#include "geometricRender/MaterialFringeProj_GeomRender.h"
 #include "Parser_XML.h"
 
 class MaterialFab

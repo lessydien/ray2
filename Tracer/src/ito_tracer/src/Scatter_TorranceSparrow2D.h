@@ -56,8 +56,8 @@ public:
 		impAreaHalfWidth=make_double2(0,0);
 		impAreaRoot=make_double3(0,0,0);
 		impAreaTilt=make_double3(0,0,0);
-		impAreaType=AT_UNKNOWNATYPE;
-		type=ST_NOSCATTER;
+		impAreaType=AT_INFTY;
+		type=ST_TORRSPARR2D;
 		Kdl=0;
 		Ksl=0;
 		Ksp=0;
@@ -101,6 +101,7 @@ class Scatter_TorranceSparrow2D: public Scatter
     /* standard constructor */
     Scatter_TorranceSparrow2D()
 	{
+        this->fullParamsPtr = new ScatTorranceSparrow2D_scatParams();
 		reducedParams.Kdl=0;
 		reducedParams.Ksl=0;
 		reducedParams.Ksp=0;
@@ -112,7 +113,14 @@ class Scatter_TorranceSparrow2D: public Scatter
 		sprintf( path_to_ptx, "%s", PATH_TO_HIT_SCATTER_TORRANCESPARROW2D );
 		this->setPathToPtx(path_to_ptx);
 	}
-
+    ~Scatter_TorranceSparrow2D()
+    {
+        if (this->fullParamsPtr != NULL)
+        {
+            delete this->fullParamsPtr;
+            this->fullParamsPtr=NULL;
+        }
+    }
 	ScatterError setFullParams(ScatTorranceSparrow2D_scatParams* ptrIn);
 	ScatTorranceSparrow2D_scatParams* getFullParams(void);
 	ScatterError setReducedParams(ScatTorranceSparrow2D_params* paramsIn);
@@ -122,6 +130,7 @@ class Scatter_TorranceSparrow2D: public Scatter
 	void hit(rayStruct &ray, Mat_hitParams hitParams);
 	void hit(gaussBeamRayStruct &ray, gaussBeam_geometricNormal normal);
 	ScatterError processParseResults(MaterialParseParamStruct &parseResults_Mat);
+    ScatterError parseXml(pugi::xml_node &geometry, SimParams simParams);
 };
 
 #endif

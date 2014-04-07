@@ -46,11 +46,12 @@ public:
 	ScatterLambert2DItem(double tis=1, QString name="Lambert2D", QObject *parent=0);
 	~ScatterLambert2DItem(void);
 
-	bool writeToXML(QDomDocument &document, QDomElement &root) const ;
-
 	// functions for property editor
 	double getTotalIntegratedScatter() const {return m_Tis;};
 	void setTotalIntegratedScatter(const double tis) {m_Tis=tis; emit itemChanged(m_index, m_index);};
+
+	bool writeToXML(QDomDocument &document, QDomElement &root) const ;
+    bool readFromXML(const QDomElement &node);
 
 private:
 

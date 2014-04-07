@@ -95,24 +95,30 @@ ScatterError Scatter::setParams2Program( RTcontext context, RTprogram *closest_h
 
 ScatterError Scatter::setFullParams(Scatter_Params* ptrIn)
 {
-	this->fullParamsPtr=ptrIn;
-	return SCAT_NO_ERROR;
+//	this->fullParamsPtr=ptrIn;
+    std::cout << "error in Scatter.setFullParams(): not defined for the given Scatter" << "...\n";
+	return SCAT_ERROR;
 };
 
 Scatter_Params* Scatter::getFullParams(void)
 {
-	return this->fullParamsPtr;
+//	return this->fullParamsPtr;
+    std::cout << "error in Scatter.getFullParams(): not defined for the given Scatter" << "...\n";
+	return NULL;
 };
 
 ScatterError Scatter::setReducedParams(Scatter_ReducedParams* ptrIn)
 {
-	this->reducedParams=*ptrIn;
-	return SCAT_NO_ERROR;
+//	this->reducedParams=*ptrIn;
+    std::cout << "error in Scatter.setReducedParams(): not defined for the given Scatter" << "...\n";
+	return SCAT_ERROR;
 };
 
 Scatter_ReducedParams* Scatter::getReducedParams(void)
 {
-	return &(this->reducedParams);
+//	return &(this->reducedParams);
+    std::cout << "error in Scatter.getReducedParams(): not defined for the given Scatter" << "...\n";
+	return NULL;
 };
 
 void Scatter::hit(rayStruct &ray, Mat_hitParams hitParams)

@@ -27,6 +27,7 @@
 
 #include "Material_hit.h"
 
+
 typedef enum 
 {
   AT_RECT,

@@ -78,57 +78,38 @@ inline RT_HOSTDEVICE bool hitTorranceSparrow2D(rayStruct &prd, Mat_hitParams hit
 	ScatTorranceSparrow2D_params test=params;
 	RandomInit(prd.currentSeed, x1); // init random variable
 	double angleRay2Normal=acos(dot(prd.direction,-hitParams.normal)); // calc angle of ray to normal
-	double3 rotAxis=cross(params.scatAxis,hitParams.normal); // calc axis around which these vectors are rotated to each other
-	double3 rotAxis2=cross(rotAxis,params.scatAxis); // calc 2nd rotation axis
+    double3 rotAxis=cross(params.scatAxis, hitParams.normal);
 
 	if (params.impAreaType==AT_INFTY)
 	{
 		// calc scatter angle
 		double xi=RandomGauss(x1); // get normal distribution with zero mean and unit variance
 		double sqrtpi=sqrt(PI);
-		double BRDFmax=params.Kdl*2+sqrtpi*(params.Ksl*params.Ksl+params.Ksp*params.Ksp);
-		double ii=Random(x1)*BRDFmax; // get uniform distribution between zero and maximum BRDF to decide which mean and variance we need for our gaussian distribution
-		double sigma=params.sigmaXsp; // init sigma to sigma of specular peak
-		if (ii>sqrtpi*params.Ksp*params.Ksp)
-		{
-			prd.depth++;
-			sigma=params.sigmaXsl; // set sigma to sigma of specular lobe
-		}
-		xi=xi*sigma;
-		if (ii>sqrtpi*params.Ksp+params.Ksl*params.Ksl)
-		{
-			// the diffuse lobe distributes the direction uniformly
-			xi=(Random(x1)-0.5)*PI; // get uniform deviate between -pi/2 pi/2
-			//xi=asin(xi);// if we end up in the diffuse lobe we calculate xi from the inversion mehtod. see W.Press, Numerical Recipes 2nd ed., pp. 291 for reference
-			prd.depth++;
-		}
-		prd.currentSeed=x1[4]; // save new seed for next randomization
+        double ii=Random(x1);
+        double phi=0;
+        double phi2=0;
 
-		// rotate ray according to scattering angle
-		rotateRay(prd.direction, rotAxis, xi);
-
-		// do the same thing again for the 2nd ray component
-		// calc scatter angle
-		xi=RandomGauss(x1); // get normal distribution with zero mean and unit variance
-		ii=Random(x1)*BRDFmax; // get uniform distribution between zero and maximum BRDF to decide which mean and variance we need for our gaussian distribution
-		sigma=params.sigmaXsp; // init sigma to sigma of specular peak
-		if (ii>sqrtpi*params.Ksp*params.Ksp)
-		{
-			prd.depth++;
-			sigma=params.sigmaXsl; // set sigma to sigma of specular lobe
-		}
-		xi=xi*sigma;
-		if (ii>sqrtpi*params.Ksp+params.Ksl*params.Ksl)
-		{
-			// the diffuse lobe distributes the direction uniformly
-			xi=(Random(x1)-0.5)*PI; // get uniform deviate between -pi/2 pi/2
-			//xi=asin(xi);// if we end up in the diffuse lobe we calculate xi from the inversion mehtod. see W.Press, Numerical Recipes 2nd ed., pp. 291 for reference
-			prd.depth++;
-		}
-		prd.currentSeed=x1[4]; // save new seed for next randomization
-
-		// rotate 2nd ray component according to scattering angle
-		rotateRay(prd.direction, rotAxis2, xi);
+        phi=Random(x1)*PI-PI/2;
+        phi2=Random(x1)*PI-PI/2;
+        if (ii>params.Kdl)
+        {
+            phi=RandomGauss(x1)*params.sigmaXsl; // set sigma to sigma of specular lobe
+            phi2=RandomGauss(x1)*params.sigmaXsl;
+        }
+        if (ii>params.Kdl+params.Ksl)
+        {
+            phi=RandomGauss(x1)*params.sigmaXsp;
+            phi2=RandomGauss(x1)*params.sigmaXsp;
+        }
+        prd.currentSeed=x1[4]; // save new seed for next randomization
+        
+		// rotate ray according to first scattering angle
+		rotateRay(prd.direction, rotAxis, phi);
+        // rotate scat axis according to first rotation
+        double3 rotAxis2=params.scatAxis;
+        rotateRay(rotAxis2, rotAxis, phi);
+        // rotate ray according to second scattering angle
+        rotateRay(prd.direction, rotAxis2, phi2);
 	}
 	else
 	{

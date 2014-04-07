@@ -49,3 +49,16 @@ ScatterError Scatter_NoScatter::parseXml(pugi::xml_node &geometry, SimParams sim
 {
 	return SCAT_NO_ERROR;
 }
+
+ScatterError Scatter_NoScatter::setFullParams(Scatter_Params* ptrIn)
+{
+	if (this->fullParamsPtr != NULL)
+		delete this->fullParamsPtr;
+	this->fullParamsPtr=ptrIn;
+	return SCAT_NO_ERROR;
+};
+
+Scatter_Params* Scatter_NoScatter::getFullParams(void)
+{
+	return this->fullParamsPtr;
+};

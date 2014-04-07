@@ -48,15 +48,29 @@
 class Scatter_NoScatter: public Scatter
 {
 	protected:
+	Scatter_Params *fullParamsPtr;
+	Scatter_ReducedParams reducedParams;
 
   public:
     /* standard constructor */
     Scatter_NoScatter() :
 		Scatter()
 	{
+        this->fullParamsPtr=new Scatter_Params();
 	}
+    ~Scatter_NoScatter()
+    {
+        if (this->fullParamsPtr != NULL)
+        {
+            delete this->fullParamsPtr;
+            this->fullParamsPtr=NULL;
+        }
+    }
 
 	ScatterError parseXml(pugi::xml_node &geometry, SimParams simParams);
+	ScatterError setFullParams(Scatter_Params* ptrIn);
+	Scatter_Params* getFullParams(void);
+
 };
 
 #endif

@@ -49,6 +49,8 @@ public:
 	double f; //!> focal length of ideal lense
 	double3 root; //!> root of the ideal lense
 	double3 orientation; //!> orientation of the ideal lense
+    double dispConstant; //!> disperiosn constant of ideal lense
+    double lambda0; //!> centre wavelength of ideal lense
 	double thickness; //!> thickness of ideal lense. This comes from the fact that the ray through the centre of the ideal lense hast to have a phase shift relative to the ray through the outermost corner of the aperture such that a perfect spherical wavefront appears behind the ideal lense
 };
 

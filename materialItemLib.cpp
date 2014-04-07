@@ -67,7 +67,11 @@ MaterialItem* MaterialItemLib::createMaterial(MaterialItem::MaterialType type)
         case MaterialItem::RENDERLIGHT:
             l_pItem=new MaterialRenderLightItem();
             break;
+        case MaterialItem::RENDERFRINGEPROJ:
+            l_pItem=new MaterialRenderFringeProjItem();
+            break;
 		default:
+            l_pItem=new MaterialAbsorbingItem();
 			break;
 		}
 		return l_pItem;
@@ -105,6 +109,8 @@ MaterialItem::MaterialType MaterialItemLib::stringToMaterialType(const QString s
 		return MaterialItem::VOLUMESCATTER;
 	if (!str.compare("RENDERLIGHT"))
 		return MaterialItem::RENDERLIGHT;
+    if (!str.compare("RENDERFRINGEPROJ"))
+        return MaterialItem::RENDERFRINGEPROJ;
 
 	return MaterialItem::ABSORBING;
 }
@@ -152,6 +158,9 @@ QString MaterialItemLib::materialTypeToString(const MaterialItem::MaterialType t
 		break;
 	case MaterialItem::RENDERLIGHT:
 		str = "RENDERLIGHT";
+		break;
+	case MaterialItem::RENDERFRINGEPROJ:
+		str = "RENDERFRINGEPROJ";
 		break;
 	default:
 		break;
@@ -288,7 +297,11 @@ MaterialItem::MaterialType MaterialItemLib::abstractMatTypeToMatType(const Abstr
 	case AbstractItem::RENDERLIGHT:
 		typeOut = MaterialItem::RENDERLIGHT;
 		break;
+    case AbstractItem::RENDERFRINGEPROJ:
+        typeOut = MaterialItem::RENDERFRINGEPROJ;
+        break;
 	default:
+        typeOut = MaterialItem::ABSORBING;
 		break;
 	}
 	return typeOut;

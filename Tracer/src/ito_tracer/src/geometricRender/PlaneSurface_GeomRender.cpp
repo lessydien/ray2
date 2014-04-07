@@ -80,18 +80,18 @@ geometryError PlaneSurface_GeomRender::reduceParams(void)
  * \remarks 
  * \author Mauch
  */
-//geometryError PlaneSurface_GeomRender::hit(rayStruct &ray, double t)
-//{
-//	Mat_hitParams hitParams;
-//	hitParams.normal=this->paramsPtr->normal;
-//	int i;
-//	for (i=0;i<this->materialListLength;i++)
-//	{
-//		this->getMaterial(i)->hit(ray, hitParams, t, this->paramsPtr->geometryID);
-//	}
-//	
-//	return GEOM_NO_ERR;
-// };
+geometryError PlaneSurface_GeomRender::hit(rayStruct &ray, double t)
+{
+	Mat_hitParams hitParams;
+	hitParams.normal=this->paramsPtr->normal;
+	int i;
+	for (i=0;i<this->materialListLength;i++)
+	{
+		this->getMaterial(i)->hit(ray, hitParams, t, this->paramsPtr->geometryID);
+	}
+	
+	return GEOM_NO_ERR;
+ };
 
 /**
  * \detail createOptixInstance

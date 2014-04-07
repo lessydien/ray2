@@ -44,3 +44,13 @@ bool ScatterLambert2DItem::writeToXML(QDomDocument &document, QDomElement &root)
 	root.appendChild(scatter);
 	return true;
 }
+
+bool ScatterLambert2DItem::readFromXML(const QDomElement &node)
+{
+	if (!ScatterItem::readFromXML(node))
+		return false;
+
+	m_Tis=node.attribute("Tis").toDouble();
+
+	return true;
+}

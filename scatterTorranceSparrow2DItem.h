@@ -40,7 +40,7 @@ class ScatterTorrSparr2DItem :
 
 	Q_PROPERTY(double kDl READ getKDl WRITE setKDl DESIGNABLE true USER true);
 	Q_PROPERTY(double kSl READ getKSl WRITE setKSl DESIGNABLE true USER true);
-	Q_PROPERTY(double kSp READ getKDl WRITE setKSp DESIGNABLE true USER true);
+	Q_PROPERTY(double kSp READ getKSp WRITE setKSp DESIGNABLE true USER true);
 	Q_PROPERTY(double kSigmaSl READ getSigmaSl WRITE setSigmaSl DESIGNABLE true USER true);
 	Q_PROPERTY(double kSigmaSp READ getSigmaSp WRITE setSigmaSp DESIGNABLE true USER true);
 
@@ -61,6 +61,7 @@ public:
 	void setSigmaSp(const double in) {m_sigmaSp=in; emit itemChanged(m_index, m_index);};
 
 	bool writeToXML(QDomDocument &document, QDomElement &root) const;
+    bool readFromXML(const QDomElement &node);
 
 	// functions for property editor
 

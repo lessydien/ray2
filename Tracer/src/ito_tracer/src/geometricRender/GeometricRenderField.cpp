@@ -32,7 +32,7 @@
 #include "..\randomGenerator.h"
 #include "..\Converter.h"
 #include "..\DetectorLib.h"
-#include "MaterialLib_GeomRender.h"
+#include "..\MaterialLib.h"
 #include <ctime>
 
 using namespace optix;
@@ -462,8 +462,6 @@ geomRenderRayStruct GeometricRenderField::createRay(unsigned long long jx, unsig
 
 	// start timing
 	start=clock();
-
-	std::cout << "initalizing random seed" << "...\n";
 
     // create seed
     ray.currentSeed=(uint)BRandom(x);

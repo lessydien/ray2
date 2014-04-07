@@ -39,6 +39,35 @@ bool MaterialIdealLenseItem::writeToXML(QDomDocument &document, QDomElement &roo
 	material.setAttribute("lambda0", QString::number(m_lambda0));
 	material.setAttribute("dispConst", QString::number(m_dispConst));
 	material.setAttribute("materialType", "MATIDEALLENSE");
+
+	Vec3d l_tilt;
+	Vec3d l_root;
+
+	QModelIndex l_index=this->getModelIndex();
+	QModelIndex l_parentIndex=l_index.parent();
+	QModelIndex test=QModelIndex();
+
+	AbstractItem* l_pAbstractItem=reinterpret_cast<AbstractItem*>(l_parentIndex.internalPointer());
+	if (l_pAbstractItem != NULL)
+	{
+		if (l_pAbstractItem->getObjectType() == GEOMETRY)
+		{
+			GeometryItem* l_pGeomItem=reinterpret_cast<GeometryItem*>(l_pAbstractItem);
+			l_root=l_pGeomItem->getRoot();
+			l_tilt=l_pGeomItem->getTilt();
+		}
+		else
+		{
+			cout << "error in materialDOEItem.writeToXML(): parent seems to not be a geometry. Probably the model is messed up" << endl;
+		}
+	}
+	material.setAttribute("geomRoot.x", QString::number(l_root.X));
+	material.setAttribute("geomRoot.y", QString::number(l_root.Y));
+	material.setAttribute("geomRoot.z", QString::number(l_root.Z));
+	material.setAttribute("geomTilt.x", QString::number(l_tilt.X));
+	material.setAttribute("geomTilt.y", QString::number(l_tilt.Y));
+	material.setAttribute("geomTilt.z", QString::number(l_tilt.Z));
+
 	// write parameters inherited from base class
 	if (!MaterialItem::writeToXML(document, material))
 		return false;

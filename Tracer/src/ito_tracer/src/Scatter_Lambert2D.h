@@ -98,6 +98,14 @@ class Scatter_Lambert2D: public Scatter
 		sprintf( path_to_ptx, "%s", PATH_TO_HIT_SCATTER_LAMBERT2D );
 		this->setPathToPtx(path_to_ptx);
 	}
+    ~Scatter_Lambert2D()
+    {
+        if (this->fullParamsPtr != NULL)
+        {
+            delete this->fullParamsPtr;
+            this->fullParamsPtr=NULL;
+        }
+    }
 
 	ScatterError setFullParams(ScatLambert2D_scatParams* ptrIn);
 	ScatLambert2D_scatParams* getFullParams(void);

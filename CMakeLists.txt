@@ -228,6 +228,7 @@ IF(CUDA_FOUND)
         ${CMAKE_CURRENT_SOURCE_DIR}/materialRefractingItem.h
 		${CMAKE_CURRENT_SOURCE_DIR}/materialDOEItem.h
 		${CMAKE_CURRENT_SOURCE_DIR}/materialRenderLightItem.h
+		${CMAKE_CURRENT_SOURCE_DIR}/materialRenderFringeProjItem.h
 		${CMAKE_CURRENT_SOURCE_DIR}/materialVolumeScatterItem.h
 #        ${CMAKE_CURRENT_SOURCE_DIR}/MyDelegate.h
 #        ${CMAKE_CURRENT_SOURCE_DIR}/myGraphicsScene.h
@@ -346,6 +347,7 @@ IF(CUDA_FOUND)
         ${CMAKE_CURRENT_SOURCE_DIR}/materialRefractingItem.cpp
 		${CMAKE_CURRENT_SOURCE_DIR}/materialDOEItem.cpp
 		${CMAKE_CURRENT_SOURCE_DIR}/materialRenderLightItem.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/materialRenderFringeProjItem.cpp
 		${CMAKE_CURRENT_SOURCE_DIR}/materialVolumeScatterItem.cpp
 #        ${CMAKE_CURRENT_SOURCE_DIR}/MyDelegate.cpp
 #        ${CMAKE_CURRENT_SOURCE_DIR}/myGraphicsScene.cpp
