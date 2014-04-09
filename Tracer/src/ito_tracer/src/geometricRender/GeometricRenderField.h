@@ -34,7 +34,7 @@
 #include "..\pugixml.hpp"
 
 
-#define GEOMRENDERFIELD_PATHTOPTX "ITO-MacroSim_generated_render.cu.ptx"
+#define GEOMRENDERFIELD_PATHTOPTX "ITO-MacroSim_generated_rayGenerationGeomRender.cu.ptx"
 
 /* declare class */
 /**
@@ -88,6 +88,7 @@ class GeometricRenderField : public RayField
     double3 oldPosition;
 
     geomRenderRayStruct createRay(unsigned long long jx, unsigned long long jy, unsigned long long jRay);
+    fieldError copyImagePart(double *data);
 
     Material** materialList;
 	int materialListLength;

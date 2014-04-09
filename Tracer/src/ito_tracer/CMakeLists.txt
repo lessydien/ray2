@@ -47,6 +47,7 @@ OPTIX_add_sample_executable( ITO-MacroSim
 #  src/geometricRender/planeSurface_GeomRender.cu
 #  src/geometricRender/PlaneSurface_GeomRender_intersect.h
   src/geometricRender/Material_GeomRender_hit.h
+  src/hitFunctionRenderFringeProj.cu
 
   
 	src/pugiconfig.hpp
@@ -465,6 +466,7 @@ OPTIX_add_sample_executable( ITO-MacroSim
   src/hitFunctionPathTraceSource.cu
       
   src/rayGeneration.cu
+  src/rayGenerationGeomRender.cu
   src/rayGeneration_PathTracing.cu
   src/differentialRayTracing/rayGenerationDiffRayField.cu
   #src/differentialRayTracing/rayGenerationDiffRayField_Freeform.cu

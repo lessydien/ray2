@@ -173,7 +173,6 @@ fieldError GeometricRayField::copyRayList(rayStruct *data, long long length)
 	for (unsigned long long jy=0;jy<this->rayParamsPtr->GPUSubset_height;jy++)
 	{
 		unsigned long long testIndex=jy*GPU_SUBSET_WIDTH_MAX;
-		//                     memory range of completed lines + offsetX + number of line in current block*width of complete rayblock // we always allocate the max buffer on GPU, therefore we always need to adress the start of the line in this maximum buffer...
 		memcpy(&(this->rayList[jy*GPU_SUBSET_WIDTH_MAX]), &data[jy*GPU_SUBSET_WIDTH_MAX], this->rayParamsPtr->GPUSubset_width*sizeof(rayStruct));
 	}
 	return FIELD_NO_ERR;

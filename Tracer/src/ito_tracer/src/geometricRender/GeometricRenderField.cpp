@@ -588,6 +588,7 @@ fieldError GeometricRenderField::initSimulation(Group &oGroup, simAssParams &par
 				std::cout << "error in RayField.initSimulation(): SourceList[i]->createOptixInstance returned an error at index:" << 0 << "...\n";
 				return ( FIELD_ERR );
 			}
+
 			if (!RT_CHECK_ERROR_NOEXIT( rtContextValidate( context ), context ))
 				return FIELD_ERR;
 			if (!RT_CHECK_ERROR_NOEXIT( rtContextCompile( context ), context ))
@@ -1223,9 +1224,7 @@ fieldError GeometricRenderField::traceScene(Group &oGroup, bool RunOnCPU)
 	}
 	else
 	{
-		//RTsize				buffer_width, buffer_height; // get size of output buffer
-		void				*data; // pointer to cast output buffer into
- 		//rayStruct			*bufferData;
+        void				*data; // pointer to cast output buffer into
 
 		std::cout << "rendering on GPU." << "...\n";
 
@@ -1234,23 +1233,16 @@ fieldError GeometricRenderField::traceScene(Group &oGroup, bool RunOnCPU)
 		if (!RT_CHECK_ERROR_NOEXIT( rtContextLaunch2D( (context), 0, this->renderFieldParamsPtr->GPUSubset_width, this->renderFieldParamsPtr->GPUSubset_height), context))//this->renderFieldParamsPtr->launchOffsetX, this->renderFieldParamsPtr->launchOffsetY ) );
 			return FIELD_ERR;
 
-		// update scene
-//		oGroup.updateOptixInstance(context, mode, lambda);
-				
-//		RT_CHECK_ERROR_NOEXIT( rtContextLaunch2D( context, 0, width, height ) );
-		/* unmap output-buffer */
-		//RT_CHECK_ERROR_NOEXIT( rtBufferGetSize2D(output_buffer_obj, &buffer_width, &buffer_height) );
-		// recast from Optix RTsize to standard int
-		//unsigned long long l_bufferWidth = (unsigned long long)(buffer_width);
-		//unsigned long long l_bufferHeight = (unsigned long long)(buffer_height);//static_cast<int>(buffer_height);
-
+        // get result from GPU
 		if (!RT_CHECK_ERROR_NOEXIT( rtBufferMap(output_buffer_obj, &data) , context))
 			return FIELD_ERR;
-//			end=clock();
-
+    
+        this->copyImagePart((double*)data);
 		
 		if (!RT_CHECK_ERROR_NOEXIT( rtBufferUnmap( output_buffer_obj ) , context))
 			return FIELD_ERR;
+
+
 	}
 	// end timing
 	end=clock();
@@ -1258,6 +1250,32 @@ fieldError GeometricRenderField::traceScene(Group &oGroup, bool RunOnCPU)
 	msecs_Tracing=msecs_Tracing+msecs;
 	std::cout << msecs <<" ms to render " << this->renderFieldParamsPtr->GPUSubset_height*this->renderFieldParamsPtr->GPUSubset_width << " pixels." << "...\n";
 
+	return FIELD_NO_ERR;
+};
+
+/**
+ * \detail copyRayList 
+
+ *
+ * \param[in] rayStruct *data, long long length
+ * 
+ * \return fieldError
+ * \sa 
+ * \remarks 
+ * \author Mauch
+ */
+fieldError GeometricRenderField::copyImagePart(double *data)
+{
+
+	// copy the image line per line
+    for (unsigned long long jy=0;jy<this->renderFieldParamsPtr->GPUSubset_height;jy++)
+	{
+		unsigned long long testIndex=jy*GPU_SUBSET_WIDTH_MAX;
+		// memory range of completed lines + offsetX + number of line in current block*width of complete rayblock // we always allocate the max buffer on GPU, therefore we always need to adress the start of the line in this maximum buffer...
+        unsigned long long offsetX=this->getParamsPtr()->launchOffsetX;
+        unsigned long long offsetY=this->getParamsPtr()->launchOffsetY;
+        memcpy(&(this->Iptr[offsetX+jy*this->getParamsPtr()->width]), &data[jy*GPU_SUBSET_WIDTH_MAX], this->renderFieldParamsPtr->GPUSubset_width*sizeof(double));
+	}
 	return FIELD_NO_ERR;
 };
 
@@ -1312,6 +1330,9 @@ fieldError GeometricRenderField::doSim(Group &oGroup, simAssParams &params, bool
 
 	tracedRayNr=tracedRayNr+l_GPUSubsetDim.x*l_GPUSubsetDim.y;
 	std::cout << " " << tracedRayNr <<" out of " << width*height << " rays traced in total" << "...\n";
+
+	void *data; // pointer to cast output buffer into
+
 
 	if (simDone)
 	{

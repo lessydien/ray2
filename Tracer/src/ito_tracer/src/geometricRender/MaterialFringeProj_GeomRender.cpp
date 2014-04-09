@@ -100,7 +100,7 @@ MaterialError MaterialFringeProj_GeomRender::createOptiXInstance(RTcontext conte
 	/* set the variables of the geometry */
 	if ( !RT_CHECK_ERROR_NOEXIT( rtProgramDeclareVariable( closest_hit_program, "params", &l_params ), context) )
 		return MAT_ERR;
-	if ( !RT_CHECK_ERROR_NOEXIT( rtVariableSetUserData(l_params, sizeof(MatRefracting_params), &(this->params)), context) )
+	if ( !RT_CHECK_ERROR_NOEXIT( rtVariableSetUserData(l_params, sizeof(MatFringeProj_GeomRender_params), &(this->params)), context) )
 		return MAT_ERR;
 
 	return MAT_NO_ERR;	
