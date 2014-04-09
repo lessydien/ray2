@@ -73,8 +73,8 @@ public:
 	unsigned long long launchOffsetY; //!>
 	unsigned long long GPUSubset_width;
 	unsigned long long GPUSubset_height;
-	unsigned long long layout_width; //!> total width of rayfield for layout mode
-	unsigned long long layout_height; //!> total height of rayfield for layout mode
+	unsigned long long layout_width; 
+	unsigned long long layout_height; 
 	rayPosDistrType posDistrType;
 	rayDirDistrType dirDistrType;
 	double nImmersed;

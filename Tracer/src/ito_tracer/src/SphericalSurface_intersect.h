@@ -82,16 +82,19 @@ inline RT_HOSTDEVICE double intersectRaySphere(double3 rayPosition, double3 rayD
 	  return 0;
   }
   // calc first intersection
-  double t=-B+sqrt(root);
+  double t1=-B+sqrt(root);
+  t1 = t1 > 0 ? t1 : 0;
+  double t2=-B-sqrt(root);
+  t2 = t2 > 0 ? t2 : 0;
+  double t;
+  t = t1<t2 ? t1 : t2;
   double3 intersection=rayPosition+t*rayDirection;
   // we use the zemax sign convention, i.e. a negative radius represents convex surfaces !!
-  // if the product of the difference between tmid and t , the sphereRadius and the projection of the vector connecting the ray position and the sphere centre is negative, this intersection is unphysical
-  //if (dot(params.orientation,(params.centre-rayPosition))*(tmid-t)*params.curvatureRadius.x < 0)
   // if the product of the orientation vector, the vector connecting the centre of the sphere and the radius is negative we have the physical intersection. Otherwise we have to calculate the other intersection
   if ( (dot(params.orientation,(intersection-params.centre))*params.curvatureRadius.x>0) || (abs(t) < 1E-10) ) // we could already sit on the sphere. Then t=0 and we need to consider the other intersection
   {
-	// calc the parameter of the other intersection
-  	t=-B-sqrt(root);
+	// use the other intersection
+  	t = t==t1 ? t2 : t1;
 	// check the new intersection
 	intersection=rayPosition+t*rayDirection;
 	if ( (dot(params.orientation,(intersection-params.centre))*params.curvatureRadius.x>0) || (abs(t) < 1E-10))

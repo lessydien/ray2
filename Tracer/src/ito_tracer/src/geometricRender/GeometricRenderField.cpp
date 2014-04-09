@@ -171,6 +171,379 @@ const char* GeometricRenderField::getPathToPtx(void)
 };
 
 /**
+ * \detail createLayoutInstance 
+ *
+ *
+ * \param[in] void
+ * 
+ * \return fieldError
+ * \sa 
+ * \remarks 
+ * \author Mauch
+ */
+fieldError GeometricRenderField::createLayoutInstance()
+{
+	if (this->layoutRayList != NULL)
+	{
+		delete this->layoutRayList;
+		this->rayListLength=0;
+		layoutRayList=NULL;
+	}
+	layoutRayList=(geomRenderRayStruct*) malloc(GPU_SUBSET_WIDTH_MAX*GPU_SUBSET_HEIGHT_MAX*sizeof(geomRenderRayStruct));
+	if (!layoutRayList)
+	{
+		std::cout << "error in GeometricRenderField.createLayoutInstance(): memory for rayList could not be allocated. try to reduce ray tiling size" << "...\n";
+		return FIELD_ERR;
+	}
+	this->rayListLength=GPU_SUBSET_WIDTH_MAX*GPU_SUBSET_HEIGHT_MAX;
+
+	unsigned int l_launch_width, l_launch_height, l_offsetX, l_offsetY;
+    if ( this->renderFieldParamsPtr->widthLayout*this->renderFieldParamsPtr->heightLayout*this->renderFieldParamsPtr->nrRayDirections.x*this->renderFieldParamsPtr->nrRayDirections.y< GPU_SUBSET_WIDTH_MAX*GPU_SUBSET_HEIGHT_MAX ) 
+	{
+		l_launch_width=this->renderFieldParamsPtr->widthLayout*this->renderFieldParamsPtr->heightLayout*this->renderFieldParamsPtr->nrRayDirections.x*this->renderFieldParamsPtr->nrRayDirections.y;
+	}
+	else
+	{
+		l_launch_width=GPU_SUBSET_WIDTH_MAX*GPU_SUBSET_HEIGHT_MAX;
+	}
+	l_launch_height=1;
+
+	l_offsetX=0;
+	l_offsetY=0;
+	this->renderFieldParamsPtr->launchOffsetX=l_offsetX;
+	this->renderFieldParamsPtr->launchOffsetY=l_offsetY;
+
+	this->renderFieldParamsPtr->GPUSubset_height=1;
+	this->renderFieldParamsPtr->GPUSubset_width=l_launch_width;
+
+	this->renderFieldParamsPtr->totalLaunch_height=1;
+	this->renderFieldParamsPtr->totalLaunch_width=this->renderFieldParamsPtr->widthLayout*this->renderFieldParamsPtr->heightLayout*this->renderFieldParamsPtr->nrRayDirections.x*this->renderFieldParamsPtr->nrRayDirections.y;
+    this->renderFieldParamsPtr->layout_height=this->renderFieldParamsPtr->heightLayout;
+    this->renderFieldParamsPtr->layout_width=this->renderFieldParamsPtr->widthLayout;
+    this->renderFieldParamsPtr->widthLayout=this->renderFieldParamsPtr->widthLayout*this->renderFieldParamsPtr->heightLayout*this->renderFieldParamsPtr->nrRayDirections.x*this->renderFieldParamsPtr->nrRayDirections.y;
+    this->renderFieldParamsPtr->heightLayout=1;
+
+	return FIELD_NO_ERR;
+
+	return FIELD_NO_ERR;
+};
+
+/**
+ * \detail initCPUSubset 
+ *
+ * \param[in] void
+ * 
+ * \return void
+ * \sa 
+ * \remarks 
+ * \author Mauch
+ */
+fieldError GeometricRenderField::initCPUSubset()
+{
+	clock_t start, end;
+	double msecs=0;
+	// check wether we will be able to fit all the rays into our raylist. If not some eror happened earlier and we can not proceed...
+	if ((this->renderFieldParamsPtr->GPUSubset_width)<=this->rayListLength)
+	{
+		// calc the dimensions of the subset
+//		long2 l_GPUSubsetDim=calcSubsetDim();
+		
+		// see if there are any rays to create	
+		//if (this->rayParamsPtr->GPUSubset_height*this->rayParamsPtr->GPUSubset_width >= 1)
+		if (this->renderFieldParamsPtr->GPUSubset_width*this->renderFieldParamsPtr->GPUSubset_height >= 1)
+		{
+			// width of ray field in physical dimension
+			double physWidth=this->renderFieldParamsPtr->rayPosEnd.x-this->renderFieldParamsPtr->rayPosStart.x;
+			// height of ray field in physical dimension
+			double physHeight=this->renderFieldParamsPtr->rayPosEnd.y-this->renderFieldParamsPtr->rayPosStart.y;
+			// calc centre of ray field 
+			double2 rayFieldCentre=make_double2(this->renderFieldParamsPtr->rayPosStart.x+physWidth/2,this->renderFieldParamsPtr->rayPosStart.y+physHeight/2);
+
+			// start timing
+			start=clock();
+
+			std::cout << "initalizing random seed" << "...\n";
+
+			int seed = (int)time(0);            // random seed
+			RandomInit(seed, x);
+
+			// create random seeds for all the rays
+			std::cout << "initializing rays on " << numCPU << " cores of CPU." << "...\n";
+
+			for(signed long long jx=0;jx<this->renderFieldParamsPtr->GPUSubset_width;jx++)
+			{
+				this->layoutRayList[jx].currentSeed=(uint)BRandom(x);
+			}
+			end=clock();
+			msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
+			std::cout << " " << msecs <<" ms to initialize random seeds of " << this->renderFieldParamsPtr->GPUSubset_width << " rays." << "...\n";
+
+			// start timing
+			start=clock();
+
+			// create all the rays
+			omp_set_num_threads(numCPU);
+
+#pragma omp parallel default(shared)
+{
+			#pragma omp for schedule(dynamic, 50)//schedule(static)//
+			// create all the rays
+			for(signed long long jx=0;jx<this->renderFieldParamsPtr->GPUSubset_width;jx++)
+			{
+				uint32_t x_l[5];
+				RandomInit(this->layoutRayList[jx].currentSeed, x_l); // seed random generator
+
+				long long index=0; // loop counter for random rejection method
+				double r; // variables for creating random number inside an ellipse
+
+				// increment of rayposition in x and y in case of GridRect definition 
+				double deltaW=0;
+				double deltaH=0;
+				// increment radial ( along x- and y ) and angular direction in GridRad definition
+				double deltaRx=0;
+				double deltaRy=0;
+				double deltaPhi=0;
+				// radius in dependence of phi when calculating GRID_RAD
+				double R=0;
+
+				// declar variables for randomly distributing ray directions via an importance area
+				double2 impAreaHalfWidth;
+				double3 dirImpAreaCentre, tmpPos, impAreaRoot, rayAngleCentre,impAreaAxisX,impAreaAxisY;
+				double impAreaX, impAreaY, theta;
+
+				geomRenderRayStruct rayData;
+
+				rayData.depth=0;	
+				rayData.position.z=this->renderFieldParamsPtr->rayPosStart.z;
+				rayData.running=true;
+				rayData.currentGeometryID=0;
+				rayData.lambda=this->renderFieldParamsPtr->lambda;
+				rayData.nImmersed=1;//this->materialList[0]->calcSourceImmersion(this->rayParamsPtr->lambda);
+				rayData.flux=1;
+                rayData.cumFlux=0;
+                rayData.secondary=false;
+                rayData.secondary_nr=0;
+
+				// map on one dimensional index
+				unsigned long long iGes=jx+this->renderFieldParamsPtr->launchOffsetX+this->renderFieldParamsPtr->launchOffsetY*this->renderFieldParamsPtr->width*this->renderFieldParamsPtr->nrRayDirections.x*this->renderFieldParamsPtr->nrRayDirections.y;
+
+				// calc position indices from 1D index
+				unsigned long long iPosX=floorf(iGes/(this->renderFieldParamsPtr->nrRayDirections.x*this->renderFieldParamsPtr->nrRayDirections.y));
+				unsigned long long iPosY=floorf(iPosX/this->renderFieldParamsPtr->layout_width);
+				iPosX=iPosX % this->renderFieldParamsPtr->layout_width;
+
+				// calc direction indices from 1D index
+				unsigned long long iDirX=(iGes-iPosX*this->renderFieldParamsPtr->nrRayDirections.x*this->renderFieldParamsPtr->nrRayDirections.y-iPosY*this->renderFieldParamsPtr->nrRayDirections.x*this->renderFieldParamsPtr->nrRayDirections.y*this->renderFieldParamsPtr->width) % this->renderFieldParamsPtr->nrRayDirections.x;
+				unsigned long long iDirY=floorf((iGes-iPosX*this->renderFieldParamsPtr->nrRayDirections.x*this->renderFieldParamsPtr->nrRayDirections.y-iPosY*this->renderFieldParamsPtr->nrRayDirections.x*this->renderFieldParamsPtr->nrRayDirections.y*this->renderFieldParamsPtr->width)/this->renderFieldParamsPtr->nrRayDirections.x);
+
+				// declare variables for placing a ray randomly inside an ellipse
+				double ellipseX;
+				double ellipseY;
+				double3 exApt;
+				double3 eyApt;
+
+				// create rayposition in local coordinate system according to distribution type
+				rayData.position.z=0; // all rays start at z=0 in local coordinate system
+				// calc increment along x- and y-direction
+				if (this->renderFieldParamsPtr->width>0)
+					deltaW= (physWidth)/(this->renderFieldParamsPtr->layout_width);
+				if (this->renderFieldParamsPtr->height>0)
+					// multiple directions per point are listed in y-direction. Therefore the physical height of the rayfield is different from the height of the ray list. This has to be considered here...
+					deltaH= (physHeight)/(this->renderFieldParamsPtr->layout_height);
+				rayData.position.x=this->renderFieldParamsPtr->rayPosStart.x+deltaW/2+iPosX*deltaW;
+				rayData.position.y=this->renderFieldParamsPtr->rayPosStart.y+deltaH/2+iPosY*deltaH;
+
+				// transform rayposition into global coordinate system
+				rayData.position=this->renderFieldParamsPtr->Mrot*rayData.position+this->renderFieldParamsPtr->translation;
+
+				double2 rayAngleHalfWidth, phi;
+
+				aimRayTowardsImpArea(rayData.direction, rayData.position, this->renderFieldParamsPtr->importanceAreaRoot, this->renderFieldParamsPtr->importanceAreaHalfWidth, this->renderFieldParamsPtr->importanceAreaTilt, this->renderFieldParamsPtr->importanceAreaApertureType, rayData.currentSeed);
+
+				rayData.currentSeed=(uint)BRandom(x);
+
+				this->setRay(rayData,(unsigned long long)(jx));
+				//increment directions counter
+			}
+} // end omp
+			end=clock();
+			msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
+			std::cout << " " << msecs <<" ms to initialize " << this->renderFieldParamsPtr->GPUSubset_width << " rays." << "...\n";
+		}
+
+		else if(this->renderFieldParamsPtr->width*this->renderFieldParamsPtr->height<1)
+		{
+			//not Possible. Report error or set n=-n
+			std::cout << "error in GeometricRenderField.initCPUInstance: negative raynumber" << "...\n";
+		}
+		this->update=false;
+	}	// end if GPUsubsetwidth*height<rayListLength
+	else
+	{
+		std::cout << "error in GeometricRenderField.initCPUInstance: rayList is smaller than simulation subset" << "...\n";
+		return FIELD_ERR;
+	}
+	return FIELD_NO_ERR;
+};
+
+/**
+ * \detail traceStep 
+ *
+ * \param[in] Group &oGroup
+ * 
+ * \return fieldError
+ * \sa 
+ * \remarks 
+ * \author Mauch
+ */
+fieldError GeometricRenderField::traceStep(Group &oGroup, bool RunOnCPU)
+{
+	if (!RunOnCPU)
+		std::cout << "warning in GeometricRenderField.traceStep(): GPU acceleration is not implemented, continuing on CPU anyways..." << "...\n";
+
+	clock_t start, end;
+	double msecs_Tracing=0;
+	double msecs_Processing=0;
+	double msecs=0;
+	// start timing
+	start=clock();
+
+//	long2 l_GPUSubsetDim=calcSubsetDim();
+//	this->rayParamsPtr->GPUSubset_width=l_GPUSubsetDim.x;
+//	this->rayParamsPtr->GPUSubset_height=l_GPUSubsetDim.y;
+	std::cout << "tracing on " << numCPU << " cores of CPU." << "...\n";
+
+//#pragma omp parallel default(shared)
+//{
+//		#pragma omp for schedule(dynamic, 50)
+		for (signed long long jy=0; jy<this->renderFieldParamsPtr->GPUSubset_height; jy++)
+		{
+			//int id;
+			//id = omp_get_thread_num();
+
+			//printf("Hello World from thread %d\n", id);
+
+			for (signed long long jx=0; jx<this->renderFieldParamsPtr->GPUSubset_width; jx++)
+			{
+				unsigned long long rayListIndex=jx+jy*GPU_SUBSET_WIDTH_MAX;
+				rayStruct test=layoutRayList[rayListIndex];
+				if (this->layoutRayList[rayListIndex].running) 
+					oGroup.trace(layoutRayList[rayListIndex]);
+			}
+		}
+//}
+
+	// end timing
+	end=clock();
+	msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
+	msecs_Tracing=msecs_Tracing+msecs;
+	std::cout << msecs <<" ms to trace " << this->renderFieldParamsPtr->GPUSubset_height*this->renderFieldParamsPtr->GPUSubset_width << " rays." << "...\n";
+
+	return FIELD_NO_ERR;
+};
+
+/**
+ * \detail getRayListLength 
+
+ *
+ * \param[in] void
+ * 
+ * \return unsigned long long
+ * \sa 
+ * \remarks 
+ * \author Mauch
+ */
+unsigned long long GeometricRenderField::getRayListLength(void)
+{
+	return this->rayListLength;
+};
+
+/**
+ * \detail initLayout 
+ *
+ * \param[in] Group &oGroup, simAssParams &params
+ * 
+ * \return fieldError
+ * \sa 
+ * \remarks 
+ * \author Mauch
+ */
+fieldError GeometricRenderField::initLayout(Group &oGroup, simAssParams &params)
+{
+	tracedRayNr=0;
+	this->createLayoutInstance();
+	if (GROUP_NO_ERR != oGroup.createCPUSimInstance(this->getParamsPtr()->lambda, params.simParams) )
+	{
+		std::cout << "error in RayField.initSimulation(): group.createCPUSimInstance() returned an error" << "...\n";
+		return FIELD_ERR;
+	}
+	return FIELD_NO_ERR;
+}
+
+/**
+ * \detail setRay 
+
+ *
+ * \param[in] rayStruct ray, unsigned long long index
+ * 
+ * \return fieldError
+ * \sa 
+ * \remarks 
+ * \author Mauch
+ */
+fieldError GeometricRenderField::setRay(geomRenderRayStruct ray, unsigned long long index)
+{
+	if (index <= this->rayListLength)
+	{
+		layoutRayList[index]=ray;
+		return FIELD_NO_ERR;
+	}
+	else
+	{
+		return FIELD_INDEXOUTOFRANGE_ERR;
+	}
+};
+
+/**
+ * \detail getRayList 
+
+ *
+ * \param[in] void
+ * 
+ * \return rayStruct*
+ * \sa 
+ * \remarks 
+ * \author Mauch
+ */
+geomRenderRayStruct* GeometricRenderField::getRayList(void)
+{
+	return &layoutRayList[0];	
+};
+
+/**
+ * \detail getRay 
+
+ *
+ * \param[in] unsigned long long index
+ * 
+ * \return rayStruct*
+ * \sa 
+ * \remarks 
+ * \author Mauch
+ */
+rayStruct* GeometricRenderField::getRay(unsigned long long index)
+{
+	if (index <= this->rayListLength)
+	{
+		return &layoutRayList[index];	
+	}
+	else
+	{
+		return 0;
+	}
+};
+
+/**
  * \detail initSimulation 
  *
  * \param[in] Group &oGroup, simAssParams &params
@@ -884,62 +1257,6 @@ fieldError GeometricRenderField::traceScene(Group &oGroup, bool RunOnCPU)
 	msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
 	msecs_Tracing=msecs_Tracing+msecs;
 	std::cout << msecs <<" ms to render " << this->renderFieldParamsPtr->GPUSubset_height*this->renderFieldParamsPtr->GPUSubset_width << " pixels." << "...\n";
-
-	return FIELD_NO_ERR;
-};
-
-/**
- * \detail traceStep 
- *
- * \param[in] Group &oGroup
- * 
- * \return fieldError
- * \sa 
- * \remarks 
- * \author Mauch
- */
-fieldError GeometricRenderField::traceStep(Group &oGroup, bool RunOnCPU)
-{
-//	if (!RunOnCPU)
-//		std::cout << "warning in GeometricRenderField.traceStep(): GPU acceleration is not implemented, continuing on CPU anyways..." << "...\n";
-//
-//	clock_t start, end;
-//	double msecs_Tracing=0;
-//	double msecs_Processing=0;
-//	double msecs=0;
-//	// start timing
-//	start=clock();
-//
-////	long2 l_GPUSubsetDim=calcSubsetDim();
-////	this->renderFieldParamsPtr->GPUSubset_width=l_GPUSubsetDim.x;
-////	this->renderFieldParamsPtr->GPUSubset_height=l_GPUSubsetDim.y;
-//	std::cout << "tracing on " << numCPU << " cores of CPU." << "...\n";
-//
-////#pragma omp parallel default(shared)
-////{
-////		#pragma omp for schedule(dynamic, 50)
-//		for (signed long long jy=0; jy<this->renderFieldParamsPtr->GPUSubset_height; jy++)
-//		{
-//			//int id;
-//			//id = omp_get_thread_num();
-//
-//			//printf("Hello World from thread %d\n", id);
-//
-//			for (signed long long jx=0; jx<this->renderFieldParamsPtr->GPUSubset_width; jx++)
-//			{
-//				unsigned long long rayListIndex=jx+jy*GPU_SUBSET_WIDTH_MAX;
-//				rayStruct test=rayList[rayListIndex];
-//				if (this->rayList[rayListIndex].running) 
-//					oGroup.trace(rayList[rayListIndex]);
-//			}
-//		}
-////}
-//
-//	// end timing
-//	end=clock();
-//	msecs=((end-start)/(double)CLOCKS_PER_SEC*1000.0);
-//	msecs_Tracing=msecs_Tracing+msecs;
-//	std::cout << msecs <<" ms to trace " << this->renderFieldParamsPtr->GPUSubset_height*this->renderFieldParamsPtr->GPUSubset_width << " rays." << "...\n";
 
 	return FIELD_NO_ERR;
 };

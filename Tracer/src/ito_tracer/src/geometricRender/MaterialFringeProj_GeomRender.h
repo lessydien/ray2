@@ -53,6 +53,7 @@ class MaterialFringeProj_GeomRender: public Material
 	protected:
 		MatFringeProj_GeomRender_params params; // reduced parameter set for the ray trac ( on GPU )
 
+
   public:
     /* standard constructor */
     MaterialFringeProj_GeomRender()
@@ -66,7 +67,6 @@ class MaterialFringeProj_GeomRender: public Material
 	/* Destruktor */
     ~MaterialFringeProj_GeomRender()
 	{
-//		delete path_to_ptx;
 	}
 
 	void setParams(MatFringeProj_GeomRender_params params);

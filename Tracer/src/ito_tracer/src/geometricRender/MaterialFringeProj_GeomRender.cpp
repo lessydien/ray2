@@ -256,16 +256,15 @@ MaterialError MaterialFringeProj_GeomRender::parseXml(pugi::xml_node &material, 
     if (!this->checkParserError(l_parser.attrByNameToDouble(material, "geomRoot.z", this->params.geomRoot.z)))
 		return MAT_ERR;
 
-    double3 l_tilt;
-    if (!this->checkParserError(l_parser.attrByNameToDouble(material, "geomTilt.x", l_tilt.x)))
+    if (!this->checkParserError(l_parser.attrByNameToDouble(material, "geomTilt.x", this->params.geomTilt.x)))
 		return MAT_ERR;
-    l_tilt.x=l_tilt.x/360*2*M_PI;
-    if (!this->checkParserError(l_parser.attrByNameToDouble(material, "geomTilt.y", l_tilt.y)))
+    if (!this->checkParserError(l_parser.attrByNameToDouble(material, "geomTilt.y", this->params.geomTilt.y)))
 		return MAT_ERR;
-    l_tilt.y=l_tilt.y/360*2*M_PI;
-    if (!this->checkParserError(l_parser.attrByNameToDouble(material, "geomTilt.z", l_tilt.z)))
+    if (!this->checkParserError(l_parser.attrByNameToDouble(material, "geomTilt.z", this->params.geomTilt.z)))
 		return MAT_ERR;
-    l_tilt.z=l_tilt.z/360*2*M_PI;
+    this->params.geomTilt.z=this->params.geomTilt.z/360*2*M_PI;
+    this->params.geomTilt.y=this->params.geomTilt.y/360*2*M_PI;
+    this->params.geomTilt.x=this->params.geomTilt.x/360*2*M_PI;
 
     
     return MAT_NO_ERR;

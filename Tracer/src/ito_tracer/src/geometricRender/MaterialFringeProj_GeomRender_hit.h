@@ -100,9 +100,9 @@ inline RT_HOSTDEVICE bool hitRenderFringeProj(geomRenderRayStruct &ray, Mat_hitP
     if (params.fringeType==FT_SINUS)
     {
         if (params.fringeOrientation==O_X)
-            ray.cumFlux+=ray.flux*params.power*(cos(2*PI*l_rayPos.x/params.fringePeriod)+1);
+            ray.cumFlux+=ray.flux*params.power*(cos(2*PI*l_rayPos.x/params.fringePeriod+params.fringePhase)+1);
         else
-            ray.cumFlux+=ray.flux*params.power*(cos(2*PI*l_rayPos.y/params.fringePeriod)+1);
+            ray.cumFlux+=ray.flux*params.power*(cos(2*PI*l_rayPos.y/params.fringePeriod+params.fringePhase)+1);
     }
     ray.running=false; // stop ray
 	return true;
