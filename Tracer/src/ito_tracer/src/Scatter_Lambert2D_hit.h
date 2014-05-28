@@ -137,9 +137,9 @@ inline RT_HOSTDEVICE bool hitLambert2D(rayStruct &prd, Mat_hitParams hitParams, 
 			omegaS=dot(prd.direction,da)/rho;
 			prd.flux=omegaS/4*PI; 
 		}
-		double3 impAreaNormal=make_double3(0,0,1);
-		rotateRay(&impAreaNormal,params.impAreaTilt);
-		prd.flux=prd.flux*abs(dot(hitParams.normal,prd.direction)); // apply lambert intensity distribution
+//		double3 impAreaNormal=make_double3(0,0,1);
+//		rotateRay(&impAreaNormal,params.impAreaTilt);
+//		prd.flux=prd.flux*abs(dot(hitParams.normal,prd.direction)); // apply lambert intensity distribution
 
 	}
 

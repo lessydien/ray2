@@ -29,7 +29,8 @@
 // include the individual materials
 //#include "Scatter_TorranceSparrow1D_DiffRays.h"
 //#include "Scatter_DoubleCauchy1D_DiffRays.h"
-//#include "Scatter_Lambert2D_DiffRays.h"
+#include "Scatter_Lambert2D_GeomRender.h"
+//#include "Scatter_Lambert2D_GeomRender.h"
 
 class ScatterFab_GeomRender : public ScatterFab
 {

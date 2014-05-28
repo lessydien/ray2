@@ -26,7 +26,7 @@
 #define MATERIALDOE_HIT_H
 
 #include "rayTracingMath.h"
-//#include "differentialRayTracing/Material_DiffRays_hit.h"
+//#include "differentialRayTracing/Material_GeomRender_hit.h"
 
 #ifndef PI
 	#define PI ((double)3.141592653589793238462643383279502884197169399375105820)

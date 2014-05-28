@@ -45,9 +45,9 @@ bool CoatingFab_GeomRender::createCoatInstFromXML(xml_node &node, Coating* &pCoa
 	// create instance of geometry according to geomType
 	switch (coatType)
 	{
-	//case CT_NUMCOEFFS:
-	//	pCoat=new Coating_NumCoeffs_DiffRays();
-	//	break;
+	case CT_NUMCOEFFS:
+		pCoat=new Coating_NumCoeffs_GeomRender();
+		break;
 	case CT_NOCOATING:
 		pCoat=new Coating_NoCoating();
 		break;

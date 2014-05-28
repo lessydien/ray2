@@ -39,14 +39,20 @@ class ScatterItem :
 	Q_OBJECT
 
 	Q_ENUMS(ScatterType);
+    Q_ENUMS(ScatterPupilType);
+
 	Q_PROPERTY(ScatterType ScatType READ getScatterType DESIGNABLE true USER true);
 	Q_PROPERTY(Mat_ScatterType ScatType DESIGNABLE true USER true); // overwrite scatterType-Property of materialItem, so it can not be changed in propertyEditor of this item
 	Q_PROPERTY(Abstract_MaterialType materialType DESIGNABLE true USER true); // overwrite materialType-Property of abstractItem, so it can not be changed in propertyEditor of this item
-	
+    Q_PROPERTY(Vec3d PupilRoot WRITE setPupRoot READ getPupRoot DESIGNABLE true USER true);
+    Q_PROPERTY(Vec3d PupilTilt WRITE setPupTilt READ getPupTilt DESIGNABLE true USER true);
+    Q_PROPERTY(Vec2d PupilApertureRadius WRITE setPupAptRad READ getPupAptRad DESIGNABLE true USER true);
+    Q_PROPERTY(ScatterPupilType PupilType WRITE setPupAptType READ getPupAptType DESIGNABLE true USER true);	
 
 
 public:
 	enum ScatterType {NOSCATTER, LAMBERT2D, TORRSPARR1D, TORRSPARR2D, TORRSPARR2DPATHTRACE, DISPDOUBLECAUCHY1D, DOUBLECAUCHY1D};
+    enum ScatterPupilType {NOPUPIL, RECTPUPIL, ELLIPTPUPIL};
 
 	ScatterItem(ScatterType type=NOSCATTER, QString name="base scatter", QObject *parent=0);
 	~ScatterItem(void);
@@ -54,16 +60,26 @@ public:
 	// functions for property editor
 	ScatterType getScatterType() const {return m_scatterType;};
 	void setScatterType(const ScatterType type) {m_scatterType=type; emit itemChanged(m_index, m_index);};
+    Vec3d getPupRoot() const {return m_pupRoot;};
+    void setPupRoot(const Vec3d in) {m_pupRoot=in;};
+    Vec3d getPupTilt() const {return m_pupTilt;};
+    void setPupTilt(const Vec3d in) {m_pupTilt=in;};
+    Vec2d getPupAptRad() const {return m_pupAptRad;};
+    void setPupAptRad(const Vec2d in) {m_pupAptRad=in;};
+    ScatterPupilType getPupAptType() const {return m_pupAptType;};
+    void setPupAptType(const ScatterPupilType in) {m_pupAptType=in;};
 
-	//QString scatterTypeToString(const ScatterType type) const;
-	//ScatterType stringToScatterType(const QString str) const;
-
-	bool writeToXML(QDomDocument &document, QDomElement &root) const ;
+	bool writeToXML(QDomDocument &document, QDomElement &root) const;
 	bool readFromXML(const QDomElement &node);
 
 private:
 
 	ScatterType m_scatterType;
+    Vec3d m_pupRoot;
+    Vec3d m_pupTilt;
+    Vec2d m_pupAptRad;
+    ScatterPupilType m_pupAptType;
+
 
 signals:
 	void itemChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);

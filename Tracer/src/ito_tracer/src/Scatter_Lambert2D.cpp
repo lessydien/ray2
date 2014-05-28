@@ -149,10 +149,15 @@ ScatterError Scatter_Lambert2D::processParseResults(MaterialParseParamStruct &pa
  * \remarks 
  * \author Mauch
  */
-ScatterError Scatter_Lambert2D::parseXml(pugi::xml_node &geometry, SimParams simParams)
+ScatterError Scatter_Lambert2D::parseXml(pugi::xml_node &scatter, SimParams simParams)
 {
+    if (!Scatter::parseXml(scatter, simParams))
+    {
+        std::cout << "error in ScatterLambert2D.parseXml(): Scatter.parseXml() returned an error" << "...\n";
+        return SCAT_ERROR;
+    }
 	Parser_XML l_parser;
-	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "Tis", this->getFullParams()->TIR)))
+	if (!this->checkParserError(l_parser.attrByNameToDouble(scatter, "Tis", this->getFullParams()->TIR)))
 		return SCAT_ERROR;
 	return SCAT_NO_ERROR;
 }

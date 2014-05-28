@@ -67,7 +67,7 @@ public:
 	~GeomRenderFieldItem(void);
 
 	Vec3d getTilt() const {return m_tilt;};
-	void setTilt(const Vec3d in) {m_tilt=in;};
+	void setTilt(const Vec3d in) {m_tilt=in; this->updateVtk(); emit itemChanged(m_index, m_index);};
 	Vec3d getRayDirection() const {return m_rayDirection;};
 	void setRayDirection(const Vec3d in) {m_rayDirection=in;};
 	Vec3d getPupRoot() const {return m_pupRoot;};

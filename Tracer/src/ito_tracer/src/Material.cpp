@@ -172,8 +172,22 @@ char* Material::getPathToPtx(void)
  */
 MaterialError Material::createMaterialHitProgramPtx(RTcontext context, SimParams simParams)
 {
-	if ( (simParams.simMode==SIM_DIFF_RT) )
-		strcat(this->path_to_ptx, "_DiffRays");
+	switch (simParams.simMode)
+    {
+        case SIM_GEOM_RT:
+            break;
+        case SIM_DIFF_RT:
+            strcat(this->path_to_ptx, "_DiffRays");
+            break;
+        case SIM_GEOM_RENDER:
+            strcat(this->path_to_ptx, "_GeomRender");
+            break;
+        default:
+            cout << "error in Material.createMaterialHitProgramPtx(): unknown simMode. \n";
+            return MAT_ERR;
+            break;
+    }
+
 	strcat(this->path_to_ptx, ".cu.ptx");
 
 	if ( !RT_CHECK_ERROR_NOEXIT( rtProgramCreateFromPTXFile( context, this->path_to_ptx, "closestHit", &closest_hit_program ), context) )

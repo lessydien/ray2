@@ -106,6 +106,42 @@ ScatterItem::ScatterType ScatterItemLib::stringToScatterType(const QString str) 
 	return ScatterItem::NOSCATTER;
 }
 
+QString ScatterItemLib::scatterPupilTypeToString(const ScatterItem::ScatterPupilType type) const
+{
+	QString str;
+	switch (type)
+	{
+    case ScatterItem::NOPUPIL:
+		str= "INFTY";
+		break;
+	case ScatterItem::RECTPUPIL:
+		str= "RECTANGULAR";
+		break;
+	case ScatterItem::ELLIPTPUPIL:
+		str= "ELLIPTICAL";
+		break;
+	default:
+		str="INFTY";
+		break;
+	}
+
+	return str;
+}
+
+ScatterItem::ScatterPupilType ScatterItemLib::stringToScatterPupilType(const QString str) const
+{
+	if (str.isNull())
+		return ScatterItem::NOPUPIL;
+	if (!str.compare("INFTY"))
+		return ScatterItem::NOPUPIL;
+	if (!str.compare("RECTANGULAR"))
+		return ScatterItem::RECTPUPIL;
+	if (!str.compare("ELLIPTICAL"))
+		return ScatterItem::ELLIPTPUPIL;
+
+	return ScatterItem::NOPUPIL;
+}
+
 ScatterItem::ScatterType ScatterItemLib::matScatTypeToScatType(const MaterialItem::Mat_ScatterType type) const
 {
 	ScatterItem::ScatterType typeOut;

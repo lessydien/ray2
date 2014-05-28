@@ -26,10 +26,10 @@ include_directories(
 # See top level CMakeLists.txt file for documentation of OPTIX_add_sample_executable.
 OPTIX_add_sample_executable( ITO-MacroSim
 
-#  src/geometricRender/GeometryLib_GeomRender.cpp
-#  src/geometricRender/GeometryLib_GeomRender.h
-#  src/geometricRender/MaterialLib_GeomRender.cpp
-#  src/geometricRender/MaterialLib_GeomRender.h
+  src/geometricRender/GeometryLib_GeomRender.cpp
+  src/geometricRender/GeometryLib_GeomRender.h
+  src/geometricRender/MaterialLib_GeomRender.cpp
+  src/geometricRender/MaterialLib_GeomRender.h
   src/geometricRender/CoatingLib_GeomRender.cpp
   src/geometricRender/CoatingLib_GeomRender.h
   src/geometricRender/ScatterLib_GeomRender.cpp
@@ -39,14 +39,76 @@ OPTIX_add_sample_executable( ITO-MacroSim
   src/geometricRender/ScatterLib_GeomRender.h
   src/geometricRender/GeometricRenderField.cpp
   src/geometricRender/GeometricRenderField.h
+  src/geometricRender/GeometricRenderField_hostDevice.h
   src/geometricRender/MaterialFringeProj_GeomRender.cpp
   src/geometricRender/MaterialFringeProj_GeomRender.h
   src/geometricRender/MaterialFringeProj_GeomRender_hit.h
-#  src/geometricRender/PlaneSurface_GeomRender.cpp
-#  src/geometricRender/PlaneSurface_GeomRender.h
-#  src/geometricRender/planeSurface_GeomRender.cu
-#  src/geometricRender/PlaneSurface_GeomRender_intersect.h
-  src/geometricRender/Material_GeomRender_hit.h
+  src/geometricRender/PlaneSurface_GeomRender.cpp
+  src/geometricRender/PlaneSurface_GeomRender.h
+  src/geometricRender/planeSurface_GeomRender.cu
+  src/geometricRender/PlaneSurface_GeomRender_intersect.h
+  src/geometricRender/ApertureStop_GeomRender.cpp
+  src/geometricRender/ApertureStop_GeomRender.h
+  src/geometricRender/ApertureStop_GeomRender.cu
+  src/geometricRender/ApertureStop_GeomRender_intersect.h
+  src/geometricRender/AsphericalSurface_GeomRender.cpp
+  src/geometricRender/AsphericalSurface_GeomRender.h
+  src/geometricRender/AsphericalSurface_GeomRender.cu
+  src/geometricRender/AsphericalSurface_GeomRender_intersect.h
+  src/geometricRender/ConePipe_GeomRender.cpp
+  src/geometricRender/ConePipe_GeomRender.h
+  src/geometricRender/ConePipe_GeomRender.cu
+  src/geometricRender/ConePipe_GeomRender_intersect.h
+  src/geometricRender/CylPipe_GeomRender.cpp
+  src/geometricRender/CylPipe_GeomRender.h
+  src/geometricRender/CylPipe_GeomRender.cu
+  src/geometricRender/CylPipe_GeomRender_intersect.h
+  src/geometricRender/IdealLense_GeomRender.cpp
+  src/geometricRender/IdealLense_GeomRender.h
+  src/geometricRender/IdealLense_GeomRender.cu
+  src/geometricRender/IdealLense_GeomRender_intersect.h
+  src/geometricRender/SphericalSurface_GeomRender.cpp
+  src/geometricRender/SphericalSurface_GeomRender.h
+  src/geometricRender/SphericalSurface_GeomRender.cu
+  src/geometricRender/SphericalSurface_GeomRender_intersect.h
+  src/geometricRender/cadObject_GeomRender.cpp
+  src/geometricRender/cadObject_GeomRender.h
+  src/geometricRender/cadObject_GeomRender.cu
+  src/geometricRender/cadObject_GeomRender_intersect.h
+  src/geometricRender/MaterialAbsorbing_GeomRender.cpp
+  src/geometricRender/MaterialAbsorbing_GeomRender.h
+  src/geometricRender/MaterialAbsorbing_GeomRender_hit.h
+  src/geometricRender/MaterialReflecting_GeomRender.cpp
+  src/geometricRender/MaterialReflecting_GeomRender.h
+  src/geometricRender/MaterialReflecting_GeomRender_hit.h
+  src/geometricRender/MaterialRefracting_GeomRender.cpp
+  src/geometricRender/MaterialRefracting_GeomRender.h
+  src/geometricRender/MaterialRefracting_GeomRender_hit.h
+  src/geometricRender/MaterialIdealLense_GeomRender.cpp
+  src/geometricRender/MaterialIdealLense_GeomRender.h
+  src/geometricRender/MaterialIdealLense_GeomRender_hit.h
+
+  src/geometricRender/Coating_NumCoeffs_GeomRender.cpp
+  src/geometricRender/Coating_NumCoeffs_GeomRender.h
+  src/geometricRender/Coating_NumCoeffs_GeomRender_hit.h
+
+  src/geometricRender/Scatter_Lambert2D_GeomRender.cpp
+  src/geometricRender/Scatter_Lambert2D_GeomRender.h
+  src/geometricRender/Scatter_Lambert2D_GeomRender_hit.h
+
+  src/geometricRender/hitFunctionAbsorbing_GeomRender.cu
+  src/geometricRender/hitFunctionAbsorbing_GeomRender_CoatNumCoeffs_GeomRender.cu
+  src/geometricRender/hitFunctionAbsorbing_GeomRender_Scatter_Lambert2D_GeomRender.cu
+  src/geometricRender/hitFunctionIdealLense_GeomRender.cu
+  src/geometricRender/hitFunctionIdealLense_GeomRender_CoatNumCoeffs_GeomRender.cu
+  src/geometricRender/hitFunctionReflecting_GeomRender.cu
+  src/geometricRender/hitFunctionReflecting_GeomRender_CoatNumCoeffs_GeomRender.cu
+  src/geometricRender/hitFunctionRefracting_GeomRender.cu
+  src/geometricRender/hitFunctionRefracting_GeomRender_CoatNumCoeffs_GeomRender.cu
+#  src/geometricRender/hitFunctionReflecting_GeomRender_Scatter_TorranceSparrow2D_GeomRender.cu
+#  src/geometricRender/hitFunctionReflecting_GeomRender_Scatter_Lambert2D_GeomRender.cu
+  
+
   src/hitFunctionRenderFringeProj.cu
 
   

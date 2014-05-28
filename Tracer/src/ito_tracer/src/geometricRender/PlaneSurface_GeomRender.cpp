@@ -28,72 +28,6 @@
 #include "../myUtil.h"
 
 /**
- * \detail intersect function for geometric render rays
- *
- * \param[in] rayStruct ray
- * 
- * \return double t. That is the factor t for which r=ray.position+t*ray.direction is the intersection point of the ray with the surface
- * \sa 
- * \remarks This is a wrapper that calls the inline function intersectRayAsphere that can be called from GPU as well
- * \author Mauch
- */
-//double PlaneSurface_GeomRender::intersect(geomRenderRayStruct *ray)
-//{
-//	return intersectRayPlaneSurface_GeomRender(ray->position,ray->direction,*(this->reducedParamsPtr));
-//};
-
-/**
- * \detail reduceParams
- *
- * \param[in] void
- * 
- * \return geometryError
- * \sa 
- * \remarks 
- * \author Mauch
- */
-geometryError PlaneSurface_GeomRender::reduceParams(void)
-{
-	if ( (this->paramsPtr!=NULL) && (this->reducedParamsPtr!=NULL) )
-	{
-		this->reducedParamsPtr->geometryID=this->paramsPtr->geometryID;
-		this->reducedParamsPtr->root=this->paramsPtr->root;
-		this->reducedParamsPtr->apertureRadius=this->paramsPtr->apertureRadius;
-		this->reducedParamsPtr->normal=this->paramsPtr->normal;
-		this->reducedParamsPtr->apertureType=this->paramsPtr->apertureType;
-		//this->reducedParamsPtr->rotNormal=this->paramsPtr->rotNormal;
-		this->reducedParamsPtr->tilt=this->paramsPtr->tilt;
-	}
-	return GEOM_NO_ERR;
-};
-
-/**
- * \detail hit function function for geometric render rays
- *
- * we calc the normal to the surface in the intersection point. Then we call the hit function of the material that is attached to the surface
- *
- * \param[in] geomRenderRayStruct ray
- * \param[in] double ray
- * 
- * \return geometryError
- * \sa 
- * \remarks 
- * \author Mauch
- */
-geometryError PlaneSurface_GeomRender::hit(rayStruct &ray, double t)
-{
-	Mat_hitParams hitParams;
-	hitParams.normal=this->paramsPtr->normal;
-	int i;
-	for (i=0;i<this->materialListLength;i++)
-	{
-		this->getMaterial(i)->hit(ray, hitParams, t, this->paramsPtr->geometryID);
-	}
-	
-	return GEOM_NO_ERR;
- };
-
-/**
  * \detail createOptixInstance
  *
  * we create an OptiX instance of the surface and the materials attached to it
@@ -119,7 +53,6 @@ geometryError PlaneSurface_GeomRender::createOptixInstance( RTcontext &context, 
 	return GEOM_NO_ERR;
 
 };
-
 
 /**
  * \detail updateOptixInstance

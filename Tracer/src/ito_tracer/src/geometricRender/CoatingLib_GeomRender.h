@@ -27,7 +27,7 @@
 
 #include "../CoatingLib.h"
 // include the individual coatings
-//#include "Coating_NumCoeffs_DiffRays.h"
+#include "Coating_NumCoeffs_GeomRender.h"
 
 class CoatingFab_GeomRender : public CoatingFab
 {

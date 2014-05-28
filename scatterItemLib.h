@@ -46,6 +46,9 @@ public:
 	QString scatterTypeToString(const ScatterItem::ScatterType type) const;
 	ScatterItem::ScatterType stringToScatterType(const QString str) const;
 
+    QString scatterPupilTypeToString(const ScatterItem::ScatterPupilType type) const;
+    ScatterItem::ScatterPupilType stringToScatterPupilType(const QString) const;
+
 	ScatterItem::ScatterType matScatTypeToScatType(const MaterialItem::Mat_ScatterType type) const;
 	MaterialItem::Mat_ScatterType scatTypeToMatScatType(const ScatterItem::ScatterType type) const;
 

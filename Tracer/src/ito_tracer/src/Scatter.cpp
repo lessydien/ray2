@@ -60,8 +60,29 @@ ScatterError Scatter::processParseResults(MaterialParseParamStruct &parseResults
  */
 ScatterError Scatter::parseXml(pugi::xml_node &geometry, SimParams simParams)
 {
-	cout << "error in Scatter.parseXml(): not implemented yet for given scatter type" << endl;
-	return SCAT_ERROR;
+	Parser_XML l_parser;
+    if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "pupRoot.x", this->getFullParams()->impAreaRoot.x)))
+		return SCAT_ERROR;
+    if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "pupRoot.y", this->getFullParams()->impAreaRoot.y)))
+		return SCAT_ERROR;
+    if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "pupRoot.z", this->getFullParams()->impAreaRoot.z)))
+		return SCAT_ERROR;
+
+    if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "pupTilt.x", this->getFullParams()->impAreaTilt.x)))
+		return SCAT_ERROR;
+    if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "pupTilt.y", this->getFullParams()->impAreaTilt.y)))
+		return SCAT_ERROR;
+    if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "pupTilt.z", this->getFullParams()->impAreaTilt.z)))
+		return SCAT_ERROR;
+
+    if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "pupAptRad.x", this->getFullParams()->impAreaHalfWidth.x)))
+		return SCAT_ERROR;
+    if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "pupAptRad.y", this->getFullParams()->impAreaHalfWidth.y)))
+		return SCAT_ERROR;
+
+    if (!this->checkParserError(l_parser.attrByNameToApertureType(geometry, "pupAptType", this->getFullParams()->impAreaType)))
+		return SCAT_ERROR;
+
 }
 
 void Scatter::setPathToPtx(char* path)

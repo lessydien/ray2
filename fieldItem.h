@@ -69,9 +69,9 @@ public:
 	double getLambda() const {return m_lambda;};
 	void setLambda(const double in) {m_lambda=in;};
 	Vec2d getApertureHalfWidth() const {return m_apertureHalfWidth;};
-	void setApertureHalfWidth(const Vec2d in) {m_apertureHalfWidth=in;};
+	void setApertureHalfWidth(const Vec2d in) {m_apertureHalfWidth=in; this->updateVtk(); emit itemChanged(m_index, m_index);};
 	Vec3d getRoot() const {return m_root;};
-	void setRoot(const Vec3d root) {m_root=root;};
+	void setRoot(const Vec3d root) {m_root=root; this->updateVtk(); emit itemChanged(m_index, m_index);};
 
 //	QString fieldTypeToString(const FieldType type) const;
 //	FieldType stringToFieldType(const QString str) const;

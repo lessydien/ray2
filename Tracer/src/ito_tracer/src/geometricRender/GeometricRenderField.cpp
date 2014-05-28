@@ -33,6 +33,7 @@
 #include "..\Converter.h"
 #include "..\DetectorLib.h"
 #include "..\MaterialLib.h"
+#include "GeometricRenderField_hostDevice.h"
 #include <ctime>
 
 using namespace optix;
@@ -240,6 +241,7 @@ fieldError GeometricRenderField::createLayoutInstance()
  */
 fieldError GeometricRenderField::initCPUSubset()
 {
+    // this is only needed for the layout mode...
 	clock_t start, end;
 	double msecs=0;
 	// check wether we will be able to fit all the rays into our raylist. If not some eror happened earlier and we can not proceed...
@@ -783,6 +785,8 @@ fieldError GeometricRenderField::createOptixInstance(RTcontext &context, RTbuffe
 	if (!RT_CHECK_ERROR_NOEXIT( rtVariableSetUserData(offsetY, sizeof(long long), &l_offsetY) , context))
 		return FIELD_ERR;
 
+    this->renderFieldParamsPtr->nImmersed=this->materialList[0]->calcSourceImmersion(this->renderFieldParamsPtr->lambda);
+
 	/* refill seed buffer */
 	void *data;
 	if (!RT_CHECK_ERROR_NOEXIT( rtBufferMap(seed_buffer_obj, &data) , context))
@@ -802,100 +806,100 @@ fieldError GeometricRenderField::createOptixInstance(RTcontext &context, RTbuffe
 	return FIELD_NO_ERR;
 };
 
-/**
-* \detail initCPUSubset 
-*
-* \param[in] void
-* 
-* \return fieldError
-* \sa 
-* \remarks 
-* \author Mauch
-*/
-geomRenderRayStruct GeometricRenderField::createRay(unsigned long long jx, unsigned long long jy, unsigned long long jRay)
-{
-	clock_t start, end;
-	double msecs=0;
-
-    geomRenderRayStruct ray;
-
-	// width of ray field in physical dimension
-	double physWidth=this->renderFieldParamsPtr->rayPosEnd.x-this->renderFieldParamsPtr->rayPosStart.x;
-	// height of ray field in physical dimension
-	double physHeight=this->renderFieldParamsPtr->rayPosEnd.y-this->renderFieldParamsPtr->rayPosStart.y;
-	// increment of rayposition in x and y in case of GridRect definition 
-	double deltaW=0;
-	double deltaH=0;
-	// calc centre of ray field 
-	double2 rayFieldCentre=make_double2(this->renderFieldParamsPtr->rayPosStart.x+physWidth/2,this->renderFieldParamsPtr->rayPosStart.y+physHeight/2);
-	// declar variables for randomly distributing ray directions via an importance area
-	double2 impAreaHalfWidth;
-	double3 dirImpAreaCentre, tmpPos, impAreaRoot;
-	double impAreaX, impAreaY, r, theta;
-	double3 impAreaAxisX, impAreaAxisY;
-
-	// start timing
-	start=clock();
-
-    // create seed
-    ray.currentSeed=(uint)BRandom(x);
-
-
-	long long index=0; // loop counter for random rejection method
-
-	ray.flux=1;
-    ray.cumFlux=0;
-    ray.secondary=false;
-    ray.secondary_nr=0;
-	ray.depth=0;
-	ray.running=true;
-	ray.currentGeometryID=0;
-	ray.lambda=this->renderFieldParamsPtr->lambda;
-	ray.nImmersed=this->materialList[0]->calcSourceImmersion(this->renderFieldParamsPtr->lambda);
-	ray.opl=0;
-
-	// declare variables for placing a ray randomly inside an ellipse
-	double ellipseX;
-	double ellipseY;
-	double3 exApt;
-	double3 eyApt;
-
-	// create rayposition in local coordinate system according to distribution type
-	ray.position.z=0; // all rays start at z=0 in local coordinate system
-	// calc increment along x- and y-direction
-	if (this->renderFieldParamsPtr->width>0)
-		deltaW= (physWidth)/double(this->renderFieldParamsPtr->width);
-    else
-    {
-        cout << "error in GeometricRenderField.createRay: negative width is not allowed. \n";
-        ray.running=false;
-    }
-	if (this->renderFieldParamsPtr->height>0)
-		// multiple directions per point are listed in y-direction. Therefore the physical height of the rayfield is different from the height of the ray list. This has to be considered here...
-		deltaH= (physHeight)/double(this->renderFieldParamsPtr->height);
-    else
-    {
-        cout << "error in GeometricRenderField.createRay: negative width is not allowed. \n";
-        ray.running=false;
-    }
-	ray.position.x=this->renderFieldParamsPtr->rayPosStart.x+deltaW/2+jx*deltaW;
-	ray.position.y=this->renderFieldParamsPtr->rayPosStart.y+deltaH/2+jy*deltaH;
-
-	if(this->renderFieldParamsPtr->width*this->renderFieldParamsPtr->height==1)
-	{
-		ray.position=this->renderFieldParamsPtr->rayPosStart;
-	}
-	// transform rayposition into global coordinate system
-	ray.position=this->renderFieldParamsPtr->Mrot*ray.position+this->renderFieldParamsPtr->translation;
-
-    // create ray direction 
-	aimRayTowardsImpArea(ray.direction, ray.position, this->renderFieldParamsPtr->importanceAreaRoot, this->renderFieldParamsPtr->importanceAreaHalfWidth, this->renderFieldParamsPtr->importanceAreaTilt, this->renderFieldParamsPtr->importanceAreaApertureType, ray.currentSeed);
-
-    // save current seed to ray
-	ray.currentSeed=x[4];//(uint)BRandom(x);
-
-	return ray;
-};
+///**
+//* \detail initCPUSubset 
+//*
+//* \param[in] void
+//* 
+//* \return fieldError
+//* \sa 
+//* \remarks 
+//* \author Mauch
+//*/
+//geomRenderRayStruct GeometricRenderField::createRay(unsigned long long jx, unsigned long long jy, unsigned long long jRay)
+//{
+//	clock_t start, end;
+//	double msecs=0;
+//
+//    geomRenderRayStruct ray;
+//
+//	// width of ray field in physical dimension
+//	double physWidth=this->renderFieldParamsPtr->rayPosEnd.x-this->renderFieldParamsPtr->rayPosStart.x;
+//	// height of ray field in physical dimension
+//	double physHeight=this->renderFieldParamsPtr->rayPosEnd.y-this->renderFieldParamsPtr->rayPosStart.y;
+//	// increment of rayposition in x and y in case of GridRect definition 
+//	double deltaW=0;
+//	double deltaH=0;
+//	// calc centre of ray field 
+//	double2 rayFieldCentre=make_double2(this->renderFieldParamsPtr->rayPosStart.x+physWidth/2,this->renderFieldParamsPtr->rayPosStart.y+physHeight/2);
+//	// declar variables for randomly distributing ray directions via an importance area
+//	double2 impAreaHalfWidth;
+//	double3 dirImpAreaCentre, tmpPos, impAreaRoot;
+//	double impAreaX, impAreaY, r, theta;
+//	double3 impAreaAxisX, impAreaAxisY;
+//
+//	// start timing
+//	start=clock();
+//
+//    // create seed
+//    ray.currentSeed=(uint)BRandom(x);
+//
+//
+//	long long index=0; // loop counter for random rejection method
+//
+//	ray.flux=1;
+//    ray.cumFlux=0;
+//    ray.secondary=false;
+//    ray.secondary_nr=0;
+//	ray.depth=0;
+//	ray.running=true;
+//	ray.currentGeometryID=0;
+//	ray.lambda=this->renderFieldParamsPtr->lambda;
+//	ray.nImmersed=this->materialList[0]->calcSourceImmersion(this->renderFieldParamsPtr->lambda);
+//	ray.opl=0;
+//
+//	// declare variables for placing a ray randomly inside an ellipse
+//	double ellipseX;
+//	double ellipseY;
+//	double3 exApt;
+//	double3 eyApt;
+//
+//	// create rayposition in local coordinate system according to distribution type
+//	ray.position.z=0; // all rays start at z=0 in local coordinate system
+//	// calc increment along x- and y-direction
+//	if (this->renderFieldParamsPtr->width>0)
+//		deltaW= (physWidth)/double(this->renderFieldParamsPtr->width);
+//    else
+//    {
+//        cout << "error in GeometricRenderField.createRay: negative width is not allowed. \n";
+//        ray.running=false;
+//    }
+//	if (this->renderFieldParamsPtr->height>0)
+//		// multiple directions per point are listed in y-direction. Therefore the physical height of the rayfield is different from the height of the ray list. This has to be considered here...
+//		deltaH= (physHeight)/double(this->renderFieldParamsPtr->height);
+//    else
+//    {
+//        cout << "error in GeometricRenderField.createRay: negative width is not allowed. \n";
+//        ray.running=false;
+//    }
+//	ray.position.x=this->renderFieldParamsPtr->rayPosStart.x+deltaW/2+jx*deltaW;
+//	ray.position.y=this->renderFieldParamsPtr->rayPosStart.y+deltaH/2+jy*deltaH;
+//
+//	if(this->renderFieldParamsPtr->width*this->renderFieldParamsPtr->height==1)
+//	{
+//		ray.position=this->renderFieldParamsPtr->rayPosStart;
+//	}
+//	// transform rayposition into global coordinate system
+//	ray.position=this->renderFieldParamsPtr->Mrot*ray.position+this->renderFieldParamsPtr->translation;
+//
+//    // create ray direction 
+//	aimRayTowardsImpArea(ray.direction, ray.position, this->renderFieldParamsPtr->importanceAreaRoot, this->renderFieldParamsPtr->importanceAreaHalfWidth, this->renderFieldParamsPtr->importanceAreaTilt, this->renderFieldParamsPtr->importanceAreaApertureType, ray.currentSeed);
+//
+//    // save current seed to ray
+//	ray.currentSeed=x[4];//(uint)BRandom(x);
+//
+//	return ray;
+//};
 
 /**
  * \detail createOptixInstance 
@@ -1191,14 +1195,21 @@ fieldError GeometricRenderField::traceScene(Group &oGroup, bool RunOnCPU)
 		//for (unsigned int i=0;i<20;i++)
 		//	threadCounter[i]=0;
 
+        uint32_t x[5];// random seed
+        int seed = (int)time(0);  
+        RandomInit(seed, x);
 
 #pragma omp parallel default(shared) //shared(threadCounter)
 {
 		#pragma omp for schedule(dynamic, 50)
 		//for (signed long long jy=0; jy<this->renderFieldParamsPtr->GPUSubset_height; jy++)
 		//{
+
+        
+
 		for (signed long long j=0; j<this->renderFieldParamsPtr->GPUSubset_height*this->renderFieldParamsPtr->GPUSubset_width; j++)
 		{
+
 //			threadCounter[omp_get_thread_num()]=threadCounter[omp_get_thread_num()]+1;
 			unsigned long long jx = j % this->renderFieldParamsPtr->GPUSubset_width;
 			unsigned long long jy = (j-jx)/this->renderFieldParamsPtr->GPUSubset_width;
@@ -1206,7 +1217,7 @@ fieldError GeometricRenderField::traceScene(Group &oGroup, bool RunOnCPU)
             jy=jy+this->renderFieldParamsPtr->launchOffsetY;
             for (unsigned long long jRay=0; jRay<this->renderFieldParamsPtr->nrRayDirections.x*this->renderFieldParamsPtr->nrRayDirections.y; jRay++)
             {
-			    geomRenderRayStruct ray=this->createRay(jx,jy,jRay);
+                geomRenderRayStruct ray=createRay(jx,jy,jRay,*(this->renderFieldParamsPtr),this->materialList[0]->calcSourceImmersion(this->renderFieldParamsPtr->lambda), BRandom(x));
 			    for(;;) // iterative tracing
 			    {
 				    if(!ray.running) 

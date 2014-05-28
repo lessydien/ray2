@@ -96,7 +96,7 @@ inline RT_HOSTDEVICE bool hitRenderFringeProj(geomRenderRayStruct &ray, Mat_hitP
 
 	// transform ray to local coordinate system
 	double3 l_rayPos=ray.position-params.geomRoot;
-	rotateRayInv(&l_rayPos,params.geomTilt);
+	//rotateRayInv(&l_rayPos,params.geomTilt);
     if (params.fringeType==FT_SINUS)
     {
         if (params.fringeOrientation==O_X)
@@ -104,6 +104,7 @@ inline RT_HOSTDEVICE bool hitRenderFringeProj(geomRenderRayStruct &ray, Mat_hitP
         else
             ray.cumFlux+=ray.flux*params.power*(cos(2*PI*l_rayPos.y/params.fringePeriod+params.fringePhase)+1);
     }
+    
     ray.running=false; // stop ray
 	return true;
 }

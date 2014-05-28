@@ -113,7 +113,7 @@ class Scatter_Lambert2D: public Scatter
 	ScatLambert2D_params* getReducedParams(void);
 	ScatterError setParams2Program( RTcontext context, RTprogram *closest_hit_programPtr, RTvariable *l_scatterParamsPtr);
 	ScatterError createCPUSimInstance(double lambda);
-	void hit(rayStruct &ray, Mat_hitParams hitParams);
+	virtual void hit(rayStruct &ray, Mat_hitParams hitParams);
 	void hit(gaussBeamRayStruct &ray, gaussBeam_geometricNormal normal);
 	ScatterError processParseResults(MaterialParseParamStruct &parseResults_Mat);
 	ScatterError parseXml(pugi::xml_node &geometry, SimParams simParams);

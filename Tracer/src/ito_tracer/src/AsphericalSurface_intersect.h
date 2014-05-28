@@ -90,15 +90,6 @@ inline RT_HOSTDEVICE Mat_hitParams calcHitParamsAsphere(double3 position,Aspheri
 
 	double3 offsetVec, offsetVecParallel, offsetVecOrthogonal;//new
 	
-	//r=sqrt((x-params.vertex.x)*(x-params.vertex.x)+(y-params.vertex.y)*(y-params.vertex.y));//old
-	
-	//for calculating the tangetial plane of the asphere at the new point x1,y1,z1
-	//we need. dz/dx and dz/dy.
-	//we use: dz/dx=(dz/dh)*(dh/dx); likewise for dz/dy
-	//dh/dx=1/(2*sqrt(r) * 2x = x/r
-	//normal vektor at x1,y1,z1 = 1/lenght*(dz/dx,dz/dy,-1)
-	//dz/dh= params.c*r/(sqrt(1-(1+k)*c^2*r^2)+2*c2*r^1+4*c4+r^3+6*c6*r^5+8*c8*r^7+10*c10*r^9
-
 	offsetVec=position-params.vertex;//new
 	offsetVecParallel=dot(offsetVec,params.orientation)*params.orientation;//new
 	offsetVecOrthogonal=offsetVec-offsetVecParallel;//new
@@ -116,31 +107,6 @@ inline RT_HOSTDEVICE Mat_hitParams calcHitParamsAsphere(double3 position,Aspheri
 	double3 debugOrientation=params.orientation;
 	Mat_hitParams t_hitParams;
 	t_hitParams.normal=normalize(params.vertex+Ln*params.orientation-position);
-
-	//if (r==0.0)
-	//{
-	//	n=params.orientation;
-	//}
-	//else
-	//{
-	//	n.x= ((params.c*r/(sqrt(1-(1+params.k)*params.c*params.c*r*r))+2*params.c2*pow(r,1)+4*params.c4*pow(r,3)+6*params.c6*pow(r,5)+8*params.c8*pow(r,7)+10*params.c10*pow(r,9))*(position.x/r));
-	//	//n.y= ((c*r/(sqrt(1-(1+k)*c*c*r*r))+2*c2*pow(r,1)+4*c4*pow(r,3)+6*c6*pow(r,5)+8*c8*pow(r,7)+10*c10*pow(r,9))*(y/r));
-	//	//faster: // n.y=n.x / (x/r) * (y/r)
-	//	//n.y= n.x /x*y
-	//	if (position.x==0.0)
-	//	{
-	//		n.y= ((params.c*r/(sqrt(1-(1+params.k)*params.c*params.c*r*r))+2*params.c2*pow(r,1)+4*params.c4*pow(r,3)+6*params.c6*pow(r,5)+8*params.c8*pow(r,7)+10*params.c10*pow(r,9))*(position.y/r));
-	//	}
-	//	else
-	//	{
-	//		n.y=n.x/position.x*position.y;
-	//	}
-
-	//n.z=-1.0;
-	//n=normalize(n);
-	//}
-	//Mat_hitParams t_hitParams;
-	//t_hitParams.normal=-n;
 
 	return t_hitParams;
 

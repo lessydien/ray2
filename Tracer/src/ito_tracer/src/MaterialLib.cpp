@@ -83,24 +83,6 @@ bool MaterialFab::createMatInstFromXML(xml_node &node, Material* &pMat, SimParam
 	case MT_VOLUMEABSORB:
 		pMat=new MaterialVolumeAbsorbing();
 		break;
-    case MT_RENDERLIGHT:
-        if (simParams.simMode != SIM_GEOM_RENDER)
-        {
-            std::cout <<"error in MaterialFab.createMatInstFromXML(): material render light is only allowed with a geometric render source" << "...\n";
-            pMat=new Material();
-            return false;
-        }
-        pMat=new MaterialLight_GeomRender();
-        break;
-    case MT_RENDERFRINGEPROJ:
-        if (simParams.simMode != SIM_GEOM_RENDER)
-        {
-            std::cout <<"error in MaterialFab.createMatInstFromXML(): material render fringe projection is only allowed with a geometric render source" << "...\n";
-            pMat=new Material();
-            return false;
-        }
-        pMat=new MaterialFringeProj_GeomRender();
-        break;
 	default:
 		pMat=new Material();
 		break;

@@ -54,9 +54,9 @@ bool ScatterFab_GeomRender::createScatInstFromXML(xml_node &node, Scatter* &pSca
 	//case ST_DOUBLECAUCHY1D:
 	//	pScat=new Scatter_DoubleCauchy1D_DiffRays;
 	//	break;
-	//case ST_LAMBERT2D:
-	//	pScat=new Scatter_Lambert2D_DiffRays();
-	//	break;
+	case ST_LAMBERT2D:
+		pScat=new Scatter_Lambert2D_GeomRender();
+		break;
 	default:
 		pScat=new Scatter_NoScatter();
 		break;

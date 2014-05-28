@@ -87,7 +87,7 @@ class GeometricRenderField : public RayField
 
     double3 oldPosition;
 
-    geomRenderRayStruct createRay(unsigned long long jx, unsigned long long jy, unsigned long long jRay);
+    //geomRenderRayStruct createRay(unsigned long long jx, unsigned long long jy, unsigned long long jRay);
     fieldError copyImagePart(double *data);
 
     Material** materialList;

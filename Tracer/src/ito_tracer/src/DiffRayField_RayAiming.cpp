@@ -1061,8 +1061,8 @@ fieldError DiffRayField_RayAiming::traceScene(Group &oGroup, bool RunOnCPU)
 //				oldRay.position=oldRay.position-this->rayParamsPtr->epsilon*oldRay.direction;
 				double3 dirOld=this->rayList[jx].direction;
 				// init derivative of direction of starting ray with respect to change in position of hit point
-				// use a small value to be safe in case the sign is wron in the beginning...
-				double3 dDir_dPos=make_double3(0.001,0.001,0.001); 
+				// use a small value to be safe in case the sign is wrong in the beginning...
+				double3 dDir_dPos=make_double3(0.00001,0.00001,0.00001); 
 				double3 diffPos=make_double3(0,0,0);
 				double3 hitPosOld=make_double3(0,0,0);
 

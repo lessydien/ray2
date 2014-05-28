@@ -15,8 +15,8 @@
     along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************/
 
-/**\file Material_DiffRays_hit.h
-* \brief header file containing the definition of Mat_DiffRays_hitParams
+/**\file Material_GeomRender_hit.h
+* \brief header file containing the definition of Mat_GeomRender_hitParams
 * 
 *           
 * \author Mauch
