@@ -38,7 +38,7 @@ class MiscItem :
 {
 	Q_OBJECT
 
-	Q_PROPERTY(MiscType miscType READ getMiscType WRITE setMiscType DESIGNABLE true USER true);
+	Q_PROPERTY(MiscType miscType READ getMiscType DESIGNABLE true USER true);
 
 	Q_ENUMS(MiscType);
 

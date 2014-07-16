@@ -104,7 +104,7 @@ typedef struct struct_BoxExtent{
 } BoxExtent;
 
 // declare scene group
-Group oGroup;
+Group *oGroup;
 
 void testInterpolator();
 void createContext( RTcontext* context, RTbuffer* buffer );
@@ -625,12 +625,12 @@ bool MacroSimTracer::runMacroSimRayTrace(char *xmlInput, void** fieldOut_ptrptr,
 	Detector** DetectorList;
 	DetectorList=NULL;
 	long sourceNumber, detNumber;
-
-	Group* l_pGroup=NULL;
+    oGroup=NULL;
+//	Group* l_pGroup=oGroup;
 
 	MacroSimTracerParams l_simParams;
 
-	if (!createSceneFromXML(&l_pGroup, xmlInput, &SourceList, &sourceNumber, &DetectorList, &detNumber, l_simParams))
+	if (!createSceneFromXML(&oGroup, xmlInput, &SourceList, &sourceNumber, &DetectorList, &detNumber, l_simParams))
 	{
 		cout << "error in MacroSimTracer.runMacroSimRayTrace(): createSceneFromXML() returned an error" << endl;
 		return false;
@@ -714,12 +714,12 @@ bool MacroSimTracer::runMacroSimRayTrace(char *xmlInput, void** fieldOut_ptrptr,
 	SourceList[0]->setProgressCallback(p2ProgCallbackObject, callbackProgress);
 
 	RayField** RaySourceList=reinterpret_cast<RayField**>(SourceList);
-	if (SIMASS_NO_ERROR != oSimAssPtr->initSimulation(l_pGroup, RaySourceList[0]))
+	if (SIMASS_NO_ERROR != oSimAssPtr->initSimulation(oGroup, RaySourceList[0]))
 	{
 		cout << "error in MacroSimTracer.runMacroSimRayTrace(): SimAss.initSimulation() returned an error" << endl;
 		return( false );
 	}
-	if (SIMASS_NO_ERROR != oSimAssPtr->run(l_pGroup, RaySourceList[0], DetectorList))
+	if (SIMASS_NO_ERROR != oSimAssPtr->run(oGroup, RaySourceList[0], DetectorList))
 	{
 		cout << "error in MacroSimTracer.runMacroSimRayTrace(): SimAss.run() returned an error" << endl;
 		return( false );
@@ -771,10 +771,10 @@ bool MacroSimTracer::runMacroSimRayTrace(char *xmlInput, void** fieldOut_ptrptr,
 		oSimAssPtr=NULL;
 	}
 
-	if (l_pGroup != NULL)
+	if (oGroup != NULL)
 	{
-		delete l_pGroup;
-		l_pGroup=NULL;
+		delete oGroup;
+		oGroup=NULL;
 	}
 
 	return true;
@@ -790,9 +790,10 @@ bool MacroSimTracer::runMacroSimLayoutTrace(char *xmlInput, void* p2CallbackObje
 
 	MacroSimTracerParams l_simParams;
 
-	Group* l_pGroup=NULL;
+    oGroup=NULL;
+	//Group* l_pGroup=NULL;
 
-	if (!createSceneFromXML(&l_pGroup, xmlInput, &SourceList, &sourceNumber, &DetectorList, &detNumber, l_simParams))
+	if (!createSceneFromXML(&oGroup, xmlInput, &SourceList, &sourceNumber, &DetectorList, &detNumber, l_simParams))
 	{
 		cout << "error in MacroSimTracer.runMacroSimLayoutTrace(): createSceneFromXML() returned an error" << endl;
 		return false;
@@ -850,12 +851,12 @@ bool MacroSimTracer::runMacroSimLayoutTrace(char *xmlInput, void* p2CallbackObje
 	oSimAssPtr->setCallbackRayPlotData(p2CallbackObject,callbackRayPlotData);
 
 	RayField** RaySourceList=reinterpret_cast<RayField**>(SourceList);
-	if (SIMASS_NO_ERROR != oSimAssPtr->initSimulation(l_pGroup, RaySourceList[0]))
+	if (SIMASS_NO_ERROR != oSimAssPtr->initSimulation(oGroup, RaySourceList[0]))
 	{
 		cout << "error in MacroSimTracer.runMacroSimLayoutTrace(): SimAss.initSimulation() returned an error" << endl;
 		return( 1 );
 	}
-	if (SIMASS_NO_ERROR != oSimAssPtr->run(l_pGroup, RaySourceList[0], DetectorList))
+	if (SIMASS_NO_ERROR != oSimAssPtr->run(oGroup, RaySourceList[0], DetectorList))
 	{
 		cout << "error in MacroSimTracer.runMacroSimLayoutTrace(): SimAss.run() returned an error" << endl;
 		return( 1 );
@@ -893,10 +894,10 @@ bool MacroSimTracer::runMacroSimLayoutTrace(char *xmlInput, void* p2CallbackObje
 		oSimAssPtr=NULL;
 	}
 
-	if (l_pGroup != NULL)
+	if (oGroup != NULL)
 	{
-		delete l_pGroup;
-		l_pGroup=NULL;
+		delete oGroup;
+		oGroup=NULL;
 	}
 
 	return true;

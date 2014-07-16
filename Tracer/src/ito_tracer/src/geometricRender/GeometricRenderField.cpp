@@ -1571,13 +1571,13 @@ fieldError  GeometricRenderField::parseXml(pugi::xml_node &field, vector<Field*>
 
     if (!this->checkParserError(l_parser.attrByNameToDouble(field, "pupTilt.x", this->getParamsPtr()->importanceAreaTilt.x)))
 		return FIELD_ERR;
-	this->getParamsPtr()->tilt.x=this->getParamsPtr()->tilt.x/360*2*PI;
+	this->getParamsPtr()->importanceAreaTilt.x=this->getParamsPtr()->importanceAreaTilt.x/360*2*PI;
 	if (!this->checkParserError(l_parser.attrByNameToDouble(field, "pupTilt.y", this->getParamsPtr()->importanceAreaTilt.y)))
 		return FIELD_ERR;
-	this->getParamsPtr()->tilt.y=this->getParamsPtr()->tilt.y/360*2*PI;
+	this->getParamsPtr()->importanceAreaTilt.y=this->getParamsPtr()->importanceAreaTilt.y/360*2*PI;
 	if (!this->checkParserError(l_parser.attrByNameToDouble(field, "pupTilt.z", this->getParamsPtr()->importanceAreaTilt.z)))
 		return FIELD_ERR;
-	this->getParamsPtr()->tilt.z=this->getParamsPtr()->tilt.z/360*2*PI;
+	this->getParamsPtr()->importanceAreaTilt.z=this->getParamsPtr()->importanceAreaTilt.z/360*2*PI;
    	if (!this->checkParserError(l_parser.attrByNameToDouble(field, "pupRoot.x", this->getParamsPtr()->importanceAreaRoot.x)))
 		return FIELD_ERR;
    	if (!this->checkParserError(l_parser.attrByNameToDouble(field, "pupRoot.y", this->getParamsPtr()->importanceAreaRoot.y)))

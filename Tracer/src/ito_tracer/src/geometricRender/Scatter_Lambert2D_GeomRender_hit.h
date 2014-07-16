@@ -22,8 +22,8 @@
 * \author Mauch
 */
 
-#ifndef SCATTER_LAMBERT2D_DIFFRAYS_HIT_H
-  #define SCATTER_LAMBERT2D_DIFFRAYS_HIT_H
+#ifndef SCATTER_LAMBERT2D_GEOMRENDER_HIT_H
+  #define SCATTER_LAMBERT2D_GEOMRENDER_HIT_H
   
 #include "../randomGenerator.h"
 #include "../rayTracingMath.h"
@@ -73,7 +73,7 @@ inline RT_HOSTDEVICE bool hitLambert2D_GeomRender(geomRenderRayStruct &prd, Mat_
 	// do the geometric hit
 	if (!hitLambert2D(prd, hitParams, params) )
 		return false;
-    
+
 	return true;
 };
 

@@ -28,6 +28,8 @@
 /* include header of basis class */
 #include "Geometry_intersect.h"
 #include "rayTracingMath.h"
+#include <optixu/optixu_aabb.h>
+
 
 /* declare class */
 /**
@@ -95,6 +97,41 @@ inline RT_HOSTDEVICE double intersectRayCadObject(double3 rayPosition, double3 r
 	//	return 0;
 	//}
 	return t;
+}
+
+/**
+ * \detail cadObjectBounds 
+ *
+ * calculates the bounding boxes of the individual triangles of an CAD object
+ *
+ * \param[in] int primIdx, float result[6], ApertureStop_ReducedParams params
+ * 
+ * \return double t
+ * \sa 
+ * \remarks this function is defined inline so it can be used on GPU and CPU
+ * \author Mauch
+ */
+inline RT_HOSTDEVICE void cadObjectBounds (int primIdx, float result[6], CadObject_ReducedParams params, float3* vertex_buffer, int3* index_buffer)
+{
+  optix::Aabb* aabb = (optix::Aabb*)result;
+  const int3 v_idx = index_buffer[primIdx];
+
+  //const float3 v0 = vertex_buffer[ v_idx.x ];
+  //const float3 v1 = vertex_buffer[ v_idx.y ];
+  //const float3 v2 = vertex_buffer[ v_idx.z ];
+
+  const float3 v0 = rotateRay(vertex_buffer[ v_idx.x ],params.tilt)+make_float3(params.root);
+  const float3 v1 = rotateRay(vertex_buffer[ v_idx.y ],params.tilt)+make_float3(params.root);
+  const float3 v2 = rotateRay(vertex_buffer[ v_idx.z ],params.tilt)+make_float3(params.root);
+
+  const float  area = length(cross(v1-v0, v2-v0));
+
+  if(area > 0.0f && area < 99999999999999999999.0f) {
+    aabb->m_min = fminf( fminf( v0, v1), v2 );
+    aabb->m_max = fmaxf( fmaxf( v0, v1), v2 );
+  } else {
+    aabb->invalidate();
+  }
 }
 
 #endif

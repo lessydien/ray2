@@ -28,6 +28,7 @@
 /* include geometry lib */
 #include "Geometry_intersect.h"
 #include "rayTracingMath.h"
+#include <optixu/optixu_aabb.h>
 
 /* declare class */
 /**
@@ -124,13 +125,63 @@ inline RT_HOSTDEVICE double intersectRaySphere(double3 rayPosition, double3 rayD
  * \remarks this function is defined inline so it can be used on GPU and CPU
  * \author Mauch
  */
-inline RT_HOSTDEVICE Mat_hitParams calcHitParamsSphere(double3 position,SphericalSurface_ReducedParams params)
+inline RT_HOSTDEVICE Mat_hitParams calcHitParamsSphere(double3 position, SphericalSurface_ReducedParams params)
 {
 	double3 n;
 	n=position - params.centre;
 	Mat_hitParams t_hitParams;
 	t_hitParams.normal=normalize(n);
 	return t_hitParams;
+}
+
+/**
+ * \detail sphericalSurfaceBounds 
+ *
+ * calculates the bounding box of a spherical surface
+ *
+ * \param[in] int primIdx, float result[6], SphericalSurface_ReducedParams params
+ * 
+ * \return double t
+ * \sa 
+ * \remarks this function is defined inline so it can be used on GPU and CPU
+ * \author Mauch
+ */
+inline RT_HOSTDEVICE void sphericalSurfaceBounds (int primIdx, float result[6], SphericalSurface_ReducedParams params)
+{
+    optix::Aabb* aabb = (optix::Aabb*)result;
+    double3 l_ex=make_double3(1,0,0);
+    rotateRay(&l_ex,params.tilt);
+    double3 l_ey=make_double3(0,1,0);
+    rotateRay(&l_ey,params.tilt);
+    double3 l_n=make_double3(0,0,1);
+    rotateRay(&l_n,params.tilt);
+
+    double effAptRadius=min(params.apertureRadius.x,params.apertureRadius.y);
+    double rMax=effAptRadius;
+    double lensHeightMax;
+    if (params.apertureType==AT_RECT) // if aperture is rectangular rMax is the diagonal of the aperture...
+	    rMax=sqrt(2*effAptRadius*effAptRadius);
+
+    double effRadius=min(params.curvatureRadius.x,params.curvatureRadius.y);
+    if (rMax>abs(effRadius))
+	    lensHeightMax=sqrt(effRadius*effRadius-effAptRadius*effAptRadius);
+    else
+	    lensHeightMax=sqrt(effRadius*effRadius-rMax*rMax);
+
+    lensHeightMax=abs(effRadius)-lensHeightMax;
+    float3 maxBox;
+    float3 minBox;
+    if (effRadius<0)
+    {
+        maxBox=make_float3(params.centre+l_n*params.curvatureRadius.x+params.apertureRadius.x*l_ex+params.apertureRadius.y*l_ey);
+        minBox=make_float3(params.centre+l_n*(params.curvatureRadius.x+lensHeightMax)-params.apertureRadius.x*l_ex-params.apertureRadius.y*l_ey);
+    }
+    else
+    {
+        maxBox=make_float3(params.centre+l_n*params.curvatureRadius.x+params.apertureRadius.x*l_ex+params.apertureRadius.y*l_ey);
+        minBox=make_float3(params.centre+l_n*(params.curvatureRadius.x-lensHeightMax)-params.apertureRadius.x*l_ex-params.apertureRadius.y*l_ey);
+    }
+    aabb->set(minBox, maxBox);        
 }
 
 #endif

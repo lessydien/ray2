@@ -91,6 +91,7 @@ RT_PROGRAM void rayGeneration_geomRender()
         }
       }
       output_buffer[launch_index] += prd.cumFlux;//.direction;//prd.position;
+      seed_buffer[launch_index] = prd.currentSeed; // save seed for nex jRay
   }
   
 }

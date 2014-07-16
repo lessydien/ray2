@@ -28,6 +28,7 @@
 /* include header of basis class */
 #include "Geometry_intersect.h"
 #include "rayTracingMath.h"
+#include "PlaneSurface_intersect.h"
 
 /* declare class */
 /**
@@ -97,6 +98,28 @@ inline RT_HOSTDEVICE double intersectRayApertureStop(double3 rayPosition, double
 	}
 
 	return t;
+}
+
+/**
+ * \detail apertureArraySurfaceBounds 
+ *
+ * calculates the bounding box of an aperture stop
+ *
+ * \param[in] int primIdx, float result[6], ApertureStop_ReducedParams params
+ * 
+ * \return double t
+ * \sa 
+ * \remarks this function is defined inline so it can be used on GPU and CPU
+ * \author Mauch
+ */
+inline RT_HOSTDEVICE void apertureStopBounds (int primIdx, float result[6], ApertureStop_ReducedParams params)
+{
+    // bounding box is the same as that of a plane surface
+    PlaneSurface_ReducedParams planeParams;
+    planeParams.root=params.root;
+    planeParams.apertureRadius=params.apertureRadius;
+    planeParams.tilt=params.tilt;
+    planeSurfaceBounds(primIdx, result, planeParams);
 }
 
 

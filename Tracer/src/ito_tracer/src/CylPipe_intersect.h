@@ -26,6 +26,7 @@
   #define CYLPIPEINTERSECT_H
 
 #include "Geometry_intersect.h"
+#include <optixu/optixu_aabb.h>
 #include "rayTracingMath.h"
 
 /* declare class */
@@ -152,7 +153,7 @@ inline RT_HOSTDEVICE double intersectRayCylPipe(double3 rayPosition, double3 ray
  * \remarks this function is defined inline so it can be used on GPU and CPU
  * \author Mauch
  */
-inline RT_HOSTDEVICE Mat_hitParams calcHitParamsCylPipe(double3 position,CylPipe_ReducedParams params)
+inline RT_HOSTDEVICE Mat_hitParams calcHitParamsCylPipe(double3 position, CylPipe_ReducedParams params)
 {
 	// first calculate the intersection of the middle axis of the cylinder with the plane through position beeing normal to the middle axis
 	double t=intersectRayPlane(params.root, params.orientation, position, params.orientation);
@@ -161,6 +162,33 @@ inline RT_HOSTDEVICE Mat_hitParams calcHitParamsCylPipe(double3 position,CylPipe
 	Mat_hitParams t_hitParams;
 	t_hitParams.normal=normalize(i-position);
 	return t_hitParams;
+}
+
+/**
+ * \detail cylPipeBounds 
+ *
+ * calculates the bounding box of a cylLense
+ *
+ * \param[in] int primIdx, float result[6], ApertureStop_ReducedParams params
+ * 
+ * \return double t
+ * \sa 
+ * \remarks this function is defined inline so it can be used on GPU and CPU
+ * \author Mauch
+ */
+inline RT_HOSTDEVICE void cylPipeBounds (int primIdx, float result[6], CylPipe_ReducedParams params)
+{
+  optix::Aabb* aabb = (optix::Aabb*)result;
+  double3 l_ex=make_double3(1,0,0);
+  rotateRay(&l_ex,params.tilt);
+  double3 l_ey=make_double3(0,1,0);
+  rotateRay(&l_ey,params.tilt);
+  double3 l_n=make_double3(0,0,1);
+  rotateRay(&l_n,params.tilt);
+
+  float3 maxBox=make_float3(params.root+params.thickness*l_n+params.radius.x*l_ex+params.radius.y*l_ey);
+  float3 minBox=make_float3(params.root-params.radius.x*l_ex-params.radius.y*l_ey);
+  aabb->set(minBox, maxBox);     
 }
 
 #endif

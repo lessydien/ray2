@@ -27,7 +27,7 @@
 
 #include "Group.h"
 
-extern Group oGroup;
+extern Group *oGroup;
 
 
 #endif

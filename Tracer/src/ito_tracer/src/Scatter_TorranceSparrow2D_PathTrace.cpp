@@ -55,7 +55,7 @@ ScatTorranceSparrow2D_PathTrace_params* Scatter_TorranceSparrow2D_PathTrace::get
 
 void Scatter_TorranceSparrow2D_PathTrace::hit(rayStruct &ray, Mat_hitParams hitParams)
 {
-	extern Group oGroup;
+	extern Group *oGroup;
 	rayStruct_PathTracing* ray_interpreted;
 	// we have a path tracing ray here ... hopefully ...
 	ray_interpreted=reinterpret_cast<rayStruct_PathTracing*>(&ray);
@@ -84,7 +84,7 @@ void Scatter_TorranceSparrow2D_PathTrace::hit(rayStruct &ray, Mat_hitParams hitP
 		if ( dot(ray_interpreted->direction,l_ray.direction)>0 )
 		{
 			// trace secondary ray towards light source
-			oGroup.trace(l_ray);
+			oGroup->trace(l_ray);
 		}
 		if (l_ray.result>0)
 		{

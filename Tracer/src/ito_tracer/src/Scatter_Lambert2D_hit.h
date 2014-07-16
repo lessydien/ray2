@@ -105,43 +105,47 @@ inline RT_HOSTDEVICE bool hitLambert2D(rayStruct &prd, Mat_hitParams hitParams, 
 	}
 	else // if we have an importance area, we scatter into this area. Directions are uniformly distributed and flux adjusted according to BRDF
 	{
-		aimRayTowardsImpArea(prd.direction, prd.position, params.impAreaRoot,  params.impAreaHalfWidth, params.impAreaTilt, params.impAreaType, prd.currentSeed);
+        aimRayTowardsImpArea(prd.direction, prd.position, params.impAreaRoot,  params.impAreaHalfWidth, params.impAreaTilt, params.impAreaType, prd.currentSeed);
 		// adjust flux of ray according to fraction of importance area to full hemisphere
-		double3 impAreaX=make_double3(1,0,0);
-		rotateRay(&impAreaX,params.impAreaTilt);
-		double3 impAreaY=make_double3(0,1,0);
-		rotateRay(&impAreaY,params.impAreaTilt);
-		// calc opening angle into importance area
-		double alphaX=acos(dot(normalize(params.impAreaRoot+impAreaX*params.impAreaHalfWidth.x),normalize(params.impAreaRoot-impAreaX*params.impAreaHalfWidth.x)))/2;
-		double alphaY=acos(dot(normalize(params.impAreaRoot+impAreaY*params.impAreaHalfWidth.y),normalize(params.impAreaRoot-impAreaY*params.impAreaHalfWidth.y)))/2;
-		// normalize flux according to solid angle of importance area
-		double omegaS;
-		double3 da;
-		double rho;
-		if (params.impAreaType==AT_RECT)
-		{
-			da=make_double3(0,0,1);
-			rotateRay(&da,params.impAreaTilt);
-			da=da*params.impAreaHalfWidth.x*params.impAreaHalfWidth.y;
-			rho=length(params.impAreaRoot-prd.position);
-			rho=rho*rho;
-			omegaS=dot(prd.direction,da)/rho;
-			prd.flux=omegaS/4*PI; 
-		}
-		if (params.impAreaType==AT_ELLIPT)
-		{
-			da=make_double3(0,0,1);
-			rotateRay(&da,params.impAreaTilt);
-			da=da*PI*params.impAreaHalfWidth.x*params.impAreaHalfWidth.y;
-			rho=rho*rho;
-			omegaS=dot(prd.direction,da)/rho;
-			prd.flux=omegaS/4*PI; 
-		}
+		//double3 impAreaX=make_double3(1,0,0);
+		//rotateRay(&impAreaX,params.impAreaTilt);
+		//double3 impAreaY=make_double3(0,1,0);
+		//rotateRay(&impAreaY,params.impAreaTilt);
+		//// calc opening angle into importance area
+		//double alphaX=acos(dot(normalize(params.impAreaRoot+impAreaX*params.impAreaHalfWidth.x),normalize(params.impAreaRoot-impAreaX*params.impAreaHalfWidth.x)))/2;
+		//double alphaY=acos(dot(normalize(params.impAreaRoot+impAreaY*params.impAreaHalfWidth.y),normalize(params.impAreaRoot-impAreaY*params.impAreaHalfWidth.y)))/2;
+		//// normalize flux according to solid angle of importance area
+		//double omegaS;
+		//double3 da;
+		//double rho;
+		//if (params.impAreaType==AT_RECT)
+		//{
+		//	da=make_double3(0,0,1);
+		//	rotateRay(&da,params.impAreaTilt);
+		//	da=da*params.impAreaHalfWidth.x*params.impAreaHalfWidth.y;
+		//	rho=length(params.impAreaRoot-prd.position);
+		//	rho=rho*rho;
+		//	omegaS=dot(prd.direction,da)/rho;
+		//	prd.flux=omegaS/4*PI; 
+		//}
+		//if (params.impAreaType==AT_ELLIPT)
+		//{
+		//	da=make_double3(0,0,1);
+		//	rotateRay(&da,params.impAreaTilt);
+		//	da=da*PI*params.impAreaHalfWidth.x*params.impAreaHalfWidth.y;
+  //          rho=length(params.impAreaRoot-prd.position);
+		//	rho=rho*rho;
+		//	omegaS=dot(prd.direction,da)/rho;
+		//	prd.flux=omegaS/4*PI; 
+		//}
+
 //		double3 impAreaNormal=make_double3(0,0,1);
 //		rotateRay(&impAreaNormal,params.impAreaTilt);
 //		prd.flux=prd.flux*abs(dot(hitParams.normal,prd.direction)); // apply lambert intensity distribution
 
 	}
+    RandomInit(prd.currentSeed, x1); // init random variable
+    prd.currentSeed=x1[4];
 
 	return true;
 };

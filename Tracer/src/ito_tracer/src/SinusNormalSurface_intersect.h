@@ -28,6 +28,7 @@
 /* include header of basis class */
 #include "Geometry_intersect.h"
 #include "rayTracingMath.h"
+#include <optixu/optixu_aabb.h>
 
 #ifndef PI
 	#define PI ((double)3.141592653589793238462643383279502884197169399375105820)
@@ -192,7 +193,7 @@ inline RT_HOSTDEVICE double intersectRaySinusNormalSurface(double3 rayPosition, 
  * \remarks this function is defined inline so it can be used on GPU and CPU
  * \author Mauch
  */
-inline RT_HOSTDEVICE Mat_hitParams calcHitParamsSinusNormalSurface(double3 position,SinusNormalSurface_ReducedParams params)
+inline RT_HOSTDEVICE Mat_hitParams calcHitParamsSinusNormalSurface(double3 position, SinusNormalSurface_ReducedParams params)
 {
 	double3 Pos=position;
 	SinusNormalSurface_ReducedParams testPar=params;
@@ -206,6 +207,33 @@ inline RT_HOSTDEVICE Mat_hitParams calcHitParamsSinusNormalSurface(double3 posit
 	Mat_hitParams t_hitParams;
 	t_hitParams.normal=n;
 	return t_hitParams;
+}
+
+/**
+ * \detail sinusNormalBounds 
+ *
+ * calculates the bounding box of a sinus normal
+ *
+ * \param[in] int primIdx, float result[6], SinusNormalSurface_ReducedParams params
+ * 
+ * \return double t
+ * \sa 
+ * \remarks this function is defined inline so it can be used on GPU and CPU
+ * \author Mauch
+ */
+inline RT_HOSTDEVICE void sinusNormalBounds (int primIdx, float result[6], SinusNormalSurface_ReducedParams params)
+{
+    optix::Aabb* aabb = (optix::Aabb*)result;
+    double3 l_ex=make_double3(1,0,0);
+    rotateRay(&l_ex,params.tilt);
+    double3 l_ey=make_double3(0,1,0);
+    rotateRay(&l_ey,params.tilt);
+    double3 l_n=make_double3(0,0,1);
+    rotateRay(&l_n,params.tilt);
+
+    float3 maxBox=make_float3(params.root+l_n*params.ampl+params.apertureRadius.x*l_ex+params.apertureRadius.y*l_ey);
+    float3 minBox=make_float3(params.root-l_n*params.ampl-params.apertureRadius.x*l_ex-params.apertureRadius.y*l_ey);
+    aabb->set(minBox, maxBox);        
 }
 
 #endif

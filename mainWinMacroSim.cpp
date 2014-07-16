@@ -533,6 +533,7 @@ bool MainWinMacroSim::loadScene()
 	{
 		QDomElement l_geomGroupElement=l_geomGroupNodeList.at(iGeomGroup).toElement();
 		GeomGroupItem *l_pGeomGroup=new GeomGroupItem();
+        l_pGeomGroup->readFromXML(l_geomGroupElement);
 		QDomNodeList l_geomNodeList = l_geomGroupElement.elementsByTagName("geometry");
 
 		for (int iGeom=0; iGeom<l_geomNodeList.count(); iGeom++)

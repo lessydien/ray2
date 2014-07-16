@@ -77,12 +77,12 @@ void MaterialIdealLense::hit(rayStruct &ray, Mat_hitParams hitParams, double t_h
  */
 void MaterialIdealLense::hit(gaussBeamRayStruct &ray, gaussBeam_geometricNormal normal, int geometryID)
 {
-	extern Group oGroup;
+	extern Group *oGroup;
 
 	ray.baseRay.currentGeometryID=geometryID;
 	if (ray.baseRay.depth<MAX_DEPTH_CPU && ray.baseRay.flux>MIN_FLUX_CPU)
 	{			
-		oGroup.trace(ray);
+		oGroup->trace(ray);
 	}
 }
 

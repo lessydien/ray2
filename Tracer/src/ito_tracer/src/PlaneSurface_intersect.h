@@ -27,6 +27,7 @@
 
 /* include header of basis class */
 #include "Geometry_intersect.h"
+#include <optixu/optixu_aabb.h>
 #include "rayTracingMath.h"
 
 /* declare class */
@@ -85,6 +86,22 @@ inline RT_HOSTDEVICE double intersectRayPlaneSurface(double3 rayPosition, double
 		return 0;
 	}
 	return t;
+}
+
+inline RT_HOSTDEVICE void planeSurfaceBounds (int primIdx, float result[6], PlaneSurface_ReducedParams params)
+{
+  optix::Aabb* aabb = (optix::Aabb*)result;
+  double3 l_ex=make_double3(1,0,0);
+  rotateRay(&l_ex,params.tilt);
+  double3 l_ey=make_double3(0,1,0);
+  rotateRay(&l_ey,params.tilt);
+
+  float3 t_maxBox=make_float3(params.root+params.apertureRadius.x*l_ex+params.apertureRadius.y*l_ey);
+  float3 t_minBox=make_float3(params.root-params.apertureRadius.x*l_ex-params.apertureRadius.y*l_ey);
+
+  float3 maxBox=make_float3(max(t_maxBox.x,t_minBox.x), max(t_maxBox.y,t_minBox.y), max(t_maxBox.z, t_minBox.z));
+  float3 minBox=make_float3(min(t_maxBox.x,t_minBox.x), min(t_maxBox.y,t_minBox.y), min(t_maxBox.z, t_minBox.z));
+  aabb->set(minBox, maxBox);
 }
 
 

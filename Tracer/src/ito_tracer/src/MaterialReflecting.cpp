@@ -69,7 +69,7 @@ void MaterialReflecting::hit(rayStruct &ray, Mat_hitParams hitParams, double t_h
  */
 void MaterialReflecting::hit(gaussBeamRayStruct &ray, gaussBeam_geometricNormal normal, int geometryID)
 {
-		extern Group oGroup;
+		extern Group *oGroup;
 		// reflect all the rays making up the gaussian beam
 		ray.baseRay.direction=reflect(ray.baseRay.direction,normal.normal_baseRay);
 		ray.waistRayX.direction=reflect(ray.waistRayX.direction,normal.normal_waistRayX);
@@ -79,7 +79,7 @@ void MaterialReflecting::hit(gaussBeamRayStruct &ray, gaussBeam_geometricNormal 
 		ray.baseRay.currentGeometryID=geometryID;
 		if (ray.baseRay.depth<MAX_DEPTH_CPU && ray.baseRay.flux>MIN_FLUX_CPU)
 		{			
-			oGroup.trace(ray);
+			oGroup->trace(ray);
 		}
 }
 

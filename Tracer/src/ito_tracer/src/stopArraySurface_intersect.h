@@ -28,6 +28,7 @@
 /* include geometry lib */
 #include "Geometry_intersect.h"
 #include "rayTracingMath.h"
+#include "PlaneSurface_intersect.h"
 
 
 /* declare class */
@@ -117,11 +118,34 @@ inline RT_HOSTDEVICE double intersectRayStopArraySurface(double3 rayPosition, do
  * \remarks this function is defined inline so it can be used on GPU and CPU
  * \author Mauch
  */
-inline RT_HOSTDEVICE Mat_hitParams calcHitParamsStopArraySurface(double3 position,StopArraySurface_ReducedParams params)
+inline RT_HOSTDEVICE Mat_hitParams calcHitParamsStopArraySurface(double3 position, StopArraySurface_ReducedParams params)
 {
 	Mat_hitParams l_hitParams;
 	l_hitParams.normal=params.normal;
 	return l_hitParams;
+}
+
+/**
+ * \detail stopArraySurfaceBounds 
+ *
+ * calculates the bounding box of an stop array surface
+ *
+ * \param[in] int primIdx, float result[6], StopArraySurface_ReducedParams params
+ * 
+ * \return double t
+ * \sa 
+ * \remarks this function is defined inline so it can be used on GPU and CPU
+ * \author Mauch
+ */
+
+inline RT_HOSTDEVICE void stopArraySurfaceBounds (int primIdx, float result[6], StopArraySurface_ReducedParams params)
+{
+    // bounding box is the same as that of a plane surface
+    PlaneSurface_ReducedParams planeParams;
+    planeParams.root=params.root;
+    planeParams.apertureRadius=params.apertureRadius;
+    planeParams.tilt=params.tilt;
+    planeSurfaceBounds(primIdx, result, planeParams);
 }
 
 #endif

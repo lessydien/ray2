@@ -28,6 +28,7 @@
 /* include header of basis class */
 #include "Geometry_intersect.h"
 #include "rayTracingMath.h"
+#include <optixu/optixu_aabb.h>
 
 /* declare class */
 /**
@@ -119,7 +120,7 @@ inline RT_HOSTDEVICE double intersectRayVolumeScattererBox(double3 rayPosition, 
  * \remarks this function is defined inline so it can be used on GPU and CPU
  * \author Mauch
  */
-inline RT_HOSTDEVICE Mat_hitParams calcHitParamsVolumeScattererBox(double3 position,VolumeScattererBox_ReducedParams params)
+inline RT_HOSTDEVICE Mat_hitParams calcHitParamsVolumeScattererBox(double3 position, VolumeScattererBox_ReducedParams params)
 {
 	Mat_hitParams l_hitParams;
 
@@ -144,4 +145,30 @@ inline RT_HOSTDEVICE Mat_hitParams calcHitParamsVolumeScattererBox(double3 posit
 	return l_hitParams;
 }
 
+/**
+ * \detail volumeScatterBoxBounds 
+ *
+ * calculates the bounding box of a volume scatter box
+ *
+ * \param[in] int primIdx, float result[6], VolumeScattererBox_ReducedParams params
+ * 
+ * \return double t
+ * \sa 
+ * \remarks this function is defined inline so it can be used on GPU and CPU
+ * \author Mauch
+ */
+inline RT_HOSTDEVICE void volumeScatterBoxBounds (int primIdx, float result[6], VolumeScattererBox_ReducedParams params)
+{
+    optix::Aabb* aabb = (optix::Aabb*)result;
+    double3 l_ex=make_double3(1,0,0);
+    rotateRay(&l_ex,params.tilt);
+    double3 l_ey=make_double3(0,1,0);
+    rotateRay(&l_ey,params.tilt);
+    double3 l_n=make_double3(0,0,1);
+    rotateRay(&l_n,params.tilt);
+
+    float3 maxBox=make_float3(params.root+l_n*params.thickness+params.apertureRadius.x*l_ex+params.apertureRadius.y*l_ey);
+    float3 minBox=make_float3(params.root-params.apertureRadius.x*l_ex-params.apertureRadius.y*l_ey);
+    aabb->set(minBox, maxBox);       
+}
 #endif

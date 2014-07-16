@@ -121,6 +121,37 @@ inline RT_HOSTDEVICE void rotateRay(double3 *ray, double3 tilt)
 }
 
 /* rotate ray around each coordinate axis and do it in place */
+inline RT_HOSTDEVICE float3 rotateRay(float3 ray, double3 tilt)
+{
+	double3 rayTmp=make_double3(ray.x, ray.y,ray.z);
+	double3x3 Mx=make_double3x3(1,0,0, 0,cos(tilt.x),-sin(tilt.x), 0,sin(tilt.x),cos(tilt.x));
+	double3x3 My=make_double3x3(cos(tilt.y),0,sin(tilt.y), 0,1,0, -sin(tilt.y),0,cos(tilt.y));
+	double3x3 Mz=make_double3x3(cos(tilt.z),-sin(tilt.z),0, sin(tilt.z),cos(tilt.z),0, 0,0,1);
+	double3x3 Mxy=Mx*My;
+	double3x3 M=Mxy*Mz;
+	rayTmp=M*rayTmp;
+	return make_float3(rayTmp);
+
+	//double3 rayTmp;
+	//double3 rotKrnlTmp;
+	///* rotate phiX around x-axis */
+	//double3x3 Mx=make_double3x3(1,0,0, 0,cos(tilt.x),-sin(tilt.x), 0,sin(tilt.x),cos(tilt.x));
+	//rayTmp=Mx*(*ray);
+	//*ray=rayTmp;
+	///* rotate y- and z axis accordingly */
+	//double3 eyPrime=Mx*make_double3(0,1,0);
+	//double3 ezPrime=Mx*make_double3(0,0,1);
+	///* rotate phiY around transformed y-axis */
+	//rayTmp=eyPrime*dot(eyPrime,*ray)+cross(cos(tilt.y)*cross(eyPrime,*ray),eyPrime)+sin(tilt.y)*cross(eyPrime,*ray);
+	//*ray=rayTmp;
+	///* rotate z axis accordingly */
+	//ezPrime=Mx*ezPrime;
+	///* rotate around transformed z-axis */
+	//rayTmp=ezPrime*dot(ezPrime,*ray)+cross(cos(tilt.z)*cross(ezPrime,*ray),ezPrime)+sin(tilt.z)*cross(ezPrime,*ray);
+	//*ray=rayTmp;
+}
+
+/* rotate ray around each coordinate axis and do it in place */
 inline RT_HOSTDEVICE void rotateRayInv(double3 *ray, double3 tilt)
 {
 	double3 rayTmp;

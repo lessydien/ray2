@@ -28,6 +28,7 @@
 /* include geometry lib */
 #include "Geometry_intersect.h"
 #include "rayTracingMath.h"
+#include <optixu/optixu_aabb.h>
 
 /* declare class */
 /**
@@ -196,7 +197,7 @@ inline RT_HOSTDEVICE double intersectRayParabol(double3 rayPosition, double3 ray
  * \remarks this function is defined inline so it can be used on GPU and CPU
  * \author Mauch
  */
-inline RT_HOSTDEVICE Mat_hitParams calcHitParamsParabol(double3 position,ParabolicSurface_ReducedParams params)
+inline RT_HOSTDEVICE Mat_hitParams calcHitParamsParabol(double3 position, ParabolicSurface_ReducedParams params)
 {
 	double3 n;
 
@@ -214,6 +215,24 @@ inline RT_HOSTDEVICE Mat_hitParams calcHitParamsParabol(double3 position,Parabol
 	Mat_hitParams t_hitParams;
 	t_hitParams.normal=normalize(n);
 	return t_hitParams;
+}
+
+/**
+ * \detail parabolicSurfaceBounds 
+ *
+ * calculates the bounding box of a parabolicSurface
+ *
+ * \param[in] int primIdx, float result[6], ParabolicSurface_ReducedParams params
+ * 
+ * \return double t
+ * \sa 
+ * \remarks this function is defined inline so it can be used on GPU and CPU
+ * \author Mauch
+ */
+inline RT_HOSTDEVICE void parabolicSurfaceBounds (int primIdx, float result[6], ParabolicSurface_ReducedParams params)
+{
+    optix::Aabb* aabb = (optix::Aabb*)result;  
+    aabb->invalidate();
 }
 
 #endif

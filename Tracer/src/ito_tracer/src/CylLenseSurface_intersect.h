@@ -137,7 +137,7 @@ inline RT_HOSTDEVICE double intersectRayCylLenseSurface(double3 rayPosition, dou
  * \remarks this function is defined inline so it can be used on GPU and CPU
  * \author Mauch
  */
-inline RT_HOSTDEVICE Mat_hitParams calcHitParamsCylLenseSurface(double3 position,CylLenseSurface_ReducedParams params)
+inline RT_HOSTDEVICE Mat_hitParams calcHitParamsCylLenseSurface(double3 position, CylLenseSurface_ReducedParams params)
 {
 	// first calculate the intersection of the middle axis of the cylinder with the plane through position beeing normal to the middle axis
 	double t=intersectRayPlane(params.root, params.orientation, position, params.orientation);
@@ -146,6 +146,23 @@ inline RT_HOSTDEVICE Mat_hitParams calcHitParamsCylLenseSurface(double3 position
 	Mat_hitParams t_hitParams;
 	t_hitParams.normal=normalize(i-position);
 	return t_hitParams;
+}
+
+/**
+ * \detail cylLenseSurfaceBounds 
+ *
+ * calculates the bounding box of a cylLense
+ *
+ * \param[in] int primIdx, float result[6], ApertureStop_ReducedParams params
+ * 
+ * \return double t
+ * \sa 
+ * \remarks this function is defined inline so it can be used on GPU and CPU
+ * \author Mauch
+ */
+inline RT_HOSTDEVICE void cylLenseSurfaceBounds (int primIdx, float result[6], CylLenseSurface_ReducedParams params)
+{
+    
 }
 
 #endif

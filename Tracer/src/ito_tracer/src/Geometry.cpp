@@ -348,7 +348,7 @@ geometryError Geometry::createOptixBoundingBox(RTcontext &context, RTgeometry &g
     RTvariable box_min_var;
     RTvariable box_max_var;
 	//char* path_to_ptx;
-	sprintf( this->path_to_ptx_intersect, "%s" PATH_SEPARATOR "%s", PATH_TO_PTX, "ITO-MacroSim_generated_boundingBox.cu.ptx" );
+	//sprintf( this->path_to_ptx_intersect, "%s" PATH_SEPARATOR "%s", PATH_TO_PTX, "ITO-MacroSim_generated_boundingBox.cu.ptx" );
 	if ( !RT_CHECK_ERROR_NOEXIT( rtProgramCreateFromPTXFile( context, this->path_to_ptx_boundingBox, "bounds", &geometry_bounding_box_program ), context) )
 		return GEOM_ERR;
 	if ( !RT_CHECK_ERROR_NOEXIT( rtGeometrySetBoundingBoxProgram( geometry, geometry_bounding_box_program ), context) )

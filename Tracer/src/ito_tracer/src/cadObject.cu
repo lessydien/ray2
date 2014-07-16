@@ -76,21 +76,5 @@ RT_PROGRAM void intersect(int primIdx)
 
 RT_PROGRAM void bounds (int primIdx, float result[6])
 {
-  optix::Aabb* aabb = (optix::Aabb*)result;
-  const int3 v_idx = index_buffer[primIdx];
-
-  const float3 v0 = vertex_buffer[ v_idx.x ];
-  const float3 v1 = vertex_buffer[ v_idx.y ];
-  const float3 v2 = vertex_buffer[ v_idx.z ];
-  const float  area = length(cross(v1-v0, v2-v0));
-
-  if(area > 0.0f && !isinf(area)) {
-    aabb->m_min = fminf( fminf( v0, v1), v2 );
-    aabb->m_max = fmaxf( fmaxf( v0, v1), v2 );
-  } else {
-    aabb->invalidate();
-  }
-
-  //optix::Aabb* aabb = (optix::Aabb*)result;
-  //aabb->set(make_float3(0,0,0), make_float3(0,0,0));
+    cadObjectBounds(primIdx, result, params, &(vertex_buffer[0]), &(index_buffer[0]));
 }

@@ -34,39 +34,41 @@
 
 void Scatter_Lambert2D_GeomRender::hit(rayStruct &ray, Mat_hitParams hitParams)
 {
-	extern Group oGroup;
+	extern Group *oGroup;
     // cast to geomRenderRay
     geomRenderRayStruct *l_pRay=reinterpret_cast<geomRenderRayStruct*>(&ray);
     // create secondary ray
     geomRenderRayStruct sdRay=*l_pRay;
     sdRay.secondary=true;
     sdRay.secondary_nr++;
+    sdRay.cumFlux=0;
     if (hitLambert2D_GeomRender(sdRay, hitParams, this->reducedParams) )
     {
 		if (sdRay.secondary_nr<2 && sdRay.flux>MIN_FLUX_CPU)
-		{			
-			oGroup.trace(ray);
+		{
+            // do the trace the secondary ray through the scene
+            while (sdRay.running)
+			    oGroup->trace(sdRay);
+            l_pRay->cumFlux+=sdRay.cumFlux;
+            l_pRay->currentSeed=sdRay.currentSeed;
 		}
-        l_pRay->cumFlux+=sdRay.cumFlux;
+        
     }
 
-    // continue primary ray
-    ScatLambert2D_params primParams=this->reducedParams;
-    primParams.impAreaType=AT_INFTY; // primary ray does not use the importance area
-	if (hitLambert2D_GeomRender(*l_pRay, hitParams, primParams) )
-	{
-//		ray.currentGeometryID=geometryID;
-		//if (ray.depth<MAX_DEPTH_CPU )//&& ray.flux>MIN_FLUX_CPU)
-		//{			
-		//	oGroup.trace(ray);
-		//}
+    ray.running=false;
 
-	}
-	else
-	{
-		std::cout <<"error in ScatterDoubleCauchy1D.hit(): hitDoubleCauchy1D returned an error." << "...\n";
-		// some error mechanism !!
-	}
+    // continue primary ray
+ //   ScatLambert2D_params primParams=this->reducedParams;
+ //   primParams.impAreaType=AT_INFTY; // primary ray does not use the importance area
+	//if (hitLambert2D_GeomRender(*l_pRay, hitParams, primParams) )
+	//{
+
+	//}
+	//else
+	//{
+	//	std::cout <<"error in ScatterDoubleCauchy1D.hit(): hitDoubleCauchy1D returned an error." << "...\n";
+	//	// some error mechanism !!
+	//}
 
 }
 
@@ -74,10 +76,10 @@ ScatterError Scatter_Lambert2D_GeomRender::createOptiXInstance(double lambda, ch
 {
 	// calc the refractive indices at current wavelength
 	this->reducedParams.TIR=this->fullParamsPtr->TIR;
-	//this->reducedParams.importanceAreaHalfWidth=this->fullParamsPtr->importanceAreaHalfWidth;
-	//this->reducedParams.importanceAreaRoot=this->fullParamsPtr->importanceAreaRoot;
-	//this->reducedParams.importanceAreaTilt=this->fullParamsPtr->importanceAreaTilt;
-	//this->reducedParams.importanceAreaApertureType=this->fullParamsPtr->importanceAreaApertureType;
+	this->reducedParams.impAreaHalfWidth=this->fullParamsPtr->impAreaHalfWidth;
+	this->reducedParams.impAreaRoot=this->fullParamsPtr->impAreaRoot;
+	this->reducedParams.impAreaTilt=this->fullParamsPtr->impAreaTilt;
+	this->reducedParams.impAreaType=this->fullParamsPtr->impAreaType;
 	this->update=false;
 	strcat(*path_to_ptx_in, this->path_to_ptx);
 	return SCAT_NO_ERROR;
@@ -87,10 +89,10 @@ ScatterError Scatter_Lambert2D_GeomRender::createCPUSimInstance(double lambda)
 {
 	// calc the refractive indices at current wavelength
 	this->reducedParams.TIR=this->fullParamsPtr->TIR;
-	//this->reducedParams.importanceAreaHalfWidth=this->fullParamsPtr->importanceAreaHalfWidth;
-	//this->reducedParams.importanceAreaRoot=this->fullParamsPtr->importanceAreaRoot;
-	//this->reducedParams.importanceAreaTilt=this->fullParamsPtr->importanceAreaTilt;
-	//this->reducedParams.importanceAreaApertureType=this->fullParamsPtr->importanceAreaApertureType;
+	this->reducedParams.impAreaHalfWidth=this->fullParamsPtr->impAreaHalfWidth;
+	this->reducedParams.impAreaRoot=this->fullParamsPtr->impAreaRoot;
+	this->reducedParams.impAreaTilt=this->fullParamsPtr->impAreaTilt;
+	this->reducedParams.impAreaType=this->fullParamsPtr->impAreaType;
 
 	return SCAT_NO_ERROR;
 };

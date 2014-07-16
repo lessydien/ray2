@@ -28,6 +28,7 @@
 /* include header of basis class */
 #include "Geometry_intersect.h"
 #include "rayTracingMath.h"
+#include "PlaneSurface_intersect.h"
 
 /* declare class */
 /**
@@ -99,11 +100,33 @@ inline RT_HOSTDEVICE double intersectRayIdealLense(double3 rayPosition, double3 
  * \remarks this function is defined inline so it can be used on GPU and CPU
  * \author Mauch
  */
-inline RT_HOSTDEVICE Mat_hitParams calcHitParamsIdealLense(double3 position,IdealLense_ReducedParams params)
+inline RT_HOSTDEVICE Mat_hitParams calcHitParamsIdealLense(double3 position, IdealLense_ReducedParams params)
 {
 	Mat_hitParams t_hitParams;
 //	t_hitParams.normal=normalize(i-position);
 	return t_hitParams;
+}
+
+/**
+ * \detail idealLenseBounds 
+ *
+ * calculates the bounding box of an ideal lense
+ *
+ * \param[in] int primIdx, float result[6], IdealLense_ReducedParams params
+ * 
+ * \return double t
+ * \sa 
+ * \remarks this function is defined inline so it can be used on GPU and CPU
+ * \author Mauch
+ */
+inline RT_HOSTDEVICE void idealLenseBounds (int primIdx, float result[6], IdealLense_ReducedParams params)
+{
+    // bounding box is the same as that of a plane surface
+    PlaneSurface_ReducedParams planeParams;
+    planeParams.root=params.root;
+    planeParams.apertureRadius=params.apertureRadius;
+    planeParams.tilt=params.tilt;
+    planeSurfaceBounds(primIdx, result, planeParams);
 }
 
 

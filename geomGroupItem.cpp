@@ -115,8 +115,11 @@ bool GeomGroupItem::writeToXML(QDomDocument &document, QDomElement &root) const
 
 bool GeomGroupItem::readFromXML(const QDomElement &node) 
 {	
-	if (!AbstractItem::readFromXML(node) )
-		return false;
+//	if (!AbstractItem::readFromXML(node) )
+//		return false;
+    m_accelType=stringToAccelerationType(node.attribute("accelType"));
+    this->setName("GeometryGroup");
+
 	return true;
 };
 

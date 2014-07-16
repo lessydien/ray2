@@ -194,4 +194,59 @@ bool MaterialItem::signalDataChanged()
 	return true;
 }
 
+AbstractItem::Abstract_MaterialType MaterialItem::materialTypeToAbstractMaterialType(MaterialType in) 
+{
+    switch (in)
+    {
+    case MaterialItem::MATUNKNOWN:
+        return AbstractItem::MATUNKNOWN;
+        break;
+    case MaterialItem::REFRACTING:
+        return AbstractItem::REFRACTING;
+        break;
+    case MaterialItem::ABSORBING:
+        return AbstractItem::ABSORBING;
+        break;
+    case MaterialItem::DIFFRACTING:
+        return AbstractItem::DIFFRACTING;
+        break;
+    case MaterialItem::FILTER:
+        return AbstractItem::FILTER;
+        break;
+    case MaterialItem::LINGRAT1D:
+        return AbstractItem::LINGRAT1D;
+        break;
+    case MaterialItem::MATIDEALLENSE:
+        return AbstractItem::MATIDEALLENSE;
+        break;
+    case MaterialItem::REFLECTING:
+        return AbstractItem::REFLECTING;
+        break;
+    case MaterialItem::REFLECTINGCOVGLASS:
+        return AbstractItem::REFLECTINGCOVGLASS;
+        break;
+    case MaterialItem::PATHTRACESOURCE:
+        return AbstractItem::PATHTRACESOURCE;
+        break;
+    case MaterialItem::DOE:
+        return AbstractItem::DOE;
+        break;
+    case MaterialItem::VOLUMESCATTER:
+        return AbstractItem::VOLUMESCATTER;
+        break;
+    case MaterialItem::VOLUMEABSORBING:
+        return AbstractItem::VOLUMEABSORBING;
+        break;
+    case MaterialItem::RENDERLIGHT:
+        return AbstractItem::RENDERLIGHT;
+        break;
+    case MaterialItem::RENDERFRINGEPROJ:
+        return AbstractItem::RENDERFRINGEPROJ;
+        break;
+    default:
+        return AbstractItem::MATUNKNOWN;
+        break;
+    }
+}
+
 

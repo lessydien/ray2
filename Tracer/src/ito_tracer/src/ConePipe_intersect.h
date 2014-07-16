@@ -28,6 +28,7 @@
 /* include header of basis class */
 #include "Geometry_intersect.h"
 #include "rayTracingMath.h"
+#include <optixu/optixu_aabb.h>
 
 /* declare class */
 /**
@@ -166,7 +167,7 @@ inline RT_HOSTDEVICE double intersectRayConePipe(double3 rayPosition, double3 ra
  * \remarks this function is defined inline so it can be used on GPU and CPU
  * \author Mauch
  */
-inline RT_HOSTDEVICE Mat_hitParams calcHitParamsConePipe(double3 position,ConePipe_ReducedParams params)
+inline RT_HOSTDEVICE Mat_hitParams calcHitParamsConePipe(double3 position, ConePipe_ReducedParams params)
 {
 	// first calculate the intersection of the middle axis of the cone with the plane through position beeing normal to the tangent to the cone in position.
 	// this tangent is equal to the vector connecting position with the vertex of the cone
@@ -175,6 +176,33 @@ inline RT_HOSTDEVICE Mat_hitParams calcHitParamsConePipe(double3 position,ConePi
 	Mat_hitParams t_hitParams;
 	t_hitParams.normal=normalize(i-position);
 	return t_hitParams;
+}
+
+/**
+ * \detail conePipeBounds 
+ *
+ * calculates the bounding box of a conePipe
+ *
+ * \param[in] int primIdx, float result[6], ConePipe_ReducedParams params
+ * 
+ * \return double t
+ * \sa 
+ * \remarks this function is defined inline so it can be used on GPU and CPU
+ * \author Mauch
+ */
+inline RT_HOSTDEVICE void conePipeBounds (int primIdx, float result[6], ConePipe_ReducedParams params)
+{
+  optix::Aabb* aabb = (optix::Aabb*)result;
+  double3 l_ex=make_double3(1,0,0);
+  rotateRay(&l_ex,params.tilt);
+  double3 l_ey=make_double3(0,1,0);
+  rotateRay(&l_ey,params.tilt);
+  double3 l_n=make_double3(0,0,1);
+  rotateRay(&l_n,params.tilt);
+
+  float3 maxBox=make_float3(params.root+params.thickness*l_n+params.radMax*l_ex+params.radMax*l_ey);
+  float3 minBox=make_float3(params.root-params.radMax*l_ex-params.radMax*l_ey);
+  aabb->set(minBox, maxBox);    
 }
 
 #endif

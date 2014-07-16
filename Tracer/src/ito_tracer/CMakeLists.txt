@@ -95,6 +95,9 @@ OPTIX_add_sample_executable( ITO-MacroSim
   src/geometricRender/Scatter_Lambert2D_GeomRender.cpp
   src/geometricRender/Scatter_Lambert2D_GeomRender.h
   src/geometricRender/Scatter_Lambert2D_GeomRender_hit.h
+  src/geometricRender/Scatter_TorranceSparrow2D_GeomRender.cpp
+  src/geometricRender/Scatter_TorranceSparrow2D_GeomRender.h
+  src/geometricRender/Scatter_TorranceSparrow2D_GeomRender_hit.h
 
   src/geometricRender/hitFunctionAbsorbing_GeomRender.cu
   src/geometricRender/hitFunctionAbsorbing_GeomRender_CoatNumCoeffs_GeomRender.cu
@@ -105,8 +108,8 @@ OPTIX_add_sample_executable( ITO-MacroSim
   src/geometricRender/hitFunctionReflecting_GeomRender_CoatNumCoeffs_GeomRender.cu
   src/geometricRender/hitFunctionRefracting_GeomRender.cu
   src/geometricRender/hitFunctionRefracting_GeomRender_CoatNumCoeffs_GeomRender.cu
-#  src/geometricRender/hitFunctionReflecting_GeomRender_Scatter_TorranceSparrow2D_GeomRender.cu
-#  src/geometricRender/hitFunctionReflecting_GeomRender_Scatter_Lambert2D_GeomRender.cu
+  src/geometricRender/hitFunctionReflecting_GeomRender_Scatter_TorranceSparrow2D_GeomRender.cu
+  src/geometricRender/hitFunctionReflecting_GeomRender_Scatter_Lambert2D_GeomRender.cu
   
 
   src/hitFunctionRenderFringeProj.cu

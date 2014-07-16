@@ -28,6 +28,7 @@
 /* include header of basis class */
 #include "Geometry_intersect.h"
 #include "rayTracingMath.h"
+#include <optixu/optixu_aabb.h>
 
 /* declare class */
 /**
@@ -82,7 +83,7 @@ class AsphericalSurface_ReducedParams : public Geometry_ReducedParams
  * \remarks this function is defined inline so it can be used on GPU and CPU
  * \author Mauch
  */
-inline RT_HOSTDEVICE Mat_hitParams calcHitParamsAsphere(double3 position,AsphericalSurface_ReducedParams params)
+inline RT_HOSTDEVICE Mat_hitParams calcHitParamsAsphere(double3 position, AsphericalSurface_ReducedParams params)
 {
 
 	double3 n;
@@ -246,6 +247,24 @@ inline RT_HOSTDEVICE double intersectRayAsphere(double3 rayPosition, double3 ray
 		return 0;
 	}
 	return t;
+}
+
+/**
+ * \detail asphericalSurfaceBounds 
+ *
+ * calculates the bounding box of an aspherical surface
+ *
+ * \param[in] int primIdx, float result[6], ApertureStop_ReducedParams params
+ * 
+ * \return double t
+ * \sa 
+ * \remarks this function is defined inline so it can be used on GPU and CPU
+ * \author Mauch
+ */
+inline RT_HOSTDEVICE void asphericalSurfaceBounds (int primIdx, float result[6], AsphericalSurface_ReducedParams params)
+{
+    optix::Aabb* aabb = (optix::Aabb*)result;  
+    aabb->invalidate();
 }
 
 

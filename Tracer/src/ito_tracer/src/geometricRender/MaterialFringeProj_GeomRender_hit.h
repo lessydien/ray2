@@ -104,7 +104,7 @@ inline RT_HOSTDEVICE bool hitRenderFringeProj(geomRenderRayStruct &ray, Mat_hitP
         else
             ray.cumFlux+=ray.flux*params.power*(cos(2*PI*l_rayPos.y/params.fringePeriod+params.fringePhase)+1);
     }
-    
+   
     ray.running=false; // stop ray
 	return true;
 }

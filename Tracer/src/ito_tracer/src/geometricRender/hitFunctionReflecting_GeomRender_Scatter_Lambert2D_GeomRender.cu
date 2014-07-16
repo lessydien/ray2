@@ -19,7 +19,7 @@
 #include <optix_math.h>
 #include "../rayData.h"
 #include "MaterialReflecting_GeomRender_hit.h"
-#include "Coating_NumCoeffs_GeomRender_hit.h"
+#include "Scatter_Lambert2D_GeomRender_hit.h"
 
 /****************************************************************************/
 /*				variable definitions										*/
@@ -31,16 +31,16 @@ rtDeclareVariable(int,               max_depth, , );
 rtDeclareVariable(float,               min_flux, , );
 rtDeclareVariable(optix::Ray, ray, rtCurrentRay, );
 rtDeclareVariable(geomRenderRayStruct, prd, rtPayload, );
-//rtDeclareVariable(rtObject,          top_object, , );
+rtDeclareVariable(rtObject,          top_object, , );
 //rtDeclareVariable(rtObject,          top_shadower, , );
 rtDeclareVariable(int,               geometryID, attribute geometryID , );
-rtDeclareVariable(Coating_NumCoeffs_GeomRender_ReducedParams, coating_params, , );
+rtDeclareVariable(ScatLambert2D_params, scatterParams, , );
 
 /****************************************************************************/
 /*				device functions											*/
 /****************************************************************************/
 
-__forceinline__ __device__ void reflectingCoatNumCoeffsGeomRender_anyHit_device()
+__forceinline__ __device__ void reflectingScatterLambert2DGeomRender_anyHit_device()
 {
   // if we are intersecting the geometry we started from again, we ignore the intersection
 //  if (prd.currentGeometryID == geometryID)
@@ -49,15 +49,48 @@ __forceinline__ __device__ void reflectingCoatNumCoeffsGeomRender_anyHit_device(
 //  }
 }
 
-__forceinline__ __device__ void reflectingCoatNumCoeffsGeomRender_closestHit_device( Mat_GeomRender_hitParams hitParams, double t_hit )
+__forceinline__ __device__ void reflectingScatterLambert2DGeomRender_closestHit_device( Mat_GeomRender_hitParams hitParams, double t_hit )
 {
-	  bool coat_reflected=true; // standard, this material is reflecting
-	  coat_reflected=hitCoatingNumCoeff_GeomRender(prd, hitParams, coating_params); // see what the coating wants
-	  // if we still have reflection, reflect the ray. Otherwise dont alter its direction...
-	  if (coat_reflected)
-		hitReflecting(prd, hitParams, t_hit, geometryID, coat_reflected);
-  if ( (prd.depth>max_depth) || (prd.flux<min_flux) )
-	  prd.running=false;
+	  
+  hitReflecting(prd, hitParams, t_hit, geometryID, true);
+
+  // create secondary ray
+  geomRenderRayStruct sdRay=prd;
+  sdRay.cumFlux=0;
+  sdRay.secondary=true;
+  sdRay.secondary_nr++;
+
+  if (hitLambert2D_GeomRender(sdRay, hitParams, scatterParams)) // do the scattering
+  {
+      if (sdRay.secondary_nr<2 && sdRay.flux>1e-8)
+      {
+          double scene_epsilon=0.00001;
+          optix::Ray ray = optix::make_Ray(make_float3(sdRay.position), make_float3(sdRay.direction), 0, scene_epsilon, RT_DEFAULT_MAX);
+          for(;;)
+          {
+              rtTrace(top_object, ray, sdRay);
+              // update ray
+	          ray.origin=make_float3(sdRay.position);
+	          ray.direction=make_float3(sdRay.direction);
+
+              if (!sdRay.running)
+                  break;
+          }
+          prd.cumFlux+=sdRay.cumFlux;
+          prd.currentSeed=sdRay.currentSeed;
+      }
+
+  }
+  prd.running=false;
+  // continue primary ray
+  //ScatLambert2D_params primParams=scatterParams;
+  //primParams.impAreaType=AT_INFTY; // primary ray does not use the importance area
+
+  //if (!hitLambert2D_GeomRender(prd, hitParams, primParams))
+  //    prd.running=false;
+
+  //if ( (prd.depth>max_depth) || (prd.flux<min_flux) )
+	 // prd.running=false;
 }
 
 /********************************************************************************/
@@ -66,11 +99,11 @@ __forceinline__ __device__ void reflectingCoatNumCoeffsGeomRender_closestHit_dev
 
 RT_PROGRAM void anyHit()
 {
-  reflectingCoatNumCoeffsGeomRender_anyHit_device();
+  reflectingScatterLambert2DGeomRender_anyHit_device();
 }
 
 
 RT_PROGRAM void closestHit()
 {
-  reflectingCoatNumCoeffsGeomRender_closestHit_device( hitParams, t_hit );
+  reflectingScatterLambert2DGeomRender_closestHit_device( hitParams, t_hit );
 }
