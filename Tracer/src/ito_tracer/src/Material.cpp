@@ -351,8 +351,8 @@ MaterialError Material::updateCPUSimInstance(double lambda)
  */
 double Material::calcSourceImmersion(double lambda)
 {
-	std::cout << "error in Material.calcSourceImmersion(): not defined for the given Material" << "...\n";
-	return 0;	// if the function is not overwritten by the child class, we return a standard value of one for the refractive index of the immersion material
+	// Materials that do not implement this function will immerse rays into refractive index 1...
+	return 1;
 };
 
 /**
