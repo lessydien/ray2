@@ -127,8 +127,11 @@ inline RT_HOSTDEVICE void cadObjectBounds (int primIdx, float result[6], CadObje
   const float  area = length(cross(v1-v0, v2-v0));
 
   if(area > 0.0f && area < 99999999999999999999.0f) {
-    aabb->m_min = fminf( fminf( v0, v1), v2 );
-    aabb->m_max = fmaxf( fmaxf( v0, v1), v2 );
+      float3 maxBox=make_float3(max(max(v0.x, v1.x), v2.x), max(max(v0.y, v1.y), v2.y), max(max(v0.z, v1.z), v2.z));
+      float3 minBox=make_float3(min(min(v0.x, v1.x), v2.x), min(min(v0.y, v1.y), v2.y), min(min(v0.z, v1.z), v2.z));
+      aabb->set(minBox, maxBox);
+//    aabb->m_min = fminf( fminf( v0, v1), v2 );
+//    aabb->m_max = fmaxf( fmaxf( v0, v1), v2 );
   } else {
     aabb->invalidate();
   }

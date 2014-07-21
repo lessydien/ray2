@@ -905,7 +905,8 @@ fieldError RayField::parseXml(pugi::xml_node &field, vector<Field*> &fieldVec, S
 		std::cout << "error in Geometry.parseXml(): matFab.createInstFromXML() returned an error." << "...\n";
 		return FIELD_ERR;
 	}
-	this->setMaterialListLength(1);
+
+    this->setMaterialListLength(1);
 	this->setMaterial(l_pMaterial,0);
 
 	delete l_pMatNodes;
