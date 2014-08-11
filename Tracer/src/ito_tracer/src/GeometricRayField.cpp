@@ -1504,6 +1504,7 @@ fieldError GeometricRayField::write2TextFile(char* filename, detParams &oDetPara
 	char t_filename[512];
 	sprintf(t_filename, "%s%s%i%s", OUTPUT_FILEPATH, PATH_SEPARATOR, oDetParams.subSetNr, oDetParams.filenamePtr);
 	hFileOut = fopen( t_filename, "w" ) ;
+    float test=(float)(rayList[0].position.x);
 	if (!hFileOut)
 	{
 		std::cout << "error in GeometricRayField.write2TextFile(): could not open output file: " << filename << "...\n";

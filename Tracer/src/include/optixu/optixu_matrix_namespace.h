@@ -18,6 +18,14 @@
  * INABILITY TO USE THIS SOFTWARE, EVEN IF NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGES
  */
+ 
+/**
+ * @file   optixu_matrix_namespace.h
+ * @author NVIDIA Corporation
+ * @brief  OptiX public API
+ *
+ * OptiX public API Reference - Public Matrix namespace
+ */
 
 #ifndef __optixu_optixu_matrix_namespace_h__
 #define __optixu_optixu_matrix_namespace_h__
@@ -25,7 +33,7 @@
 #include "optixu_math_namespace.h"
 #include <assert.h>
 
-// __forceinline__ works in cuda, VS, and with gcc.  Leave it as macro in case
+// __forceinline__ works in CUDA, VS, and with gcc.  Leave it as a macro in case
 // we need to make this per-platform or we want to switch off inlining globally.
 #ifndef OPTIXU_INLINE 
 #  define OPTIXU_INLINE_DEFINED 1
@@ -69,75 +77,95 @@ namespace optix {
   OPTIXU_INLINE RT_HOSTDEVICE float4 operator*(const Matrix<4,N>& m, const typename Matrix<4,N>::floatN& vec );
   OPTIXU_INLINE RT_HOSTDEVICE float4 operator*(const Matrix<4,4>& m, const float4& vec );
 
-  // A matrix with M rows and N columns
+  /**
+  * @brief A matrix with M rows and N columns
+  *
+  * @ingroup CUDACTypes
+  *
+  * <B>Description</B>
+  * 
+  * @ref Matrix provides a utility class for small-dimension floating-point
+  * matrices, such as transformation matrices.  @ref Matrix may also be useful
+  * in other computation and can be used in both host and device code.
+  * Typedefs are provided for 2x2 through 4x4 matrices.
+  *
+  * <B>History</B>
+  * 
+  * @ref Matrix was introduced in OptiX 1.0.
+  * 
+  * <B>See also</B>
+  * \a rtVariableSetMatrix*
+  * 
+  */
   template <unsigned int M, unsigned int N>
   class Matrix
   {
   public:
-    typedef typename VectorDim<N>::VectorType  floatN; // A row of the matrix
-    typedef typename VectorDim<M>::VectorType  floatM; // A column of the matrix
+    typedef typename VectorDim<N>::VectorType  floatN; /// A row of the matrix
+    typedef typename VectorDim<M>::VectorType  floatM; /// A column of the matrix
 
-    // Create an unitialized matrix.
-     RT_HOSTDEVICE              Matrix();
+	/** Create an unitialized matrix */
+	RT_HOSTDEVICE              Matrix();
 
-    // Create a matrix from the specified float array.
-     RT_HOSTDEVICE explicit     Matrix( const float data[M*N] ) { for(unsigned int i = 0; i < M*N; ++i) m_data[i] = data[i]; }
+	/** Create a matrix from the specified float array */
+	RT_HOSTDEVICE explicit     Matrix( const float data[M*N] ) { for(unsigned int i = 0; i < M*N; ++i) m_data[i] = data[i]; }
 
-    // Copy the matrix.
-     RT_HOSTDEVICE              Matrix( const Matrix& m );
+	/** Copy the matrix */
+	RT_HOSTDEVICE              Matrix( const Matrix& m );
 
-    // Assignment operator.
-     RT_HOSTDEVICE Matrix&      operator=( const Matrix& b );
+	/** Assignment operator */
+	RT_HOSTDEVICE Matrix&      operator=( const Matrix& b );
 
-    // Access the specified element 0..N*M-1
-     RT_HOSTDEVICE float        operator[]( unsigned int i )const { return m_data[i]; }
+	/** Access the specified element 0..N*M-1  */
+	RT_HOSTDEVICE float        operator[]( unsigned int i )const { return m_data[i]; }
 
-    // Access the specified element 0..N*M-1
-     RT_HOSTDEVICE float&       operator[]( unsigned int i )      { return m_data[i]; }
+	/** Access the specified element 0..N*M-1  */
+	RT_HOSTDEVICE float&       operator[]( unsigned int i )      { return m_data[i]; }
 
-    // Access the specified row 0..M.  Returns float, float2, float3 or float4 depending on the matrix size.
-     RT_HOSTDEVICE floatN       getRow( unsigned int m )const;
+	/** Access the specified row 0..M.  Returns float, float2, float3 or float4 depending on the matrix size  */
+	RT_HOSTDEVICE floatN       getRow( unsigned int m )const;
 
-    // Access the specified column 0..N.  Returns float, float2, float3 or float4 depending on the matrix size.
-     RT_HOSTDEVICE floatM       getCol( unsigned int n )const;
+	/** Access the specified column 0..N.  Returns float, float2, float3 or float4 depending on the matrix size */
+	RT_HOSTDEVICE floatM       getCol( unsigned int n )const;
 
-    // Returns a pointer to the internal data array.  The data array is stored in row-major order.
-     RT_HOSTDEVICE float*       getData();
+	/** Returns a pointer to the internal data array.  The data array is stored in row-major order. */
+	RT_HOSTDEVICE float*       getData();
 
-    // Returns a const pointer to the internal data array.  The data array is stored in row-major order.
-     RT_HOSTDEVICE const float* getData()const;
+	/** Returns a const pointer to the internal data array.  The data array is stored in row-major order. */
+	RT_HOSTDEVICE const float* getData()const;
 
-    // Assign the specified row 0..M.  Takes a float, float2, float3 or float4 depending on the matrix size.
-     RT_HOSTDEVICE void         setRow( unsigned int m, const floatN &r );
+	/** Assign the specified row 0..M.  Takes a float, float2, float3 or float4 depending on the matrix size */
+	RT_HOSTDEVICE void         setRow( unsigned int m, const floatN &r );
 
-    // Assign the specified column 0..N.  Takes a float, float2, float3 or float4 depending on the matrix size.
-     RT_HOSTDEVICE void         setCol( unsigned int n, const floatM &c );
+	/** Assign the specified column 0..N.  Takes a float, float2, float3 or float4 depending on the matrix size */
+	RT_HOSTDEVICE void         setCol( unsigned int n, const floatM &c );
 
-    // Returns the transpose of the matrix.
-     RT_HOSTDEVICE Matrix<N,M>         transpose() const;
+	/** Returns the transpose of the matrix */
+	RT_HOSTDEVICE Matrix<N,M>         transpose() const;
 
-    // Returns the inverse of the matrix.
-     RT_HOSTDEVICE Matrix<4,4>         inverse() const;
+	/** Returns the inverse of the matrix */
+	RT_HOSTDEVICE Matrix<4,4>         inverse() const;
 
-    // Returns the determinant of the matrix.
-     RT_HOSTDEVICE float               det() const;
+	/** Returns the determinant of the matrix */
+	RT_HOSTDEVICE float               det() const;
 
-    // Returns a rotation matrix.
-     RT_HOSTDEVICE static Matrix<4,4>  rotate(const float radians, const float3& axis);
+	/** Returns a rotation matrix */
+	RT_HOSTDEVICE static Matrix<4,4>  rotate(const float radians, const float3& axis);
 
-    // Returns a translation matrix.
-     RT_HOSTDEVICE static Matrix<4,4>  translate(const float3& vec);
+	/** Returns a translation matrix */
+	RT_HOSTDEVICE static Matrix<4,4>  translate(const float3& vec);
 
-    // Returns a scale matrix.
-     RT_HOSTDEVICE static Matrix<4,4>  scale(const float3& vec);
+	/** Returns a scale matrix */
+	RT_HOSTDEVICE static Matrix<4,4>  scale(const float3& vec);
 
-    // Returns the identity matrix.
-     RT_HOSTDEVICE static Matrix<N,N>  identity();
+	/** Returns the identity matrix */
+	RT_HOSTDEVICE static Matrix<N,N>  identity();
 
-    // Ordered comparison operator so that the matrix can be used in an STL container.
-     RT_HOSTDEVICE bool         operator<( const Matrix<M, N>& rhs ) const;
+	/** Ordered comparison operator so that the matrix can be used in an STL container */
+	RT_HOSTDEVICE bool         operator<( const Matrix<M, N>& rhs ) const;
   private:
-    float m_data[M*N]; // The data array is stored in row-major order.
+	  /** The data array is stored in row-major order */
+	  float m_data[M*N]; 
   };
 
 

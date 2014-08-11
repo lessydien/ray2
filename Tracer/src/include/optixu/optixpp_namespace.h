@@ -19,37 +19,6 @@
  * SUCH DAMAGES
  */
 
-
-///
-/// \defgroup optixpp OptiXpp: C++ wrapper for the OptiX C API.
-///
-/// OptiXpp wraps each OptiX C API opaque type in a C++ class.  Most of the OptiXpp
-/// class member functions map directly to C API function calls:
-///   - VariableObj::getContext -> rtVariableGetContext
-///   - ContextObj::createBuffer -> rtBufferCreate
-/// 
-/// Many classes have convenience functions which encapsulate a related group of 
-/// OptiX functions.  For instance
-/// \code
-///   ContextObj::createBuffer(unsigned int type, RTformat format, RTsize width)
-/// \endcode
-/// provides the functionality of 
-///   - \p rtBufferCreate
-///   - \p rtBufferSetFormat
-///   - \p rtBufferSetSize1D
-///
-/// in a single call.
-///  
-/// Manipulation of these classes is performed via reference counted
-/// Handle class.  Rather than working with a ContextObj directly you would use a Context
-/// instead, which is simply a typedef for <I>Handle<ContextObj></I>.  The OptiX SDK has
-/// many examples of the use of OptiXpp.  In particular, sample5 and sample5pp are a good
-/// place to look when learning OptiXpp as they are nearly identical programs, one
-/// created with the C API and one with the C++ API.
-///
-/// @{
-///
-
 ///
 /// \file optixpp_namespace.h
 /// \brief A C++ wrapper around the OptiX API.
@@ -91,9 +60,7 @@
 //-----------------------------------------------------------------------------
 
 namespace optix {
-  /// \addtogroup optixpp
-  /// @{
-
+  
   class AccelerationObj;
   class BufferObj;
   class ContextObj;
@@ -110,8 +77,9 @@ namespace optix {
 
   class APIObj;
   class ScopedObj;
+  
 
-
+  ///  \ingroup optixpp
   ///
   ///  \brief The Handle class is a reference counted handle class used to
   ///  manipulate API objects.
@@ -208,6 +176,8 @@ namespace optix {
 
   //----------------------------------------------------------------------------
 
+  /// \ingroup optixpp
+  /// @{
   typedef Handle<AccelerationObj>     Acceleration;     ///< Use this to manipulate RTacceleration objects.
   typedef Handle<BufferObj>           Buffer;           ///< Use this to manipulate RTbuffer objects.
   typedef Handle<ContextObj>          Context;          ///< Use this to manipulate RTcontext objects.
@@ -221,11 +191,13 @@ namespace optix {
   typedef Handle<TextureSamplerObj>   TextureSampler;   ///< Use this to manipulate RTtexturesampler objects.
   typedef Handle<TransformObj>        Transform;        ///< Use this to manipulate RTtransform objects.
   typedef Handle<VariableObj>         Variable;         ///< Use this to manipulate RTvariable objects.
+  /// @}
 
 
   //----------------------------------------------------------------------------
 
 
+  /// \ingroup optixpp
   ///
   /// \brief Exception class for error reporting from the OptiXpp API.
   /// 
@@ -270,6 +242,7 @@ namespace optix {
   //----------------------------------------------------------------------------
 
 
+  /// \ingroup optixpp
   ///
   /// \brief Base class for all reference counted wrappers around OptiX C API
   /// opaque types.
@@ -323,6 +296,7 @@ namespace optix {
   //----------------------------------------------------------------------------
 
 
+  /// \ingroup optixpp
   ///
   /// \brief Base class for all wrapper objects which can be destroyed and validated.
   ///
@@ -354,6 +328,7 @@ namespace optix {
   //----------------------------------------------------------------------------
 
 
+  /// \ingroup optixpp
   ///
   /// \brief Base class for all objects which are OptiX variable containers.
   ///
@@ -389,10 +364,11 @@ namespace optix {
   //----------------------------------------------------------------------------
 
 
+  /// \ingroup optixpp
   ///
   /// \brief Variable object wraps OptiX C API RTvariable type and its related function set.
   /// 
-  /// See OptiX programming guide and API reference for complete description of
+  /// See @ref OptiXApiReference for complete description of
   /// the usage and behavior of RTvariable objects.  Creation and querying of
   /// Variables can be performed via the Handle::operator[] function of the scope
   /// object associated with the variable. For example: 
@@ -482,62 +458,48 @@ namespace optix {
     //@}
 
     /// \name Numeric value getters 
-    /// Query value of a variable with scalar numeric value 
+    /// Query value of a variable with numeric value 
     //@{
-    float getFloat() const;
-    unsigned int getUint() const;
-    int getInt() const;
-    //@}
     
-#if 0
-    // Not implemented yet...
+    float         getFloat()  const;
+    optix::float2 getFloat2() const;
+    optix::float3 getFloat3() const;
+    optix::float4 getFloat4() const;
+    void          getFloat(float& f1) const;
+    void          getFloat(float& f1, float& f2) const;
+    void          getFloat(float& f1, float& f2, float& f3) const;
+    void          getFloat(float& f1, float& f2, float& f3, float& f4) const;
 
-    // The getFloat functions can be overloaded by parameter type.
-    void getFloat(float* f);
-    void getFloat(float* f1, float* f2);
-    void getFloat(optix::float2* f);
-    void getFloat(float* f1, float* f2, float* f3);
-    void getFloat(optix::float3* f);
-    void getFloat(float* f1, float* f2, float* f3, float* f4);
-    void getFloat(optix::float4* f);
-    // This one will need a different name to distinquish it from 'float getFloat()'.
-    optix::float2 getFloat2();
-    optix::float3 getFloat3();
-    optix::float4 getFloat4();
+    unsigned      getUint()  const;
+    optix::uint2  getUint2() const;
+    optix::uint3  getUint3() const;
+    optix::uint4  getUint4() const;
+    void          getUint(unsigned& u1) const;
+    void          getUint(unsigned& u1, unsigned& u2) const;
+    void          getUint(unsigned& u1, unsigned& u2, unsigned& u3) const;
+    void          getUint(unsigned& u1, unsigned& u2, unsigned& u3,
+                          unsigned& u4) const;
 
-    void get1fv(float* f);
-    void get2fv(float* f);
-    void get3fv(float* f);
-    void get4fv(float* f);
+    int           getInt()  const;
+    optix::int2   getInt2() const;
+    optix::int3   getInt3() const;
+    optix::int4   getInt4() const;
+    void          getInt(int& i1) const;
+    void          getInt(int& i1, int& i2) const;
+    void          getInt(int& i1, int& i2, int& i3) const;
+    void          getInt(int& i1, int& i2, int& i3, int& i4) const;
 
-    get1i (int* i1);
-    get2i (int* i1, int* i2);
-    get3i (int* i1, int* i2, int* i3);
-    get4i (int* i1, int* i2, int* i3, int* i4);
-    get1iv(int* i);
-    get2iv(int* i);
-    get3iv(int* i);
-    get4iv(int* i);
+    void getMatrix2x2(bool transpose, float* m) const;
+    void getMatrix2x3(bool transpose, float* m) const;
+    void getMatrix2x4(bool transpose, float* m) const;
+    void getMatrix3x2(bool transpose, float* m) const;
+    void getMatrix3x3(bool transpose, float* m) const;
+    void getMatrix3x4(bool transpose, float* m) const;
+    void getMatrix4x2(bool transpose, float* m) const;
+    void getMatrix4x3(bool transpose, float* m) const;
+    void getMatrix4x4(bool transpose, float* m) const;
 
-    get1ui (unsigned int* u1);
-    get2ui (unsigned int* u1, unsigned int* u2);
-    get3ui (unsigned int* u1, unsigned int* u2, unsigned int* u3);
-    get4ui (unsigned int* u1, unsigned int* u2, unsigned int* u3, unsigned int* u4);
-    get1uiv(unsigned int* u);
-    get2uiv(unsigned int* u);
-    get3uiv(unsigned int* u);
-    get4uiv(unsigned int* u);
-
-    getMatrix2x2fv(bool transpose, float* m);
-    getMatrix2x3fv(bool transpose, float* m);
-    getMatrix2x4fv(bool transpose, float* m);
-    getMatrix3x2fv(bool transpose, float* m);
-    getMatrix3x3fv(bool transpose, float* m);
-    getMatrix3x4fv(bool transpose, float* m);
-    getMatrix4x2fv(bool transpose, float* m);
-    getMatrix4x3fv(bool transpose, float* m);
-    getMatrix4x4fv(bool transpose, float* m);
-#endif
+    //@}
 
 
     /// \name OptiX API object setters 
@@ -557,9 +519,14 @@ namespace optix {
     /// \name OptiX API object getters 
     /// Reitrieve OptiX API object value from a variable 
     //@{
-    Buffer getBuffer() const;
-    TextureSampler getTextureSampler() const;
-    Program getProgram() const;
+    Buffer           getBuffer() const;
+    GeometryGroup    getGeometryGroup() const;
+    GeometryInstance getGeometryInstance() const;
+    Group            getGroup() const;
+    Program          getProgram() const;
+    Selector         getSelector() const;
+    TextureSampler   getTextureSampler() const;
+    Transform        getTransform() const;
     //@}
 
     /// \name User data variable accessors 
@@ -613,6 +580,7 @@ namespace optix {
   //----------------------------------------------------------------------------
 
 
+  /// \ingroup optixpp
   ///
   /// \brief Context object wraps the OptiX C API RTcontext opaque type and its associated function set.
   ///
@@ -628,13 +596,13 @@ namespace optix {
     /// Call rtDeviceGetAttribute and return the desired attribute value
     static void getDeviceAttribute(int ordinal, RTdeviceattribute attrib, RTsize size, void* p);
 
-    /// Creates a Context object.  See rtContextCreate
+    /// Creates a Context object.  See @ref rtContextCreate
     static Context create();
 
-    /// Destroy Context and all of its associated objects.  See rtContextDestroy.
+    /// Destroy Context and all of its associated objects.  See @ref rtContextDestroy.
     void destroy();
 
-    /// See rtContextValidate
+    /// See @ref rtContextValidate
     void validate();
 
     /// Retrieve the Context object associated with this APIObject.  In this case,
@@ -642,228 +610,240 @@ namespace optix {
     Context getContext() const;
 
     /// @{
-    /// See APIObj::checkError
+    /// See @ref APIObj::checkError
     void checkError(RTresult code)const;
 
-    /// See rtContextGetErrroString
+    /// See @ref rtContextGetErrorString
     std::string getErrorString( RTresult code ) const;
     /// @}
 
     /// @{
-    /// See rtAccelerationCreate
+    /// See @ref rtAccelerationCreate
     Acceleration createAcceleration(const char* builder, const char* traverser);
 
-    /// Create a buffer with given RTbuffertype.  See rtBufferCreate.
+    /// Create a buffer with given RTbuffertype.  See @ref rtBufferCreate.
     Buffer createBuffer(unsigned int type);
-    /// Create a buffer with given RTbuffertype and RTformat.  See rtBufferCreate, rtBufferSetFormat
+    /// Create a buffer with given RTbuffertype and RTformat.  See @ref rtBufferCreate, @ref rtBufferSetFormat
     Buffer createBuffer(unsigned int type, RTformat format);
-    /// Create a buffer with given RTbuffertype, RTformat and dimension.  See rtBufferCreate,
-    /// rtBufferSetFormat and rtBufferSetSize1D.
+    /// Create a buffer with given RTbuffertype, RTformat and dimension.  See @ref rtBufferCreate,
+    /// @ref rtBufferSetFormat and @ref rtBufferSetSize1D.
     Buffer createBuffer(unsigned int type, RTformat format, RTsize width);
-    /// Create a buffer with given RTbuffertype, RTformat and dimension.  See rtBufferCreate,
-    /// rtBufferSetFormat and rtBufferSetSize2D.
+    /// Create a buffer with given RTbuffertype, RTformat and dimension.  See @ref rtBufferCreate,
+    /// @ref rtBufferSetFormat and @ref rtBufferSetSize2D.
     Buffer createBuffer(unsigned int type, RTformat format, RTsize width, RTsize height);
-    /// Create a buffer with given RTbuffertype, RTformat and dimension.  See rtBufferCreate,
-    /// rtBufferSetFormat and rtBufferSetSize3D.
+    /// Create a buffer with given RTbuffertype, RTformat and dimension.  See @ref rtBufferCreate,
+    /// @ref rtBufferSetFormat and @ref rtBufferSetSize3D.
     Buffer createBuffer(unsigned int type, RTformat format, RTsize width, RTsize height, RTsize depth);
 
-    /// Create a buffer for CUDA with given RTbuffertype.  See rtBufferCreate.
+    /// Create a buffer for CUDA with given RTbuffertype.  See @ref rtBufferCreate.
     Buffer createBufferForCUDA(unsigned int type);
-    /// Create a buffer for CUDA with given RTbuffertype and RTformat.  See rtBufferCreate, rtBufferSetFormat
+    /// Create a buffer for CUDA with given RTbuffertype and RTformat.  See @ref rtBufferCreate, @ref rtBufferSetFormat
     Buffer createBufferForCUDA(unsigned int type, RTformat format);
-    /// Create a buffer for CUDA with given RTbuffertype, RTformat and dimension.  See rtBufferCreate,
-    /// rtBufferSetFormat and rtBufferSetSize1D.
+    /// Create a buffer for CUDA with given RTbuffertype, RTformat and dimension.  See @ref rtBufferCreate,
+    /// @ref rtBufferSetFormat and @ref rtBufferSetSize1D.
     Buffer createBufferForCUDA(unsigned int type, RTformat format, RTsize width);
-    /// Create a buffer for CUDA with given RTbuffertype, RTformat and dimension.  See rtBufferCreate,
-    /// rtBufferSetFormat and rtBufferSetSize2D.
+    /// Create a buffer for CUDA with given RTbuffertype, RTformat and dimension.  See @ref rtBufferCreate,
+    /// @ref rtBufferSetFormat and @ref rtBufferSetSize2D.
     Buffer createBufferForCUDA(unsigned int type, RTformat format, RTsize width, RTsize height);
-    /// Create a buffer for CUDA with given RTbuffertype, RTformat and dimension.  See rtBufferCreate,
-    /// rtBufferSetFormat and rtBufferSetSize3D.
+    /// Create a buffer for CUDA with given RTbuffertype, RTformat and dimension.  See @ref rtBufferCreate,
+    /// @ref rtBufferSetFormat and @ref rtBufferSetSize3D.
     Buffer createBufferForCUDA(unsigned int type, RTformat format, RTsize width, RTsize height, RTsize depth);
 
-    /// Create buffer from GL buffer object.  See rtBufferCreateFromGLBO
+    /// Create buffer from GL buffer object.  See @ref rtBufferCreateFromGLBO
     Buffer createBufferFromGLBO(unsigned int type, unsigned int vbo);
 
-    /// Create TextureSampler from GL image.  See rtTextureSamplerCreateFromGLImage
+    /// Create TextureSampler from GL image.  See @ref rtTextureSamplerCreateFromGLImage
     TextureSampler createTextureSamplerFromGLImage(unsigned int id, RTgltarget target);
 
 #ifdef _WIN32
-    /// Create buffer from D3D9 buffer object.  Windows only.  See rtBufferCreateFromD3D9Resource.
+    /// Create buffer from D3D9 buffer object.  Windows only.  See @ref rtBufferCreateFromD3D9Resource.
     Buffer createBufferFromD3D9Resource(unsigned int type, IDirect3DResource9 *pResource);
-    /// Create buffer from D3D10 buffer object.  Windows only.  See rtBufferCreateFromD3D10Resource.
+    /// Create buffer from D3D10 buffer object.  Windows only.  See @ref rtBufferCreateFromD3D10Resource.
     Buffer createBufferFromD3D10Resource(unsigned int type, ID3D10Resource *pResource);
-    /// Create buffer from D3D11 buffer object.  Windows only.  See rtBufferCreateFromD3D11Resource.
+    /// Create buffer from D3D11 buffer object.  Windows only.  See @ref rtBufferCreateFromD3D11Resource.
     Buffer createBufferFromD3D11Resource(unsigned int type, ID3D11Resource *pResource);
 
-    /// Create TextureSampler from D3D9 image.  Windows only.  See rtTextureSamplerCreateFromD3D9Resource.
+    /// Create TextureSampler from D3D9 image.  Windows only.  See @ref rtTextureSamplerCreateFromD3D9Resource.
     TextureSampler createTextureSamplerFromD3D9Resource(IDirect3DResource9 *pResource);
-    /// Create TextureSampler from D3D10 image.  Windows only.  See rtTextureSamplerCreateFromD3D10Resource.
+    /// Create TextureSampler from D3D10 image.  Windows only.  See @ref rtTextureSamplerCreateFromD3D10Resource.
     TextureSampler createTextureSamplerFromD3D10Resource(ID3D10Resource *pResource);
-    /// Create TextureSampler from D3D11 image.  Windows only.  See rtTextureSamplerCreateFromD3D11Resource.
+    /// Create TextureSampler from D3D11 image.  Windows only.  See @ref rtTextureSamplerCreateFromD3D11Resource.
     TextureSampler createTextureSamplerFromD3D11Resource(ID3D11Resource *pResource);
 #endif
 
-    /// See rtGeometryCreate
+    /// Queries the Buffer object from a given buffer id obtained from a previous call to
+    /// @ref BufferObj::getId.  See @ref BufferObj::getId and @ref rtContextGetBufferFromId.
+    Buffer getBufferFromId(int buffer_id);
+       
+    /// Queries the TextureSampler object from a given sampler id obtained from a previous call to
+    /// @ref TextureSamplerObj::getId.  See @ref TextureSamplerObj::getId and @ref rtContextGetTextureSamplerFromId.
+    TextureSampler getTextureSamplerFromId(int sampler_id);
+
+    /// See @ref rtGeometryCreate
     Geometry createGeometry();
-    /// See rtGeometryInstanceCreate
+    /// See @ref rtGeometryInstanceCreate
     GeometryInstance createGeometryInstance();
     /// Create a geometry instance with a Geometry object and a set of associated materials.  See
-    /// rtGeometryInstanceCreate, rtGeometryInstanceSetMaterialCount, and rtGeometryInstanceSetMaterial
+    /// @ref rtGeometryInstanceCreate, @ref rtGeometryInstanceSetMaterialCount, and @ref rtGeometryInstanceSetMaterial
     template<class Iterator>
     GeometryInstance createGeometryInstance( Geometry geometry, Iterator matlbegin, Iterator matlend );
 
-    /// See rtGroupCreate
+    /// See @ref rtGroupCreate
     Group createGroup();
-    /// Create a Group with a set of child nodes.  See rtGroupCreate, rtGroupSetChildCount and
-    /// rtGroupSetChild
+    /// Create a Group with a set of child nodes.  See @ref rtGroupCreate, @ref rtGroupSetChildCount and
+    /// @ref rtGroupSetChild
     template<class Iterator>
     Group createGroup( Iterator childbegin, Iterator childend );
 
-    /// See rtGeometryGroupCreate
+    /// See @ref rtGeometryGroupCreate
     GeometryGroup createGeometryGroup();
-    /// Create a GeometryGroup with a set of child nodes.  See rtGeometryGroupCreate,
-    /// rtGeometryGroupSetChildCount and rtGeometryGroupSetChild
+    /// Create a GeometryGroup with a set of child nodes.  See @ref rtGeometryGroupCreate,
+    /// @ref rtGeometryGroupSetChildCount and @ref rtGeometryGroupSetChild
     template<class Iterator>
     GeometryGroup createGeometryGroup( Iterator childbegin, Iterator childend );
 
-    /// See rtTransformCreate
+    /// See @ref rtTransformCreate
     Transform createTransform();
 
-    /// See rtMaterialCreate
+    /// See @ref rtMaterialCreate
     Material createMaterial();
 
-    /// See rtProgramCreateFromPTXFile
+    /// See @ref rtProgramCreateFromPTXFile
     Program createProgramFromPTXFile  ( const std::string& ptx, const std::string& program_name );
-    /// See rtProgramCreateFromPTXString
+    /// See @ref rtProgramCreateFromPTXString
     Program createProgramFromPTXString( const std::string& ptx, const std::string& program_name );
 
-    /// See rtSelectorCreate
+    /// See @ref rtSelectorCreate
     Selector createSelector();
 
-    /// See rtTextureSamplerCreate
+    /// See @ref rtTextureSamplerCreate
     TextureSampler createTextureSampler();
     /// @}
 
     /// @{
-    /// See rtContextSetDevices
+    /// See @ref rtContextSetDevices
     template<class Iterator>
     void setDevices(Iterator begin, Iterator end);
 
 #ifdef _WIN32
-    /// Set the D3D device assocaiated with this context (Windows only).  See rtContextSetD3D9Device.
+    /// Set the D3D device assocaiated with this context (Windows only).  See @ref rtContextSetD3D9Device.
     void setD3D9Device(IDirect3DDevice9* device);
-    /// Set the D3D device assocaiated with this context (Windows only).  See rtContextSetD3D10Device.
+    /// Set the D3D device assocaiated with this context (Windows only).  See @ref rtContextSetD3D10Device.
     void setD3D10Device(ID3D10Device* device);
-    /// Set the D3D device assocaiated with this context (Windows only).  See rtContextSetD3D11Device.
+    /// Set the D3D device assocaiated with this context (Windows only).  See @ref rtContextSetD3D11Device.
     void setD3D11Device(ID3D11Device* device);
 #endif
 
-    /// See rtContextGetDevices.  This returns the list of currently enabled devices.
+    /// See @ref rtContextGetDevices.  This returns the list of currently enabled devices.
     std::vector<int> getEnabledDevices() const;
 
-    /// See rtContextGetDeviceCount.  As opposed to getDeviceCount, this returns only the
+    /// See @ref rtContextGetDeviceCount.  As opposed to getDeviceCount, this returns only the
     /// number of enabled devices.
     unsigned int getEnabledDeviceCount() const;
     /// @}
 
     /// @{
-    /// See rtContextGetAttribute
+    /// See @ref rtContextGetAttribute
     int getMaxTextureCount() const;
 
-    /// See rtContextGetAttribute
+    /// See @ref rtContextGetAttribute
     int getCPUNumThreads() const;
 
-    /// See rtContextGetAttribute
+    /// See @ref rtContextGetAttribute
     RTsize getUsedHostMemory() const;
 
-    /// See rtContextGetAttribute
+    /// See @ref rtContextGetAttribute
     int getGPUPagingActive() const;
 
-    /// See rtContextGetAttribute
+    /// See @ref rtContextGetAttribute
     int getGPUPagingForcedOff() const;
 
-    /// See rtContextGetAttribute
+    /// See @ref rtContextGetAttribute
     RTsize getAvailableDeviceMemory(int ordinal) const;
     /// @}
 
     /// @{
-    /// See rtContextSetAttribute
+    /// See @ref rtContextSetAttribute
     void setCPUNumThreads(int cpu_num_threads);
 
-    /// See rtContextSetAttribute
+    /// See @ref rtContextSetAttribute
     void setGPUPagingForcedOff(int gpu_paging_forced_off);
+
+    /// See rtContextSetAttribute
+    template<class T>
+    void setAttribute(RTcontextattribute attribute, const T& val);
     /// @}
 
     /// @{    
-    /// See rtContextSetStackSize
+    /// See @ref rtContextSetStackSize
     void setStackSize(RTsize  stack_size_bytes);
-    /// See rtContextGetStackSize
+    /// See @ref rtContextGetStackSize
     RTsize getStackSize() const;
 
-    /// See rtContextSetTimeoutCallback
+    /// See @ref rtContextSetTimeoutCallback
     /// RTtimeoutcallback is defined as typedef int (*RTtimeoutcallback)(void).
     void setTimeoutCallback(RTtimeoutcallback callback, double min_polling_seconds);
 
-    /// See rtContextSetEntryPointCount
+    /// See @ref rtContextSetEntryPointCount
     void setEntryPointCount(unsigned int  num_entry_points);
-    /// See rtContextgetEntryPointCount
+    /// See @ref rtContextGetEntryPointCount
     unsigned int getEntryPointCount() const;
 
-    /// See rtContextSetRayTypeCount
+    /// See @ref rtContextSetRayTypeCount
     void setRayTypeCount(unsigned int  num_ray_types);
-    /// See rtContextGetRayTypeCount
+    /// See @ref rtContextGetRayTypeCount
     unsigned int getRayTypeCount() const;
     /// @}
 
     /// @{
-    /// See rtContextSetRayGenerationProgram
+    /// See @ref rtContextSetRayGenerationProgram
     void setRayGenerationProgram(unsigned int entry_point_index, Program  program);
-    /// See rtContextGetRayGenerationProgram
+    /// See @ref rtContextGetRayGenerationProgram
     Program getRayGenerationProgram(unsigned int entry_point_index) const;
 
-    /// See rtContextSetExceptionProgram
+    /// See @ref rtContextSetExceptionProgram
     void setExceptionProgram(unsigned int entry_point_index, Program  program);
-    /// See rtContextGetExceptionProgram
+    /// See @ref rtContextGetExceptionProgram
     Program getExceptionProgram(unsigned int entry_point_index) const;
 
-    /// See rtContextSetExceptionEnabled
+    /// See @ref rtContextSetExceptionEnabled
     void setExceptionEnabled( RTexception exception, bool enabled );
-    /// See rtContextGetExceptionEnabled
+    /// See @ref rtContextGetExceptionEnabled
     bool getExceptionEnabled( RTexception exception ) const;
 
-    /// See rtContextSetMissProgram
+    /// See @ref rtContextSetMissProgram
     void setMissProgram(unsigned int ray_type_index, Program  program);
-    /// See rtContextGetMissProgram
+    /// See @ref rtContextGetMissProgram
     Program getMissProgram(unsigned int ray_type_index) const;
     /// @}
 
-    /// See rtContextCompile
+    /// See @ref rtContextCompile
     void compile();
 
     /// @{
-    /// See rtContextLaunch1D
+    /// See @ref rtContextLaunch
     void launch(unsigned int entry_point_index, RTsize image_width);
-    /// See rtContextLaunch2D
+    /// See @ref rtContextLaunch
     void launch(unsigned int entry_point_index, RTsize image_width, RTsize image_height);
-    /// See rtContextLaunch3D
+    /// See @ref rtContextLaunch
     void launch(unsigned int entry_point_index, RTsize image_width, RTsize image_height, RTsize image_depth);
     /// @}
 
-    /// See rtContextGetRunningState
+    /// See @ref rtContextGetRunningState
     int getRunningState() const;
 
     /// @{
-    /// See rtContextSetPrintEnabled
+    /// See @ref rtContextSetPrintEnabled
     void setPrintEnabled(bool enabled);
-    /// See rtContextGetPrintEnabled
+    /// See @ref rtContextGetPrintEnabled
     bool getPrintEnabled() const;
-    /// See rtContextSetPrintBufferSize
+    /// See @ref rtContextSetPrintBufferSize
     void setPrintBufferSize(RTsize buffer_size_bytes);
-    /// See rtContextGetPrintBufferSize
+    /// See @ref rtContextGetPrintBufferSize
     RTsize getPrintBufferSize() const;
-    /// See rtContextSetPrintLaunchIndex.
+    /// See @ref rtContextSetPrintLaunchIndex.
     void setPrintLaunchIndex(int x, int y=-1, int z=-1);
-    /// See rtContextGetPrintLaunchIndex
+    /// See @ref rtContextGetPrintLaunchIndex
     optix::int3 getPrintLaunchIndex() const;
     /// @}
 
@@ -890,6 +870,7 @@ namespace optix {
   //----------------------------------------------------------------------------
   
 
+  /// \ingroup optixpp
   ///
   /// \brief Program object wraps the OptiX C API RTprogram opaque type and its associated function set.
   ///
@@ -919,6 +900,7 @@ namespace optix {
   //----------------------------------------------------------------------------
 
 
+  /// \ingroup optixpp
   ///
   /// \brief Group wraps the OptiX C API RTgroup opaque type and its associated function set.
   ///
@@ -930,22 +912,36 @@ namespace optix {
     Context getContext() const;
 
     /// @{
-    /// Set the Acceleration structure for this group.  See rtGroupSetAcceleration.
+    /// Set the Acceleration structure for this group.  See @ref rtGroupSetAcceleration.
     void setAcceleration(Acceleration acceleration);
-    /// Query the Acceleration structure for this group.  See rtGroupGetAcceleration.
+    /// Query the Acceleration structure for this group.  See @ref rtGroupGetAcceleration.
     Acceleration getAcceleration() const;
     /// @}
 
     /// @{
-    /// Set the number of children for this group.  See rtGroupSetChildCount.
+    /// Set the number of children for this group.  See @ref rtGroupSetChildCount.
     void setChildCount(unsigned int  count);
-    /// Query the number of children for this group.  See rtGroupGetChildCount.
+    /// Query the number of children for this group.  See @ref rtGroupGetChildCount.
     unsigned int getChildCount() const;
 
-    /// Set an indexed child within this group.  See rtGroupSetChild.
+    /// Set an indexed child within this group.  See @ref rtGroupSetChild.
     template< typename T > void setChild(unsigned int index, T child);
-    /// Query an indexed child within this group.  See rtGroupGetChild.
+    /// Query an indexed child within this group.  See @ref rtGroupGetChild.
     template< typename T > T getChild(unsigned int index) const;
+    /// Query indexed child's type.  See @ref rtGroupGetChildType
+    RTobjecttype getChildType(unsigned int index) const;
+
+    /// Set a new child in this group and returns its new index.  See @ref rtGroupSetChild
+    template< typename T > unsigned int addChild(T child);
+    /// Remove a child in this group. Note: this function shifts down all the elements next to the removed one. 
+    /// Returns the position of the removed element if succeeded. Throws @ref RT_ERROR_INVALID_VALUE if the parameter is invalid.
+    template< typename T > unsigned int removeChild(T child);
+    /// Remove a child in this group by its index. Note: this function shifts down all the elements next to the removed one.
+    /// Throws @ref RT_ERROR_INVALID_VALUE if the parameter is invalid.
+    void removeChild(int index);
+    void removeChild(unsigned int index);
+    /// Query a child in this group for its index. See @ref rtGroupGetChild
+    template< typename T > unsigned int getChildIndex(T child) const;
     /// @}
 
     /// Get the underlying OptiX C API RTgroup opaque pointer.
@@ -963,6 +959,7 @@ namespace optix {
   //----------------------------------------------------------------------------
 
 
+  /// \ingroup optixpp
   ///
   /// \brief GeometryGroup wraps the OptiX C API RTgeometrygroup opaque type and its associated function set.
   ///
@@ -973,22 +970,35 @@ namespace optix {
     Context getContext() const;
 
     /// @{
-    /// Set the Acceleration structure for this group.  See rtGeometryGroupSetAcceleration.
+    /// Set the Acceleration structure for this group.  See @ref rtGeometryGroupSetAcceleration.
     void setAcceleration(Acceleration acceleration);
-    /// Query the Acceleration structure for this group.  See rtGeometryGroupGetAcceleration.
+    /// Query the Acceleration structure for this group.  See @ref rtGeometryGroupGetAcceleration.
     Acceleration getAcceleration() const;
     /// @}
 
     /// @{
-    /// Set the number of children for this group.  See rtGeometryGroupSetChildCount.
+    /// Set the number of children for this group.  See @ref rtGeometryGroupSetChildCount.
     void setChildCount(unsigned int  count);
-    /// Query the number of children for this group.  See rtGeometryGroupGetChildCount.
+    /// Query the number of children for this group.  See @ref rtGeometryGroupGetChildCount.
     unsigned int getChildCount() const;
 
-    /// Set an indexed GeometryInstance child of this group.  See rtGeometryGroupSetChild.
+    /// Set an indexed GeometryInstance child of this group.  See @ref rtGeometryGroupSetChild.
     void setChild(unsigned int index, GeometryInstance geometryinstance);
-    /// Query an indexed GeometryInstance within this group.  See rtGeometryGroupGetChild.
+    /// Query an indexed GeometryInstance within this group.  See @ref rtGeometryGroupGetChild.
     GeometryInstance getChild(unsigned int index) const;
+
+    /// Set a new child in this group and returns its new index.  See @ref rtGeometryGroupSetChild
+    unsigned int addChild(GeometryInstance child);
+    /// Remove a child in this group and returns the index to the deleted element in case of success.
+    /// Throws @ref RT_ERROR_INVALID_VALUE if the parameter is invalid.
+    /// Note: this function shifts down all the elements next to the removed one.
+    unsigned int removeChild(GeometryInstance child);
+    /// Remove a child in this group by its index. Throws @ref RT_ERROR_INVALID_VALUE if the parameter is invalid.
+    /// Note: this function shifts down all the elements next to the removed one.
+    void removeChild(int index);
+    void removeChild(unsigned int index);
+    /// Query a child in this group for its index. See @ref rtGeometryGroupGetChild
+    unsigned int getChildIndex(GeometryInstance child) const;
     /// @}
 
     /// Get the underlying OptiX C API RTgeometrygroup opaque pointer.
@@ -1006,6 +1016,7 @@ namespace optix {
   //----------------------------------------------------------------------------
 
 
+  /// \ingroup optixpp
   ///
   /// \brief Transform wraps the OptiX C API RTtransform opaque type and its associated function set.
   ///
@@ -1016,16 +1027,18 @@ namespace optix {
     Context getContext() const;
 
     /// @{
-    /// Set the child node of this transform.  See rtTransformSetChild.
+    /// Set the child node of this transform.  See @ref rtTransformSetChild.
     template< typename T > void setChild(T child);
-    /// Set the child node of this transform.  See rtTransformGetChild.
+    /// Set the child node of this transform.  See @ref rtTransformGetChild.
     template< typename T > T getChild() const;
+    /// Query child's type.  See @ref rtTransformGetChildType.
+    RTobjecttype getChildType() const;
     /// @}
 
     /// @{
-    /// Set the transform matrix for this node.  See rtTransformSetMatrix.
+    /// Set the transform matrix for this node.  See @ref rtTransformSetMatrix.
     void setMatrix(bool transpose, const float* matrix, const float* inverse_matrix);
-    /// Get the transform matrix for this node.  See rtTransformGetMatrix.
+    /// Get the transform matrix for this node.  See @ref rtTransformGetMatrix.
     void getMatrix(bool transpose, float* matrix, float* inverse_matrix) const;
     /// @}
 
@@ -1044,6 +1057,7 @@ namespace optix {
   //----------------------------------------------------------------------------
 
 
+  /// \ingroup optixpp
   ///
   /// \brief Selector wraps the OptiX C API RTselector opaque type and its associated function set.
   ///
@@ -1054,22 +1068,37 @@ namespace optix {
     Context getContext() const;
 
     /// @{
-    /// Set the visitor program for this selector.  See rtSelectorSetVisitProgram
+    /// Set the visitor program for this selector.  See @ref rtSelectorSetVisitProgram
     void setVisitProgram(Program  program);
-    /// Get the visitor program for this selector.  See rtSelectorGetVisitProgram
+    /// Get the visitor program for this selector.  See @ref rtSelectorGetVisitProgram
     Program getVisitProgram() const;
     /// @}
 
     /// @{
-    /// Set the number of children for this group.  See rtSelectorSetChildCount.
+    /// Set the number of children for this group.  See @ref rtSelectorSetChildCount.
     void setChildCount(unsigned int  count);
-    /// Query the number of children for this group.  See rtSelectorGetChildCount.
+    /// Query the number of children for this group.  See @ref rtSelectorGetChildCount.
     unsigned int getChildCount() const;
 
-    /// Set an indexed child child of this group.  See rtSelectorSetChild.
+    /// Set an indexed child child of this group.  See @ref rtSelectorSetChild
     template< typename T > void setChild(unsigned int index, T child);
-    /// Query an indexed child within this group.  See rtSelectorGetChild.
+    /// Query an indexed child within this group.  See @ref rtSelectorGetChild
     template< typename T > T getChild(unsigned int index) const;
+    /// Query indexed child's type.  See @ref rtSelectorGetChildType
+    RTobjecttype getChildType(unsigned int index) const;
+    
+    /// Set a new child in this group and returns its new index.  See @ref rtSelectorSetChild
+    template< typename T > unsigned int addChild(T child);
+    /// Remove a child in this group and returns the index to the deleted element in case of success.
+    /// Throws @ref RT_ERROR_INVALID_VALUE if the parameter is invalid.
+    /// Note: this function shifts down all the elements next to the removed one.
+    template< typename T > unsigned int removeChild(T child);
+    /// Remove a child in this group by its index. Throws @ref RT_ERROR_INVALID_VALUE if the parameter is invalid.
+    /// Note: this function shifts down all the elements next to the removed one.
+    void removeChild(int index);
+    void removeChild(unsigned int index);
+    /// Query a child in this group for its index. See @ref rtSelectorGetChild
+    template< typename T > unsigned int getChildIndex(T child) const;
     /// @}
 
     /// @{
@@ -1095,6 +1124,7 @@ namespace optix {
   //----------------------------------------------------------------------------
 
 
+  /// \ingroup optixpp
   ///
   /// \brief Acceleration wraps the OptiX C API RTacceleration opaque type and its associated function set.
   ///
@@ -1105,36 +1135,36 @@ namespace optix {
     Context getContext() const;
 
     /// @{
-    /// Mark the acceleration as needing a rebuild.  See rtAccelerationMarkDirty.
+    /// Mark the acceleration as needing a rebuild.  See @ref rtAccelerationMarkDirty.
     void markDirty();
-    /// Query if the acceleration needs a rebuild.  See rtAccelerationIsDirty.
+    /// Query if the acceleration needs a rebuild.  See @ref rtAccelerationIsDirty.
     bool isDirty() const;
     /// @}
 
     /// @{
     /// Set properties specifying Acceleration builder/traverser behavior.
-    /// See rtAccelerationSetProperty.
+    /// See @ref rtAccelerationSetProperty.
     void        setProperty( const std::string& name, const std::string& value );
     /// Query properties specifying Acceleration builder/traverser behavior.
-    /// See rtAccelerationGetProperty.
+    /// See @ref rtAccelerationGetProperty.
     std::string getProperty( const std::string& name ) const;
 
-    /// Specify the acceleration structure builder.  See rtAccelerationSetBuilder.
+    /// Specify the acceleration structure builder.  See @ref rtAccelerationSetBuilder.
     void        setBuilder(const std::string& builder);
-    /// Query the acceleration structure builder.  See rtAccelerationGetBuilder.
+    /// Query the acceleration structure builder.  See @ref rtAccelerationGetBuilder.
     std::string getBuilder() const;
-    /// Specify the acceleration structure traverser.  See rtAccelerationSetTraverser.
+    /// Specify the acceleration structure traverser.  See @ref rtAccelerationSetTraverser.
     void        setTraverser(const std::string& traverser);
-    /// Query the acceleration structure traverser.  See rtAccelerationGetTraverser.
+    /// Query the acceleration structure traverser.  See @ref rtAccelerationGetTraverser.
     std::string getTraverser() const;
     /// @}
 
     /// @{
-    /// Query the size of the marshalled acceleration data.  See rtAccelerationGetDataSize.
+    /// Query the size of the marshalled acceleration data.  See @ref rtAccelerationGetDataSize.
     RTsize getDataSize() const;
-    /// Get the marshalled acceleration data.  See rtAccelerationGetData.
+    /// Get the marshalled acceleration data.  See @ref rtAccelerationGetData.
     void   getData( void* data ) const;
-    /// Specify the acceleration structure via marshalled acceleration data.  See rtAccelerationSetData.
+    /// Specify the acceleration structure via marshalled acceleration data.  See @ref rtAccelerationSetData.
     void   setData( const void* data, RTsize size );
     /// @}
 
@@ -1153,6 +1183,7 @@ namespace optix {
   //----------------------------------------------------------------------------
 
 
+  /// \ingroup optixpp
   ///
   /// \brief GeometryInstance wraps the OptiX C API RTgeometryinstance acceleration
   /// opaque type and its associated function set.
@@ -1164,19 +1195,19 @@ namespace optix {
     Context getContext() const;
 
     /// @{
-    /// Set the geometry object associated with this instance.  See rtGeometryInstanceSetGeometry.
+    /// Set the geometry object associated with this instance.  See @ref rtGeometryInstanceSetGeometry.
     void setGeometry(Geometry  geometry);
-    /// Get the geometry object associated with this instance.  See rtGeometryInstanceGetGeometry.
+    /// Get the geometry object associated with this instance.  See @ref rtGeometryInstanceGetGeometry.
     Geometry getGeometry() const;
 
-    /// Set the number of materials associated with this instance.  See rtGeometryInstanceSetMaterialCount.
+    /// Set the number of materials associated with this instance.  See @ref rtGeometryInstanceSetMaterialCount.
     void setMaterialCount(unsigned int  count);
-    /// Query the number of materials associated with this instance.  See rtGeometryInstanceGetMaterialCount.
+    /// Query the number of materials associated with this instance.  See @ref rtGeometryInstanceGetMaterialCount.
     unsigned int getMaterialCount() const;
 
-    /// Set the material at given index.  See rtGeometryInstanceSetMaterial.
+    /// Set the material at given index.  See @ref rtGeometryInstanceSetMaterial.
     void setMaterial(unsigned int idx, Material  material);
-    /// Get the material at given index.  See rtGeometryInstanceGetMaterial.
+    /// Get the material at given index.  See @ref rtGeometryInstanceGetMaterial.
     Material getMaterial(unsigned int idx) const;
 
     /// Adds the provided material and returns the index to newly added material; increases material count by one.
@@ -1206,6 +1237,7 @@ namespace optix {
   //----------------------------------------------------------------------------
 
 
+  /// \ingroup optixpp
   ///
   /// \brief Geometry wraps the OptiX C API RTgeometry opaque type and its associated function set.
   /// 
@@ -1216,30 +1248,39 @@ namespace optix {
     Context getContext() const;
 
     /// @{
-    /// Mark this geometry as dirty, causing rebuild of parent groups acceleration.  See rtGeometryMarkDirty.
+    /// Mark this geometry as dirty, causing rebuild of parent groups acceleration.  See @ref rtGeometryMarkDirty.
     void markDirty();
-    /// Query whether this geometry has been marked dirty.  See rtGeometryIsDirty.
+    /// Query whether this geometry has been marked dirty.  See @ref rtGeometryIsDirty.
     bool isDirty() const;
     /// @}
 
     /// @{
-    /// Set the number of primitives in this geometry objects (eg, number of triangles in mesh).
-    /// See rtGeometrySetPrimitiveCount
+    /// Set the number of primitives in this geometry object (eg, number of triangles in mesh).
+    /// See @ref rtGeometrySetPrimitiveCount
     void setPrimitiveCount(unsigned int  num_primitives);
-    /// Query the number of primitives in this geometry objects (eg, number of triangles in mesh).
-    /// See rtGeometryGetPrimitiveCount
+    /// Query the number of primitives in this geometry object (eg, number of triangles in mesh).
+    /// See @ref rtGeometryGetPrimitiveCount
     unsigned int getPrimitiveCount() const;
     /// @}
 
     /// @{
-    /// Set the bounding box program for this geometry.  See rtGeometrySetBoundingBoxProgram.
+    /// Set the primitive index offset for this geometry object.
+    /// See @ref rtGeometrySetPrimitiveIndexOffset
+    void setPrimitiveIndexOffset(unsigned int  index_offset);
+    /// Query the primitive index offset for this geometry object.
+    /// See @ref rtGeometryGetPrimitiveIndexOffset
+    unsigned int getPrimitiveIndexOffset() const;
+    /// @}
+
+    /// @{
+    /// Set the bounding box program for this geometry.  See @ref rtGeometrySetBoundingBoxProgram.
     void setBoundingBoxProgram(Program  program);
-    /// Get the bounding box program for this geometry.  See rtGeometryGetBoundingBoxProgram.
+    /// Get the bounding box program for this geometry.  See @ref rtGeometryGetBoundingBoxProgram.
     Program getBoundingBoxProgram() const;
 
-    /// Set the intersection program for this geometry.  See rtGeometrySetIntersectionProgram.
+    /// Set the intersection program for this geometry.  See @ref rtGeometrySetIntersectionProgram.
     void setIntersectionProgram(Program  program);
-    /// Get the intersection program for this geometry.  See rtGeometryGetIntersectionProgram.
+    /// Get the intersection program for this geometry.  See @ref rtGeometryGetIntersectionProgram.
     Program getIntersectionProgram() const;
     /// @}
 
@@ -1266,6 +1307,7 @@ namespace optix {
   //----------------------------------------------------------------------------
 
 
+  /// \ingroup optixpp
   ///
   /// \brief Material wraps the OptiX C API RTmaterial opaque type and its associated function set.
   ///
@@ -1276,14 +1318,14 @@ namespace optix {
     Context getContext() const;
 
     /// @{
-    /// Set closest hit program for this material at the given \a ray_type index.  See rtMaterialSetClosestHitProgram.
+    /// Set closest hit program for this material at the given \a ray_type index.  See @ref rtMaterialSetClosestHitProgram.
     void setClosestHitProgram(unsigned int ray_type_index, Program  program);
-    /// Get closest hit program for this material at the given \a ray_type index.  See rtMaterialGetClosestHitProgram.
+    /// Get closest hit program for this material at the given \a ray_type index.  See @ref rtMaterialGetClosestHitProgram.
     Program getClosestHitProgram(unsigned int ray_type_index) const;
 
-    /// Set any hit program for this material at the given \a ray_type index.  See rtMaterialSetAnyHitProgram.
+    /// Set any hit program for this material at the given \a ray_type index.  See @ref rtMaterialSetAnyHitProgram.
     void setAnyHitProgram(unsigned int ray_type_index, Program  program);
-    /// Get any hit program for this material at the given \a ray_type index.  See rtMaterialGetAnyHitProgram.
+    /// Get any hit program for this material at the given \a ray_type index.  See @ref rtMaterialGetAnyHitProgram.
     Program getAnyHitProgram(unsigned int ray_type_index) const;
     /// @}
 
@@ -1309,6 +1351,7 @@ namespace optix {
   //----------------------------------------------------------------------------
 
 
+  /// \ingroup optixpp
   ///
   /// \brief TextureSampler wraps the OptiX C API RTtexturesampler opaque type and its associated function set.
   ///
@@ -1319,51 +1362,51 @@ namespace optix {
     Context getContext() const;
 
     /// @{
-    /// Set the number of mip levels for this sampler.  See rtTextureSamplerSetMipLevelCount.
+    /// Set the number of mip levels for this sampler.  See @ref rtTextureSamplerSetMipLevelCount.
     void setMipLevelCount (unsigned int  num_mip_levels);
-    /// Query the number of mip levels for this sampler.  See rtTextureSamplerGetMipLevelCount.
+    /// Query the number of mip levels for this sampler.  See @ref rtTextureSamplerGetMipLevelCount.
     unsigned int getMipLevelCount () const;
 
-    /// Set the texture array size for this sampler.  See rtTextureSamplerSetArraySize
+    /// Set the texture array size for this sampler.  See @ref rtTextureSamplerSetArraySize
     void setArraySize(unsigned int  num_textures_in_array);
-    /// Query the texture array size for this sampler.  See rtTextureSamplerGetArraySize
+    /// Query the texture array size for this sampler.  See @ref rtTextureSamplerGetArraySize
     unsigned int getArraySize() const;
 
-    /// Set the texture wrap mode for this sampler.  See rtTextureSamplerSetWrapMode
+    /// Set the texture wrap mode for this sampler.  See @ref rtTextureSamplerSetWrapMode
     void setWrapMode(unsigned int dim, RTwrapmode wrapmode);
-    /// Query the texture wrap mode for this sampler.  See rtTextureSamplerGetWrapMode
+    /// Query the texture wrap mode for this sampler.  See @ref rtTextureSamplerGetWrapMode
     RTwrapmode getWrapMode(unsigned int dim) const;
 
-    /// Set filtering modes for this sampler.  See rtTextureSamplerSetFilteringModes.
+    /// Set filtering modes for this sampler.  See @ref rtTextureSamplerSetFilteringModes.
     void setFilteringModes(RTfiltermode  minification, RTfiltermode  magnification, RTfiltermode  mipmapping);
-    /// Query filtering modes for this sampler.  See rtTextureSamplerGetFilteringModes.
+    /// Query filtering modes for this sampler.  See @ref rtTextureSamplerGetFilteringModes.
     void getFilteringModes(RTfiltermode& minification, RTfiltermode& magnification, RTfiltermode& mipmapping) const;
 
-    /// Set maximum anisotropy for this sampler.  See rtTextureSamplerSetMaxAnisotropy.
+    /// Set maximum anisotropy for this sampler.  See @ref rtTextureSamplerSetMaxAnisotropy.
     void setMaxAnisotropy(float value);
-    /// Query maximum anisotropy for this sampler.  See rtTextureSamplerGetMaxAnisotropy.
+    /// Query maximum anisotropy for this sampler.  See @ref rtTextureSamplerGetMaxAnisotropy.
     float getMaxAnisotropy() const;
 
-    /// Set texture read mode for this sampler.  See rtTextureSamplerSetReadMode.
+    /// Set texture read mode for this sampler.  See @ref rtTextureSamplerSetReadMode.
     void setReadMode(RTtexturereadmode  readmode);
-    /// Query texture read mode for this sampler.  See rtTextureSamplerGetReadMode.
+    /// Query texture read mode for this sampler.  See @ref rtTextureSamplerGetReadMode.
     RTtexturereadmode getReadMode() const;
 
-    /// Set texture indexing mode for this sampler.  See rtTextureSamplerSetIndexingMode.
+    /// Set texture indexing mode for this sampler.  See @ref rtTextureSamplerSetIndexingMode.
     void setIndexingMode(RTtextureindexmode  indexmode);
-    /// Query texture indexing mode for this sampler.  See rtTextureSamplerGetIndexingMode.
+    /// Query texture indexing mode for this sampler.  See @ref rtTextureSamplerGetIndexingMode.
     RTtextureindexmode getIndexingMode() const;
     /// @}
 
     /// @{
-    /// Returns the device-side ID of this sampler.
+    /// Returns the device-side ID of this sampler. See @ref rtTextureSamplerGetId
     int getId() const;
     /// @}
 
     /// @{
-    /// Set the underlying buffer used for texture storage.  rtTextureSamplerSetBuffer.
+    /// Set the underlying buffer used for texture storage. See @ref rtTextureSamplerSetBuffer.
     void setBuffer(unsigned int texture_array_idx, unsigned int mip_level, Buffer buffer);
-    /// Get the underlying buffer used for texture storage.  rtTextureSamplerGetBuffer.
+    /// Get the underlying buffer used for texture storage. See @ref rtTextureSamplerGetBuffer.
     Buffer getBuffer(unsigned int texture_array_idx, unsigned int mip_level) const;
     /// @}
 
@@ -1371,27 +1414,27 @@ namespace optix {
     RTtexturesampler get();
 
     /// @{
-    /// Declare the texture's buffer as mutable and inaccessible by OptiX.  See rtTextureSamplerGLRegister.
+    /// Declare the texture's buffer as mutable and inaccessible by OptiX.  See @ref rtTextureSamplerGLRegister.
     void registerGLTexture();
-    /// Unregister the texture's buffer, re-enabling OptiX operations.  See rtTextureSamplerGLUnregister.
+    /// Unregister the texture's buffer, re-enabling OptiX operations.  See @ref rtTextureSamplerGLUnregister.
     void unregisterGLTexture();
     /// @}
 
 #ifdef _WIN32
 
     /// @{
-    /// Declare the texture's buffer as mutable and inaccessible by OptiX.  See rtTextureSamplerD3D9Register.
+    /// Declare the texture's buffer as mutable and inaccessible by OptiX.  See @ref rtTextureSamplerD3D9Register.
     void registerD3D9Texture();
-    /// Declare the texture's buffer as mutable and inaccessible by OptiX.  See rtTextureSamplerD3D10Register.
+    /// Declare the texture's buffer as mutable and inaccessible by OptiX.  See @ref rtTextureSamplerD3D10Register.
     void registerD3D10Texture();
-    /// Declare the texture's buffer as mutable and inaccessible by OptiX.  See rtTextureSamplerD3D11Register.
+    /// Declare the texture's buffer as mutable and inaccessible by OptiX.  See @ref rtTextureSamplerD3D11Register.
     void registerD3D11Texture();
 
-    /// Unregister the texture's buffer, re-enabling OptiX operations.  See rtTextureSamplerD3D9Unregister.
+    /// Unregister the texture's buffer, re-enabling OptiX operations.  See @ref rtTextureSamplerD3D9Unregister.
     void unregisterD3D9Texture();
-    /// Unregister the texture's buffer, re-enabling OptiX operations.  See rtTextureSamplerD3D10Unregister.
+    /// Unregister the texture's buffer, re-enabling OptiX operations.  See @ref rtTextureSamplerD3D10Unregister.
     void unregisterD3D10Texture();
-    /// Unregister the texture's buffer, re-enabling OptiX operations.  See rtTextureSamplerD3D11Unregister.
+    /// Unregister the texture's buffer, re-enabling OptiX operations.  See @ref rtTextureSamplerD3D11Unregister.
     void unregisterD3D11Texture();
     /// @}
 
@@ -1409,6 +1452,7 @@ namespace optix {
   //----------------------------------------------------------------------------
 
 
+  /// \ingroup optixpp
   ///
   /// \brief Buffer wraps the OptiX C API RTbuffer opaque type and its associated function set.
   ///
@@ -1419,89 +1463,95 @@ namespace optix {
     Context getContext() const;
 
     /// @{
-    /// Set the data format for the buffer.  See rtBufferSetFormat.
+    /// Set the data format for the buffer.  See @ref rtBufferSetFormat.
     void setFormat    (RTformat format);
-    /// Query the data format for the buffer.  See rtBufferGetFormat.
+    /// Query the data format for the buffer.  See @ref rtBufferGetFormat.
     RTformat getFormat() const;
 
-    /// Set the data element size for user format buffers.  See rtBufferSetElementSize.
+    /// Set the data element size for user format buffers.  See @ref rtBufferSetElementSize.
     void setElementSize  (RTsize size_of_element);
-    /// Query the data element size for user format buffers.  See rtBufferGetElementSize.
+    /// Query the data element size for user format buffers.  See @ref rtBufferGetElementSize.
     RTsize getElementSize() const;
 
-    /// Get the pointer to buffer memory on a specific device. See rtBufferGetDevicePointer
+    /// Get the pointer to buffer memory on a specific device. See @ref rtBufferGetDevicePointer
     void getDevicePointer( unsigned int optix_device_number, CUdeviceptr *device_pointer );
+    CUdeviceptr getDevicePointer( unsigned int optix_device_number );
 
-    /// Set the pointer to buffer memory on a specific device. See rtBufferSetDevicePointer
+    /// Set the pointer to buffer memory on a specific device. See @ref rtBufferSetDevicePointer
     void setDevicePointer( unsigned int optix_device_number, CUdeviceptr device_pointer );
 
     /// Mark the buffer dirty
     void markDirty();
 
-    /// Set buffer dimensionality to one and buffer width to specified width.  See rtBufferSetSize1D.
+    /// Set buffer dimensionality to one and buffer width to specified width.  See @ref rtBufferSetSize1D.
     void setSize(RTsize  width);
-    /// Query 1D buffer dimension.  See rtBufferGetSize1D.
+    /// Query 1D buffer dimension.  See @ref rtBufferGetSize1D.
     void getSize(RTsize& width) const;
-    /// Set buffer dimensionality to two and buffer dimensions to specified width,height.  See rtBufferSetSize2D.
+    /// Set buffer dimensionality to two and buffer dimensions to specified width,height.  See @ref rtBufferSetSize2D.
     void setSize(RTsize  width, RTsize  height);
-    /// Query 2D buffer dimension.  See rtBufferGetSize2D.
+    /// Query 2D buffer dimension.  See @ref rtBufferGetSize2D.
     void getSize(RTsize& width, RTsize& height) const;
     /// Set buffer dimensionality to three and buffer dimensions to specified width,height,depth.
-    /// See rtBufferSetSize3D.
+    /// See @ref rtBufferSetSize3D.
     void setSize(RTsize  width, RTsize  height, RTsize  depth);
-    /// Query 3D buffer dimension.  See rtBufferGetSize3D.
+    /// Query 3D buffer dimension.  See @ref rtBufferGetSize3D.
     void getSize(RTsize& width, RTsize& height, RTsize& depth) const;
 
-    /// Set buffer dimensionality and dimensions to specified values. See rtBufferSetSizev.
+    /// Set buffer dimensionality and dimensions to specified values. See @ref rtBufferSetSizev.
     void setSize(unsigned int dimensionality, const RTsize* dims);
-    /// Query dimensions of buffer.  See rtBufferGetSizev.
+    /// Query dimensions of buffer.  See @ref rtBufferGetSizev.
     void getSize(unsigned int dimensionality,       RTsize* dims) const;
 
-    /// Query dimensionality of buffer.  See rtBufferGetDimensionality.
+    /// Query dimensionality of buffer.  See @ref rtBufferGetDimensionality.
     unsigned int getDimensionality() const;
     /// @}
 
     /// @{
-    /// Queries the OpenGL Buffer Object ID associated with this buffer.  See rtBufferGetGLBOId.
+    /// Queries an id suitable for referencing the buffer in an another buffer.  See @ref rtBufferGetId.
+    int getId() const;
+    /// @}
+
+    /// @{
+    /// Queries the OpenGL Buffer Object ID associated with this buffer.  See @ref rtBufferGetGLBOId.
     unsigned int getGLBOId() const;
 
-    /// Declare the buffer as mutable and inaccessible by OptiX.  See rtTextureSamplerGLRegister.
+    /// Declare the buffer as mutable and inaccessible by OptiX.  See @ref rtTextureSamplerGLRegister.
     void registerGLBuffer();
-    /// Unregister the buffer, re-enabling OptiX operations.  See rtTextureSamplerGLUnregister.
+    /// Unregister the buffer, re-enabling OptiX operations.  See @ref rtTextureSamplerGLUnregister.
     void unregisterGLBuffer();
     /// @}
 
 #ifdef _WIN32
 
     /// @{
-    /// Declare the texture's buffer as mutable and inaccessible by OptiX.  See rtBufferD3D9Register.
+    /// Declare the texture's buffer as mutable and inaccessible by OptiX.  See @ref rtBufferD3D9Register.
     void registerD3D9Buffer();
-    /// Declare the texture's buffer as mutable and inaccessible by OptiX.  See rtBufferD3D10Register.
+    /// Declare the texture's buffer as mutable and inaccessible by OptiX.  See @ref rtBufferD3D10Register.
     void registerD3D10Buffer();
-    /// Declare the texture's buffer as mutable and inaccessible by OptiX.  See rtBufferD3D11Register.
+    /// Declare the texture's buffer as mutable and inaccessible by OptiX.  See @ref rtBufferD3D11Register.
     void registerD3D11Buffer();
 
-    /// Unregister the buffer, re-enabling OptiX operations.  See rtTextureSamplerD3D9Unregister.
+    /// Unregister the buffer, re-enabling OptiX operations.  See @ref rtTextureSamplerD3D9Unregister.
     void unregisterD3D9Buffer();
-    /// Unregister the buffer, re-enabling OptiX operations.  See rtTextureSamplerD3D10Unregister.
+    /// Unregister the buffer, re-enabling OptiX operations.  See @ref rtTextureSamplerD3D10Unregister.
     void unregisterD3D10Buffer();
-    /// Unregister the buffer, re-enabling OptiX operations.  See rtTextureSamplerD3D11Unregister.
+    /// Unregister the buffer, re-enabling OptiX operations.  See @ref rtTextureSamplerD3D11Unregister.
     void unregisterD3D11Buffer();
 
-    /// Queries the D3D9 resource associated with this buffer.  See rtBufferGetD3D9Resource.
+    /// Queries the D3D9 resource associated with this buffer.  See @ref rtBufferGetD3D9Resource.
     IDirect3DResource9* getD3D9Resource();
-    /// Queries the D3D10 resource associated with this buffer.  See rtBufferGetD3D10Resource.
+    /// Queries the D3D10 resource associated with this buffer.  See @ref rtBufferGetD3D10Resource.
     ID3D10Resource* getD3D10Resource();
-    /// Queries the D3D11 resource associated with this buffer.  See rtBufferGetD3D11Resource.
+    /// Queries the D3D11 resource associated with this buffer.  See @ref rtBufferGetD3D11Resource.
     ID3D11Resource* getD3D11Resource();
     /// @}
 
 #endif
 
     /// @{
-    /// Maps a buffer object for host access.  See rtBufferMap.
+    /// Maps a buffer object for host access.  See @ref rtBufferMap.
     void* map();
-    /// Unmaps a buffer object.  See rtBufferUnmap.
+    /// Unmaps a buffer object.  See @ref rtBufferUnmap.
     void unmap();
     /// @}
 
@@ -1516,9 +1566,64 @@ namespace optix {
     friend class Handle<BufferObj>;
   };
 
+#if !defined(__CUDACC__)
+  ///
+  /// \brief bufferId is a host version of the device side bufferId.
+  ///
+  /// Use bufferId to define types that can be included from both the host and device
+  /// code.  This class provides a container that can be used to transport the buffer id
+  /// back and forth between host and device code.  The bufferId class is useful, because
+  /// it can take a buffer id obtained from rtBufferGetId and provide accessors similar to
+  /// the buffer class.
+  ///
+  /// "bindless_type.h" used by both host and device code:
+  ///
+  /// @code
+  /// #include <optix_world.h>
+  /// struct BufInfo {
+  ///   int val;
+  ///   rtBufferId<int, 1> data;
+  /// };
+  /// @endcode
+  ///
+  /// Host code:
+  ///
+  /// @code
+  /// #include "bindless_type.h"
+  /// BufInfo input_buffer_info;
+  /// input_buffer_info.val = 0;
+  /// input_buffer_info.data = rtBufferId<int,1>(inputBuffer0->getId());
+  /// context["input_buffer_info"]->setUserData(sizeof(BufInfo), &input_buffer_info);
+  /// @endcode
+  ///
+  /// Device code:
+  ///
+  /// @code
+  /// #include "bindless_type.h"
+  /// rtBuffer<int,1> result;
+  /// rtDeclareVariable(BufInfo, input_buffer_info, ,);
+  /// 
+  /// RT_PROGRAM void bindless()
+  /// {
+  ///   int value = input_buffer_info.data[input_buffer_info.val];
+  ///   result[0] = value;
+  /// }
+  /// @endcode
+  /// 
+  /// 
+  template<typename T, int Dim=1>
+  struct bufferId {
+    bufferId() {}
+    bufferId(int id) : m_id(id) {}
+    int getId() const { return m_id; }
+  private:
+    int m_id;
+  };
+#define rtBufferId optix::bufferId
+#endif
+
 
   //----------------------------------------------------------------------------
-
 
   inline void APIObj::checkError( RTresult code ) const
   {
@@ -1768,6 +1873,20 @@ namespace optix {
     return TextureSampler::take(textureSampler);
   }
 
+  inline Buffer ContextObj::getBufferFromId(int buffer_id)
+  {
+    RTbuffer buffer;
+    checkError( rtContextGetBufferFromId( m_context, buffer_id, &buffer ) );
+    return Buffer::take(buffer);
+  }
+
+  inline TextureSampler ContextObj::getTextureSamplerFromId(int sampler_id)
+  {
+    RTtexturesampler sampler;
+    checkError( rtContextGetTextureSamplerFromId( m_context, sampler_id, &sampler ) );
+    return TextureSampler::take(sampler);
+  }
+
   inline Geometry ContextObj::createGeometry()
   {
     RTgeometry geometry;
@@ -1963,6 +2082,12 @@ namespace optix {
   inline void ContextObj::setGPUPagingForcedOff(int gpu_paging_forced_off)
   {
     checkError( rtContextSetAttribute( m_context, RT_CONTEXT_ATTRIBUTE_GPU_PAGING_FORCED_OFF, sizeof(gpu_paging_forced_off), &gpu_paging_forced_off) );
+  }
+
+  template<class T>
+  inline void ContextObj::setAttribute(RTcontextattribute attribute, const T& val)
+  {
+    checkError( rtContextSetAttribute( m_context, attribute, sizeof(T), const_cast<T*>(&val)) );
   }
 
   inline void ContextObj::setStackSize(RTsize  stack_size_bytes)
@@ -2293,6 +2418,67 @@ namespace optix {
     checkError( rtSelectorGetChild( m_selector, index, &result ) );
     return T::take( result );
   }
+  
+  inline RTobjecttype SelectorObj::getChildType(unsigned int index) const
+  {
+     RTobjecttype type;
+     checkError( rtSelectorGetChildType( m_selector, index, &type) );
+     return type;
+  }
+
+  template< typename T >
+  inline unsigned int SelectorObj::addChild(T child)
+  {
+    unsigned int index;
+    checkError( rtSelectorGetChildCount( m_selector, &index ) );
+    checkError( rtSelectorSetChildCount( m_selector, index+1 ) );
+    checkError( rtSelectorSetChild( m_selector, index, child->get() ) );
+    return index;
+  }
+
+  template< typename T >
+  inline unsigned int SelectorObj::removeChild(T child)
+  {
+    unsigned int index = getChildIndex( child );
+    removeChild( index );
+    return index;
+  }
+
+  inline void SelectorObj::removeChild(int index)
+  {
+    removeChild(static_cast<unsigned int>(index));
+  }
+
+  inline void SelectorObj::removeChild(unsigned int index)
+  {
+    // Shift down all elements in O(n)
+    unsigned int count;
+    RTobject temp;
+    checkError( rtSelectorGetChildCount( m_selector, &count ) );
+    if(index >= count) {
+      RTcontext c = this->getContext()->get();
+      throw Exception::makeException( RT_ERROR_INVALID_VALUE, c );
+    }
+    for(unsigned int i=index+1; i<count; i++) {
+      checkError( rtSelectorGetChild( m_selector, i, &temp ) );
+      checkError( rtSelectorSetChild( m_selector, i-1, temp ) );
+    }
+    checkError( rtSelectorSetChildCount( m_selector, count-1 ) );
+  }
+
+  template< typename T >
+  inline unsigned int SelectorObj::getChildIndex(T child) const
+  {
+    unsigned int count;
+    RTobject temp;
+    checkError( rtSelectorGetChildCount( m_selector, &count ) );
+    for( unsigned int index = 0; index < count; index++ ) {
+      checkError( rtSelectorGetChild( m_selector, index, &temp ) );
+      if( child->get() == temp ) return index; // Found
+    }
+    RTcontext c = this->getContext()->get();
+    throw Exception::makeException( RT_ERROR_INVALID_VALUE, c );
+  }
 
   inline Variable SelectorObj::declareVariable(const std::string& name)
   {
@@ -2370,6 +2556,67 @@ namespace optix {
     return T::take( result );
   }
 
+  inline RTobjecttype GroupObj::getChildType(unsigned int index) const
+  {
+     RTobjecttype type;
+     checkError( rtGroupGetChildType( m_group, index, &type) );
+     return type;
+  }
+
+  template< typename T >
+  inline unsigned int GroupObj::addChild(T child)
+  {
+    unsigned int index;
+    checkError( rtGroupGetChildCount( m_group, &index ) );
+    checkError( rtGroupSetChildCount( m_group, index+1 ) );
+    checkError( rtGroupSetChild( m_group, index, child->get() ) );
+    return index;
+  }
+
+  template< typename T >
+  inline unsigned int GroupObj::removeChild(T child)
+  {
+    unsigned int index = getChildIndex( child );
+    removeChild( index );
+    return index;
+  }
+
+  inline void GroupObj::removeChild(int index)
+  {
+    removeChild(static_cast<unsigned int>(index));
+  }
+  
+  inline void GroupObj::removeChild(unsigned int index)
+  {
+    // Shift down all elements in O(n)
+    unsigned int count;
+    RTobject temp;
+    checkError( rtGroupGetChildCount( m_group, &count ) );
+    if(index >= count) {
+      RTcontext c = this->getContext()->get();
+      throw Exception::makeException( RT_ERROR_INVALID_VALUE, c );
+    }
+    for(unsigned int i=index+1; i<count; i++) {
+      checkError( rtGroupGetChild( m_group, i, &temp ) );
+      checkError( rtGroupSetChild( m_group, i-1, temp ) );
+    }
+    checkError( rtGroupSetChildCount( m_group, count-1 ) );
+  }
+
+  template< typename T >
+  inline unsigned int GroupObj::getChildIndex(T child) const
+  {
+    unsigned int count;
+    RTobject temp;
+    checkError( rtGroupGetChildCount( m_group, &count ) );
+    for( unsigned int index = 0; index < count; index++ ) {
+      checkError( rtGroupGetChild( m_group, index, &temp ) );
+      if( child->get() == temp ) return index; // Found
+    }
+    RTcontext c = this->getContext()->get();
+    throw Exception::makeException( RT_ERROR_INVALID_VALUE, c );
+  }
+
   inline RTgroup GroupObj::get()
   {
     return m_group;
@@ -2430,6 +2677,57 @@ namespace optix {
     return GeometryInstance::take( result );
   }
 
+  inline unsigned int GeometryGroupObj::addChild(GeometryInstance child)
+  {
+    unsigned int index;
+    checkError( rtGeometryGroupGetChildCount( m_geometrygroup, &index ) );
+    checkError( rtGeometryGroupSetChildCount( m_geometrygroup, index+1 ) );
+    checkError( rtGeometryGroupSetChild( m_geometrygroup, index, child->get() ) );
+    return index;
+  }
+
+  inline unsigned int GeometryGroupObj::removeChild(GeometryInstance child)
+  {
+    unsigned int index = getChildIndex( child );
+    removeChild( index );
+    return index;
+  }
+
+  inline void GeometryGroupObj::removeChild(int index)
+  {
+    removeChild(static_cast<unsigned int>(index));
+  }
+  
+  inline void GeometryGroupObj::removeChild(unsigned int index)
+  {
+    // Shift down all elements in O(n)
+    unsigned int count;
+    RTgeometryinstance temp;
+    checkError( rtGeometryGroupGetChildCount( m_geometrygroup, &count ) );
+    if(index >= count) {
+      RTcontext c = this->getContext()->get();
+      throw Exception::makeException( RT_ERROR_INVALID_VALUE, c );
+    }
+    for(unsigned int i=index+1; i<count; i++) {
+      checkError( rtGeometryGroupGetChild( m_geometrygroup, i, &temp ) );
+      checkError( rtGeometryGroupSetChild( m_geometrygroup, i-1, temp ) );
+    }
+    checkError( rtGeometryGroupSetChildCount( m_geometrygroup, count-1 ) );
+  }
+
+  inline unsigned int GeometryGroupObj::getChildIndex(GeometryInstance child) const
+  {
+    unsigned int count;
+    RTgeometryinstance temp;
+    checkError( rtGeometryGroupGetChildCount( m_geometrygroup, &count ) );
+    for( unsigned int index = 0; index < count; index++ ) {
+      checkError( rtGeometryGroupGetChild( m_geometrygroup, index, &temp ) );
+      if( child->get() == temp ) return index; // Found
+    }
+    RTcontext c = this->getContext()->get();
+    throw Exception::makeException( RT_ERROR_INVALID_VALUE, c );
+  }
+
   inline RTgeometrygroup GeometryGroupObj::get()
   {
     return m_geometrygroup;
@@ -2466,6 +2764,14 @@ namespace optix {
     RTobject result;
     checkError( rtTransformGetChild( m_transform, &result) );
     return T::take( result );
+  }
+  
+  inline RTobjecttype TransformObj::getChildType() const
+  {
+
+     RTobjecttype type;
+     checkError( rtTransformGetChildType( m_transform, &type) );
+     return type;
   }
 
   inline void TransformObj::setMatrix(bool transpose, const float* matrix, const float* inverse_matrix)
@@ -2693,7 +2999,7 @@ namespace optix {
     return Context::take( c );
   }
 
-  inline void GeometryObj::setPrimitiveCount(unsigned int  num_primitives)
+  inline void GeometryObj::setPrimitiveCount(unsigned int num_primitives)
   {
     checkError( rtGeometrySetPrimitiveCount( m_geometry, num_primitives ) );
   }
@@ -2702,6 +3008,18 @@ namespace optix {
   {
     unsigned int result;
     checkError( rtGeometryGetPrimitiveCount( m_geometry, &result ) );
+    return result;
+  }
+
+  inline void GeometryObj::setPrimitiveIndexOffset(unsigned int index_offset)
+  {
+    checkError( rtGeometrySetPrimitiveIndexOffset( m_geometry, index_offset) );
+  }
+
+  inline unsigned int GeometryObj::getPrimitiveIndexOffset() const
+  {
+    unsigned int result;
+    checkError( rtGeometryGetPrimitiveIndexOffset( m_geometry, &result ) );
     return result;
   }
 
@@ -2800,7 +3118,7 @@ namespace optix {
 
   inline void MaterialObj::setClosestHitProgram(unsigned int ray_type_index, Program  program)
   {
-    checkError( rtMaterialSetClosestHitProgram( m_material, ray_type_index, program->get() ) );
+    checkError( rtMaterialSetClosestHitProgram( m_material, ray_type_index, (program.get() != 0 ? program->get() : 0) ) );
   }
 
   inline Program MaterialObj::getClosestHitProgram(unsigned int ray_type_index) const
@@ -3077,6 +3395,13 @@ namespace optix {
     checkError( rtBufferGetDevicePointer( m_buffer, optix_device_number, (void**)device_pointer ) );
   }
 
+  inline CUdeviceptr BufferObj::getDevicePointer( unsigned int optix_device_number )
+  {
+    CUdeviceptr dptr;
+    getDevicePointer( optix_device_number, &dptr );
+    return dptr;
+  }
+
   inline void BufferObj::setDevicePointer(unsigned int optix_device_number, CUdeviceptr device_pointer)
   {
     checkError( rtBufferSetDevicePointer( m_buffer, optix_device_number, device_pointer ) );
@@ -3131,6 +3456,13 @@ namespace optix {
   {
     unsigned int result;
     checkError( rtBufferGetDimensionality( m_buffer, &result ) );
+    return result;
+  }
+
+  inline int BufferObj::getId() const
+  {
+    int result;
+    checkError( rtBufferGetId( m_buffer, &result ) );
     return result;
   }
 
@@ -3442,27 +3774,6 @@ namespace optix {
     checkError( rtVariableSet4iv( m_variable, i ) );
   }
 
-  inline float VariableObj::getFloat() const
-  {
-    float f;
-    checkError( rtVariableGet1f( m_variable, &f ) );
-    return f;
-  }
-
-  inline unsigned int VariableObj::getUint() const
-  {
-    unsigned int i;
-    checkError( rtVariableGet1ui( m_variable, &i ) );
-    return i;
-  }
-
-  inline int VariableObj::getInt() const
-  {
-    int i;
-    checkError( rtVariableGet1i( m_variable, &i ) );
-    return i;
-  }
-
   inline void VariableObj::setBuffer(Buffer buffer)
   {
     checkError( rtVariableSetObject( m_variable, buffer->get() ) );
@@ -3559,12 +3870,29 @@ namespace optix {
     return size;
   }
 
-  inline optix::TextureSampler VariableObj::getTextureSampler() const
+  inline optix::GeometryGroup VariableObj::getGeometryGroup() const
   {
     RTobject temp;
     checkError( rtVariableGetObject( m_variable, &temp ) );
-    RTtexturesampler sampler = reinterpret_cast<RTtexturesampler>(temp);
-    return TextureSampler::take(sampler);
+    RTgeometrygroup geometrygroup = reinterpret_cast<RTgeometrygroup>(temp);
+    return GeometryGroup::take( geometrygroup );
+  }
+
+  inline optix::GeometryInstance VariableObj::getGeometryInstance() const
+  {
+    RTobject temp;
+    checkError( rtVariableGetObject( m_variable, &temp ) );
+    RTgeometryinstance geometryinstance = 
+      reinterpret_cast<RTgeometryinstance>(temp);
+    return GeometryInstance::take( geometryinstance );
+  }
+
+  inline optix::Group VariableObj::getGroup() const
+  {
+    RTobject temp;
+    checkError( rtVariableGetObject( m_variable, &temp ) );
+    RTgroup group = reinterpret_cast<RTgroup>(temp);
+    return Group::take( group );
   }
 
   inline optix::Program VariableObj::getProgram() const
@@ -3575,10 +3903,222 @@ namespace optix {
     return Program::take(program);
   }
 
-  /// @}
+  inline optix::Selector VariableObj::getSelector() const
+  {
+    RTobject temp;
+    checkError( rtVariableGetObject( m_variable, &temp ) );
+    RTselector selector = reinterpret_cast<RTselector>(temp);
+    return Selector::take( selector );
+  }
+
+  inline optix::TextureSampler VariableObj::getTextureSampler() const
+  {
+    RTobject temp;
+    checkError( rtVariableGetObject( m_variable, &temp ) );
+    RTtexturesampler sampler = reinterpret_cast<RTtexturesampler>(temp);
+    return TextureSampler::take(sampler);
+  }
+
+  inline optix::Transform VariableObj::getTransform() const
+  {
+    RTobject temp;
+    checkError( rtVariableGetObject( m_variable, &temp ) );
+    RTtransform transform = reinterpret_cast<RTtransform>(temp);
+    return Transform::take( transform );
+  }
+
+  inline float VariableObj::getFloat() const
+  {
+    float f;
+    checkError( rtVariableGet1f( m_variable, &f ) );
+    return f;
+  }
+
+  inline optix::float2 VariableObj::getFloat2() const
+  {
+      optix::float2 f;
+      checkError( rtVariableGet2f( m_variable, &f.x, &f.y ) );
+      return f;
+
+  }
+
+  inline optix::float3 VariableObj::getFloat3() const
+  {
+      optix::float3 f;
+      checkError( rtVariableGet3f( m_variable, &f.x, &f.y, &f.z ) );
+      return f;
+  }
+
+  inline optix::float4 VariableObj::getFloat4() const
+  {
+      optix::float4 f;
+      checkError( rtVariableGet4f( m_variable, &f.x, &f.y, &f.z, &f.w ) );
+      return f;
+  }
+
+  inline void VariableObj::getFloat(float& f1) const
+  {
+    checkError( rtVariableGet1f( m_variable, &f1 ) );
+  }
+
+  inline void VariableObj::getFloat(float& f1, float& f2) const
+  {
+      checkError( rtVariableGet2f( m_variable, &f1, &f2 ) );
+  }
+
+  inline void VariableObj::getFloat(float& f1, float& f2, float& f3) const
+  {
+      checkError( rtVariableGet3f( m_variable, &f1, &f2, &f3 ) );
+  }
+
+  inline void VariableObj::getFloat(float& f1, float& f2, float& f3,
+                                 float& f4) const
+  {
+      checkError( rtVariableGet4f( m_variable, &f1, &f2, &f3, &f4 ) );
+  }
+
+
+  inline unsigned VariableObj::getUint()  const
+  {
+    unsigned u;
+    checkError( rtVariableGet1ui( m_variable, &u ) );
+    return u;
+  }
+
+  inline optix::uint2 VariableObj::getUint2() const
+  {
+    optix::uint2 u;
+    checkError( rtVariableGet2ui( m_variable, &u.x, &u.y ) );
+    return u;
+  }
+
+  inline optix::uint3 VariableObj::getUint3() const
+  {
+    optix::uint3 u;
+    checkError( rtVariableGet3ui( m_variable, &u.x, &u.y, &u.z ) );
+    return u;
+  }
+
+  inline optix::uint4 VariableObj::getUint4() const
+  {
+    optix::uint4 u;
+    checkError( rtVariableGet4ui( m_variable, &u.x, &u.y, &u.z, &u.w ) );
+    return u;
+  }
+
+  inline void VariableObj::getUint(unsigned& u1) const
+  {
+    checkError( rtVariableGet1ui( m_variable, &u1 ) );
+  }
+
+  inline void VariableObj::getUint(unsigned& u1, unsigned& u2) const
+  {
+    checkError( rtVariableGet2ui( m_variable, &u1, &u2 ) );
+  }
+
+  inline void VariableObj::getUint(unsigned& u1, unsigned& u2, unsigned& u3) const
+  {
+    checkError( rtVariableGet3ui( m_variable, &u1, &u2, &u3 ) );
+  }
+
+  inline void VariableObj::getUint(unsigned& u1, unsigned& u2, unsigned& u3,
+                                unsigned& u4) const
+  {
+    checkError( rtVariableGet4ui( m_variable, &u1, &u2, &u3, &u4 ) );
+  }
+
+  inline int VariableObj::getInt()  const
+  {
+    int i;
+    checkError( rtVariableGet1i( m_variable, &i ) );
+    return i;
+  }
+
+  inline optix::int2 VariableObj::getInt2() const
+  {
+    optix::int2 i;
+    checkError( rtVariableGet2i( m_variable, &i.x, &i.y ) );
+    return i;
+  }
+
+  inline optix::int3 VariableObj::getInt3() const
+  {
+    optix::int3 i;
+    checkError( rtVariableGet3i( m_variable, &i.x, &i.y, &i.z ) );
+    return i;
+  }
+
+  inline optix::int4 VariableObj::getInt4() const
+  {
+    optix::int4 i;
+    checkError( rtVariableGet4i( m_variable, &i.x, &i.y, &i.z, &i.w ) );
+    return i;
+  }
+
+  inline void VariableObj::getInt(int& i1) const
+  {
+    checkError( rtVariableGet1i( m_variable, &i1 ) );
+  }
+
+  inline void VariableObj::getInt(int& i1, int& i2) const
+  {
+    checkError( rtVariableGet2i( m_variable, &i1, &i2 ) );
+  }
+
+  inline void VariableObj::getInt(int& i1, int& i2, int& i3) const
+  {
+    checkError( rtVariableGet3i( m_variable, &i1, &i2, &i3 ) );
+  }
+
+  inline void VariableObj::getInt(int& i1, int& i2, int& i3, int& i4) const
+  {
+    checkError( rtVariableGet4i( m_variable, &i1, &i2, &i3, &i4 ) );
+  }
+
+  inline void VariableObj::getMatrix2x2(bool transpose, float* m) const
+  {
+    checkError( rtVariableGetMatrix2x2fv( m_variable, transpose, m ) );
+  }
+
+  inline void VariableObj::getMatrix2x3(bool transpose, float* m) const
+  {
+    checkError( rtVariableGetMatrix2x3fv( m_variable, transpose, m ) );
+  }
+
+  inline void VariableObj::getMatrix2x4(bool transpose, float* m) const
+  {
+    checkError( rtVariableGetMatrix2x4fv( m_variable, transpose, m ) );
+  }
+
+  inline void VariableObj::getMatrix3x2(bool transpose, float* m) const
+  {
+    checkError( rtVariableGetMatrix3x2fv( m_variable, transpose, m ) );
+  }
+
+  inline void VariableObj::getMatrix3x3(bool transpose, float* m) const
+  {
+    checkError( rtVariableGetMatrix3x3fv( m_variable, transpose, m ) );
+  }
+
+  inline void VariableObj::getMatrix3x4(bool transpose, float* m) const
+  {
+    checkError( rtVariableGetMatrix3x4fv( m_variable, transpose, m ) );
+  }
+
+  inline void VariableObj::getMatrix4x2(bool transpose, float* m) const
+  {
+    checkError( rtVariableGetMatrix4x2fv( m_variable, transpose, m ) );
+  }
+
+  inline void VariableObj::getMatrix4x3(bool transpose, float* m) const
+  {
+    checkError( rtVariableGetMatrix4x3fv( m_variable, transpose, m ) );
+  }
+
+  inline void VariableObj::getMatrix4x4(bool transpose, float* m) const
+  {
+    checkError( rtVariableGetMatrix4x4fv( m_variable, transpose, m ) );
+  }
 }
 
 #endif /* __optixu_optixpp_namespace_h__ */
-
-/// @}
-

@@ -18,6 +18,11 @@
  * INABILITY TO USE THIS SOFTWARE, EVEN IF NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGES
  */
+ 
+ /**
+ * \file optixu.h
+ * \brief Simple API for performing raytracing queries using OptiX or the CPU
+ */
 
 #ifndef __optix_optixu_h__
 #define __optix_optixu_h__
@@ -31,7 +36,7 @@
 #  ifdef _MSC_VER
 #    define RTU_INLINE __inline
 #  else
-#    define RTU_INLINE inline
+#    define RTU_INLINE static inline
 #  endif
 #endif
 
@@ -39,49 +44,73 @@
 extern "C" {
 #endif
 
- /*
-  * Get the name string of a given type.
+ /**
+  * \ingroup rtuTraversal
+  *
+  * Get the name string of a given type. See @ref RTobjecttype for more information.
+  *
+  * @param[in]    type          Type requested
+  * @param[out]   buffer        Buffer to output the name string
+  * @param[in]    bufferSize    Size of the provided buffer
+  *
+  * @retval RTresult  Return code
   */
   RTresult RTAPI rtuNameForType( RTobjecttype type, char* buffer, RTsize bufferSize );
 
- /*
-  * Return the size of a given RTformat.  RT_FORMAT_USER and RT_FORMAT_UNKNOWN return 0.
-  * Returns RT_ERROR_INVALID_VALUE if the format isn't recognized, RT_SUCCESS otherwise.
+ /**
+  * \ingroup rtuTraversal
+  *
+  * Return the size of a given @ref RTformat.  @ref RT_FORMAT_USER and @ref RT_FORMAT_UNKNOWN return \a 0.
+  * Returns @ref RT_ERROR_INVALID_VALUE if the format isn't recognized, @ref RT_SUCCESS otherwise.
+  *
+  * @param[in]  format    OptiX format
+  * @param[out] size      Size of the format
+  *
+  * @retval RTresult  Return code
   */
   RTresult RTAPI rtuGetSizeForRTformat( RTformat format, size_t* size);
 
- /*
-  * Compile a cuda source string.
-  * ARGS:
+ /**
+  * \ingroup rtuTraversal
   *
-  * source                       source code string
-  * preprocessorArguments        list of preprocessor arguments
-  * numPreprocessorArguments     number of preprocessor arguments
-  * resultSize                   [out] size required to hold compiled result string
-  * errorSize                    [out] size required to hold error string
+  * Compile a cuda source string.
+  *
+  * @param[in]    source                       source code string
+  * @param[in]    preprocessorArguments        list of preprocessor arguments
+  * @param[in]    numPreprocessorArguments     number of preprocessor arguments
+  * @param[out]   resultSize                   size required to hold compiled result string
+  * @param[out]   errorSize                    size required to hold error string
+  *
+  * @retval RTresult  Return code
   */
   RTresult RTAPI rtuCUDACompileString( const char* source, const char** preprocessorArguments, unsigned int numPreprocessorArguments, RTsize* resultSize, RTsize* errorSize );
 
- /*
-  * Compile a cuda source file.
-  * ARGS:
+ /**
+  * \ingroup rtuTraversal
   *
-  * filename                     source code file name
-  * preprocessorArguments        list of preprocessor arguments
-  * numPreprocessorArguments     number of preprocessor arguments
-  * resultSize                   [out] size required to hold compiled result string
-  * errorSize                    [out] size required to hold error string
+  * Compile a cuda source file.
+  *
+  * @param[in]  filename                     source code file name
+  * @param[in]  preprocessorArguments        list of preprocessor arguments
+  * @param[in]  numPreprocessorArguments     number of preprocessor arguments
+  * @param[out] resultSize                   size required to hold compiled result string
+  * @param[out] errorSize                    size required to hold error string
+  *
+  * @retval RTresult  Return code
   */
   RTresult RTAPI rtuCUDACompileFile( const char* filename, const char** preprocessorArguments, unsigned int numPreprocessorArguments, RTsize* resultSize, RTsize* errorSize );
 
- /*
+ /**
+  * \ingroup rtuTraversal
+  *
   * Get the result of the most recent call to one of the above compile functions.
   * The 'result' and 'error' parameters must point to memory large enough to hold
   * the respective strings, as returned by the compile function.
-  * ARGS:
   *
-  * result                      compiled result string
-  * error                       error string
+  * @param[out] result                      compiled result string
+  * @param[out] error                       error string
+  *
+  * @retval RTresult  Return code
   */
   RTresult RTAPI rtuCUDAGetCompileResult( char* result, char* error );
 
@@ -89,63 +118,92 @@ extern "C" {
 } /* extern "C" */
 #endif
 
- /*
+ /**
+  * \ingroup rtuTraversal
+  *
   * Add an entry to the end of the child array.
   * Fills 'index' with the index of the added child, if the pointer is non-NULL.
+  * @{
   */
 #ifndef __cplusplus
- RTresult rtuGroupAddChild        ( RTgroup group, RTobject child, unsigned int* index );
- RTresult rtuSelectorAddChild     ( RTselector selector, RTobject child, unsigned int* index );
+ RTU_INLINE RTresult rtuGroupAddChild        ( RTgroup group, RTobject child, unsigned int* index );
+ RTU_INLINE RTresult rtuSelectorAddChild     ( RTselector selector, RTobject child, unsigned int* index );
 #else
- RTresult rtuGroupAddChild        ( RTgroup group, RTgroup         child, unsigned int* index );
- RTresult rtuGroupAddChild        ( RTgroup group, RTselector      child, unsigned int* index );
- RTresult rtuGroupAddChild        ( RTgroup group, RTtransform     child, unsigned int* index );
- RTresult rtuGroupAddChild        ( RTgroup group, RTgeometrygroup child, unsigned int* index );
- RTresult rtuSelectorAddChild     ( RTselector selector, RTgroup         child, unsigned int* index );
- RTresult rtuSelectorAddChild     ( RTselector selector, RTselector      child, unsigned int* index );
- RTresult rtuSelectorAddChild     ( RTselector selector, RTtransform     child, unsigned int* index );
- RTresult rtuSelectorAddChild     ( RTselector selector, RTgeometrygroup child, unsigned int* index );
+ RTU_INLINE RTresult rtuGroupAddChild        ( RTgroup group, RTgroup         child, unsigned int* index );
+ RTU_INLINE RTresult rtuGroupAddChild        ( RTgroup group, RTselector      child, unsigned int* index );
+ RTU_INLINE RTresult rtuGroupAddChild        ( RTgroup group, RTtransform     child, unsigned int* index );
+ RTU_INLINE RTresult rtuGroupAddChild        ( RTgroup group, RTgeometrygroup child, unsigned int* index );
+ RTU_INLINE RTresult rtuSelectorAddChild     ( RTselector selector, RTgroup         child, unsigned int* index );
+ RTU_INLINE RTresult rtuSelectorAddChild     ( RTselector selector, RTselector      child, unsigned int* index );
+ RTU_INLINE RTresult rtuSelectorAddChild     ( RTselector selector, RTtransform     child, unsigned int* index );
+ RTU_INLINE RTresult rtuSelectorAddChild     ( RTselector selector, RTgeometrygroup child, unsigned int* index );
 #endif
- RTresult rtuGeometryGroupAddChild( RTgeometrygroup geometrygroup, RTgeometryinstance child, unsigned int* index );
+ RTU_INLINE RTresult rtuGeometryGroupAddChild( RTgeometrygroup geometrygroup, RTgeometryinstance child, unsigned int* index );
+ /** @} */
 
- /*
+ /**
+  * \ingroup rtuTraversal
+  *
   * Wrap rtTransformSetChild in order to provide a type-safe version for C++.
+  * @{
   */
 #ifndef __cplusplus
- RTresult rtuTransformSetChild    ( RTtransform transform, RTobject        child );
+ RTU_INLINE RTresult rtuTransformSetChild    ( RTtransform transform, RTobject        child );
 #else
- RTresult rtuTransformSetChild    ( RTtransform transform, RTgroup         child );
- RTresult rtuTransformSetChild    ( RTtransform transform, RTselector      child );
- RTresult rtuTransformSetChild    ( RTtransform transform, RTtransform     child );
- RTresult rtuTransformSetChild    ( RTtransform transform, RTgeometrygroup child );
+ RTU_INLINE RTresult rtuTransformSetChild    ( RTtransform transform, RTgroup         child );
+ RTU_INLINE RTresult rtuTransformSetChild    ( RTtransform transform, RTselector      child );
+ RTU_INLINE RTresult rtuTransformSetChild    ( RTtransform transform, RTtransform     child );
+ RTU_INLINE RTresult rtuTransformSetChild    ( RTtransform transform, RTgeometrygroup child );
 #endif
+  /** @} */
 
- /*
+ /**
+  * \ingroup rtuTraversal
+  *
+  * Wrap rtTransformGetChild and rtTransformGetChildType in order to provide a type-safe version for C++.
+  * @{
+  */
+ RTU_INLINE RTresult rtuTransformGetChild       ( RTtransform transform, RTobject* type );
+ RTU_INLINE RTresult rtuTransformGetChildType   ( RTtransform transform, RTobjecttype* type );
+  /** @} */
+
+ /**
+  * \ingroup rtuTraversal
+  *
   * Find the given child using a linear search in the child array and remove
   * it. If it's not the last entry in the child array, the last entry in the
   * array will replace the deleted entry, in order to shrink the array size by one.
+  * @{
   */
- RTresult rtuGroupRemoveChild        ( RTgroup group, RTobject child );
- RTresult rtuSelectorRemoveChild     ( RTselector selector, RTobject child );
- RTresult rtuGeometryGroupRemoveChild( RTgeometrygroup geometrygroup, RTgeometryinstance child );
-
- /*
+ RTU_INLINE RTresult rtuGroupRemoveChild        ( RTgroup group, RTobject child );
+ RTU_INLINE RTresult rtuSelectorRemoveChild     ( RTselector selector, RTobject child );
+ RTU_INLINE RTresult rtuGeometryGroupRemoveChild( RTgeometrygroup geometrygroup, RTgeometryinstance child );
+ /** @} */
+ 
+ /**
+  * \ingroup rtuTraversal
+  *
   * Remove the child at the given index in the child array. If it's not the last
   * entry in the child array, the last entry in the array will replace the deleted
   * entry, in order to shrink the array size by one.
+  * @{
   */
  RTU_INLINE RTresult rtuGroupRemoveChildByIndex        ( RTgroup group, unsigned int index );
  RTU_INLINE RTresult rtuSelectorRemoveChildByIndex     ( RTselector selector, unsigned int index );
  RTU_INLINE RTresult rtuGeometryGroupRemoveChildByIndex( RTgeometrygroup geometrygroup, unsigned int index );
+ /** @} */
 
- /*
+ /**
+  * \ingroup rtuTraversal
+  *
   * Use a linear search to find the child in the child array, and return its index.
-  * Returns RT_SUCCESS if the child was found, RT_INVALID_VALUE otherwise.
+  * Returns @ref RT_SUCCESS if the child was found, @ref RT_ERROR_INVALID_VALUE otherwise.
+  * @{
   */
  RTU_INLINE RTresult rtuGroupGetChildIndex        ( RTgroup group, RTobject child, unsigned int* index );
  RTU_INLINE RTresult rtuSelectorGetChildIndex     ( RTselector selector, RTobject child, unsigned int* index );
  RTU_INLINE RTresult rtuGeometryGroupGetChildIndex( RTgeometrygroup geometrygroup, RTgeometryinstance child, unsigned int* index );
-
+ /** @} */
 
  /*
   * The following implements the child management helpers declared above.
@@ -270,6 +328,18 @@ extern "C" {
 
 #endif /* __cplusplus */
 
+ RTU_INLINE RTresult rtuTransformGetChild ( RTtransform transform, RTobject* type )
+ {
+   RTU_CHECK_ERROR( rtTransformGetChild( transform, type ) );
+   return RT_SUCCESS;
+ }
+
+ RTU_INLINE RTresult rtuTransformGetChildType ( RTtransform transform, RTobjecttype* type )
+ {
+   RTU_CHECK_ERROR( rtTransformGetChildType( transform, type ) );
+   return RT_SUCCESS;
+ }
+
  RTU_INLINE RTresult rtuGeometryGroupAddChild( RTgeometrygroup geometrygroup, RTgeometryinstance child, unsigned int* index )
  {
    unsigned int count;
@@ -382,16 +452,19 @@ extern "C" {
 #endif
 
   /**
+   * \ingroup rtuTraversal
+   *
    * Create clustered triangle mesh for good memory coherence with paging on.
    * Vertex, index and material buffers are created and attached to the mesh.
    * Cluster's bounding box and intersection programs are attached to the mesh.
    * The intersection program has the following attributes: 
-   *   rtDeclareVariable(float3, texcoord, attribute texcoord, ); It is always zero
-   *   rtDeclareVariable(float3, geometric_normal, attribute geometric_normal, ); 
-   *   rtDeclareVariable(float3, shading_normal, attribute shading_normal, ); It is equal to geometric_normal
+   *  - @ref rtDeclareVariable(   int, primitive_id, attribute primitive_id, ); 
+   *  - @ref rtDeclareVariable(float3, texcoord, attribute texcoord, ); It is always zero
+   *  - @ref rtDeclareVariable(float3, geometric_normal, attribute geometric_normal, ); 
+   *  - @ref rtDeclareVariable(float3, shading_normal, attribute shading_normal, ); It is equal to geometric_normal
    *
-   * Created RTgeometry mesh expects there to be placed into a RTgeometryinstance where
-   * the mat_indices specified map into materials attached to the RTgeometryinstance
+   * Created @ref RTgeometry mesh expects there to be placed into a @ref RTgeometryinstance where
+   * the mat_indices specified map into materials attached to the @ref RTgeometryinstance
    *
    * In the event of an error, please query the error string from the RTcontext.
    * 
@@ -416,17 +489,20 @@ extern "C" {
 
 
   /**
+   * \ingroup rtuTraversal
+   *
    * Create clustered triangle mesh for good memory coherence with paging on.
    * Buffers for vertices, indices, normals, indices of normals,
    * texture coordinates, indices of texture coordinates and materials are created and attached to the mesh.
    * Cluster's bounding box and intersection programs are attached to the mesh.
    * The intersection program has the following attributes: 
-   *   rtDeclareVariable(float3, texcoord, attribute texcoord, ); 
-   *   rtDeclareVariable(float3, geometric_normal, attribute geometric_normal, ); 
-   *   rtDeclareVariable(float3, shading_normal, attribute shading_normal, ); 
+   *  - @ref rtDeclareVariable(   int, primitive_id, attribute primitive_id, ); 
+   *  - @ref rtDeclareVariable(float3, texcoord, attribute texcoord, ); 
+   *  - @ref rtDeclareVariable(float3, geometric_normal, attribute geometric_normal, ); 
+   *  - @ref rtDeclareVariable(float3, shading_normal, attribute shading_normal, ); 
    *
-   * Created RTgeometry mesh expects there to be placed into a RTgeometryinstance where
-   * the mat_indices specified map into materials attached to the RTgeometryinstance
+   * Created @ref RTgeometry mesh expects there to be placed into a @ref RTgeometryinstance where
+   * the mat_indices specified map into materials attached to the @ref RTgeometryinstance
    *
    * Vertex, normal and texture coordinate buffers can be shared between many geometry objects
    * 
@@ -467,3 +543,4 @@ extern "C" {
 #undef RTU_INLINE
 
 #endif /* __optix_optixu_h__ */
+/** @} */

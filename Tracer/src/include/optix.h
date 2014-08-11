@@ -18,6 +18,15 @@
  * INABILITY TO USE THIS SOFTWARE, EVEN IF NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGES
  */
+ 
+ /**
+ * @file   optix.h
+ * @author NVIDIA Corporation
+ * @brief  OptiX public API header
+ *
+ * Includes the host api if compiling host code, includes the cuda api if compiling device code.
+ * For the math library routines include optix_math.h
+ */
 
 /******************************************************************************\
  *
@@ -31,7 +40,7 @@
 #ifndef __optix_optix_h__
 #define __optix_optix_h__
 
-#define OPTIX_VERSION 3001 /* 3.0.1 (major =  OPTIX_VERSION/1000,       *
+#define OPTIX_VERSION 3051 /* 3.5.1 (major =  OPTIX_VERSION/1000,       *
                             *        minor = (OPTIX_VERSION%1000)/10,   *
                             *        micro =  OPTIX_VERSION%10          */
 

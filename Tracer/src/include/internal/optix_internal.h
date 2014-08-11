@@ -30,6 +30,7 @@ struct rtObject;
 
 namespace optix {
 
+#if (defined(__CUDACC__) && (__CUDA_ARCH__ > 0))
 #if ((CUDA_VERSION >= 4010) || (CUDART_VERSION >= 4010)) && __CUDA_ARCH__ >= 200
   __forceinline__
 #else
@@ -39,7 +40,11 @@ namespace optix {
   rt_undefined_use(int)
   {
   }
-  
+#else
+  void rt_undefined_use(int);
+#endif
+
+#if (defined(__CUDACC__) && (__CUDA_ARCH__ > 0))
 #if ((CUDA_VERSION >= 4010) || (CUDART_VERSION >= 4010)) && __CUDA_ARCH__ >= 200
   __forceinline__
 #else
@@ -49,8 +54,9 @@ namespace optix {
   rt_undefined_use64(unsigned long long)
   {
   }
-
-
+#else
+  void rt_undefined_use64(int);
+#endif
 
   inline __device__ float4
     rt_texture_get_f_id(int tex, int dim, float x, float y, float z, float w)
@@ -131,6 +137,30 @@ namespace optix {
     return tmp;
   }
 
+  static inline __device__ void*
+    rt_buffer_get_id(int id, unsigned int dim, unsigned int element_size,
+                     size_t i0_in, size_t i1_in, size_t i2_in, size_t i3_in)
+  {
+    optix::optix_size_t i0, i1, i2, i3;
+    i0 = i0_in;
+    i1 = i1_in;
+    i2 = i2_in;
+    i3 = i3_in;
+    void* tmp;
+    asm volatile("call (%0), _rt_buffer_get_id"OPTIX_BITNESS_SUFFIX", (%1, %2, %3, %4, %5, %6, %7);" :
+                 "="OPTIX_ASM_PTR(tmp) :
+                 "r"(id), "r"(dim), "r"(element_size),
+                 OPTIX_ASM_SIZE_T(i0), OPTIX_ASM_SIZE_T(i1), OPTIX_ASM_SIZE_T(i2), OPTIX_ASM_SIZE_T(i3) :
+                 );
+
+#if defined(__x86_64) || defined(AMD64) || defined(_M_AMD64)
+    rt_undefined_use64((unsigned long long)tmp);
+#else
+    rt_undefined_use((int)tmp);
+#endif
+    return tmp;
+  }
+
   static __forceinline__ __device__ size_t4
     rt_buffer_get_size(const void* buffer, unsigned int dim, unsigned int element_size)
   {
@@ -138,6 +168,17 @@ namespace optix {
     asm volatile("call (%0, %1, %2, %3), _rt_buffer_get_size"OPTIX_BITNESS_SUFFIX", (%4, %5, %6);" :
                  "="OPTIX_ASM_SIZE_T(d0), "="OPTIX_ASM_SIZE_T(d1), "="OPTIX_ASM_SIZE_T(d2), "="OPTIX_ASM_SIZE_T(d3) :
                  OPTIX_ASM_PTR(buffer), "r"(dim), "r"(element_size) :
+                 );
+    return make_size_t4(d0, d1, d2, d3);
+  }
+
+  static __forceinline__ __device__ size_t4
+    rt_buffer_get_size_id(int id, unsigned int dim, unsigned int element_size)
+  {
+    optix::optix_size_t d0, d1, d2, d3;
+    asm volatile("call (%0, %1, %2, %3), _rt_buffer_get_id_size"OPTIX_BITNESS_SUFFIX", (%4, %5, %6);" :
+                 "="OPTIX_ASM_SIZE_T(d0), "="OPTIX_ASM_SIZE_T(d1), "="OPTIX_ASM_SIZE_T(d2), "="OPTIX_ASM_SIZE_T(d3) :
+                 "r"(id), "r"(dim), "r"(element_size) :
                  );
     return make_size_t4(d0, d1, d2, d3);
   }

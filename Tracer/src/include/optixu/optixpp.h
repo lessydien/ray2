@@ -79,6 +79,8 @@ namespace optixu {
   using optix::Variable;
 
   using optix::Exception;
+
+  using optix::bufferId;
 } /* end namespace optixu */
 
 

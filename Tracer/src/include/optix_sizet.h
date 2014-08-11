@@ -29,6 +29,16 @@
 #include "internal/optix_declarations.h"  /* For RT_HOSTDEVICE */
 
 #ifdef __cplusplus
+#  define RT_SIZET_INLINE inline
+#else
+#  ifdef _MSC_VER
+#    define RT_SIZET_INLINE __inline
+#  else
+#    define RT_SIZET_INLINE static inline
+#  endif
+#endif
+
+#ifdef __cplusplus
 namespace optix {
 #endif
   
@@ -37,7 +47,9 @@ namespace optix {
   typedef struct {
     size_t x;
   } size_t1;
-  typedef struct size_t2 {
+
+  // 16 byte alignment to match CUDA's ulong2 type for 64 bit longs
+  typedef struct __align__(16) size_t2 {
 #ifdef __cplusplus
     RT_HOSTDEVICE size_t2() { }
     RT_HOSTDEVICE explicit size_t2( size_t s ) { x = y = s; }
@@ -45,6 +57,7 @@ namespace optix {
 #endif
     size_t x,y;
   } size_t2;
+
   typedef struct size_t3 {
 #ifdef __cplusplus
     RT_HOSTDEVICE size_t3() { }
@@ -53,7 +66,9 @@ namespace optix {
 #endif
     size_t x,y,z;
   } size_t3;
-  typedef struct size_t4 {
+
+  // 16 byte alignment to match CUDA's ulong4 type for 64 bit longs
+  typedef struct __align__(16) size_t4 {
 #ifdef __cplusplus
     RT_HOSTDEVICE size_t4() { }
     RT_HOSTDEVICE explicit size_t4( size_t s ) { x = y = z = w = s; }
@@ -62,20 +77,20 @@ namespace optix {
     size_t x,y,z,w;
   } size_t4;
 
-  __inline__ RT_HOSTDEVICE size_t2 make_size_t2( size_t x, size_t y ) {
+  RT_SIZET_INLINE RT_HOSTDEVICE size_t2 make_size_t2( size_t x, size_t y ) {
     size_t2 ret;
     ret.x = x;
     ret.y = y;
     return ret;
   }
-  __inline__ RT_HOSTDEVICE size_t3 make_size_t3( size_t x, size_t y, size_t z ) {
+  RT_SIZET_INLINE RT_HOSTDEVICE size_t3 make_size_t3( size_t x, size_t y, size_t z ) {
     size_t3 ret;
     ret.x = x;
     ret.y = y;
     ret.z = z;
     return ret;
   }
-  __inline__ RT_HOSTDEVICE size_t4 make_size_t4( size_t x, size_t y, size_t z, size_t w ) {
+  RT_SIZET_INLINE RT_HOSTDEVICE size_t4 make_size_t4( size_t x, size_t y, size_t z, size_t w ) {
     size_t4 ret;
     ret.x = x;
     ret.y = y;
@@ -84,40 +99,46 @@ namespace optix {
     return ret;
   }
   
+#ifdef __cplusplus
   /* additional constructors */
-  inline RT_HOSTDEVICE size_t4 make_size_t4(unsigned int s)
+  RT_SIZET_INLINE RT_HOSTDEVICE size_t4 make_size_t4(unsigned int s)
   {
       return make_size_t4(s, s, s, s);
   }
-  inline RT_HOSTDEVICE size_t3 make_size_t3(unsigned int s)
+  RT_SIZET_INLINE RT_HOSTDEVICE size_t3 make_size_t3(unsigned int s)
   {
       return make_size_t3(s, s, s);
   }
-  inline RT_HOSTDEVICE size_t2 make_size_t2(unsigned int s)
+  RT_SIZET_INLINE RT_HOSTDEVICE size_t2 make_size_t2(unsigned int s)
   {
       return make_size_t2(s, s);
   }
-  inline RT_HOSTDEVICE size_t2 make_size_t2(size_t4 st)
+  RT_SIZET_INLINE RT_HOSTDEVICE size_t3 make_size_t3(size_t4 st)
+  {
+      return make_size_t3(st.x, st.y, st.z);
+  }
+  RT_SIZET_INLINE RT_HOSTDEVICE size_t2 make_size_t2(size_t4 st)
   {
       return make_size_t2(st.x, st.y);
   }
-  inline RT_HOSTDEVICE size_t make_size_t(size_t4 v0)
+  RT_SIZET_INLINE RT_HOSTDEVICE size_t make_size_t(size_t4 v0)
   {
       return (size_t) v0.x;
   }
 
-  inline RT_HOSTDEVICE size_t4 make_size_t4(uint4 s)
+  RT_SIZET_INLINE RT_HOSTDEVICE size_t4 make_size_t4(uint4 s)
   {
       return make_size_t4(s.x, s.y, s.z, s.w);
   }
   
-  inline RT_HOSTDEVICE float2 make_float2(size_t2 st)
+  RT_SIZET_INLINE RT_HOSTDEVICE float2 make_float2(size_t2 st)
   {
     float2 ret;
     ret.x = (float)st.x;
     ret.y = (float)st.y;
     return ret;
   }
+#endif
 
 #else
   typedef uint1 size_t1;
@@ -134,4 +155,6 @@ namespace optix {
 }
 #endif
 
-#endif
+#undef RT_SIZET_INLINE
+
+#endif /* __optix_sizet_h__ */

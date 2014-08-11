@@ -38,141 +38,141 @@
  * \remarks 
  * \author Mauch
  */
-bool createSceneFromZemax(Group *oGroupPtr, FILE *hfile, RayField ***sourceListPtr, long *sourceNumberPtr, Detector ***detListPtr, long *detNumberPtr, SimMode mode)
-{
-
-	std::cout <<"********************************************" << "...\n";
-	std::cout <<"starting to parse prescritpion files..." << "...\n";
-	/* output the geometry-data for debugging purpose */
-	/* get handle to parser-debug file */
-	char filepath[512];
-	sprintf(filepath, "%s" PATH_SEPARATOR "%s", OUTPUT_FILEPATH, "geometry.TXT");
-	FILE *hfileDebug = fopen( filepath, "w" ) ;
-	if (!hfileDebug)
-	{
-		std::cout <<"error in Parser.createSceneFromZemax(): cannot open description file: " << filepath << "...\n";
-		return false;
-	}
-	// define structure to hold the parse results
-	//parseResultStruct parseResults;
-	//map<string,variant> *parseResults;
-	parseResultStruct *parseResults;
-	/* parse Zemax description file */
-	parserError err=parseZemaxPrescr(&parseResults, hfile, mode);
-	if (err != PARSER_NO_ERR)
-	{
-		std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxPrescr() returned an error" << "...\n";
-		//fprintf( hfileDebug, parseResults->errMsg);
-		return false;
-	}
-
-	switch (parseResults->simType)
-	{
-	case SIMTYPE_GEOM_RAYS:
-		if (!createGeometricSceneFromZemax(oGroupPtr, parseResults, sourceListPtr, sourceNumberPtr, detListPtr, detNumberPtr, mode) )
-		{
-			std::cout <<"error in Parser.createSceneFromZemax(): createGeometricSceneFromZemax() returned an error" << "...\n";
-			return false;
-		}
-		break;
-	case SIMTYPE_DIFF_RAYS:
-		if (!createDifferentialSceneFromZemax(oGroupPtr, parseResults, sourceListPtr, sourceNumberPtr, detListPtr, detNumberPtr, mode) )
-		{
-			std::cout <<"error in Parser.createSceneFromZemax(): createDifferentialSceneFromZemax() returned an error" << "...\n";
-			return false;
-		}
-		break;
-	case SIMTYPE_PATHTRACING:
-		if (!createPathTracingSceneFromZemax(oGroupPtr, parseResults, sourceListPtr, sourceNumberPtr, detListPtr, detNumberPtr, mode) )
-		{
-			std::cout <<"error in Parser.createSceneFromZemax(): createPathTracingSceneFromZemax() returned an error" << "...\n";
-			return false;
-		}
-		break;		
-	default:
-		std::cout <<"error in Parser.createSceneFromZemax(): unknown simulation type" << "...\n";
-		return false;
-		break;
-	}
-
-	// print the results of the scene creation for debugging purposes
-	Geometry* geometryPtrDebug;
-	PlaneSurface *ptrPlane;
-	ApertureStop *ptrAptStop;
-	PlaneSurface_Params *ptrPlaneParams;
-	ApertureStop_Params *ptrAptStopParams;
-	IdealLense *ptrIdealLense;
-	IdealLense_Params *ptrIdealLenseParams;
-	SphericalSurface *ptrSphere;
-	SphericalSurface_Params *ptrSphereParams;
-	SinusNormalSurface *ptrCosNorm;
-	SinusNormalSurface_Params *ptrCosNormParams;
-	CylPipe *ptrCyl;
-	CylPipe_Params *ptrCylPipeParams;
-	ConePipe *ptrCone;
-	ConePipe_Params *ptrConePipeParams;
-	//for (int k=0; k<oGroupPtr->getGeometryGroup(0)->getGeometryListLength();k++)
-	//{
-	//	geometryPtrDebug=oGroupPtr->getGeometryGroup(0)->getGeometry(k);
-
-	//	switch(geometryPtrDebug->getType())
-	//	{
-	//		case (GEOM_PLANESURF):
-	//			/* cast pointer to plane surface */
-	//			ptrPlane=dynamic_cast<PlaneSurface*>(geometryPtrDebug);
-	//			ptrPlaneParams=dynamic_cast<PlaneSurface_Params*>(ptrPlane->getParamsPtr());
-	//			/* output params */
-	//			fprintf( hfileDebug, " geometry %i plane surf '%s': root: x,y,z: %f, %f, %f; \n", ptrPlaneParams->geometryID, ptrPlane->getComment(), ptrPlaneParams->root.x, ptrPlaneParams->root.y, ptrPlaneParams->root.z);
-	//			break;
-	//		case (GEOM_APERTURESTOP):
-	//			/* cast pointer to plane surface */
-	//			ptrAptStop=dynamic_cast<ApertureStop*>(geometryPtrDebug);
-	//			ptrAptStopParams=dynamic_cast<ApertureStop_Params*>(ptrAptStop->getParamsPtr());
-	//			/* output params */
-	//			fprintf( hfileDebug, " geometry %i aperture stop '%s': root: x,y,z: %f, %f, %f; apertureStopRadius x,y: %f, %f\n", ptrAptStopParams->geometryID, ptrAptStop->getComment(), ptrAptStopParams->root.x, ptrAptStopParams->root.y, ptrAptStopParams->root.z, ptrAptStopParams->apertureStopRadius.x, ptrAptStopParams->apertureStopRadius.y);
-	//			break;
-	//		case (GEOM_SPHERICALSURF):
-	//			/* cast pointer to spherical surface */
-	//			ptrSphere=dynamic_cast<SphericalSurface*>(geometryPtrDebug);
-	//			ptrSphereParams=dynamic_cast<SphericalSurface_Params*>(ptrSphere->getParamsPtr());
-	//			fprintf( hfileDebug, " geometry %i sphere '%s': root: x,y,z: %f, %f, %f; radius: %f; aperture: %f \n", ptrSphereParams->geometryID, ptrSphere->getComment(), ptrSphereParams->centre.x, ptrSphereParams->centre.y, ptrSphereParams->centre.z, ptrSphereParams->curvatureRadius.x, ptrSphereParams->apertureRadius.x);
-	//			break;
-	//		case (GEOM_ASPHERICALSURF):
-	//			/* cast pointer to aspherical surface */
-	//			break;
-	//		case (GEOM_CYLPIPE):
-	//			ptrCyl=dynamic_cast<CylPipe*>(geometryPtrDebug);
-	//			ptrCylPipeParams=dynamic_cast<CylPipe_Params*>(ptrCyl->getParamsPtr());
-	//			fprintf( hfileDebug, " geometry %i cylinder pipe '%s': root: x,y,z: %f, %f, %f; radius x, y: %f, %f \n", ptrCylPipeParams->geometryID, ptrCyl->getComment(), ptrCylPipeParams->root.x, ptrCylPipeParams->root.y, ptrCylPipeParams->root.z, ptrCylPipeParams->radius.x, ptrCylPipeParams->radius.y);
-	//			break;
-	//		case (GEOM_CONEPIPE):
-	//			ptrCone=dynamic_cast<ConePipe*>(geometryPtrDebug);
-	//			ptrConePipeParams=dynamic_cast<ConePipe_Params*>(ptrCone->getParamsPtr());
-	//			fprintf( hfileDebug, " geometry %i cone pipe '%s': root: x,y,z: %f, %f, %f; cosTheta: %f; coneEnd x,y,z: %f, %f, %f \n", ptrConePipeParams->geometryID, ptrCone->getComment(), ptrConePipeParams->root.x, ptrConePipeParams->root.y, ptrConePipeParams->root.z, ptrConePipeParams->cosTheta.x, ptrConePipeParams->coneEnd.x, ptrConePipeParams->coneEnd.y, ptrConePipeParams->coneEnd.z);
-	//			break;
-	//		case (GEOM_IDEALLENSE):
-	//			/* cast pointer to plane surface */
-	//			ptrIdealLense=dynamic_cast<IdealLense*>(geometryPtrDebug);
-	//			ptrIdealLenseParams=dynamic_cast<IdealLense_Params*>(ptrIdealLense->getParamsPtr());
-	//			/* output params */
-	//			fprintf( hfileDebug, " geometry %i ideal lense '%s': root: x,y,z: %f, %f, %f; \n", ptrIdealLenseParams->geometryID, ptrIdealLense->getComment(), ptrIdealLenseParams->root.x, ptrIdealLenseParams->root.y, ptrIdealLenseParams->root.z);
-	//			break;
-	//		case (GEOM_COSINENORMAL):
-	//			/* cast pointer to plane surface */
-	//			ptrCosNorm=dynamic_cast<SinusNormalSurface*>(geometryPtrDebug);
-	//			ptrCosNormParams=dynamic_cast<SinusNormalSurface_Params*>(ptrCosNorm->getParamsPtr());
-	//			/* output params */
-	//			fprintf( hfileDebug, " geometry %i cosine normal '%s': root: x,y,z: %f, %f, %f; \n", ptrCosNormParams->geometryID, ptrCosNorm->getComment(), ptrCosNormParams->root.x, ptrCosNormParams->root.y, ptrCosNormParams->root.z);
-	//			break;
-
-	//		default:
-	//			break;
-	//	}
-	//}
-	fclose(hfileDebug); // close debug file
-
-	return true;
-}
+//bool createSceneFromZemax(Group *oGroupPtr, FILE *hfile, RayField ***sourceListPtr, long *sourceNumberPtr, Detector ***detListPtr, long *detNumberPtr, SimMode mode)
+//{
+//
+//	std::cout <<"********************************************" << "...\n";
+//	std::cout <<"starting to parse prescritpion files..." << "...\n";
+//	/* output the geometry-data for debugging purpose */
+//	/* get handle to parser-debug file */
+//	char filepath[512];
+//	sprintf(filepath, "%s" PATH_SEPARATOR "%s", OUTPUT_FILEPATH, "geometry.TXT");
+//	FILE *hfileDebug = fopen( filepath, "w" ) ;
+//	if (!hfileDebug)
+//	{
+//		std::cout <<"error in Parser.createSceneFromZemax(): cannot open description file: " << filepath << "...\n";
+//		return false;
+//	}
+//	// define structure to hold the parse results
+//	//parseResultStruct parseResults;
+//	//map<string,variant> *parseResults;
+//	parseResultStruct *parseResults;
+//	/* parse Zemax description file */
+//	parserError err=parseZemaxPrescr(&parseResults, hfile, mode);
+//	if (err != PARSER_NO_ERR)
+//	{
+//		std::cout <<"error in Parser.createSceneFromZemax(): parseZemaxPrescr() returned an error" << "...\n";
+//		//fprintf( hfileDebug, parseResults->errMsg);
+//		return false;
+//	}
+//
+//	switch (parseResults->simType)
+//	{
+//	case SIMTYPE_GEOM_RAYS:
+//		if (!createGeometricSceneFromZemax(oGroupPtr, parseResults, sourceListPtr, sourceNumberPtr, detListPtr, detNumberPtr, mode) )
+//		{
+//			std::cout <<"error in Parser.createSceneFromZemax(): createGeometricSceneFromZemax() returned an error" << "...\n";
+//			return false;
+//		}
+//		break;
+//	case SIMTYPE_DIFF_RAYS:
+//		if (!createDifferentialSceneFromZemax(oGroupPtr, parseResults, sourceListPtr, sourceNumberPtr, detListPtr, detNumberPtr, mode) )
+//		{
+//			std::cout <<"error in Parser.createSceneFromZemax(): createDifferentialSceneFromZemax() returned an error" << "...\n";
+//			return false;
+//		}
+//		break;
+//	case SIMTYPE_PATHTRACING:
+//		if (!createPathTracingSceneFromZemax(oGroupPtr, parseResults, sourceListPtr, sourceNumberPtr, detListPtr, detNumberPtr, mode) )
+//		{
+//			std::cout <<"error in Parser.createSceneFromZemax(): createPathTracingSceneFromZemax() returned an error" << "...\n";
+//			return false;
+//		}
+//		break;		
+//	default:
+//		std::cout <<"error in Parser.createSceneFromZemax(): unknown simulation type" << "...\n";
+//		return false;
+//		break;
+//	}
+//
+//	// print the results of the scene creation for debugging purposes
+//	Geometry* geometryPtrDebug;
+//	PlaneSurface *ptrPlane;
+//	ApertureStop *ptrAptStop;
+//	PlaneSurface_Params *ptrPlaneParams;
+//	ApertureStop_Params *ptrAptStopParams;
+//	IdealLense *ptrIdealLense;
+//	IdealLense_Params *ptrIdealLenseParams;
+//	SphericalSurface *ptrSphere;
+//	SphericalSurface_Params *ptrSphereParams;
+//	SinusNormalSurface *ptrCosNorm;
+//	SinusNormalSurface_Params *ptrCosNormParams;
+//	CylPipe *ptrCyl;
+//	CylPipe_Params *ptrCylPipeParams;
+//	ConePipe *ptrCone;
+//	ConePipe_Params *ptrConePipeParams;
+//	//for (int k=0; k<oGroupPtr->getGeometryGroup(0)->getGeometryListLength();k++)
+//	//{
+//	//	geometryPtrDebug=oGroupPtr->getGeometryGroup(0)->getGeometry(k);
+//
+//	//	switch(geometryPtrDebug->getType())
+//	//	{
+//	//		case (GEOM_PLANESURF):
+//	//			/* cast pointer to plane surface */
+//	//			ptrPlane=dynamic_cast<PlaneSurface*>(geometryPtrDebug);
+//	//			ptrPlaneParams=dynamic_cast<PlaneSurface_Params*>(ptrPlane->getParamsPtr());
+//	//			/* output params */
+//	//			fprintf( hfileDebug, " geometry %i plane surf '%s': root: x,y,z: %f, %f, %f; \n", ptrPlaneParams->geometryID, ptrPlane->getComment(), ptrPlaneParams->root.x, ptrPlaneParams->root.y, ptrPlaneParams->root.z);
+//	//			break;
+//	//		case (GEOM_APERTURESTOP):
+//	//			/* cast pointer to plane surface */
+//	//			ptrAptStop=dynamic_cast<ApertureStop*>(geometryPtrDebug);
+//	//			ptrAptStopParams=dynamic_cast<ApertureStop_Params*>(ptrAptStop->getParamsPtr());
+//	//			/* output params */
+//	//			fprintf( hfileDebug, " geometry %i aperture stop '%s': root: x,y,z: %f, %f, %f; apertureStopRadius x,y: %f, %f\n", ptrAptStopParams->geometryID, ptrAptStop->getComment(), ptrAptStopParams->root.x, ptrAptStopParams->root.y, ptrAptStopParams->root.z, ptrAptStopParams->apertureStopRadius.x, ptrAptStopParams->apertureStopRadius.y);
+//	//			break;
+//	//		case (GEOM_SPHERICALSURF):
+//	//			/* cast pointer to spherical surface */
+//	//			ptrSphere=dynamic_cast<SphericalSurface*>(geometryPtrDebug);
+//	//			ptrSphereParams=dynamic_cast<SphericalSurface_Params*>(ptrSphere->getParamsPtr());
+//	//			fprintf( hfileDebug, " geometry %i sphere '%s': root: x,y,z: %f, %f, %f; radius: %f; aperture: %f \n", ptrSphereParams->geometryID, ptrSphere->getComment(), ptrSphereParams->centre.x, ptrSphereParams->centre.y, ptrSphereParams->centre.z, ptrSphereParams->curvatureRadius.x, ptrSphereParams->apertureRadius.x);
+//	//			break;
+//	//		case (GEOM_ASPHERICALSURF):
+//	//			/* cast pointer to aspherical surface */
+//	//			break;
+//	//		case (GEOM_CYLPIPE):
+//	//			ptrCyl=dynamic_cast<CylPipe*>(geometryPtrDebug);
+//	//			ptrCylPipeParams=dynamic_cast<CylPipe_Params*>(ptrCyl->getParamsPtr());
+//	//			fprintf( hfileDebug, " geometry %i cylinder pipe '%s': root: x,y,z: %f, %f, %f; radius x, y: %f, %f \n", ptrCylPipeParams->geometryID, ptrCyl->getComment(), ptrCylPipeParams->root.x, ptrCylPipeParams->root.y, ptrCylPipeParams->root.z, ptrCylPipeParams->radius.x, ptrCylPipeParams->radius.y);
+//	//			break;
+//	//		case (GEOM_CONEPIPE):
+//	//			ptrCone=dynamic_cast<ConePipe*>(geometryPtrDebug);
+//	//			ptrConePipeParams=dynamic_cast<ConePipe_Params*>(ptrCone->getParamsPtr());
+//	//			fprintf( hfileDebug, " geometry %i cone pipe '%s': root: x,y,z: %f, %f, %f; cosTheta: %f; coneEnd x,y,z: %f, %f, %f \n", ptrConePipeParams->geometryID, ptrCone->getComment(), ptrConePipeParams->root.x, ptrConePipeParams->root.y, ptrConePipeParams->root.z, ptrConePipeParams->cosTheta.x, ptrConePipeParams->coneEnd.x, ptrConePipeParams->coneEnd.y, ptrConePipeParams->coneEnd.z);
+//	//			break;
+//	//		case (GEOM_IDEALLENSE):
+//	//			/* cast pointer to plane surface */
+//	//			ptrIdealLense=dynamic_cast<IdealLense*>(geometryPtrDebug);
+//	//			ptrIdealLenseParams=dynamic_cast<IdealLense_Params*>(ptrIdealLense->getParamsPtr());
+//	//			/* output params */
+//	//			fprintf( hfileDebug, " geometry %i ideal lense '%s': root: x,y,z: %f, %f, %f; \n", ptrIdealLenseParams->geometryID, ptrIdealLense->getComment(), ptrIdealLenseParams->root.x, ptrIdealLenseParams->root.y, ptrIdealLenseParams->root.z);
+//	//			break;
+//	//		case (GEOM_COSINENORMAL):
+//	//			/* cast pointer to plane surface */
+//	//			ptrCosNorm=dynamic_cast<SinusNormalSurface*>(geometryPtrDebug);
+//	//			ptrCosNormParams=dynamic_cast<SinusNormalSurface_Params*>(ptrCosNorm->getParamsPtr());
+//	//			/* output params */
+//	//			fprintf( hfileDebug, " geometry %i cosine normal '%s': root: x,y,z: %f, %f, %f; \n", ptrCosNormParams->geometryID, ptrCosNorm->getComment(), ptrCosNormParams->root.x, ptrCosNormParams->root.y, ptrCosNormParams->root.z);
+//	//			break;
+//
+//	//		default:
+//	//			break;
+//	//	}
+//	//}
+//	fclose(hfileDebug); // close debug file
+//
+//	return true;
+//}
 
 /**
  * \detail createGeometricSceneFromZemax 

@@ -147,6 +147,7 @@ endif(NOT PASSED_FIRST_CONFIGURE)
 # This passes a preprocessor definition to cl.exe when processing CUDA code.
 if(USING_WINDOWS_CL)
   list(APPEND CUDA_NVCC_FLAGS --compiler-options /D_USE_MATH_DEFINES)
+#  list(APPEND CUDA_NVCC_FLAGS --use_fast_math)
 endif()
 
 

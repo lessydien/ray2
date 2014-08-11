@@ -33,16 +33,21 @@
  * include, in the user documentation and internal comments to the code,
  * the above Disclaimer and U.S. Government End Users Notice.
  */
-
-/*
-  This file implements common mathematical operations on vector types
-  (float3, float4 etc.) since these are not provided as standard by CUDA.
-
-  The syntax is modelled on the Cg standard library.
-
-  This file has also been modified from the original cutil_math.h file.
-  cutil_math.h is a subset of this file, and you should use this file in place
-  of any cutil_math.h file you wish to use.
+ 
+ 
+/**
+ * @file   optixu_math_namespace.h
+ * @author NVIDIA Corporation
+ * @brief  OptiX public API
+ *
+ * This file implements common mathematical operations on vector types
+ * (float3, float4 etc.) since these are not provided as standard by CUDA.
+ *
+ * The syntax is modelled on the Cg standard library.
+ *
+ * This file has also been modified from the original cutil_math.h file.
+ * cutil_math.h is a subset of this file, and you should use this file in place
+ * of any cutil_math.h file you wish to use.
 */
 
 #ifndef __optixu_optixu_math_namespace_h__
@@ -58,6 +63,8 @@
 // guarantee this file gets included in order to get these typedefs.
 #  include <sys/types.h>
 #endif
+
+/** @cond */
 
 // #define these constants such that we are sure
 // 32b floats are emitted in ptx
@@ -101,6 +108,7 @@
 #define M_SQRT1_2f  0.707106781186547524401f
 #endif
 
+/** @endcond */
 
 // __forceinline__ works in cuda, VS, and with gcc.  Leave it as macro in case
 // we need to make this per-platform or we want to switch off inlining globally.
@@ -151,7 +159,7 @@ OPTIXU_INLINE float fmaxf(const float a, const float b)
   return a > b ? a : b;
 }
 
-/* copy sign-bit from src value to dst value */
+/** copy sign-bit from src value to dst value */
 OPTIXU_INLINE float copysignf(const float dst, const float src)
 {
   union {
@@ -221,6 +229,7 @@ namespace optix {
 
 #else
 
+/** Bit preserving casting function */
 OPTIXU_INLINE int float_as_int(const float f)
 {
   union {
@@ -232,7 +241,7 @@ OPTIXU_INLINE int float_as_int(const float f)
   return v1.i;
 }
 
-
+/** Bit preserving casting function */
 OPTIXU_INLINE float int_as_float(int i)
 {
   union {
@@ -250,30 +259,43 @@ OPTIXU_INLINE float int_as_float(int i)
 /* float functions */
 /******************************************************************************/
 
-/* lerp */
+/** lerp */
 OPTIXU_INLINE RT_HOSTDEVICE float lerp(const float a, const float b, const float t)
 {
   return a + t*(b-a);
 }
 
-/* bilerp */
+/** bilerp */
 OPTIXU_INLINE RT_HOSTDEVICE float bilerp(const float x00, const float x10, const float x01, const float x11,
                                          const float u, const float v)
 {
   return lerp( lerp( x00, x10, u ), lerp( x01, x11, u ), v );
 }
 
-/* clamp */
+/** clamp */
 OPTIXU_INLINE RT_HOSTDEVICE float clamp(const float f, const float a, const float b)
 {
   return fmaxf(a, fminf(f, b));
 }
 
-
+/** If used on the device, this could place the the 'v' in local memory */
+OPTIXU_INLINE RT_HOSTDEVICE float getByIndex(const float1& v, int i)
+{
+  return ((float*)(&v))[i];
+}
+  
+/** If used on the device, this could place the the 'v' in local memory */
+OPTIXU_INLINE RT_HOSTDEVICE void setByIndex(float1& v, int i, float x)
+{
+  ((float*)(&v))[i] = x;
+}
+  
 /* float2 functions */
 /******************************************************************************/
 
-/* additional constructors */
+/** additional constructors 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE float2 make_float2(const float s)
 {
   return make_float2(s, s);
@@ -286,34 +308,43 @@ OPTIXU_INLINE RT_HOSTDEVICE float2 make_float2(const uint2& a)
 {
   return make_float2(float(a.x), float(a.y));
 }
+/** @} */
 
-/* negate */
+/** negate */
 OPTIXU_INLINE RT_HOSTDEVICE float2 operator-(const float2& a)
 {
   return make_float2(-a.x, -a.y);
 }
 
-/* min */
+/** min 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE float2 fminf(const float2& a, const float2& b)
 {
-	return make_float2(fminf(a.x,b.x), fminf(a.y,b.y));
+  return make_float2(fminf(a.x,b.x), fminf(a.y,b.y));
 }
 OPTIXU_INLINE RT_HOSTDEVICE float fminf(const float2& a)
 {
   return fminf(a.x, a.y);
 }
+/** @} */
 
-/* max */
+/** max 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE float2 fmaxf(const float2& a, const float2& b)
 {
-	return make_float2(fmaxf(a.x,b.x), fmaxf(a.y,b.y));
+  return make_float2(fmaxf(a.x,b.x), fmaxf(a.y,b.y));
 }
 OPTIXU_INLINE RT_HOSTDEVICE float fmaxf(const float2& a)
 {
   return fmaxf(a.x, a.y);
 }
+/** @} */
 
-/* add */
+/** add 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE float2 operator+(const float2& a, const float2& b)
 {
   return make_float2(a.x + b.x, a.y + b.y);
@@ -330,8 +361,11 @@ OPTIXU_INLINE RT_HOSTDEVICE void operator+=(float2& a, const float2& b)
 {
   a.x += b.x; a.y += b.y;
 }
+/** @} */
 
-/* subtract */
+/** subtract 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE float2 operator-(const float2& a, const float2& b)
 {
   return make_float2(a.x - b.x, a.y - b.y);
@@ -348,8 +382,11 @@ OPTIXU_INLINE RT_HOSTDEVICE void operator-=(float2& a, const float2& b)
 {
   a.x -= b.x; a.y -= b.y;
 }
+/** @} */
 
-/* multiply */
+/** multiply 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE float2 operator*(const float2& a, const float2& b)
 {
   return make_float2(a.x * b.x, a.y * b.y);
@@ -370,8 +407,11 @@ OPTIXU_INLINE RT_HOSTDEVICE void operator*=(float2& a, const float s)
 {
   a.x *= s; a.y *= s;
 }
+/** @} */
 
-/* divide */
+/** divide 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE float2 operator/(const float2& a, const float2& b)
 {
   return make_float2(a.x / b.x, a.y / b.y);
@@ -390,21 +430,24 @@ OPTIXU_INLINE RT_HOSTDEVICE void operator/=(float2& a, const float s)
   float inv = 1.0f / s;
   a *= inv;
 }
+/** @} */
 
-/* lerp */
+/** lerp */
 OPTIXU_INLINE RT_HOSTDEVICE float2 lerp(const float2& a, const float2& b, const float t)
 {
   return a + t*(b-a);
 }
 
-/* bilerp */
+/** bilerp */
 OPTIXU_INLINE RT_HOSTDEVICE float2 bilerp(const float2& x00, const float2& x10, const float2& x01, const float2& x11,
                                           const float u, const float v)
 {
   return lerp( lerp( x00, x10, u ), lerp( x01, x11, u ), v );
 }
 
-/* clamp */
+/** clamp 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE float2 clamp(const float2& v, const float a, const float b)
 {
   return make_float2(clamp(v.x, a, b), clamp(v.y, a, b));
@@ -414,58 +457,73 @@ OPTIXU_INLINE RT_HOSTDEVICE float2 clamp(const float2& v, const float2& a, const
 {
   return make_float2(clamp(v.x, a.x, b.x), clamp(v.y, a.y, b.y));
 }
+/** @} */
 
-/* dot product */
+/** dot product */
 OPTIXU_INLINE RT_HOSTDEVICE float dot(const float2& a, const float2& b)
 {
   return a.x * b.x + a.y * b.y;
 }
 
-/* length */
+/** length */
 OPTIXU_INLINE RT_HOSTDEVICE float length(const float2& v)
 {
   return sqrtf(dot(v, v));
 }
 
-/* normalize */
+/** normalize */
 OPTIXU_INLINE RT_HOSTDEVICE float2 normalize(const float2& v)
 {
   float invLen = 1.0f / sqrtf(dot(v, v));
   return v * invLen;
 }
 
-/* floor */
+/** floor */
 OPTIXU_INLINE RT_HOSTDEVICE float2 floor(const float2& v)
 {
   return make_float2(::floorf(v.x), ::floorf(v.y));
 }
 
-/* reflect */
+/** reflect */
 OPTIXU_INLINE RT_HOSTDEVICE float2 reflect(const float2& i, const float2& n)
 {
-	return i - 2.0f * n * dot(n,i);
+  return i - 2.0f * n * dot(n,i);
 }
 
-/* faceforward */
-/* Returns N if dot(i, nref) > 0; else -N; */
-/* Typical usage is N = faceforward(N, -ray.dir, N); */
-/* Note that this is opposite of what faceforward does in Cg and GLSL */
+/** Faceforward
+* Returns N if dot(i, nref) > 0; else -N; 
+* Typical usage is N = faceforward(N, -ray.dir, N);
+* Note that this is opposite of what faceforward does in Cg and GLSL */
 OPTIXU_INLINE RT_HOSTDEVICE float2 faceforward(const float2& n, const float2& i, const float2& nref)
 {
   return n * copysignf( 1.0f, dot(i, nref) );
 }
 
-/* exp */
+/** exp */
 OPTIXU_INLINE RT_HOSTDEVICE float2 expf(const float2& v)
 {
   return make_float2(::expf(v.x), ::expf(v.y));
+}
+
+/** If used on the device, this could place the the 'v' in local memory */
+OPTIXU_INLINE RT_HOSTDEVICE float getByIndex(const float2& v, int i)
+{
+  return ((float*)(&v))[i];
+}
+  
+/** If used on the device, this could place the the 'v' in local memory */
+OPTIXU_INLINE RT_HOSTDEVICE void setByIndex(float2& v, int i, float x)
+{
+  ((float*)(&v))[i] = x;
 }
 
 
 /* float3 functions */
 /******************************************************************************/
 
-/* additional constructors */
+/** additional constructors 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE float3 make_float3(const float s)
 {
   return make_float3(s, s, s);
@@ -482,34 +540,43 @@ OPTIXU_INLINE RT_HOSTDEVICE float3 make_float3(const uint3& a)
 {
   return make_float3(float(a.x), float(a.y), float(a.z));
 }
+/** @} */
 
-/* negate */
+/** negate */
 OPTIXU_INLINE RT_HOSTDEVICE float3 operator-(const float3& a)
 {
   return make_float3(-a.x, -a.y, -a.z);
 }
 
-/* min */
+/** min 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE float3 fminf(const float3& a, const float3& b)
 {
-	return make_float3(fminf(a.x,b.x), fminf(a.y,b.y), fminf(a.z,b.z));
+  return make_float3(fminf(a.x,b.x), fminf(a.y,b.y), fminf(a.z,b.z));
 }
 OPTIXU_INLINE RT_HOSTDEVICE float fminf(const float3& a)
 {
   return fminf(fminf(a.x, a.y), a.z);
 }
+/** @} */
 
-/* max */
+/** max 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE float3 fmaxf(const float3& a, const float3& b)
 {
-	return make_float3(fmaxf(a.x,b.x), fmaxf(a.y,b.y), fmaxf(a.z,b.z));
+  return make_float3(fmaxf(a.x,b.x), fmaxf(a.y,b.y), fmaxf(a.z,b.z));
 }
 OPTIXU_INLINE RT_HOSTDEVICE float fmaxf(const float3& a)
 {
   return fmaxf(fmaxf(a.x, a.y), a.z);
 }
+/** @} */
 
-/* add */
+/** add 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE float3 operator+(const float3& a, const float3& b)
 {
   return make_float3(a.x + b.x, a.y + b.y, a.z + b.z);
@@ -526,8 +593,11 @@ OPTIXU_INLINE RT_HOSTDEVICE void operator+=(float3& a, const float3& b)
 {
   a.x += b.x; a.y += b.y; a.z += b.z;
 }
+/** @} */
 
-/* subtract */
+/** subtract 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE float3 operator-(const float3& a, const float3& b)
 {
   return make_float3(a.x - b.x, a.y - b.y, a.z - b.z);
@@ -544,8 +614,11 @@ OPTIXU_INLINE RT_HOSTDEVICE void operator-=(float3& a, const float3& b)
 {
   a.x -= b.x; a.y -= b.y; a.z -= b.z;
 }
+/** @} */
 
-/* multiply */
+/** multiply 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE float3 operator*(const float3& a, const float3& b)
 {
   return make_float3(a.x * b.x, a.y * b.y, a.z * b.z);
@@ -566,8 +639,11 @@ OPTIXU_INLINE RT_HOSTDEVICE void operator*=(float3& a, const float s)
 {
   a.x *= s; a.y *= s; a.z *= s;
 }
+/** @} */
 
-/* divide */
+/** divide 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE float3 operator/(const float3& a, const float3& b)
 {
   return make_float3(a.x / b.x, a.y / b.y, a.z / b.z);
@@ -586,21 +662,24 @@ OPTIXU_INLINE RT_HOSTDEVICE void operator/=(float3& a, const float s)
   float inv = 1.0f / s;
   a *= inv;
 }
+/** @} */
 
-/* lerp */
+/** lerp */
 OPTIXU_INLINE RT_HOSTDEVICE float3 lerp(const float3& a, const float3& b, const float t)
 {
   return a + t*(b-a);
 }
 
-/* bilerp */
+/** bilerp */
 OPTIXU_INLINE RT_HOSTDEVICE float3 bilerp(const float3& x00, const float3& x10, const float3& x01, const float3& x11,
                                           const float u, const float v)
 {
   return lerp( lerp( x00, x10, u ), lerp( x01, x11, u ), v );
 }
 
-/* clamp */
+/** clamp 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE float3 clamp(const float3& v, const float a, const float b)
 {
   return make_float3(clamp(v.x, a, b), clamp(v.y, a, b), clamp(v.z, a, b));
@@ -610,64 +689,78 @@ OPTIXU_INLINE RT_HOSTDEVICE float3 clamp(const float3& v, const float3& a, const
 {
   return make_float3(clamp(v.x, a.x, b.x), clamp(v.y, a.y, b.y), clamp(v.z, a.z, b.z));
 }
+/** @} */
 
-/* dot product */
+/** dot product */
 OPTIXU_INLINE RT_HOSTDEVICE float dot(const float3& a, const float3& b)
 {
   return a.x * b.x + a.y * b.y + a.z * b.z;
 }
 
-/* cross product */
+/** cross product */
 OPTIXU_INLINE RT_HOSTDEVICE float3 cross(const float3& a, const float3& b)
 {
   return make_float3(a.y*b.z - a.z*b.y, a.z*b.x - a.x*b.z, a.x*b.y - a.y*b.x);
 }
 
-/* length */
+/** length */
 OPTIXU_INLINE RT_HOSTDEVICE float length(const float3& v)
 {
   return sqrtf(dot(v, v));
 }
 
-/* normalize */
+/** normalize */
 OPTIXU_INLINE RT_HOSTDEVICE float3 normalize(const float3& v)
 {
   float invLen = 1.0f / sqrtf(dot(v, v));
   return v * invLen;
 }
 
-/* floor */
+/** floor */
 OPTIXU_INLINE RT_HOSTDEVICE float3 floor(const float3& v)
 {
   return make_float3(::floorf(v.x), ::floorf(v.y), ::floorf(v.z));
 }
 
-/* reflect */
+/** reflect */
 OPTIXU_INLINE RT_HOSTDEVICE float3 reflect(const float3& i, const float3& n)
 {
-	return i - 2.0f * n * dot(n,i);
+  return i - 2.0f * n * dot(n,i);
 }
 
-/* faceforward */
-/* Returns N if dot(i, nref) > 0; else -N; */
-/* Typical usage is N = faceforward(N, -ray.dir, N); */
-/* Note that this is opposite of what faceforward does in Cg and GLSL */
+/** Faceforward
+* Returns N if dot(i, nref) > 0; else -N;
+* Typical usage is N = faceforward(N, -ray.dir, N);
+* Note that this is opposite of what faceforward does in Cg and GLSL */
 OPTIXU_INLINE RT_HOSTDEVICE float3 faceforward(const float3& n, const float3& i, const float3& nref)
 {
   return n * copysignf( 1.0f, dot(i, nref) );
 }
 
-/* exp */
+/** exp */
 OPTIXU_INLINE RT_HOSTDEVICE float3 expf(const float3& v)
 {
   return make_float3(::expf(v.x), ::expf(v.y), ::expf(v.z));
 }
 
-
+/** If used on the device, this could place the the 'v' in local memory */
+OPTIXU_INLINE RT_HOSTDEVICE float getByIndex(const float3& v, int i)
+{
+  return ((float*)(&v))[i];
+}
+  
+/** If used on the device, this could place the the 'v' in local memory */
+OPTIXU_INLINE RT_HOSTDEVICE void setByIndex(float3& v, int i, float x)
+{
+  ((float*)(&v))[i] = x;
+}
+  
 /* float4 functions */
 /******************************************************************************/
 
-/* additional constructors */
+/** additional constructors 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE float4 make_float4(const float s)
 {
   return make_float4(s, s, s, s);
@@ -684,34 +777,43 @@ OPTIXU_INLINE RT_HOSTDEVICE float4 make_float4(const uint4& a)
 {
   return make_float4(float(a.x), float(a.y), float(a.z), float(a.w));
 }
+/** @} */
 
-/* negate */
+/** negate */
 OPTIXU_INLINE RT_HOSTDEVICE float4 operator-(const float4& a)
 {
   return make_float4(-a.x, -a.y, -a.z, -a.w);
 }
 
-/* min */
+/** min 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE float4 fminf(const float4& a, const float4& b)
 {
-	return make_float4(fminf(a.x,b.x), fminf(a.y,b.y), fminf(a.z,b.z), fminf(a.w,b.w));
+  return make_float4(fminf(a.x,b.x), fminf(a.y,b.y), fminf(a.z,b.z), fminf(a.w,b.w));
 }
 OPTIXU_INLINE RT_HOSTDEVICE float fminf(const float4& a)
 {
   return fminf(fminf(a.x, a.y), fminf(a.z, a.w));
 }
+/** @} */
 
-/* max */
+/** max 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE float4 fmaxf(const float4& a, const float4& b)
 {
-	return make_float4(fmaxf(a.x,b.x), fmaxf(a.y,b.y), fmaxf(a.z,b.z), fmaxf(a.w,b.w));
+  return make_float4(fmaxf(a.x,b.x), fmaxf(a.y,b.y), fmaxf(a.z,b.z), fmaxf(a.w,b.w));
 }
 OPTIXU_INLINE RT_HOSTDEVICE float fmaxf(const float4& a)
 {
   return fmaxf(fmaxf(a.x, a.y), fmaxf(a.z, a.w));
 }
+/** @} */
 
-/* add */
+/** add 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE float4 operator+(const float4& a, const float4& b)
 {
   return make_float4(a.x + b.x, a.y + b.y, a.z + b.z,  a.w + b.w);
@@ -728,8 +830,11 @@ OPTIXU_INLINE RT_HOSTDEVICE void operator+=(float4& a, const float4& b)
 {
   a.x += b.x; a.y += b.y; a.z += b.z; a.w += b.w;
 }
+/** @} */
 
-/* subtract */
+/** subtract 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE float4 operator-(const float4& a, const float4& b)
 {
   return make_float4(a.x - b.x, a.y - b.y, a.z - b.z,  a.w - b.w);
@@ -746,8 +851,11 @@ OPTIXU_INLINE RT_HOSTDEVICE void operator-=(float4& a, const float4& b)
 {
   a.x -= b.x; a.y -= b.y; a.z -= b.z; a.w -= b.w;
 }
+/** @} */
 
-/* multiply */
+/** multiply 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE float4 operator*(const float4& a, const float4& s)
 {
   return make_float4(a.x * s.x, a.y * s.y, a.z * s.z, a.w * s.w);
@@ -768,8 +876,11 @@ OPTIXU_INLINE RT_HOSTDEVICE void operator*=(float4& a, const float s)
 {
   a.x *= s; a.y *= s; a.z *= s; a.w *= s;
 }
+/** @} */
 
-/* divide */
+/** divide 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE float4 operator/(const float4& a, const float4& b)
 {
   return make_float4(a.x / b.x, a.y / b.y, a.z / b.z, a.w / b.w);
@@ -788,21 +899,24 @@ OPTIXU_INLINE RT_HOSTDEVICE void operator/=(float4& a, const float s)
   float inv = 1.0f / s;
   a *= inv;
 }
+/** @} */
 
-/* lerp */
+/** lerp */
 OPTIXU_INLINE RT_HOSTDEVICE float4 lerp(const float4& a, const float4& b, const float t)
 {
   return a + t*(b-a);
 }
 
-/* bilerp */
+/** bilerp */
 OPTIXU_INLINE RT_HOSTDEVICE float4 bilerp(const float4& x00, const float4& x10, const float4& x01, const float4& x11,
                                           const float u, const float v)
 {
   return lerp( lerp( x00, x10, u ), lerp( x01, x11, u ), v );
 }
 
-/* clamp */
+/** clamp 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE float4 clamp(const float4& v, const float a, const float b)
 {
   return make_float4(clamp(v.x, a, b), clamp(v.y, a, b), clamp(v.z, a, b), clamp(v.w, a, b));
@@ -812,68 +926,97 @@ OPTIXU_INLINE RT_HOSTDEVICE float4 clamp(const float4& v, const float4& a, const
 {
   return make_float4(clamp(v.x, a.x, b.x), clamp(v.y, a.y, b.y), clamp(v.z, a.z, b.z), clamp(v.w, a.w, b.w));
 }
+/** @} */
 
-/* dot product */
+/** dot product */
 OPTIXU_INLINE RT_HOSTDEVICE float dot(const float4& a, const float4& b)
 {
   return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
 }
 
-/* length */
+/** length */
 OPTIXU_INLINE RT_HOSTDEVICE float length(const float4& r)
 {
   return sqrtf(dot(r, r));
 }
 
-/* normalize */
+/** normalize */
 OPTIXU_INLINE RT_HOSTDEVICE float4 normalize(const float4& v)
 {
   float invLen = 1.0f / sqrtf(dot(v, v));
   return v * invLen;
 }
 
-/* floor */
+/** floor */
 OPTIXU_INLINE RT_HOSTDEVICE float4 floor(const float4& v)
 {
   return make_float4(::floorf(v.x), ::floorf(v.y), ::floorf(v.z), ::floorf(v.w));
 }
 
-/* reflect */
+/** reflect */
 OPTIXU_INLINE RT_HOSTDEVICE float4 reflect(const float4& i, const float4& n)
 {
-	return i - 2.0f * n * dot(n,i);
+  return i - 2.0f * n * dot(n,i);
 }
 
-/* faceforward */
-/* Returns N if dot(i, nref) > 0; else -N; */
-/* Typical usage is N = faceforward(N, -ray.dir, N); */
-/* Note that this is opposite of what faceforward does in Cg and GLSL */
+/** 
+* Faceforward
+* Returns N if dot(i, nref) > 0; else -N;
+* Typical usage is N = faceforward(N, -ray.dir, N);
+* Note that this is opposite of what faceforward does in Cg and GLSL 
+*/
 OPTIXU_INLINE RT_HOSTDEVICE float4 faceforward(const float4& n, const float4& i, const float4& nref)
 {
   return n * copysignf( 1.0f, dot(i, nref) );
 }
 
-/* exp */
+/** exp */
 OPTIXU_INLINE RT_HOSTDEVICE float4 expf(const float4& v)
 {
   return make_float4(::expf(v.x), ::expf(v.y), ::expf(v.z), ::expf(v.w));
 }
 
+/** If used on the device, this could place the the 'v' in local memory */
+OPTIXU_INLINE RT_HOSTDEVICE float getByIndex(const float4& v, int i)
+{
+  return ((float*)(&v))[i];
+}
 
+/** If used on the device, this could place the the 'v' in local memory */
+OPTIXU_INLINE RT_HOSTDEVICE void setByIndex(float4& v, int i, float x)
+{
+  ((float*)(&v))[i] = x;
+}
+  
+  
 /* int functions */
 /******************************************************************************/
 
-/* clamp */
+/** clamp */
 OPTIXU_INLINE RT_HOSTDEVICE int clamp(const int f, const int a, const int b)
 {
   return max(a, min(f, b));
 }
 
+/** If used on the device, this could place the the 'v' in local memory */
+OPTIXU_INLINE RT_HOSTDEVICE int getByIndex(const int1& v, int i)
+{
+  return ((int*)(&v))[i];
+}
+  
+/** If used on the device, this could place the the 'v' in local memory */
+OPTIXU_INLINE RT_HOSTDEVICE void setByIndex(int1& v, int i, int x)
+{
+  ((int*)(&v))[i] = x;
+}
+  
 
 /* int2 functions */
 /******************************************************************************/
 
-/* additional constructors */
+/** additional constructors 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE int2 make_int2(const int s)
 {
   return make_int2(s, s);
@@ -882,26 +1025,29 @@ OPTIXU_INLINE RT_HOSTDEVICE int2 make_int2(const float2& a)
 {
   return make_int2(int(a.x), int(a.y));
 }
+/** @} */
 
-/* negate */
+/** negate */
 OPTIXU_INLINE RT_HOSTDEVICE int2 operator-(const int2& a)
 {
   return make_int2(-a.x, -a.y);
 }
 
-/* min */
+/** min */
 OPTIXU_INLINE RT_HOSTDEVICE int2 min(const int2& a, const int2& b)
 {
   return make_int2(min(a.x,b.x), min(a.y,b.y));
 }
 
-/* max */
+/** max */
 OPTIXU_INLINE RT_HOSTDEVICE int2 max(const int2& a, const int2& b)
 {
   return make_int2(max(a.x,b.x), max(a.y,b.y));
 }
 
-/* add */
+/** add 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE int2 operator+(const int2& a, const int2& b)
 {
   return make_int2(a.x + b.x, a.y + b.y);
@@ -910,8 +1056,11 @@ OPTIXU_INLINE RT_HOSTDEVICE void operator+=(int2& a, const int2& b)
 {
   a.x += b.x; a.y += b.y;
 }
+/** @} */
 
-/* subtract */
+/** subtract 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE int2 operator-(const int2& a, const int2& b)
 {
   return make_int2(a.x - b.x, a.y - b.y);
@@ -924,8 +1073,11 @@ OPTIXU_INLINE RT_HOSTDEVICE void operator-=(int2& a, const int2& b)
 {
   a.x -= b.x; a.y -= b.y;
 }
+/** @} */
 
-/* multiply */
+/** multiply 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE int2 operator*(const int2& a, const int2& b)
 {
   return make_int2(a.x * b.x, a.y * b.y);
@@ -942,8 +1094,11 @@ OPTIXU_INLINE RT_HOSTDEVICE void operator*=(int2& a, const int s)
 {
   a.x *= s; a.y *= s;
 }
+/** @} */
 
-/* clamp */
+/** clamp 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE int2 clamp(const int2& v, const int a, const int b)
 {
   return make_int2(clamp(v.x, a, b), clamp(v.y, a, b));
@@ -953,8 +1108,11 @@ OPTIXU_INLINE RT_HOSTDEVICE int2 clamp(const int2& v, const int2& a, const int2&
 {
   return make_int2(clamp(v.x, a.x, b.x), clamp(v.y, a.y, b.y));
 }
+/** @} */
 
-/* equality */
+/** equality 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE bool operator==(const int2& a, const int2& b)
 {
   return a.x == b.x && a.y == b.y;
@@ -964,12 +1122,27 @@ OPTIXU_INLINE RT_HOSTDEVICE bool operator!=(const int2& a, const int2& b)
 {
   return a.x != b.x || a.y != b.y;
 }
+/** @} */
 
+/** If used on the device, this could place the the 'v' in local memory */
+OPTIXU_INLINE RT_HOSTDEVICE int getByIndex(const int2& v, int i)
+{
+  return ((int*)(&v))[i];
+}
+  
+/** If used on the device, this could place the the 'v' in local memory */
+OPTIXU_INLINE RT_HOSTDEVICE void setByIndex(int2& v, int i, int x)
+{
+  ((int*)(&v))[i] = x;
+}
+  
 
 /* int3 functions */
 /******************************************************************************/
 
-/* additional constructors */
+/** additional constructors 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE int3 make_int3(const int s)
 {
   return make_int3(s, s, s);
@@ -978,26 +1151,29 @@ OPTIXU_INLINE RT_HOSTDEVICE int3 make_int3(const float3& a)
 {
   return make_int3(int(a.x), int(a.y), int(a.z));
 }
+/** @} */
 
-/* negate */
+/** negate */
 OPTIXU_INLINE RT_HOSTDEVICE int3 operator-(const int3& a)
 {
   return make_int3(-a.x, -a.y, -a.z);
 }
 
-/* min */
+/** min */
 OPTIXU_INLINE RT_HOSTDEVICE int3 min(const int3& a, const int3& b)
 {
   return make_int3(min(a.x,b.x), min(a.y,b.y), min(a.z,b.z));
 }
 
-/* max */
+/** max */
 OPTIXU_INLINE RT_HOSTDEVICE int3 max(const int3& a, const int3& b)
 {
   return make_int3(max(a.x,b.x), max(a.y,b.y), max(a.z,b.z));
 }
 
-/* add */
+/** add 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE int3 operator+(const int3& a, const int3& b)
 {
   return make_int3(a.x + b.x, a.y + b.y, a.z + b.z);
@@ -1006,8 +1182,11 @@ OPTIXU_INLINE RT_HOSTDEVICE void operator+=(int3& a, const int3& b)
 {
   a.x += b.x; a.y += b.y; a.z += b.z;
 }
+/** @} */
 
-/* subtract */
+/** subtract 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE int3 operator-(const int3& a, const int3& b)
 {
   return make_int3(a.x - b.x, a.y - b.y, a.z - b.z);
@@ -1017,8 +1196,11 @@ OPTIXU_INLINE RT_HOSTDEVICE void operator-=(int3& a, const int3& b)
 {
   a.x -= b.x; a.y -= b.y; a.z -= b.z;
 }
+/** @} */
 
-/* multiply */
+/** multiply 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE int3 operator*(const int3& a, const int3& b)
 {
   return make_int3(a.x * b.x, a.y * b.y, a.z * b.z);
@@ -1035,8 +1217,11 @@ OPTIXU_INLINE RT_HOSTDEVICE void operator*=(int3& a, const int s)
 {
   a.x *= s; a.y *= s; a.z *= s;
 }
+/** @} */
 
-/* divide */
+/** divide 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE int3 operator/(const int3& a, const int3& b)
 {
   return make_int3(a.x / b.x, a.y / b.y, a.z / b.z);
@@ -1053,8 +1238,11 @@ OPTIXU_INLINE RT_HOSTDEVICE void operator/=(int3& a, const int s)
 {
   a.x /= s; a.y /= s; a.z /= s;
 }
+/** @} */
 
-/* clamp */
+/** clamp 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE int3 clamp(const int3& v, const int a, const int b)
 {
   return make_int3(clamp(v.x, a, b), clamp(v.y, a, b), clamp(v.z, a, b));
@@ -1064,8 +1252,11 @@ OPTIXU_INLINE RT_HOSTDEVICE int3 clamp(const int3& v, const int3& a, const int3&
 {
   return make_int3(clamp(v.x, a.x, b.x), clamp(v.y, a.y, b.y), clamp(v.z, a.z, b.z));
 }
+/** @} */
 
-/* equality */
+/** equality 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE bool operator==(const int3& a, const int3& b)
 {
   return a.x == b.x && a.y == b.y && a.z == b.z;
@@ -1075,12 +1266,27 @@ OPTIXU_INLINE RT_HOSTDEVICE bool operator!=(const int3& a, const int3& b)
 {
   return a.x != b.x || a.y != b.y || a.z != b.z;
 }
+/** @} */
 
+/** If used on the device, this could place the the 'v' in local memory */
+OPTIXU_INLINE RT_HOSTDEVICE int getByIndex(const int3& v, int i)
+{
+  return ((int*)(&v))[i];
+}
+  
+/** If used on the device, this could place the the 'v' in local memory */
+OPTIXU_INLINE RT_HOSTDEVICE void setByIndex(int3& v, int i, int x)
+{
+  ((int*)(&v))[i] = x;
+}
+  
 
 /* int4 functions */
 /******************************************************************************/
 
-/* additional constructors */
+/** additional constructors 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE int4 make_int4(const int s)
 {
   return make_int4(s, s, s, s);
@@ -1089,26 +1295,29 @@ OPTIXU_INLINE RT_HOSTDEVICE int4 make_int4(const float4& a)
 {
   return make_int4((int)a.x, (int)a.y, (int)a.z, (int)a.w);
 }
+/** @} */
 
-/* negate */
+/** negate */
 OPTIXU_INLINE RT_HOSTDEVICE int4 operator-(const int4& a)
 {
   return make_int4(-a.x, -a.y, -a.z, -a.w);
 }
 
-/* min */
+/** min */
 OPTIXU_INLINE RT_HOSTDEVICE int4 min(const int4& a, const int4& b)
 {
   return make_int4(min(a.x,b.x), min(a.y,b.y), min(a.z,b.z), min(a.w,b.w));
 }
 
-/* max */
+/** max */
 OPTIXU_INLINE RT_HOSTDEVICE int4 max(const int4& a, const int4& b)
 {
   return make_int4(max(a.x,b.x), max(a.y,b.y), max(a.z,b.z), max(a.w,b.w));
 }
 
-/* add */
+/** add 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE int4 operator+(const int4& a, const int4& b)
 {
   return make_int4(a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w);
@@ -1117,8 +1326,11 @@ OPTIXU_INLINE RT_HOSTDEVICE void operator+=(int4& a, const int4& b)
 {
   a.x += b.x; a.y += b.y; a.z += b.z; a.w += b.w;
 }
+/** @} */
 
-/* subtract */
+/** subtract 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE int4 operator-(const int4& a, const int4& b)
 {
   return make_int4(a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w);
@@ -1128,8 +1340,11 @@ OPTIXU_INLINE RT_HOSTDEVICE void operator-=(int4& a, const int4& b)
 {
   a.x -= b.x; a.y -= b.y; a.z -= b.z; a.w -= b.w;
 }
+/** @} */
 
-/* multiply */
+/** multiply 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE int4 operator*(const int4& a, const int4& b)
 {
   return make_int4(a.x * b.x, a.y * b.y, a.z * b.z, a.w * b.w);
@@ -1146,8 +1361,11 @@ OPTIXU_INLINE RT_HOSTDEVICE void operator*=(int4& a, const int s)
 {
   a.x *= s; a.y *= s; a.z *= s; a.w *= s;
 }
+/** @} */
 
-/* divide */
+/** divide 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE int4 operator/(const int4& a, const int4& b)
 {
   return make_int4(a.x / b.x, a.y / b.y, a.z / b.z, a.w / b.w);
@@ -1164,8 +1382,11 @@ OPTIXU_INLINE RT_HOSTDEVICE void operator/=(int4& a, const int s)
 {
   a.x /= s; a.y /= s; a.z /= s; a.w /= s;
 }
+/** @} */
 
-/* clamp */
+/** clamp 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE int4 clamp(const int4& v, const int a, const int b)
 {
   return make_int4(clamp(v.x, a, b), clamp(v.y, a, b), clamp(v.z, a, b), clamp(v.w, a, b));
@@ -1175,8 +1396,11 @@ OPTIXU_INLINE RT_HOSTDEVICE int4 clamp(const int4& v, const int4& a, const int4&
 {
   return make_int4(clamp(v.x, a.x, b.x), clamp(v.y, a.y, b.y), clamp(v.z, a.z, b.z), clamp(v.w, a.w, b.w));
 }
+/** @} */
 
-/* equality */
+/** equality 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE bool operator==(const int4& a, const int4& b)
 {
   return a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w;
@@ -1186,22 +1410,49 @@ OPTIXU_INLINE RT_HOSTDEVICE bool operator!=(const int4& a, const int4& b)
 {
   return a.x != b.x || a.y != b.y || a.z != b.z || a.w != b.w;
 }
+/** @} */
 
+/** If used on the device, this could place the the 'v' in local memory */
+OPTIXU_INLINE RT_HOSTDEVICE int getByIndex(const int4& v, int i)
+{
+  return ((int*)(&v))[i];
+}
+  
+/** If used on the device, this could place the the 'v' in local memory */
+OPTIXU_INLINE RT_HOSTDEVICE void setByIndex(int4& v, int i, int x)
+{
+  ((int*)(&v))[i] = x;
+}
+  
 
 /* uint functions */
 /******************************************************************************/
 
-/* clamp */
+/** clamp */
 OPTIXU_INLINE RT_HOSTDEVICE unsigned int clamp(const unsigned int f, const unsigned int a, const unsigned int b)
 {
   return max(a, min(f, b));
 }
 
+/** If used on the device, this could place the the 'v' in local memory */
+OPTIXU_INLINE RT_HOSTDEVICE unsigned int getByIndex(const uint1& v, unsigned int i)
+{
+  return ((unsigned int*)(&v))[i];
+}
+  
+/** If used on the device, this could place the the 'v' in local memory */
+OPTIXU_INLINE RT_HOSTDEVICE void setByIndex(uint1& v, int i, unsigned int x)
+{
+  ((unsigned int*)(&v))[i] = x;
+}
+  
 
 /* uint2 functions */
 /******************************************************************************/
 
-/* additional constructors */
+/** additional constructors 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE uint2 make_uint2(const unsigned int s)
 {
   return make_uint2(s, s);
@@ -1210,20 +1461,23 @@ OPTIXU_INLINE RT_HOSTDEVICE uint2 make_uint2(const float2& a)
 {
   return make_uint2((unsigned int)a.x, (unsigned int)a.y);
 }
+/** @} */
 
-/* min */
+/** min */
 OPTIXU_INLINE RT_HOSTDEVICE uint2 min(const uint2& a, const uint2& b)
 {
   return make_uint2(min(a.x,b.x), min(a.y,b.y));
 }
 
-/* max */
+/** max */
 OPTIXU_INLINE RT_HOSTDEVICE uint2 max(const uint2& a, const uint2& b)
 {
   return make_uint2(max(a.x,b.x), max(a.y,b.y));
 }
 
-/* add */
+/** add
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE uint2 operator+(const uint2& a, const uint2& b)
 {
   return make_uint2(a.x + b.x, a.y + b.y);
@@ -1232,8 +1486,11 @@ OPTIXU_INLINE RT_HOSTDEVICE void operator+=(uint2& a, const uint2& b)
 {
   a.x += b.x; a.y += b.y;
 }
+/** @} */
 
-/* subtract */
+/** subtract
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE uint2 operator-(const uint2& a, const uint2& b)
 {
   return make_uint2(a.x - b.x, a.y - b.y);
@@ -1246,8 +1503,11 @@ OPTIXU_INLINE RT_HOSTDEVICE void operator-=(uint2& a, const uint2& b)
 {
   a.x -= b.x; a.y -= b.y;
 }
+/** @} */
 
-/* multiply */
+/** multiply
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE uint2 operator*(const uint2& a, const uint2& b)
 {
   return make_uint2(a.x * b.x, a.y * b.y);
@@ -1264,8 +1524,11 @@ OPTIXU_INLINE RT_HOSTDEVICE void operator*=(uint2& a, const unsigned int s)
 {
   a.x *= s; a.y *= s;
 }
+/** @} */
 
-/* clamp */
+/** clamp
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE uint2 clamp(const uint2& v, const unsigned int a, const unsigned int b)
 {
   return make_uint2(clamp(v.x, a, b), clamp(v.y, a, b));
@@ -1275,8 +1538,11 @@ OPTIXU_INLINE RT_HOSTDEVICE uint2 clamp(const uint2& v, const uint2& a, const ui
 {
   return make_uint2(clamp(v.x, a.x, b.x), clamp(v.y, a.y, b.y));
 }
+/** @} */
 
-/* equality */
+/** equality
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE bool operator==(const uint2& a, const uint2& b)
 {
   return a.x == b.x && a.y == b.y;
@@ -1286,12 +1552,27 @@ OPTIXU_INLINE RT_HOSTDEVICE bool operator!=(const uint2& a, const uint2& b)
 {
   return a.x != b.x || a.y != b.y;
 }
+/** @} */
 
+/** If used on the device, this could place the the 'v' in local memory */
+OPTIXU_INLINE RT_HOSTDEVICE unsigned int getByIndex(const uint2& v, unsigned int i)
+{
+  return ((unsigned int*)(&v))[i];
+}
+  
+/** If used on the device, this could place the the 'v' in local memory */
+OPTIXU_INLINE RT_HOSTDEVICE void setByIndex(uint2& v, int i, unsigned int x)
+{
+  ((unsigned int*)(&v))[i] = x;
+}
+  
 
 /* uint3 functions */
 /******************************************************************************/
 
-/* additional constructors */
+/** additional constructors 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE uint3 make_uint3(const unsigned int s)
 {
   return make_uint3(s, s, s);
@@ -1300,20 +1581,23 @@ OPTIXU_INLINE RT_HOSTDEVICE uint3 make_uint3(const float3& a)
 {
   return make_uint3((unsigned int)a.x, (unsigned int)a.y, (unsigned int)a.z);
 }
+/** @} */
 
-/* min */
+/** min */
 OPTIXU_INLINE RT_HOSTDEVICE uint3 min(const uint3& a, const uint3& b)
 {
   return make_uint3(min(a.x,b.x), min(a.y,b.y), min(a.z,b.z));
 }
 
-/* max */
+/** max */
 OPTIXU_INLINE RT_HOSTDEVICE uint3 max(const uint3& a, const uint3& b)
 {
   return make_uint3(max(a.x,b.x), max(a.y,b.y), max(a.z,b.z));
 }
 
-/* add */
+/** add 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE uint3 operator+(const uint3& a, const uint3& b)
 {
   return make_uint3(a.x + b.x, a.y + b.y, a.z + b.z);
@@ -1322,8 +1606,11 @@ OPTIXU_INLINE RT_HOSTDEVICE void operator+=(uint3& a, const uint3& b)
 {
   a.x += b.x; a.y += b.y; a.z += b.z;
 }
+/** @} */
 
-/* subtract */
+/** subtract
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE uint3 operator-(const uint3& a, const uint3& b)
 {
   return make_uint3(a.x - b.x, a.y - b.y, a.z - b.z);
@@ -1333,8 +1620,11 @@ OPTIXU_INLINE RT_HOSTDEVICE void operator-=(uint3& a, const uint3& b)
 {
   a.x -= b.x; a.y -= b.y; a.z -= b.z;
 }
+/** @} */
 
-/* multiply */
+/** multiply
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE uint3 operator*(const uint3& a, const uint3& b)
 {
   return make_uint3(a.x * b.x, a.y * b.y, a.z * b.z);
@@ -1351,8 +1641,11 @@ OPTIXU_INLINE RT_HOSTDEVICE void operator*=(uint3& a, const unsigned int s)
 {
   a.x *= s; a.y *= s; a.z *= s;
 }
+/** @} */
 
-/* divide */
+/** divide
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE uint3 operator/(const uint3& a, const uint3& b)
 {
   return make_uint3(a.x / b.x, a.y / b.y, a.z / b.z);
@@ -1369,8 +1662,11 @@ OPTIXU_INLINE RT_HOSTDEVICE void operator/=(uint3& a, const unsigned int s)
 {
   a.x /= s; a.y /= s; a.z /= s;
 }
+/** @} */
 
-/* clamp */
+/** clamp 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE uint3 clamp(const uint3& v, const unsigned int a, const unsigned int b)
 {
   return make_uint3(clamp(v.x, a, b), clamp(v.y, a, b), clamp(v.z, a, b));
@@ -1380,8 +1676,11 @@ OPTIXU_INLINE RT_HOSTDEVICE uint3 clamp(const uint3& v, const uint3& a, const ui
 {
   return make_uint3(clamp(v.x, a.x, b.x), clamp(v.y, a.y, b.y), clamp(v.z, a.z, b.z));
 }
+/** @} */
 
-/* equality */
+/** equality 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE bool operator==(const uint3& a, const uint3& b)
 {
   return a.x == b.x && a.y == b.y && a.z == b.z;
@@ -1391,12 +1690,29 @@ OPTIXU_INLINE RT_HOSTDEVICE bool operator!=(const uint3& a, const uint3& b)
 {
   return a.x != b.x || a.y != b.y || a.z != b.z;
 }
+/** @} */
 
+/** If used on the device, this could place the the 'v' in local memory 
+*/
+OPTIXU_INLINE RT_HOSTDEVICE unsigned int getByIndex(const uint3& v, unsigned int i)
+{
+  return ((unsigned int*)(&v))[i];
+}
+  
+/** If used on the device, this could place the the 'v' in local memory 
+*/
+OPTIXU_INLINE RT_HOSTDEVICE void setByIndex(uint3& v, int i, unsigned int x)
+{
+  ((unsigned int*)(&v))[i] = x;
+}
+  
 
 /* uint4 functions */
 /******************************************************************************/
 
-/* additional constructors */
+/** additional constructors 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE uint4 make_uint4(const unsigned int s)
 {
   return make_uint4(s, s, s, s);
@@ -1405,20 +1721,29 @@ OPTIXU_INLINE RT_HOSTDEVICE uint4 make_uint4(const float4& a)
 {
   return make_uint4((unsigned int)a.x, (unsigned int)a.y, (unsigned int)a.z, (unsigned int)a.w);
 }
+/** @} */
 
-/* min */
+/** min
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE uint4 min(const uint4& a, const uint4& b)
 {
   return make_uint4(min(a.x,b.x), min(a.y,b.y), min(a.z,b.z), min(a.w,b.w));
 }
+/** @} */
 
-/* max */
+/** max 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE uint4 max(const uint4& a, const uint4& b)
 {
   return make_uint4(max(a.x,b.x), max(a.y,b.y), max(a.z,b.z), max(a.w,b.w));
 }
+/** @} */
 
-/* add */
+/** add
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE uint4 operator+(const uint4& a, const uint4& b)
 {
   return make_uint4(a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w);
@@ -1427,8 +1752,11 @@ OPTIXU_INLINE RT_HOSTDEVICE void operator+=(uint4& a, const uint4& b)
 {
   a.x += b.x; a.y += b.y; a.z += b.z; a.w += b.w;
 }
+/** @} */
 
-/* subtract */
+/** subtract 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE uint4 operator-(const uint4& a, const uint4& b)
 {
   return make_uint4(a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w);
@@ -1438,8 +1766,11 @@ OPTIXU_INLINE RT_HOSTDEVICE void operator-=(uint4& a, const uint4& b)
 {
   a.x -= b.x; a.y -= b.y; a.z -= b.z; a.w -= b.w;
 }
+/** @} */
 
-/* multiply */
+/** multiply
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE uint4 operator*(const uint4& a, const uint4& b)
 {
   return make_uint4(a.x * b.x, a.y * b.y, a.z * b.z, a.w * b.w);
@@ -1456,8 +1787,11 @@ OPTIXU_INLINE RT_HOSTDEVICE void operator*=(uint4& a, const unsigned int s)
 {
   a.x *= s; a.y *= s; a.z *= s; a.w *= s;
 }
+/** @} */
 
-/* divide */
+/** divide 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE uint4 operator/(const uint4& a, const uint4& b)
 {
   return make_uint4(a.x / b.x, a.y / b.y, a.z / b.z, a.w / b.w);
@@ -1474,8 +1808,11 @@ OPTIXU_INLINE RT_HOSTDEVICE void operator/=(uint4& a, const unsigned int s)
 {
   a.x /= s; a.y /= s; a.z /= s; a.w /= s;
 }
+/** @} */
 
-/* clamp */
+/** clamp 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE uint4 clamp(const uint4& v, const unsigned int a, const unsigned int b)
 {
   return make_uint4(clamp(v.x, a, b), clamp(v.y, a, b), clamp(v.z, a, b), clamp(v.w, a, b));
@@ -1485,8 +1822,11 @@ OPTIXU_INLINE RT_HOSTDEVICE uint4 clamp(const uint4& v, const uint4& a, const ui
 {
   return make_uint4(clamp(v.x, a.x, b.x), clamp(v.y, a.y, b.y), clamp(v.z, a.z, b.z), clamp(v.w, a.w, b.w));
 }
+/** @} */
 
-/* equality */
+/** equality 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE bool operator==(const uint4& a, const uint4& b)
 {
   return a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w;
@@ -1496,11 +1836,28 @@ OPTIXU_INLINE RT_HOSTDEVICE bool operator!=(const uint4& a, const uint4& b)
 {
   return a.x != b.x || a.y != b.y || a.z != b.z || a.w != b.w;
 }
+/** @} */
+
+/** If used on the device, this could place the the 'v' in local memory 
+*/
+OPTIXU_INLINE RT_HOSTDEVICE unsigned int getByIndex(const uint4& v, unsigned int i)
+{
+  return ((unsigned int*)(&v))[i];
+}
+  
+/** If used on the device, this could place the the 'v' in local memory 
+*/
+OPTIXU_INLINE RT_HOSTDEVICE void setByIndex(uint4& v, int i, unsigned int x)
+{
+  ((unsigned int*)(&v))[i] = x;
+}
 
 /* double2 functions */
 /******************************************************************************/
 
-/* comparison */
+/** comparison
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE bool operator==(double2 a, double2 b)
 {
 	return ( (a.x == b.x) && (a.y == b.y) );
@@ -1510,36 +1867,18 @@ OPTIXU_INLINE RT_HOSTDEVICE bool operator!=(double2 a, double2 b)
 {
 	return ( (a.x != b.x) && (a.y != b.y) );
 }
-
-
+/** @} */  
 
 /* double3 functions */
 /******************************************************************************/
 
+/** additional constructors
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE float3 make_float3(double3 a)
 {
     return make_float3(float(a.x), float(a.y), float(a.z));
 }
-
-/* copy sign-bit from src value to dst value */
-inline RT_HOSTDEVICE double copy_sign(double dst, double src)
-{
-	//union {
- //   double d;
- //   unsigned long i;
- // } v1, v2, v3;
- // v1.d = src;
- // v2.d = dst;
- // v3.i = (v2.i & 0x7fffffffffffffff) | (v1.i & 0x8000000000000000);
- // //v3.i = (v2.i & 0x7fffffff) | (v1.i & 0x80000000);
- // return v3.d;
-	// theres gotta be a nice way to do it without branching...
-	if (src > 0) return dst;
-	if (src < 0) return -dst;
-	return dst;
-}
-
-/* additional constructors */
 OPTIXU_INLINE RT_HOSTDEVICE double3 make_double3(double s)
 {
     return make_double3(s, s, s);
@@ -1582,17 +1921,271 @@ OPTIXU_INLINE RT_HOSTDEVICE double3x3 make_rotMatrix(double3 rot)
 	t=make_double3x3(1,0,0, 0,1,0, 0,0,1);
 	return t;
 }
+/** @} */
+
+/** additional constructors
+* @{
+*/
+OPTIXU_INLINE RT_HOSTDEVICE double3 operator-(const double3 &a)
+{
+    return make_double3(-a.x, -a.y, -a.z);
+}
+/** @} */
+
+///* min */
+//static __inline__ RT_HOSTDEVICE double3 dmind(double3 a, double3 b)
+//{
+//	//return make_double3(dmind(a.x,b.x), dmind(a.y,b.y), dmind(a.z,b.z));
+//	double ax=a.x;
+//	double bx=b.x;
+//	double atest=dmind((double)1, (double)0);
+//	return make_double3(b.x, b.y, b.z);
+//}
+//
+///* max */
+//static __inline__ RT_HOSTDEVICE double3 dmaxd(double3 a, double3 b)
+//{
+//	return make_double3(dmaxd(a.x,b.x), dmaxd(a.y,b.y), dmaxd(a.z,b.z));
+//}
+
+/** addition
+* @{
+*/
+OPTIXU_INLINE RT_HOSTDEVICE double3 operator+(double3 a, double3 b)
+{
+    return make_double3(a.x + b.x, a.y + b.y, a.z + b.z);
+}
+OPTIXU_INLINE RT_HOSTDEVICE double3 operator+(double3 a, double b)
+{
+    return make_double3(a.x + b, a.y + b, a.z + b);
+}
+OPTIXU_INLINE RT_HOSTDEVICE double3 operator+(double a, double3 b)
+{
+    return make_double3(a + b.x, a + b.y, a + b.z);
+}
+OPTIXU_INLINE RT_HOSTDEVICE void operator+=(double3 &a, double3 b)
+{
+    a.x += b.x; a.y += b.y; a.z += b.z;
+}
+/** @} */
+
+/** comparison
+* @{
+*/
+OPTIXU_INLINE RT_HOSTDEVICE bool operator==(const double3 &a, const double3 &b)
+{
+	return ( (a.x == b.x) && (a.y == b.y) && (a.z == b.z) );
+}
+
+OPTIXU_INLINE RT_HOSTDEVICE bool operator!=(const double3 &a,const  double3 &b)
+{
+	return ( (a.x != b.x) && (a.y != b.y) && (a.z != b.z) );
+}
+/** @} */
+
+/** subtract
+* @{
+*/
+OPTIXU_INLINE RT_HOSTDEVICE double3 operator-(double3 a, double3 b)
+{
+    return make_double3(a.x - b.x, a.y - b.y, a.z - b.z);
+}
+OPTIXU_INLINE RT_HOSTDEVICE double3 operator-(double3 a, double b)
+{
+    return make_double3(a.x - b, a.y - b, a.z - b);
+}
+OPTIXU_INLINE RT_HOSTDEVICE double3 operator-(double a, double3 b)
+{
+    return make_double3(a - b.x, a - b.y, a - b.z);
+}
+OPTIXU_INLINE RT_HOSTDEVICE void operator-=(double3 &a, double3 b)
+{
+    a.x -= b.x; a.y -= b.y; a.z -= b.z;
+}
+/** @} */
+
+/** multiply
+* @{
+*/
+OPTIXU_INLINE RT_HOSTDEVICE double3 operator*(double3 a, double3 b)
+{
+    return make_double3(a.x * b.x, a.y * b.y, a.z * b.z);
+}
+OPTIXU_INLINE RT_HOSTDEVICE double3 operator*(double3 a, double s)
+{
+    return make_double3(a.x * s, a.y * s, a.z * s);
+}
+OPTIXU_INLINE RT_HOSTDEVICE double3 operator*(double s, double3 a)
+{
+    return make_double3(a.x * s, a.y * s, a.z * s);
+}
+OPTIXU_INLINE RT_HOSTDEVICE void operator*=(double3 &a, double3 s)
+{
+    a.x *= s.x; a.y *= s.y; a.z *= s.z;
+}
+OPTIXU_INLINE RT_HOSTDEVICE void operator*=(double3 &a, double s)
+{
+    a.x *= s; a.y *= s; a.z *= s;
+}
+/** @} */
+
+/** divide
+* @{
+*/
+OPTIXU_INLINE RT_HOSTDEVICE double3 operator/(double3 a, double3 b)
+{
+    return make_double3(a.x / b.x, a.y / b.y, a.z / b.z);
+}
+
+OPTIXU_INLINE RT_HOSTDEVICE double3 operator/(double3 a, long3 b)
+{
+    return make_double3(a.x / b.x, a.y / b.y, a.z / b.z);
+}
+
+OPTIXU_INLINE RT_HOSTDEVICE double3 operator/(long3 a, double3 b)
+{
+    return make_double3(a.x / b.x, a.y / b.y, a.z / b.z);
+}
+
+OPTIXU_INLINE RT_HOSTDEVICE double3 operator/(double3 a, double s)
+{
+    double inv = (double)1.0 / s;
+    return a * inv;
+}
+OPTIXU_INLINE RT_HOSTDEVICE double3 operator/(double s, double3 a)
+{
+    return make_double3( s/a.x, s/a.y, s/a.z );
+}
+OPTIXU_INLINE RT_HOSTDEVICE void operator/=(double3 &a, double s)
+{
+    double inv = (double)1.0 / s;
+    a *= inv;
+}
+/** @} */
+
+/* copy sign-bit from src value to dst value */
+inline RT_HOSTDEVICE double copy_sign(double dst, double src)
+{
+	//union {
+ //   double d;
+ //   unsigned long i;
+ // } v1, v2, v3;
+ // v1.d = src;
+ // v2.d = dst;
+ // v3.i = (v2.i & 0x7fffffffffffffff) | (v1.i & 0x8000000000000000);
+ // //v3.i = (v2.i & 0x7fffffff) | (v1.i & 0x80000000);
+ // return v3.d;
+	// theres gotta be a nice way to do it without branching...
+	if (src < 0) return -dst;
+	return dst;
+}
+
+/** lerp
+* @{
+*/
+OPTIXU_INLINE RT_HOSTDEVICE double3 lerp(double3 a, double3 b, double t)
+{
+    return a + t*(b-a);
+}
+
+OPTIXU_INLINE RT_HOSTDEVICE double lerp(double a, double b, double t)
+{
+    return a + t*(b-a);
+}
+/** @} */
+
+/* clamp */
+//OPTIXU_INLINE RT_HOSTDEVICE double3 clamp(double3 v, double a, double b)
+//{
+//    return make_double3(clamp(v.x, a, b), clamp(v.y, a, b), clamp(v.z, a, b));
+//}
+//
+//OPTIXU_INLINE RT_HOSTDEVICE double3 clamp(double3 v, double3 a, double3 b)
+//{
+//    return make_double3(clamp(v.x, a.x, b.x), clamp(v.y, a.y, b.y), clamp(v.z, a.z, b.z));
+//}
+
+/** dot product
+* @{
+*/
+OPTIXU_INLINE RT_HOSTDEVICE double dot(double3 a, double3 b)
+{
+    return a.x * b.x + a.y * b.y + a.z * b.z;
+}
+/** @} */
+
+/** cross product
+* @{
+*/
+OPTIXU_INLINE RT_HOSTDEVICE double3 cross(double3 a, double3 b)
+{
+    return make_double3(a.y*b.z - a.z*b.y, a.z*b.x - a.x*b.z, a.x*b.y - a.y*b.x);
+}
+/** @} */
+
+/** length
+* @{
+*/
+OPTIXU_INLINE RT_HOSTDEVICE double length(double3 v)
+{
+    return sqrt(dot(v, v));
+}
+/** @} */
+
+/** normalize
+* @{
+*/
+OPTIXU_INLINE RT_HOSTDEVICE double3 normalize(double3 v)
+{
+    double invLen = (double)1.0 / sqrt(dot(v, v));
+    return v * invLen;
+}
+/** @} */
+
+/** floor
+* @{
+*/
+OPTIXU_INLINE RT_HOSTDEVICE double3 floor(const double3 v)
+{
+	return make_double3(::floor(v.x), ::floor(v.y), ::floor(v.z));
+}
+/** @} */
+
+/** reflect
+* @{
+*/
+OPTIXU_INLINE RT_HOSTDEVICE double3 reflect(double3 i, double3 n)
+{
+	return i - (double)2.0 * n * dot(n,i);
+}
+/** @} */
+
+/** faceforward
+* @{
+*/
+OPTIXU_INLINE RT_HOSTDEVICE double3 faceforward(double3 n, double3 i, double3 nref)
+{
+	return n * copy_sign( (double)1.0, dot(i, nref) );
+}
+/** @} */
+
 
 
 /* double4x4 functions */
 /******************************************************************************/
 
-/* additional constructors */
+/** additional constructors
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE double4x4 make_double4x4(double4 s1, double4 s2, double4 s3, double4 s4)
 {
     return make_double4x4(s1.x, s2.x, s3.x, s4.x, s1.y, s2.y, s3.y, s4.y, s1.z, s2.z, s3.z, s4.z, s1.w, s2.w, s3.w, s4.w);
 }
+/** @} */
 
+/** multiply
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE double3 operator*(double4x4 m, double3 a)
 {
 	double3 b;
@@ -1623,16 +2216,25 @@ OPTIXU_INLINE RT_HOSTDEVICE double4x4 operator*(double4x4 m1, double4x4 m2)
 	mOut.m44 = m1.m41*m2.m14+m1.m42*m2.m24+m1.m43*m2.m34+m1.m44*m2.m44;
 	return mOut;
 }
+/** @} */
 
 /* double3x3 functions */
 /******************************************************************************/
 
-/* additional constructors */
+/** multiply
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE double3x3 make_double3x3(double3 s1, double3 s2, double3 s3)
 {
-    return make_double3x3(s1.x,s2.x,s3.x, s1.y,s2.y,s3.y, s1.z,s2.z,s3.z);
+    return make_double3x3(s1.x,s2.x,s3.x, 
+                        s1.y,s2.y,s3.y, 
+                        s1.z,s2.z,s3.z);
 }
+/** @} */
 
+/** multiply
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE double3 operator*(double3x3 m, double3 a)
 {
 	double3 b;
@@ -1640,27 +2242,6 @@ OPTIXU_INLINE RT_HOSTDEVICE double3 operator*(double3x3 m, double3 a)
 	b.y = m.m21*a.x+m.m22*a.y+m.m23*a.z;
 	b.z = m.m31*a.x+m.m32*a.y+m.m33*a.z;
 	return b;
-}
-
-OPTIXU_INLINE RT_HOSTDEVICE double3x3 operator/(double3x3 m1, double s)
-{
-	return make_double3x3(m1.m11/s,m1.m12/s,m1.m13/s, 
-						  m1.m21/s,m1.m22/s,m1.m23/s,
-						  m1.m31/s,m1.m32/s,m1.m33/s);
-}
-
-OPTIXU_INLINE RT_HOSTDEVICE double det(double3x3 mat)
-{
-	return mat.m11*mat.m22*mat.m33+mat.m12*mat.m23*mat.m31+mat.m13*mat.m21*mat.m32-mat.m13*mat.m22*mat.m31-mat.m12*mat.m21*mat.m33-mat.m11*mat.m23*mat.m32;
-}
-
-OPTIXU_INLINE RT_HOSTDEVICE double3x3 inv(double3x3 mat)
-{
-	double3x3 l_mat;
-	l_mat=make_double3x3( mat.m22*mat.m33-mat.m23*mat.m32,mat.m13*mat.m32-mat.m12*mat.m33,mat.m12*mat.m23-mat.m13*mat.m22, 
-						mat.m23*mat.m31-mat.m21*mat.m33,mat.m11*mat.m33-mat.m13*mat.m31,mat.m13*mat.m21-mat.m11*mat.m23,
-						mat.m21*mat.m32-mat.m22*mat.m31,mat.m12*mat.m31-mat.m11*mat.m32,mat.m11*mat.m22-mat.m12*mat.m21);
-	return l_mat/det(mat);
 }
 
 OPTIXU_INLINE RT_HOSTDEVICE double3x3 operator*(double3x3 m1, double3x3 m2)
@@ -1677,199 +2258,43 @@ OPTIXU_INLINE RT_HOSTDEVICE double3x3 operator*(double3x3 m1, double3x3 m2)
 	mOut.m33 = m1.m31*m2.m13+m1.m32*m2.m23+m1.m33*m2.m33;
 	return mOut;
 }
+/** @} */
 
-/* negate */
-OPTIXU_INLINE RT_HOSTDEVICE double3 operator-(const double3 &a)
+/** divide
+* @{
+*/
+OPTIXU_INLINE RT_HOSTDEVICE double3x3 operator/(double3x3 m1, double s)
 {
-    return make_double3(-a.x, -a.y, -a.z);
+	return make_double3x3(m1.m11/s,m1.m12/s,m1.m13/s, 
+						  m1.m21/s,m1.m22/s,m1.m23/s,
+						  m1.m31/s,m1.m32/s,m1.m33/s);
 }
+/** @} */
 
-///* min */
-//static __inline__ RT_HOSTDEVICE double3 dmind(double3 a, double3 b)
-//{
-//	//return make_double3(dmind(a.x,b.x), dmind(a.y,b.y), dmind(a.z,b.z));
-//	double ax=a.x;
-//	double bx=b.x;
-//	double atest=dmind((double)1, (double)0);
-//	return make_double3(b.x, b.y, b.z);
-//}
-//
-///* max */
-//static __inline__ RT_HOSTDEVICE double3 dmaxd(double3 a, double3 b)
-//{
-//	return make_double3(dmaxd(a.x,b.x), dmaxd(a.y,b.y), dmaxd(a.z,b.z));
-//}
-
-/* addition */
-OPTIXU_INLINE RT_HOSTDEVICE double3 operator+(double3 a, double3 b)
+/** invert
+* @{
+*/
+OPTIXU_INLINE RT_HOSTDEVICE double det(double3x3 mat)
 {
-    return make_double3(a.x + b.x, a.y + b.y, a.z + b.z);
-}
-OPTIXU_INLINE RT_HOSTDEVICE double3 operator+(double3 a, double b)
-{
-    return make_double3(a.x + b, a.y + b, a.z + b);
-}
-OPTIXU_INLINE RT_HOSTDEVICE double3 operator+(double a, double3 b)
-{
-    return make_double3(a + b.x, a + b.y, a + b.z);
-}
-OPTIXU_INLINE RT_HOSTDEVICE void operator+=(double3 &a, double3 b)
-{
-    a.x += b.x; a.y += b.y; a.z += b.z;
+	return mat.m11*mat.m22*mat.m33+mat.m12*mat.m23*mat.m31+mat.m13*mat.m21*mat.m32-mat.m13*mat.m22*mat.m31-mat.m12*mat.m21*mat.m33-mat.m11*mat.m23*mat.m32;
 }
 
-/* comparison */
-OPTIXU_INLINE RT_HOSTDEVICE bool operator==(const double3 &a, const double3 &b)
+OPTIXU_INLINE RT_HOSTDEVICE double3x3 inv(double3x3 mat)
 {
-	return ( (a.x == b.x) && (a.y == b.y) && (a.z == b.z) );
+	double3x3 l_mat;
+	l_mat=make_double3x3( mat.m22*mat.m33-mat.m23*mat.m32,mat.m13*mat.m32-mat.m12*mat.m33,mat.m12*mat.m23-mat.m13*mat.m22, 
+						mat.m23*mat.m31-mat.m21*mat.m33,mat.m11*mat.m33-mat.m13*mat.m31,mat.m13*mat.m21-mat.m11*mat.m23,
+						mat.m21*mat.m32-mat.m22*mat.m31,mat.m12*mat.m31-mat.m11*mat.m32,mat.m11*mat.m22-mat.m12*mat.m21);
+	return l_mat/det(mat);
 }
-
-OPTIXU_INLINE RT_HOSTDEVICE bool operator!=(const double3 &a,const  double3 &b)
-{
-	return ( (a.x != b.x) && (a.y != b.y) && (a.z != b.z) );
-}
-
-/* subtract */
-OPTIXU_INLINE RT_HOSTDEVICE double3 operator-(double3 a, double3 b)
-{
-    return make_double3(a.x - b.x, a.y - b.y, a.z - b.z);
-}
-OPTIXU_INLINE RT_HOSTDEVICE double3 operator-(double3 a, double b)
-{
-    return make_double3(a.x - b, a.y - b, a.z - b);
-}
-OPTIXU_INLINE RT_HOSTDEVICE double3 operator-(double a, double3 b)
-{
-    return make_double3(a - b.x, a - b.y, a - b.z);
-}
-OPTIXU_INLINE RT_HOSTDEVICE void operator-=(double3 &a, double3 b)
-{
-    a.x -= b.x; a.y -= b.y; a.z -= b.z;
-}
-
-/* multiply */
-OPTIXU_INLINE RT_HOSTDEVICE double3 operator*(double3 a, double3 b)
-{
-    return make_double3(a.x * b.x, a.y * b.y, a.z * b.z);
-}
-OPTIXU_INLINE RT_HOSTDEVICE double3 operator*(double3 a, double s)
-{
-    return make_double3(a.x * s, a.y * s, a.z * s);
-}
-OPTIXU_INLINE RT_HOSTDEVICE double3 operator*(double s, double3 a)
-{
-    return make_double3(a.x * s, a.y * s, a.z * s);
-}
-OPTIXU_INLINE RT_HOSTDEVICE void operator*=(double3 &a, double3 s)
-{
-    a.x *= s.x; a.y *= s.y; a.z *= s.z;
-}
-OPTIXU_INLINE RT_HOSTDEVICE void operator*=(double3 &a, double s)
-{
-    a.x *= s; a.y *= s; a.z *= s;
-}
-
-/* divide */
-OPTIXU_INLINE RT_HOSTDEVICE double3 operator/(double3 a, double3 b)
-{
-    return make_double3(a.x / b.x, a.y / b.y, a.z / b.z);
-}
-
-OPTIXU_INLINE RT_HOSTDEVICE double3 operator/(double3 a, long3 b)
-{
-    return make_double3(a.x / b.x, a.y / b.y, a.z / b.z);
-}
-
-OPTIXU_INLINE RT_HOSTDEVICE double3 operator/(long3 a, double3 b)
-{
-    return make_double3(a.x / b.x, a.y / b.y, a.z / b.z);
-}
-
-OPTIXU_INLINE RT_HOSTDEVICE double3 operator/(double3 a, double s)
-{
-    double inv = (double)1.0 / s;
-    return a * inv;
-}
-OPTIXU_INLINE RT_HOSTDEVICE double3 operator/(double s, double3 a)
-{
-    return make_double3( s/a.x, s/a.y, s/a.z );
-}
-OPTIXU_INLINE RT_HOSTDEVICE void operator/=(double3 &a, double s)
-{
-    double inv = (double)1.0 / s;
-    a *= inv;
-}
-
-/* lerp */
-OPTIXU_INLINE RT_HOSTDEVICE double3 lerp(double3 a, double3 b, double t)
-{
-    return a + t*(b-a);
-}
-
-/* clamp */
-//OPTIXU_INLINE RT_HOSTDEVICE double3 clamp(double3 v, double a, double b)
-//{
-//    return make_double3(clamp(v.x, a, b), clamp(v.y, a, b), clamp(v.z, a, b));
-//}
-//
-//OPTIXU_INLINE RT_HOSTDEVICE double3 clamp(double3 v, double3 a, double3 b)
-//{
-//    return make_double3(clamp(v.x, a.x, b.x), clamp(v.y, a.y, b.y), clamp(v.z, a.z, b.z));
-//}
-
-/* dot product */
-OPTIXU_INLINE RT_HOSTDEVICE double dot(double3 a, double3 b)
-{
-    return a.x * b.x + a.y * b.y + a.z * b.z;
-}
-
-/* cross product */
-OPTIXU_INLINE RT_HOSTDEVICE double3 cross(double3 a, double3 b)
-{
-    return make_double3(a.y*b.z - a.z*b.y, a.z*b.x - a.x*b.z, a.x*b.y - a.y*b.x);
-}
-
-/* length */
-OPTIXU_INLINE RT_HOSTDEVICE double length(double3 v)
-{
-    return sqrt(dot(v, v));
-}
-
-/* normalize */
-OPTIXU_INLINE RT_HOSTDEVICE double3 normalize(double3 v)
-{
-    double invLen = (double)1.0 / sqrt(dot(v, v));
-    return v * invLen;
-}
-
-/* floor */
-OPTIXU_INLINE RT_HOSTDEVICE double3 floor(const double3 v)
-{
-	return make_double3(::floor(v.x), ::floor(v.y), ::floor(v.z));
-}
-
-/* reflect */
-OPTIXU_INLINE RT_HOSTDEVICE double3 reflect(double3 i, double3 n)
-{
-	return i - (double)2.0 * n * dot(n,i);
-}
-
-/* faceforward */
-OPTIXU_INLINE RT_HOSTDEVICE double3 faceforward(double3 n, double3 i, double3 nref)
-{
-	return n * copy_sign( (double)1.0, dot(i, nref) );
-}
-
-/* lerp */
-OPTIXU_INLINE RT_HOSTDEVICE double lerp(double a, double b, double t)
-{
-    return a + t*(b-a);
-}
+/** @} */
 
 
 /******************************************************************************/
 
-/* Narrowing */
+/** Narrowing functions
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE int2 make_int2(const int3& v0) { return make_int2( v0.x, v0.y ); }
 OPTIXU_INLINE RT_HOSTDEVICE int2 make_int2(const int4& v0) { return make_int2( v0.x, v0.y ); }
 OPTIXU_INLINE RT_HOSTDEVICE int3 make_int3(const int4& v0) { return make_int3( v0.x, v0.y, v0.z ); }
@@ -1883,7 +2308,11 @@ OPTIXU_INLINE RT_HOSTDEVICE float3 make_float3(const float4& v0) { return make_f
 OPTIXU_INLINE RT_HOSTDEVICE double2 make_double2(double3 v0) { return make_double2( v0.x, v0.y ); }
 OPTIXU_INLINE RT_HOSTDEVICE double2 make_double2(double4 v0) { return make_double2( v0.x, v0.y ); }
 
-/* Assemble from smaller vectors */
+/** @} */
+
+/** Assemble functions from smaller vectors 
+* @{
+*/
 OPTIXU_INLINE RT_HOSTDEVICE int3 make_int3(const int v0, const int2& v1) { return make_int3( v0, v1.x, v1.y ); }
 OPTIXU_INLINE RT_HOSTDEVICE int3 make_int3(const int2& v0, const int v1) { return make_int3( v0.x, v0.y, v1 ); }
 OPTIXU_INLINE RT_HOSTDEVICE int4 make_int4(const int v0, const int v1, const int2& v2) { return make_int4( v0, v1, v2.x, v2.y ); }
@@ -1916,20 +2345,24 @@ OPTIXU_INLINE RT_HOSTDEVICE double4 make_double4(double2 v0, double v1, double v
 OPTIXU_INLINE RT_HOSTDEVICE double4 make_double4(double v0, double3 v1) { return make_double4( v0, v1.x, v1.y, v1.z ); }
 OPTIXU_INLINE RT_HOSTDEVICE double4 make_double4(double2 v0, double2 v1) { return make_double4( v0.x, v0.y, v1.x, v1.y ); }
 
+/** @} */
+
 
 /* Common helper functions */
 /******************************************************************************/
 
-/* Return a smooth value in [0,1], where the transition from 0
-   to 1 takes place for values of x in [edge0,edge1]. */
+/** Return a smooth value in [0,1], where the transition from 0
+*   to 1 takes place for values of x in [edge0,edge1]. 
+*/
 OPTIXU_INLINE RT_HOSTDEVICE float smoothstep(const float edge0, const float edge1, const float x)
 {
-  /*assert( edge1 > edge0 ); */
+  /** assert( edge1 > edge0 ); */
   const float t = clamp( (x-edge0) / (edge1-edge0), 0.0f, 1.0f );
   return t*t * ( 3.0f - 2.0f*t );
 }
 
-/* Simple mapping from [0,1] to a temperature-like RGB color. */
+/** Simple mapping from [0,1] to a temperature-like RGB color. 
+*/
 OPTIXU_INLINE RT_HOSTDEVICE float3 temperature(const float t)
 {
   const float b = t < 0.25f ? smoothstep( -0.25f, 0.25f, t ) : 1.0f-smoothstep( 0.25f, 0.5f, t );
@@ -1938,7 +2371,8 @@ OPTIXU_INLINE RT_HOSTDEVICE float3 temperature(const float t)
   return make_float3( r, g, b );
 }
 
-// Branchless intesection avoids divergence.
+/** Branchless intesection avoids divergence.
+*/
 OPTIXU_INLINE RT_HOSTDEVICE bool intersect_triangle_branchless(const Ray&    ray,
                                                                const float3& p0,
                                                                const float3& p1,
@@ -1962,7 +2396,8 @@ OPTIXU_INLINE RT_HOSTDEVICE bool intersect_triangle_branchless(const Ray&    ray
   return ( (t<ray.tmax) & (t>ray.tmin) & (beta>=0.0f) & (gamma>=0.0f) & (beta+gamma<=1) );
 }
 
-// Intersection with early exit.
+/** Intersection with early exit.
+*/
 OPTIXU_INLINE RT_HOSTDEVICE bool intersect_triangle_earlyexit(const Ray&    ray,
                                                               const float3& p0,
                                                               const float3& p1,
@@ -2002,7 +2437,7 @@ OPTIXU_INLINE RT_HOSTDEVICE bool intersect_triangle_earlyexit(const Ray&    ray,
   return false;
 }
 
-/* Intersect ray with CCW wound triangle.  Returns non-normalize normal vector. */ 
+/** Intersect ray with CCW wound triangle.  Returns non-normalize normal vector. */ 
 OPTIXU_INLINE RT_HOSTDEVICE bool intersect_triangle(const Ray&    ray,
                                                     const float3& p0,
                                                     const float3& p1,
@@ -2016,14 +2451,14 @@ OPTIXU_INLINE RT_HOSTDEVICE bool intersect_triangle(const Ray&    ray,
 }
 
 
-/*
-  calculates refraction direction
-  r   : refraction vector
-  i   : incident vector
-  n   : surface normal
-  ior : index of refraction ( n2 / n1 )
-  returns false in case of total internal reflection, in that case r is
-          initialized to (0,0,0).
+/**
+*  Calculates refraction direction
+*  r   : refraction vector
+*  i   : incident vector
+*  n   : surface normal
+*  ior : index of refraction ( n2 / n1 )
+*  returns false in case of total internal reflection, in that case r is
+*          initialized to (0,0,0).
 */
 OPTIXU_INLINE RT_HOSTDEVICE bool refract(float3& r, const float3& i, const float3& n, const float ior)
 {
@@ -2054,19 +2489,20 @@ OPTIXU_INLINE RT_HOSTDEVICE bool refract(float3& r, const float3& i, const float
   }
 }
 
-/* Schlick approximation of Fresnel reflectance */
+/** Schlick approximation of Fresnel reflectance
+*/
 OPTIXU_INLINE RT_HOSTDEVICE float fresnel_schlick(const float cos_theta, const float exponent = 5.0f,
                                                   const float minimum = 0.0f, const float maximum = 1.0f)
 {
-  /*
+  /**
     Clamp the result of the arithmetic due to floating point precision:
     the result should lie strictly within [minimum, maximum]
     return clamp(minimum + (maximum - minimum) * powf(1.0f - cos_theta, exponent),
                  minimum, maximum);
   */
 
-  /* The max doesn't seem like it should be necessary, but without it you get
-     annoying broken pixels at the center of reflective spheres where cos_theta ~ 1.
+  /** The max doesn't seem like it should be necessary, but without it you get
+      annoying broken pixels at the center of reflective spheres where cos_theta ~ 1.
   */
   return clamp(minimum + (maximum - minimum) * powf(fmaxf(0.0f,1.0f - cos_theta), exponent),
                minimum, maximum);
@@ -2081,14 +2517,16 @@ OPTIXU_INLINE RT_HOSTDEVICE float3 fresnel_schlick(const float cos_theta, const 
 }
 
 
-// Calculate the NTSC luminance value of an rgb triple
+/** Calculate the NTSC luminance value of an rgb triple
+*/
 OPTIXU_INLINE RT_HOSTDEVICE float luminance(const float3& rgb)
 {
   const float3 ntsc_luminance = { 0.30f, 0.59f, 0.11f };
   return  dot( rgb, ntsc_luminance );
 }
 
-// Calculate the CIE luminance value of an rgb triple
+/** Calculate the CIE luminance value of an rgb triple
+*/
 OPTIXU_INLINE RT_HOSTDEVICE float luminanceCIE(const float3& rgb)
 {
   const float3 cie_luminance = { 0.2126f, 0.7152f, 0.0722f };
@@ -2107,7 +2545,8 @@ OPTIXU_INLINE RT_HOSTDEVICE void cosine_sample_hemisphere(const float u1, const 
   p.z = sqrtf( fmaxf( 0.0f, 1.0f - p.x*p.x - p.y*p.y ) );
 }
 
-// Maps concentric squares to concentric circles (Shirley and Chiu)
+/** Maps concentric squares to concentric circles (Shirley and Chiu)
+*/
 OPTIXU_INLINE RT_HOSTDEVICE float2 square_to_disk(const float2& sample)
 {
   float phi, r;
@@ -2145,7 +2584,9 @@ OPTIXU_INLINE RT_HOSTDEVICE float2 square_to_disk(const float2& sample)
   return make_float2( r * cosf(phi), r * sinf(phi) );
 }
 
-// Convert cartesian coordinates to polar coordinates
+/**
+* Convert cartesian coordinates to polar coordinates
+*/
 OPTIXU_INLINE RT_HOSTDEVICE float3 cart_to_pol(const float3& v)
 {
   float azimuth;
@@ -2176,7 +2617,9 @@ OPTIXU_INLINE RT_HOSTDEVICE float3 cart_to_pol(const float3& v)
   return make_float3(azimuth, elevation, radius);
 }
 
-// Orthonormal basis
+/**
+* Orthonormal basis
+*/
 struct Onb
 {
   OPTIXU_INLINE RT_HOSTDEVICE Onb(const float3& normal)
@@ -2200,7 +2643,7 @@ struct Onb
     m_tangent = cross( m_binormal, m_normal );
   }
 
-  OPTIXU_INLINE RT_HOSTDEVICE void inverse_transform(float3& p)
+  OPTIXU_INLINE RT_HOSTDEVICE void inverse_transform(float3& p) const
   {
     p = p.x*m_tangent + p.y*m_binormal + p.z*m_normal;
   }
@@ -2277,7 +2720,6 @@ RT_DEFINE_HELPER2(double)
 using optix::fmaxf;
 using optix::fminf;
 using optix::copysignf;
-//using optix::copy_sign;
 #endif
 
 /* These are always in the global namespace. */

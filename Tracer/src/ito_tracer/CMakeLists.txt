@@ -573,7 +573,7 @@ OPTIX_add_sample_executable( ITO-MacroSim
   
   # This is an extra option to compile to sm_13 (use sm_20 for Tesla?).  It is parsed out in the
   # OPTIX_add_sample_executable macro.
-  OPTIONS -arch sm_20  
+  OPTIONS -arch sm_20 #--use_fast_math
   
   )
 

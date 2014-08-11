@@ -18,8 +18,14 @@
  * INABILITY TO USE THIS SOFTWARE, EVEN IF NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGES
  */
-
-/* Stream operators for CUDA vector types */
+ 
+ /**
+ * @file   optixu_math_stream_namespace.h
+ * @author NVIDIA Corporation
+ * @brief  OptiX public API
+ *
+ * Stream operators for CUDA vector types
+ */
 
 #ifndef __optixu_optixu_math_stream_namespace_h__
 #define __optixu_optixu_math_stream_namespace_h__
@@ -31,30 +37,53 @@
 #include <iostream>
 
 namespace optix {
+
+  /**
+  * Provide access to stream functionalities with CUDA float vector types
+  * @{
+  */
   inline std::ostream& operator<<(std::ostream& os, const optix::float4& v) { os << '[' << v.x << ", " << v.y << ", " << v.z << ", " << v.w << ']'; return os; }
   inline std::istream& operator>>(std::istream& is, optix::float4& v) { char st; is >> st >> v.x >> st >> v.y >> st >> v.z >> st >> v.w >> st; return is; }
   inline std::ostream& operator<<(std::ostream& os, const optix::float3& v) { os << '[' << v.x << ", " << v.y << ", " << v.z << ']'; return os; }
   inline std::istream& operator>>(std::istream& is, optix::float3& v) { char st; is >> st >> v.x >> st >> v.y >> st >> v.z >> st; return is; }
   inline std::ostream& operator<<(std::ostream& os, const optix::float2& v) { os << '[' << v.x << ", " << v.y << ']'; return os; }
   inline std::istream& operator>>(std::istream& is, optix::float2& v) { char st; is >> st >> v.x >> st >> v.y >> st; return is; }
+  /** @} */
 
+  /**
+  * Provide access to stream functionalities with CUDA int vector types
+  * @{
+  */
   inline std::ostream& operator<<(std::ostream& os, const optix::int4& v) { os << '[' << v.x << ", " << v.y << ", " << v.z << ", " << v.w << ']'; return os; }
   inline std::istream& operator>>(std::istream& is, optix::int4& v) { char st; is >> st >> v.x >> st >> v.y >> st >> v.z >> st >> v.w >> st; return is; }
   inline std::ostream& operator<<(std::ostream& os, const optix::int3& v) { os << '[' << v.x << ", " << v.y << ", " << v.z << ']'; return os; }
   inline std::istream& operator>>(std::istream& is, optix::int3& v) { char st; is >> st >> v.x >> st >> v.y >> st >> v.z >> st; return is; }
   inline std::ostream& operator<<(std::ostream& os, const optix::int2& v) { os << '[' << v.x << ", " << v.y << ']'; return os; }
   inline std::istream& operator>>(std::istream& is, optix::int2& v) { char st; is >> st >> v.x >> st >> v.y >> st; return is; }
+  /** @} */
 
+  /**
+  * Provide access to stream functionalities with CUDA uint vector types
+  * @{
+  */
   inline std::ostream& operator<<(std::ostream& os, const optix::uint4& v) { os << '[' << v.x << ", " << v.y << ", " << v.z << ", " << v.w << ']'; return os; }
   inline std::istream& operator>>(std::istream& is, optix::uint4& v) { char st; is >> st >> v.x >> st >> v.y >> st >> v.z >> st >> v.w >> st; return is; }
   inline std::ostream& operator<<(std::ostream& os, const optix::uint3& v) { os << '[' << v.x << ", " << v.y << ", " << v.z << ']'; return os; }
   inline std::istream& operator>>(std::istream& is, optix::uint3& v) { char st; is >> st >> v.x >> st >> v.y >> st >> v.z >> st; return is; }
   inline std::ostream& operator<<(std::ostream& os, const optix::uint2& v) { os << '[' << v.x << ", " << v.y << ']'; return os; }
   inline std::istream& operator>>(std::istream& is, optix::uint2& v) { char st; is >> st >> v.x >> st >> v.y >> st; return is; }
+  /** @} */
 
+  /**
+  * Provide access to stream functionalities with OptiX axis-aligned bounding box type
+  */
   inline std::ostream& operator<<( std::ostream& os, const optix::Aabb& aabb )
   { os << aabb[0] << " | " << aabb[1];  return os; }
 
+  /**
+  * Provide access to stream functionalities with OptiX matrix type
+  * @{
+  */
   template<unsigned int M, unsigned int N>
   inline std::ostream& operator<<( std::ostream& os, const optix::Matrix<M,N>& m )
   {
@@ -87,6 +116,7 @@ namespace optix {
     is >> st;
     return is;
   }
+  /** @} */
 }
 
 /*

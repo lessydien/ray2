@@ -19,6 +19,14 @@
  * SUCH DAMAGES
  */
 
+ /**
+ * @file   optixu_aabb_namespace.h
+ * @author NVIDIA Corporation
+ * @brief  OptiX public API
+ *
+ * OptiX public API Reference - Public AABB namespace
+ */
+ 
 #ifndef __optixu_optixu_aabb_namespace_h__
 #define __optixu_optixu_aabb_namespace_h__
 
@@ -40,109 +48,132 @@
 
 namespace optix {
 
+ /**
+  * @brief Axis-aligned bounding box
+  * 
+  * @ingroup CUDACTypes
+  * 
+  * <B>Description</B>
+  * 
+  * @ref Aabb is a utility class for computing and manipulating axis-aligned
+  * bounding boxes (aabbs).  Aabb is primarily useful in the bounding box
+  * program associated with geometry objects. Aabb
+  * may also be useful in other computation and can be used in both host
+  * and device code. 
+  *
+  * <B>History</B>
+  * 
+  * @ref Aabb was introduced in OptiX 1.0.
+  * 
+  * <B>See also</B>
+  * @ref RT_PROGRAM,
+  * @ref rtGeometrySetBoundingBoxProgram
+  * 
+  */
   class Aabb
   {
   public:
 
-    // Construct an invalid box.
-    RT_HOSTDEVICE Aabb();
+    /** Construct an invalid box */
+    RT_HOSTDEVICE Aabb(); 
 
-    // Construct from min and max vectors.
-    RT_HOSTDEVICE Aabb( const float3& min, const float3& max );
+    /** Construct from min and max vectors */
+    RT_HOSTDEVICE Aabb( const float3& min, const float3& max ); 
 
-    // Construct from three points (e.g. triangle).
+    /** Construct from three points (e.g. triangle) */
     RT_HOSTDEVICE Aabb( const float3& v0, const float3& v1, const float3& v2 );
 
-    // Exact equality.
+    /** Exact equality */
     RT_HOSTDEVICE bool operator==( const Aabb& other ) const;
 
-    // Array access.
+    /** Array access */
     RT_HOSTDEVICE float3& operator[]( int i );
 
-    // Const array access.
+    /** Const array access */
     RT_HOSTDEVICE const float3& operator[]( int i ) const;
 
-    // Set using two vectors.
+    /** Set using two vectors */
     RT_HOSTDEVICE void set( const float3& min, const float3& max );
 
-    // Set using three points (e.g. triangle).
+    /** Set using three points (e.g. triangle) */
     RT_HOSTDEVICE void set( const float3& v0, const float3& v1, const float3& v2 );
 
-    // Invalidate the box.
+    /** Invalidate the box */
     RT_HOSTDEVICE void invalidate();
 
-    // Check if the box is valid.
+    /** Check if the box is valid */
     RT_HOSTDEVICE bool valid() const;
 
-    // Check if the point is in the box.
+    /** Check if the point is in the box */
     RT_HOSTDEVICE bool contains( const float3& p ) const;
 
-    // Check if the box is fully contained in the box.
+    /** Check if the box is fully contained in the box */
     RT_HOSTDEVICE bool contains( const Aabb& bb ) const;
 
-    // Extend the box to include the given point.
+    /** Extend the box to include the given point */
     RT_HOSTDEVICE void include( const float3& p );
 
-    // Extend the box to include the given box.
+    /** Extend the box to include the given box */
     RT_HOSTDEVICE void include( const Aabb& other );
 
-    // Extend the box to include the given box.
+    /** Extend the box to include the given box */
     RT_HOSTDEVICE void include( const float3& min, const float3& max );
 
-    // Compute the box center.
+    /** Compute the box center */
     RT_HOSTDEVICE float3 center() const;
 
-    // Compute the box center in the given dimension.
+    /** Compute the box center in the given dimension */
     RT_HOSTDEVICE float center( int dim ) const;
 
-    // Compute the box extent.
+    /** Compute the box extent */
     RT_HOSTDEVICE float3 extent() const;
 
-    // Compute the box extent in the given dimension.
+    /** Compute the box extent in the given dimension */
     RT_HOSTDEVICE float extent( int dim ) const;
 
-    // Compute the volume of the box.
+    /** Compute the volume of the box */
     RT_HOSTDEVICE float volume() const;
 
-    // Compute the surface area of the box.
+    /** Compute the surface area of the box */
     RT_HOSTDEVICE float area() const;
 
-    // Compute half the surface area of the box.
+    /** Compute half the surface area of the box */
     RT_HOSTDEVICE float halfArea() const;
 
-    // Get the index of the longest axis.
+    /** Get the index of the longest axis */
     RT_HOSTDEVICE int longestAxis() const;
 
-    // Get the extent of the longest axis.
+    /** Get the extent of the longest axis */
     RT_HOSTDEVICE float maxExtent() const;
 
-    // Check for intersection with another box.
+    /** Check for intersection with another box */
     RT_HOSTDEVICE bool intersects( const Aabb& other ) const;
 
-    // Make the current box be the intersection between this one and another one.
+    /** Make the current box be the intersection between this one and another one */
     RT_HOSTDEVICE void intersection( const Aabb& other );
 
-    // Enlarge the box by moving both min and max by 'amount'.
+    /** Enlarge the box by moving both min and max by 'amount' */
     RT_HOSTDEVICE void enlarge( float amount );
 
-    // Check if the box is flat in at least one dimension.
+    /** Check if the box is flat in at least one dimension  */
     RT_HOSTDEVICE bool isFlat() const;
 
-    // Compute the minimum Euclidean distance from a point on the
-    // surface of this Aabb to the point of interest
+    /** Compute the minimum Euclidean distance from a point on the
+     surface of this Aabb to the point of interest */
     RT_HOSTDEVICE float distance( const float3& x ) const;
 
-    // Compute the minimum squared Euclidean distance from a point on the
-    // surface of this Aabb to the point of interest
+    /** Compute the minimum squared Euclidean distance from a point on the
+     surface of this Aabb to the point of interest */
     RT_HOSTDEVICE float distance2( const float3& x ) const;
 
-    // Compute the minimum Euclidean distance from a point on the surface
-    // of this Aabb to the point of interest.
-    // If the point of interest lies inside this Aabb, the result is negative.
+    /** Compute the minimum Euclidean distance from a point on the surface
+      of this Aabb to the point of interest.
+      If the point of interest lies inside this Aabb, the result is negative  */
     RT_HOSTDEVICE float signedDistance( const float3& x ) const;
 
-    // Min and max bounds.
+    /** Min bound */
     float3 m_min;
+    /** Max bound */
     float3 m_max;
   };
 

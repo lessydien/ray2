@@ -18,27 +18,38 @@
  * INABILITY TO USE THIS SOFTWARE, EVEN IF NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGES
  */
+ 
+ /**
+ * @file   optix_defines.h
+ * @author NVIDIA Corporation
+ * @brief  OptiX public API
+ *
+ * OptiX public API Reference - Definitions
+ */
 
 #ifndef __optix_optix_defines_h__
 #define __optix_optix_defines_h__
 
 enum rtSemanticTypes {
-  /* Type uint3  */
+  /** Type uint3  */
   _OPTIX_SEMANTIC_TYPE_LaunchIndex          = 0x100,
 
-  /* Type Ray    */
+  /** Type Ray    */
   _OPTIX_SEMANTIC_TYPE_CurrentRay           = 0x200,
 
-  /* Type float  */
+  /** Type float  */
   _OPTIX_SEMANTIC_TYPE_IntersectionDistance = 0x300
 };
 
+/*! Transform type */
 enum RTtransformkind {
-  RT_WORLD_TO_OBJECT = 0xf00,
-  RT_OBJECT_TO_WORLD
+  RT_WORLD_TO_OBJECT = 0xf00, /*!< World to Object transformation */
+  RT_OBJECT_TO_WORLD          /*!< Object to World transformation */
 };
+
+/*! Transform flags */
 enum RTtransformflags {
-  RT_INTERNAL_INVERSE_TRANSPOSE = 0x1000
+  RT_INTERNAL_INVERSE_TRANSPOSE = 0x1000 /*!< Inverse transpose flag */
 };
 
 namespace rti_internal_typeinfo {
