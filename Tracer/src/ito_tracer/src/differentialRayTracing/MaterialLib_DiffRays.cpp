@@ -58,13 +58,13 @@ bool MaterialFab_DiffRays::createMatInstFromXML(xml_node &node, Material* &pMat,
 		pMat=new MaterialRefracting_DiffRays();
 		break;
 	default:
-		pMat=new Material();
-		break;
-	}
+        std::cout <<"error in MaterialFab_DiffRays.createMatInstFromXML(): mat.parseXML() returned an error: unknown materialType:" << matTypeAscii << "...\n";
+        return false;
+    }
 
 	if (MAT_NO_ERR != pMat->parseXml(node, simParams) )
 	{
-		std::cout <<"error in MaterialFab.createMatInstFromXML(): mat.parseXML() returned an error" << "...\n";
+		std::cout <<"error in MaterialFab_DiffRays.createMatInstFromXML(): mat.parseXML() returned an error" << "...\n";
 		return false;
 	}
 

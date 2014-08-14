@@ -26,6 +26,7 @@ RT_PROGRAM void miss()
 {
 //	rtPrintf("ray stopped in miss!! \n");
 	prd.running=false; // stop ray
+    prd.currentGeometryID=-10; // set insane geometryID
   //prd_position.position = bg_color;
 	//prd_position.position.x=1.0f;
 	//prd_position.position.y=2.0f;

@@ -65,7 +65,7 @@ bool MaterialFab_GeomRender::createMatInstFromXML(xml_node &node, Material* &pMa
         break;
 
 	default:
-		std::cout <<"error in MaterialFab_GeomRender.createMatInstFromXML(): unknown Material type" << "...\n";
+		std::cout <<"error in MaterialFab_GeomRender.createMatInstFromXML(): unknown Material type" << matTypeAscii << "...\n";
         return false;
 		break;
 	}

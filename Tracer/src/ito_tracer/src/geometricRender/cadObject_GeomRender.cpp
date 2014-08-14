@@ -192,40 +192,40 @@ geometryError CadObject_GeomRender::updateOptixInstance( RTcontext &context, RTg
 	}
 	return GEOM_NO_ERR;
 };
-
-geometryError CadObject_GeomRender::parseXml(pugi::xml_node &geometry, SimParams simParams, vector<Geometry*> &geomVec)
-{
-	// parse base class
-	if (GEOM_NO_ERR!=Geometry::parseXml(geometry,simParams, geomVec))
-	{
-		std::cout << "error in CadObject_GeomRender.parseXml(): Geometry.parseXml() returned an error." << "...\n";
-		return GEOM_ERR;
-	}
-	double3 l_vec=make_double3(0,0,1);
-	rotateRay(&l_vec,this->getParamsPtr()->tilt);
-	this->paramsPtr->normal=l_vec;
-	Parser_XML l_parser;
-	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "root.x", this->paramsPtr->root.x)))
-		return GEOM_ERR;
-	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "root.y", this->paramsPtr->root.y)))
-		return GEOM_ERR;
-	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "root.z", this->paramsPtr->root.z)))
-		return GEOM_ERR;
-	const char* l_objFileName=l_parser.attrValByName(geometry, "objFilename");
-	if (l_objFileName==NULL)
-	{
-		std::cout << "error in CadObject_GeomRender.parseXml(): glassName is not defined" << "...\n";
-		return GEOM_ERR;
-	}
-	// load object file
-	model = new nv::Model();
-	if(!model->loadModelFromFile(l_objFileName)) {
-		std::cout << "error in CadObject_GeomRender.parseXml(): Unable to load model '" << l_objFileName << "'" << "...\n";
-		return GEOM_ERR;
-	}
-	model->compileModel();
-
-	geomVec.push_back(this);
-	return GEOM_NO_ERR;
-
-}
+//
+//geometryError CadObject_GeomRender::parseXml(pugi::xml_node &geometry, SimParams simParams, vector<Geometry*> &geomVec)
+//{
+//	// parse base class
+//	if (GEOM_NO_ERR!=Geometry::parseXml(geometry,simParams, geomVec))
+//	{
+//		std::cout << "error in CadObject_GeomRender.parseXml(): Geometry.parseXml() returned an error." << "...\n";
+//		return GEOM_ERR;
+//	}
+//	double3 l_vec=make_double3(0,0,1);
+//	rotateRay(&l_vec,this->getParamsPtr()->tilt);
+//	this->paramsPtr->normal=l_vec;
+//	Parser_XML l_parser;
+//	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "root.x", this->paramsPtr->root.x)))
+//		return GEOM_ERR;
+//	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "root.y", this->paramsPtr->root.y)))
+//		return GEOM_ERR;
+//	if (!this->checkParserError(l_parser.attrByNameToDouble(geometry, "root.z", this->paramsPtr->root.z)))
+//		return GEOM_ERR;
+//	const char* l_objFileName=l_parser.attrValByName(geometry, "objFilename");
+//	if (l_objFileName==NULL)
+//	{
+//		std::cout << "error in CadObject_GeomRender.parseXml(): glassName is not defined" << "...\n";
+//		return GEOM_ERR;
+//	}
+//	// load object file
+//	model = new nv::Model();
+//	if(!model->loadModelFromFile(l_objFileName)) {
+//		std::cout << "error in CadObject_GeomRender.parseXml(): Unable to load model '" << l_objFileName << "'" << "...\n";
+//		return GEOM_ERR;
+//	}
+//	model->compileModel();
+//
+//	geomVec.push_back(this);
+//	return GEOM_NO_ERR;
+//
+//}

@@ -84,8 +84,9 @@ bool MaterialFab::createMatInstFromXML(xml_node &node, Material* &pMat, SimParam
 		pMat=new MaterialVolumeAbsorbing();
 		break;
 	default:
-		pMat=new Material();
-		break;
+        std::cout <<"error in MaterialFab.createMatInstFromXML(): mat.parseXML() returned an error: unknown materialType:" << matTypeAscii << "...\n";
+        return false;
+//		break;
 	}
 
 	if (MAT_NO_ERR != pMat->parseXml(node, simParams) )
