@@ -55,20 +55,20 @@ void Scatter_Lambert2D_GeomRender::hit(rayStruct &ray, Mat_hitParams hitParams)
         
     }
 
-    ray.running=false;
+//    ray.running=false;
 
     // continue primary ray
- //   ScatLambert2D_params primParams=this->reducedParams;
- //   primParams.impAreaType=AT_INFTY; // primary ray does not use the importance area
-	//if (hitLambert2D_GeomRender(*l_pRay, hitParams, primParams) )
-	//{
+    ScatLambert2D_params primParams=this->reducedParams;
+    primParams.impAreaType=AT_INFTY; // primary ray does not use the importance area
+	if (hitLambert2D_GeomRender(*l_pRay, hitParams, primParams) )
+	{
 
-	//}
-	//else
-	//{
-	//	std::cout <<"error in ScatterDoubleCauchy1D.hit(): hitDoubleCauchy1D returned an error." << "...\n";
-	//	// some error mechanism !!
-	//}
+	}
+	else
+	{
+		std::cout <<"error in ScatterDoubleCauchy1D.hit(): hitDoubleCauchy1D returned an error." << "...\n";
+		// some error mechanism !!
+	}
 
 }
 

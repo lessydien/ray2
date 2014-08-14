@@ -186,6 +186,8 @@ MaterialItem::Mat_ScatterType MaterialItemLib::stringToMatScatterType(const QStr
 		return MaterialItem::DISPDOUBLECAUCHY1D;
 	if (!str.compare("DOUBLECAUCHY1D"))
 		return MaterialItem::DOUBLECAUCHY1D;
+	if (!str.compare("PHONG"))
+		return MaterialItem::PHONG;
 	return MaterialItem::NOSCATTER;
 }
 
@@ -214,6 +216,8 @@ QString MaterialItemLib::matScatterTypeToString(const MaterialItem::Mat_ScatterT
 		break;
 	case MaterialItem::DOUBLECAUCHY1D:
 		str="DOUBLECAUCHY1D";
+	case MaterialItem::PHONG:
+		str="PHONG";
 		break;
 	default:
 		str="NOSCATTER";

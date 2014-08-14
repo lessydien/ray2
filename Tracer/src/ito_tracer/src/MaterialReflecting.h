@@ -21,7 +21,6 @@
 *           
 * \author Mauch
 */
-
 #ifndef MATERIALREFLECTING_H
 #define MATERIALREFLECTING_H
 

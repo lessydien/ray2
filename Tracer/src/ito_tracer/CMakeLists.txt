@@ -71,6 +71,8 @@ OPTIX_add_sample_executable( ITO-MacroSim
   src/geometricRender/SphericalSurface_GeomRender.h
   src/geometricRender/SphericalSurface_GeomRender.cu
   src/geometricRender/SphericalSurface_GeomRender_intersect.h
+  src/geometricRender/SphericalLense_GeomRender.cpp
+  src/geometricRender/SphericalLense_GeomRender.h
   src/geometricRender/cadObject_GeomRender.cpp
   src/geometricRender/cadObject_GeomRender.h
   src/geometricRender/cadObject_GeomRender.cu
@@ -391,6 +393,9 @@ OPTIX_add_sample_executable( ITO-MacroSim
   src/Scatter_hit.h
   src/Scatter_NoScatter.cpp
   src/Scatter_NoScatter.h
+  src/Scatter_Phong.cpp
+  src/Scatter_Phong.h
+  src/Scatter_Phong_hit.h
   
   src/differentialRayTracing/Scatter_DiffRays.cpp
   src/differentialRayTracing/Scatter_DiffRays.h
@@ -573,7 +578,7 @@ OPTIX_add_sample_executable( ITO-MacroSim
   
   # This is an extra option to compile to sm_13 (use sm_20 for Tesla?).  It is parsed out in the
   # OPTIX_add_sample_executable macro.
-  OPTIONS -arch sm_20 #--use_fast_math
+  OPTIONS -arch sm_20 --use_fast_math
   
   )
 

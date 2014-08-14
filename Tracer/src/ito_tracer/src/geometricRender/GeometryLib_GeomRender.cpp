@@ -54,9 +54,9 @@ bool GeometryFab_GeomRender::createGeomInstFromXML(xml_node &geomNode, SimParams
 	// create instance of geometry according to geomType
 	switch (l_geomType)
 	{
-	//case GEOM_SPHERICALLENSE:
-	//	l_pGeometry=new SphericalLense(1);
-	//	break;
+	case GEOM_SPHERICALLENSE:
+		l_pGeometry=new SphericalLense_GeomRender(1);
+		break;
 	case GEOM_SPHERICALSURF:
 		l_pGeometry=new SphericalSurface_GeomRender(1);
 		break;

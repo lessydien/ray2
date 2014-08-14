@@ -106,7 +106,32 @@ inline RT_HOSTDEVICE bool hitLambert2D(rayStruct &prd, Mat_hitParams hitParams, 
 	else // if we have an importance area, we scatter into this area. Directions are uniformly distributed and flux adjusted according to BRDF
 	{
         aimRayTowardsImpArea(prd.direction, prd.position, params.impAreaRoot,  params.impAreaHalfWidth, params.impAreaTilt, params.impAreaType, prd.currentSeed);
+
+		double3 impAreaNormal=make_double3(0,0,1);  
+		rotateRay(&impAreaNormal, params.impAreaTilt);  // transform normal vetor of new surface
+		double distance_twosurfaces=sqrt(pow((prd.position.x-params.impAreaRoot.x),2)+pow((prd.position.y-params.impAreaRoot.y),2)+pow((prd.position.z-params.impAreaRoot.z),2));
+		double3 direction_light=params.impAreaRoot-prd.position;
+		double hitParamslength=sqrt(hitParams.normal.x*hitParams.normal.x+hitParams.normal.y+hitParams.normal.y+hitParams.normal.z*hitParams.normal.z);
+		double prdNormallength=sqrt(impAreaNormal.x*impAreaNormal.x+impAreaNormal.y*impAreaNormal.y+impAreaNormal.z*impAreaNormal.z);
+		double theta1=(dot(hitParams.normal,direction_light)/hitParamslength/distance_twosurfaces);
+		double theta2=(dot(impAreaNormal,direction_light)/prdNormallength/distance_twosurfaces);
+		
+
 		// adjust flux of ray according to fraction of importance area to full hemisphere
+		if (params.impAreaType == AT_RECT)
+		{
+			//prd.flux=prd.flux*theta1*theta2/distance_twosurfaces/distance_twosurfaces/2/PI/(params.impAreaHalfWidth.x*params.impAreaHalfWidth.y*4);
+			prd.flux=prd.flux;
+			//prd.flux=prd.flux*reflectance/distance^2/(2pi)*cos()*cos()
+		}
+		else
+		{
+			if (params.impAreaType == AT_ELLIPT)
+			{
+			//prd.flux=prd.flux*theta1*theta2/distance_twosurfaces/distance_twosurfaces/2/PI/(params.impAreaHalfWidth.x*params.impAreaHalfWidth.y*PI);
+			prd.flux=prd.flux;
+			}
+		}
 		//double3 impAreaX=make_double3(1,0,0);
 		//rotateRay(&impAreaX,params.impAreaTilt);
 		//double3 impAreaY=make_double3(0,1,0);

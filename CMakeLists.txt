@@ -245,6 +245,7 @@ IF(CUDA_FOUND)
         ${CMAKE_CURRENT_SOURCE_DIR}/scatterItemLib.h
         ${CMAKE_CURRENT_SOURCE_DIR}/scatterLambert2DItem.h
         ${CMAKE_CURRENT_SOURCE_DIR}/scatterNoItem.h
+		${CMAKE_CURRENT_SOURCE_DIR}/scatterPhongItem.h
         ${CMAKE_CURRENT_SOURCE_DIR}/scatterTorranceSparrow1DItem.h
         ${CMAKE_CURRENT_SOURCE_DIR}/scatterTorranceSparrow2DItem.h
         ${CMAKE_CURRENT_SOURCE_DIR}/scatterTorranceSparrow2DPathTraceItem.h
@@ -360,6 +361,7 @@ IF(CUDA_FOUND)
         ${CMAKE_CURRENT_SOURCE_DIR}/scalarUserFieldItem.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/scatterDispersiveDoubleCauchy1DItem.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/scatterDoubleCauchy1DItem.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/scatterPhongItem.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/scatterItem.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/scatterItemLib.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/scatterLambert2DItem.cpp

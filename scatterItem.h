@@ -51,9 +51,10 @@ class ScatterItem :
 
 
 public:
-	enum ScatterType {NOSCATTER, LAMBERT2D, TORRSPARR1D, TORRSPARR2D, TORRSPARR2DPATHTRACE, DISPDOUBLECAUCHY1D, DOUBLECAUCHY1D};
+	enum ScatterType {NOSCATTER, LAMBERT2D, TORRSPARR1D, TORRSPARR2D, TORRSPARR2DPATHTRACE, DISPDOUBLECAUCHY1D, DOUBLECAUCHY1D, PHONG};
     enum ScatterPupilType {NOPUPIL, RECTPUPIL, ELLIPTPUPIL};
 
+	//ScatterItem(ScatterType type=NOSCATTER, QString name="base scatter", QObject *parent=0);
 	ScatterItem(ScatterType type=NOSCATTER, QString name="base scatter", QObject *parent=0);
 	~ScatterItem(void);
 

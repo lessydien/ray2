@@ -2,7 +2,8 @@
   #define PROPMATH_H
 
 #include "vector_types.h"
-#define _USE_MATH_DEFINES
+//#ifndef _USE_MATH_DEFINES
+	#define _USE_MATH_DEFINES
 #include <cmath>
 
 #include <complex>
@@ -301,3 +302,4 @@ inline propError ift1_ts(complex<double>* Uin_ptr, unsigned int dimx, double del
 }
 
 #endif
+//#endif

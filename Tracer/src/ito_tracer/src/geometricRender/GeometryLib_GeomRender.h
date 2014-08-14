@@ -30,6 +30,7 @@
 // include the individual geometries
 #include "PlaneSurface_GeomRender.h"
 #include "SphericalSurface_GeomRender.h"
+#include "SphericalLense_GeomRender.h"
 #include "AsphericalSurface_GeomRender.h"
 #include "CylPipe_GeomRender.h"
 #include "ConePipe_GeomRender.h"

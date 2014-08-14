@@ -219,6 +219,33 @@ inline RT_HOSTDEVICE double RandomGauss(uint32_t *x) {
 
 }
 
+// this function modifed by yang
+//inline RT_HOSTDEVICE double RandomCos(uint32_t *x) {
+//	double fac, rsq, v1, v2;
+	// pick coordinates from the unit circle via rejection method
+	//double v1,v2;
+	//long long index=0;
+	//do
+	//{
+	//	v1=2.0*Random(x)-1.0;
+	//	v2=2.0*Random(x)-1.0;
+	//	rsq=v1*v1+v2*v2;
+	//	index++;
+	//	if (index>1000000)
+	//		break;
+	//} while ( (rsq >= 1.0) || (rsq == 0.0) );
+	
+	// pick coordinates from the unit circle via direct method (should be faster than rejection method. At least onGPU)
+//	double theta=2*PI*Random(x);
+//	double r=sqrt(Random(x));
+//	v1=r*cos(theta);
+//	v2=r*sin(theta);
+//	rsq=v1*v1+v2*v2;
+
+//	fac=sqrt(-2.0*logf(rsq)/rsq);
+//	return v1*fac;
+
+//}
 
 inline RT_HOSTDEVICE unsigned int rot_seed( unsigned int seed, unsigned int frame )
 {
