@@ -34,13 +34,6 @@ rtDeclareVariable(int,               geometryID, attribute geometryID , );
 rtBuffer<int3>			index_buffer;
 rtBuffer<float3>		vertex_buffer;
 
-///* calc normal to surface at intersection point */
-//__forceinline__ __device__ Mat_hitParams calcHitParams(double t)
-//{
-//  Mat_hitParams t_hitParams;
-//  t_hitParams.normal=params.normal;
-//  return t_hitParams;
-//}
 
 /* calc intersection of ray with geometry */
 RT_PROGRAM void intersect(int primIdx)
@@ -53,12 +46,16 @@ RT_PROGRAM void intersect(int primIdx)
     if(  rtPotentialIntersection( t ) ) 
 	{
 	  //hitParams.normal=make_double3(normalize(n));
-		hitParams.normal=make_double3(1,0,0);
+//		hitParams.normal=make_double3(1,0,0);
 //      float3 n0 = vertex_buffer[ v_idx.x ].normal;
 //      float3 n1 = vertex_buffer[ v_idx.y ].normal;
 //      float3 n2 = vertex_buffer[ v_idx.z ].normal;
 //      shading_normal   = normalize( n0*(1.0f-beta-gamma) + n1*beta + n2*gamma );
 //      geometric_normal = normalize( n );
+
+		// calc normal in intersection
+		hitParams=calcHitParamsCADObject(params, &(vertex_buffer[0]), &(index_buffer[0]), primIdx);
+
 		// communicate t_hit to closest_hit function
 		t_hit=t;
 		// pass geometryID to hit-program

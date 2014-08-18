@@ -509,6 +509,7 @@ OPTIX_add_sample_executable( ITO-MacroSim
   src/hitFunctionReflecting_Scatter_TorranceSparrow1D_CoatNumCoeffs.cu
   src/differentialRayTracing/hitFunctionReflecting_DiffRays_Scatter_TorranceSparrow1D_DiffRays_CoatNumCoeffs_DiffRays.cu
   src/hitFunctionReflecting_Scatter_Lambert2D.cu
+  src/hitFunctionReflecting_Scatter_Phong.cu
   
   src/hitFunctionReflecting_Scatter_TorranceSparrow2D.cu
   src/hitFunctionReflecting_Scatter_TorranceSparrow2D_PathTrace.cu

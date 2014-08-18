@@ -84,6 +84,8 @@ inline RT_HOSTDEVICE bool hitPhong(rayStruct &prd, Mat_hitParams hitParams, Scat
 	// adjust flux of ray according to TIR of surface
 	//prd.flux=prd.flux*sqrt(params.TIR);  // here TIR is the reflectance of lambertian
 
+    double3 mirrorReflectionDirection=prd.direction;
+
 	// if we had no importance area in prescription file, the parser set one that corresponds to the full hemisphere...
 	// if we have no importance area, we scatter into full hemisphere. Directions are distributed according to BRDF and flux is constant
 	if (params.impAreaType==AT_INFTY)
@@ -99,7 +101,7 @@ inline RT_HOSTDEVICE bool hitPhong(rayStruct &prd, Mat_hitParams hitParams, Scat
 		//hitParams.normal=hitParams.normal/sqrt(dot(hitParams.normal,hitParams.normal));
 		// mirror reflection vector
 		//double3 mirrorReflectionDirection=incidentDirection-2*dot(incidentDirection,hitParams.normal)*hitParams.normal;
-		double3 mirrorReflectionDirection=prd.direction;
+		
 			//=reflect(prd.direction,hitParams.normal);
 		// scattered ray direction is independent of incoming direction-> Init to normal of surface. consider reflection ...
 		prd.direction=dot(hitParams.normal,prd.direction)/abs(dot(hitParams.normal,prd.direction))*hitParams.normal;
@@ -136,21 +138,11 @@ inline RT_HOSTDEVICE bool hitPhong(rayStruct &prd, Mat_hitParams hitParams, Scat
 		//double theta2=(dot(impAreaNormal,direction_light)/prdNormallength/distance_twosurfaces);
 		
 
-		// adjust flux of ray according to fraction of importance area to full hemisphere
-		if (params.impAreaType == AT_RECT)
-		{
-			//prd.flux=prd.flux*theta1*theta2/distance_twosurfaces/distance_twosurfaces/2/PI/(params.impAreaHalfWidth.x*params.impAreaHalfWidth.y*4);
-			prd.flux=prd.flux;
-			//prd.flux=prd.flux*reflectance/distance^2/(2pi)*cos()*cos()
+		double cosTheta=dot(prd.direction,mirrorReflectionDirection)/sqrt(dot(prd.direction,prd.direction)*dot(mirrorReflectionDirection,mirrorReflectionDirection));
+		if (cosTheta<0){
+			cosTheta=0;
 		}
-		else
-		{
-			if (params.impAreaType == AT_ELLIPT)
-			{
-			//prd.flux=prd.flux*theta1*theta2/distance_twosurfaces/distance_twosurfaces/2/PI/(params.impAreaHalfWidth.x*params.impAreaHalfWidth.y*PI);
-				prd.flux=prd.flux;
-			}
-		}
+		prd.flux=prd.flux*sqrt(params.coefLambertian)+sqrt(params.coefPhong)*prd.flux*pow(cosTheta,params.phongParam);
 		//double3 impAreaX=make_double3(1,0,0);
 		//rotateRay(&impAreaX,params.impAreaTilt);
 		//double3 impAreaY=make_double3(0,1,0);

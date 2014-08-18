@@ -100,6 +100,37 @@ inline RT_HOSTDEVICE double intersectRayCadObject(double3 rayPosition, double3 r
 }
 
 /**
+ * \detail calcHitParamsCADObject 
+ *
+ * calculates the parameters of the surface at the intersection point that are needed within the hit-function
+ *
+ * \param[in] double3 position,SphericalSurface_ReducedParams params
+ * 
+ * \return Mat_hitParams
+ * \sa 
+ * \remarks this function is defined inline so it can be used on GPU and CPU
+ * \author Mauch
+ */
+inline RT_HOSTDEVICE Mat_hitParams calcHitParamsCADObject(CadObject_ReducedParams params, float3* vertex_buffer, int3* index_buffer, int primIdx)
+{
+	double3 n;
+
+    const int3 v_idx = index_buffer[primIdx];
+
+    const float3 v0 = vertex_buffer[ v_idx.y]-vertex_buffer[v_idx.x ];
+    const float3 v1 = vertex_buffer[ v_idx.z]-vertex_buffer[v_idx.x ];
+    float3 normal=cross(v0,v1);
+ 
+	Mat_hitParams t_hitParams;
+	t_hitParams.normal=make_double3(normal.x, normal.y, normal.z);
+    t_hitParams.normal=normalize(t_hitParams.normal);
+
+    rotateRay(&t_hitParams.normal, params.tilt);
+
+	return t_hitParams;
+}
+
+/**
  * \detail cadObjectBounds 
  *
  * calculates the bounding boxes of the individual triangles of an CAD object
