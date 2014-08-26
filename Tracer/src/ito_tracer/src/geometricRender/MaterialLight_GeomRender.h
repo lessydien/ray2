@@ -31,7 +31,7 @@
 #include "..\Group.h"
 #include "MaterialLight_GeomRender_hit.h"
 
-#define PATH_TO_HIT_RENDERLIGHT "ITO-MacroSim_generated_hitFunctionRenderLight"
+#define PATH_TO_HIT_RENDERLIGHT "ITO-MacroSim_generated_hitFunctionLight_GeomRender"
 
 /* declare class */
 /**
