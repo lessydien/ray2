@@ -31,7 +31,11 @@
 #include "coatingItem.h"
 #include "macrosim_scenemodel.h"
 #include "macrosim_librarymodel.h"
-#include "QPropertyEditor/QPropertyModel.h"
+
+
+//#include "QPropertyEditor/QPropertyModel.h"
+#include "QPropertyEditor/QPropertyEditorWidget.h"
+
 //#include "myGraphicsScene.h"
 #include <qplaintextedit.h>
 #include "TracerThread.h"
