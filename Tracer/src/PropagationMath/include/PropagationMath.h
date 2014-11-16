@@ -7,7 +7,7 @@
 #include <cmath>
 
 #include <complex>
-#include <fftw3.h>
+//#include <fftw3.h>
 #include "cuda.h"
 #include <cufft.h>
 
@@ -90,40 +90,40 @@ propError cu_scalar_RichardsonWolf(complex<double>* Uin_ptr, unsigned int dimx, 
 propError cu_ft2(cuDoubleComplex* Uin_ptr, unsigned int dimx, unsigned int dimy);
 
 //propError fftshift(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy);
-propError fresnel_two_step_1D(complex<double>* Uin_ptr, unsigned int dimx, double wvl, double* x1_ptr, double dx2, double Dz, double** x2_ptrptr );
-propError angularSpectrum_scaled(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double Dz, double dx2, double** x2_ptrptr, double** y2_ptrptr);
-propError angularSpectrum_ABCD(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double Dz, double dx2, double* ABCD, double** x2_ptrptr, double** y2_ptrptr);
-propError fresnel_two_step_1D(complex<double>* Uin_ptr, unsigned int dimx, double wvl, double* x1_ptr, double dx2, double Dz, double** x2_ptrptr );
-propError fresnel_two_step(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double dx2, double Dz, double** x2_ptrptr, double** y2_ptrptr);
-propError fresnel_one_step_1D(complex<double>* Uin_ptr, unsigned int dimx, double wvl, double* x1_ptr, double Dz, double** x2_ptrptr );
-propError fresnel_one_step(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double Dz, double** x2_ptrptr, double** y2_ptrptr);
-propError scalar_RichardsonWolf(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double f, double Dz, double** x2_ptrptr, double** y2_ptrptr);
-propError fraunhofer(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double Dz, double** x2_ptrptr, double** y2_ptrptr);
-propError fraunhofer_1D(complex<double>* Uin_ptr, unsigned int dimx, double wvl, double* x1_ptr, double Dz, double** x2_ptrptr);
-propError fftshift(complex<double>* in, unsigned int dimx, unsigned int dimy);
-propError calcWavefront(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double* x_ptr, double *y_ptr, double D, double wvl, double *coeffVec_ptr);
+//propError fresnel_two_step_1D(complex<double>* Uin_ptr, unsigned int dimx, double wvl, double* x1_ptr, double dx2, double Dz, double** x2_ptrptr );
+//propError angularSpectrum_scaled(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double Dz, double dx2, double** x2_ptrptr, double** y2_ptrptr);
+//propError angularSpectrum_ABCD(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double Dz, double dx2, double* ABCD, double** x2_ptrptr, double** y2_ptrptr);
+//propError fresnel_two_step_1D(complex<double>* Uin_ptr, unsigned int dimx, double wvl, double* x1_ptr, double dx2, double Dz, double** x2_ptrptr );
+//propError fresnel_two_step(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double dx2, double Dz, double** x2_ptrptr, double** y2_ptrptr);
+//propError fresnel_one_step_1D(complex<double>* Uin_ptr, unsigned int dimx, double wvl, double* x1_ptr, double Dz, double** x2_ptrptr );
+//propError fresnel_one_step(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double Dz, double** x2_ptrptr, double** y2_ptrptr);
+//propError scalar_RichardsonWolf(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double f, double Dz, double** x2_ptrptr, double** y2_ptrptr);
+//propError fraunhofer(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double Dz, double** x2_ptrptr, double** y2_ptrptr);
+//propError fraunhofer_1D(complex<double>* Uin_ptr, unsigned int dimx, double wvl, double* x1_ptr, double Dz, double** x2_ptrptr);
+//propError fftshift(complex<double>* in, unsigned int dimx, unsigned int dimy);
+//propError calcWavefront(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double* x_ptr, double *y_ptr, double D, double wvl, double *coeffVec_ptr);
 
 // all the functions that use calls to fftw need to have an extra implementation that is thread safe by taking a global plan as an additional input
-propError fresnel_two_step_1D_ts(complex<double>* Uin_ptr, unsigned int dimx, double wvl, double* x1_ptr, double dx2, double Dz, double** x2_ptrptr , fftw_plan &p);
-propError angularSpectrum_scaled_ts(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double Dz, double dx2, double** x2_ptrptr, double** y2_ptrptr, fftw_plan &p_fw, fftw_plan &p_bw);
-propError angularSpectrum_ABCD_ts(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double Dz, double dx2, double* ABCD, double** x2_ptrptr, double** y2_ptrptr, fftw_plan &p_fw, fftw_plan &p_bw);
-propError fresnel_two_step_1D_ts(complex<double>* Uin_ptr, unsigned int dimx, double wvl, double* x1_ptr, double dx2, double Dz, double** x2_ptrptr , fftw_plan &p);
-propError fresnel_two_step_ts(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double dx2, double Dz, double** x2_ptrptr, double** y2_ptrptr, fftw_plan &p);
-propError fresnel_one_step_1D_ts(complex<double>* Uin_ptr, unsigned int dimx, double wvl, double* x1_ptr, double Dz, double** x2_ptrptr , fftw_plan &p);
-propError fresnel_one_step_ts(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double Dz, double** x2_ptrptr, double** y2_ptrptr, fftw_plan &p);
-propError scalar_RichardsonWolf_ts(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double f, double Dz, double** x2_ptrptr, double** y2_ptrptr, fftw_plan &p);
-propError fraunhofer_ts(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double Dz, double** x2_ptrptr, double** y2_ptrptr, fftw_plan &p);
-propError fraunhofer_1D_ts(complex<double>* Uin_ptr, unsigned int dimx, double wvl, double* x1_ptr, double Dz, double** x2_ptrptr, fftw_plan &p);
+//propError fresnel_two_step_1D_ts(complex<double>* Uin_ptr, unsigned int dimx, double wvl, double* x1_ptr, double dx2, double Dz, double** x2_ptrptr , fftw_plan &p);
+//propError angularSpectrum_scaled_ts(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double Dz, double dx2, double** x2_ptrptr, double** y2_ptrptr, fftw_plan &p_fw, fftw_plan &p_bw);
+//propError angularSpectrum_ABCD_ts(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double Dz, double dx2, double* ABCD, double** x2_ptrptr, double** y2_ptrptr, fftw_plan &p_fw, fftw_plan &p_bw);
+//propError fresnel_two_step_1D_ts(complex<double>* Uin_ptr, unsigned int dimx, double wvl, double* x1_ptr, double dx2, double Dz, double** x2_ptrptr , fftw_plan &p);
+//propError fresnel_two_step_ts(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double dx2, double Dz, double** x2_ptrptr, double** y2_ptrptr, fftw_plan &p);
+//propError fresnel_one_step_1D_ts(complex<double>* Uin_ptr, unsigned int dimx, double wvl, double* x1_ptr, double Dz, double** x2_ptrptr , fftw_plan &p);
+//propError fresnel_one_step_ts(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double Dz, double** x2_ptrptr, double** y2_ptrptr, fftw_plan &p);
+//propError scalar_RichardsonWolf_ts(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double f, double Dz, double** x2_ptrptr, double** y2_ptrptr, fftw_plan &p);
+//propError fraunhofer_ts(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double Dz, double** x2_ptrptr, double** y2_ptrptr, fftw_plan &p);
+//propError fraunhofer_1D_ts(complex<double>* Uin_ptr, unsigned int dimx, double wvl, double* x1_ptr, double Dz, double** x2_ptrptr, fftw_plan &p);
 
 propError simConfRawSig(double **ppRawSig, ConfPoint_Params params, bool runOnCPU);
 propError simConfSensorSig(double **ppRawSig, ConfPoint_Params params, ConfPointObject_Params paramsObject, bool runOnCPU);
 propError simConfSensorSig(double **ppRawSig, ConfPoint_Params params, bool runOnCPU);
 
-inline propError ft1(complex<double>* Uin_ptr, unsigned int dimx, double delta)
+/*inline propError ft1(complex<double>* Uin_ptr, unsigned int dimx, double delta)
 {
 	fftshift(Uin_ptr, dimx, 1);
 
-	fftw_complex *in=reinterpret_cast<fftw_complex*>(Uin_ptr);
+	double *in=reinterpret_cast<double*>(Uin_ptr);
 	fftw_plan p;
 
 	p = fftw_plan_dft_1d(dimx, in, in, FFTW_FORWARD, FFTW_ESTIMATE);
@@ -145,7 +145,7 @@ inline propError ft2(complex<double>* Uin_ptr, unsigned int dimx, unsigned int d
 		return PROP_ERR;
 	fftshift(Uin_ptr, dimx, dimy);
 
-	fftw_complex *in=reinterpret_cast<fftw_complex*>(Uin_ptr);
+	double *in=reinterpret_cast<double*>(Uin_ptr);
 	fftw_plan p;
 
 	p = fftw_plan_dft_2d(dimx, dimy, in, in, FFTW_FORWARD, FFTW_ESTIMATE);
@@ -170,7 +170,7 @@ inline propError ift2(complex<double>* Uin_ptr, unsigned int dimx, unsigned int 
 		return PROP_ERR;
 	fftshift(Uin_ptr, dimx, dimy);
 
-	fftw_complex *in=reinterpret_cast<fftw_complex*>(Uin_ptr);
+	double *in=reinterpret_cast<double*>(Uin_ptr);
 	fftw_plan p;
 
 	p = fftw_plan_dft_2d(dimx, dimy, in, in, FFTW_BACKWARD, FFTW_ESTIMATE);
@@ -193,7 +193,7 @@ inline propError ift1(complex<double>* Uin_ptr, unsigned int dimx, double delta)
 {
 	fftshift(Uin_ptr, dimx, 1);
 
-	fftw_complex *in=reinterpret_cast<fftw_complex*>(Uin_ptr);
+	double *in=reinterpret_cast<double*>(Uin_ptr);
 	fftw_plan p;
 
 	p = fftw_plan_dft_1d(dimx, in, in, FFTW_BACKWARD, FFTW_ESTIMATE);
@@ -215,7 +215,7 @@ inline propError ft1_ts(complex<double>* Uin_ptr, unsigned int dimx, double delt
 {
 	fftshift(Uin_ptr, dimx, 1);
 
-	fftw_complex *in=reinterpret_cast<fftw_complex*>(Uin_ptr);
+	double *in=reinterpret_cast<double*>(Uin_ptr);
 //	fftw_plan p;
 
 //	p = fftw_plan_dft_1d(dimx, in, in, FFTW_FORWARD, FFTW_ESTIMATE);
@@ -237,7 +237,7 @@ inline propError ft2_ts(complex<double>* Uin_ptr, unsigned int dimx, unsigned in
 		return PROP_ERR;
 	fftshift(Uin_ptr, dimx, dimy);
 
-	fftw_complex *in=reinterpret_cast<fftw_complex*>(Uin_ptr);
+	double *in=reinterpret_cast<double*>(Uin_ptr);
 //	fftw_plan p;
 
 //	p = fftw_plan_dft_2d(dimx, dimy, in, in, FFTW_FORWARD, FFTW_ESTIMATE);
@@ -262,7 +262,7 @@ inline propError ift2_ts(complex<double>* Uin_ptr, unsigned int dimx, unsigned i
 		return PROP_ERR;
 	fftshift(Uin_ptr, dimx, dimy);
 
-	fftw_complex *in=reinterpret_cast<fftw_complex*>(Uin_ptr);
+	double *in=reinterpret_cast<double*>(Uin_ptr);
 //	fftw_plan p;
 
 //	p = fftw_plan_dft_2d(dimx, dimy, in, in, FFTW_BACKWARD, FFTW_ESTIMATE);
@@ -285,7 +285,7 @@ inline propError ift1_ts(complex<double>* Uin_ptr, unsigned int dimx, double del
 {
 	fftshift(Uin_ptr, dimx, 1);
 
-	fftw_complex *in=reinterpret_cast<fftw_complex*>(Uin_ptr);
+	double *in=reinterpret_cast<double*>(Uin_ptr);
 //	fftw_plan p;
 
 //	p = fftw_plan_dft_1d(dimx, in, in, FFTW_BACKWARD, FFTW_ESTIMATE);
@@ -300,6 +300,6 @@ inline propError ift1_ts(complex<double>* Uin_ptr, unsigned int dimx, double del
 	}
 	return PROP_NO_ERR;
 }
-
+*/
 #endif
 //#endif

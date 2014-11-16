@@ -86,7 +86,7 @@ fieldError ScalarPlaneField::createCPUSimInstance()
 {
 	if (ScalarLightField::U == NULL)
 	{
-		fftw_complex *in=(fftw_complex*) fftw_malloc(sizeof(fftw_complex) * paramsPtr->nrPixels.x*paramsPtr->nrPixels.y*paramsPtr->nrPixels.z);
+		double *in=(double*) malloc(sizeof(double) * paramsPtr->nrPixels.x*paramsPtr->nrPixels.y*paramsPtr->nrPixels.z);
 		if (!in)
 		{
 			std::cout << "error in ScalarPlaneField.createCPUSimInstance(): memory could not be allocated" << "...\n";

@@ -102,7 +102,7 @@ class ScalarLightField: public Field
 	  // allocate memory and initialize it to zero		
 	    this->paramsPtr = new scalarFieldParams();
 	    *(this->paramsPtr)=paramsIn;
-		fftw_complex *in=(fftw_complex*) fftw_malloc(sizeof(fftw_complex) * paramsPtr->nrPixels.x*paramsPtr->nrPixels.y*paramsPtr->nrPixels.z);
+		double *in=(double*) malloc(sizeof(double) * paramsPtr->nrPixels.x*paramsPtr->nrPixels.y*paramsPtr->nrPixels.z);
 		U=reinterpret_cast<complex<double>*>(in);
 		// init to zero
 		for (unsigned long jx=0;jx<paramsPtr->nrPixels.x;jx++)
@@ -122,7 +122,7 @@ class ScalarLightField: public Field
 	{
 	  if (this->U != NULL)
 	  {
-		fftw_free(U);
+		free(U);
 		U = NULL;
 	  }
 	  if (this->paramsPtr != NULL)
@@ -149,7 +149,7 @@ class ScalarLightField: public Field
 	virtual fieldError createCPUSimInstance();
 	virtual fieldError createOptixInstance(RTcontext &context, RTbuffer &output_buffer_obj, RTbuffer &seed_buffer_obj);
 
-	virtual fieldError traceScene(Group &oGroup, bool RunOnCPU);
+	//virtual fieldError traceScene(Group &oGroup, bool RunOnCPU);
 
 };
 

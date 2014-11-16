@@ -21,17 +21,17 @@ propError cu_scalarRichardsonWolf(cuDoubleComplex* Uin_ptr, unsigned int dimx, u
 
 propError cu_ft2(cuDoubleComplex* Uin_ptr, unsigned int dimx, unsigned int dimy)
 {
- /*   clock_t start, end, startGes, endGes;
-	double msecs_DataTransfer=0;
-    double msecs_fft=0;
-    double msecs_ges=0;
+ //   clock_t start, end, startGes, endGes;
+//	double msecs_DataTransfer=0;
+//    double msecs_fft=0;
+//    double msecs_ges=0;
 
-    startGes=clock();
+//    startGes=clock();
 
 
-    for (unsigned int idx=0; idx<1000;idx++)
-    {
-    start=clock();*/
+//    for (unsigned int idx=0; idx<1000;idx++)
+//    {
+//    start=clock();*/
 
 	if (dimx!=dimy)
 		return PROP_ERR;
@@ -117,7 +117,7 @@ propError cu_ft2(cuDoubleComplex* Uin_ptr, unsigned int dimx, unsigned int dimy)
  * \remarks 
  * \author Mauch
  */
-propError angularSpectrum_scaled(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double Dz, double dx2, double** x2_ptrptr, double** y2_ptrptr)
+/*propError angularSpectrum_scaled(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double Dz, double dx2, double** x2_ptrptr, double** y2_ptrptr)
 {
 	// we can only handle regularly squared grids here
 	if (dimx!=dimy)
@@ -175,7 +175,7 @@ propError angularSpectrum_scaled(complex<double>* Uin_ptr, unsigned int dimx, un
 	memcpy((*y2_ptrptr),x2_l,dimx*sizeof(double));
 	return PROP_NO_ERR;
 }
-
+*/
 /**
  * \detail angularSpectrum_ABCD 
  *
@@ -198,7 +198,7 @@ propError angularSpectrum_scaled(complex<double>* Uin_ptr, unsigned int dimx, un
  * \remarks 
  * \author Mauch
  */
-propError angularSpectrum_ABCD(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double Dz, double dx2, double* ABCD, double** x2_ptrptr, double** y2_ptrptr)
+/*propError angularSpectrum_ABCD(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double Dz, double dx2, double* ABCD, double** x2_ptrptr, double** y2_ptrptr)
 {
 	// we can only handle regularly squared grids here
 	if (dimx!=dimy)
@@ -256,7 +256,7 @@ propError angularSpectrum_ABCD(complex<double>* Uin_ptr, unsigned int dimx, unsi
 	memcpy((*y2_ptrptr),x2_l,dimx*sizeof(double));
 	return PROP_NO_ERR;
 }
-
+*/
 /**
  * \detail fresnel_two_step_1D 
  *
@@ -275,7 +275,7 @@ propError angularSpectrum_ABCD(complex<double>* Uin_ptr, unsigned int dimx, unsi
  * \remarks 
  * \author Mauch
  */
-propError fresnel_two_step_1D(complex<double>* Uin_ptr, unsigned int dimx, double wvl, double* x1_ptr, double dx2, double Dz, double** x2_ptrptr )
+/*propError fresnel_two_step_1D(complex<double>* Uin_ptr, unsigned int dimx, double wvl, double* x1_ptr, double dx2, double Dz, double** x2_ptrptr )
 {
 	double k=2*M_PI/wvl;
 	double dx1=abs(x1_ptr[0]-x1_ptr[1]);
@@ -326,7 +326,7 @@ propError fresnel_two_step_1D(complex<double>* Uin_ptr, unsigned int dimx, doubl
 
 	return PROP_NO_ERR;
 }
-
+*/
 /**
  * \detail fresnel_two_step 
  *
@@ -348,7 +348,7 @@ propError fresnel_two_step_1D(complex<double>* Uin_ptr, unsigned int dimx, doubl
  * \remarks 
  * \author Mauch
  */
-propError fresnel_two_step(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double dx2, double Dz, double** x2_ptrptr, double** y2_ptrptr)
+/*propError fresnel_two_step(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double dx2, double Dz, double** x2_ptrptr, double** y2_ptrptr)
 {
 	// we can only handle squared grids here
 	if (dimx!=dimy)
@@ -418,7 +418,7 @@ propError fresnel_two_step(complex<double>* Uin_ptr, unsigned int dimx, unsigned
 	delete x1a;
 	return PROP_NO_ERR;
 }
-
+*/
 /**
  * \detail fresnel_one_step_1D 
  *
@@ -436,7 +436,7 @@ propError fresnel_two_step(complex<double>* Uin_ptr, unsigned int dimx, unsigned
  * \remarks 
  * \author Mauch
  */
-propError fresnel_one_step_1D(complex<double>* Uin_ptr, unsigned int dimx, double wvl, double* x1_ptr, double Dz, double** x2_ptrptr )
+/*propError fresnel_one_step_1D(complex<double>* Uin_ptr, unsigned int dimx, double wvl, double* x1_ptr, double Dz, double** x2_ptrptr )
 {
 	double k=2*M_PI/wvl;
 	double dx1=abs(x1_ptr[0]-x1_ptr[1]);
@@ -464,7 +464,7 @@ propError fresnel_one_step_1D(complex<double>* Uin_ptr, unsigned int dimx, doubl
 
 	return PROP_NO_ERR;
 }
-
+*/
 /**
  * \detail fresnel_one_step 
  *
@@ -485,7 +485,7 @@ propError fresnel_one_step_1D(complex<double>* Uin_ptr, unsigned int dimx, doubl
  * \remarks 
  * \author Mauch
  */
-propError fresnel_one_step(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double Dz, double** x2_ptrptr, double** y2_ptrptr)
+/*propError fresnel_one_step(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double Dz, double** x2_ptrptr, double** y2_ptrptr)
 {
 	// we can only handle regularly squared grids here
 	if (dimx!=dimy)
@@ -525,7 +525,7 @@ propError fresnel_one_step(complex<double>* Uin_ptr, unsigned int dimx, unsigned
 	memcpy((*y2_ptrptr),x2_l,dimx*sizeof(double));
 	return PROP_NO_ERR;
 }
-
+*/
 
 /**
  * \detail scalar_RichardsonWolf 
@@ -548,7 +548,7 @@ propError fresnel_one_step(complex<double>* Uin_ptr, unsigned int dimx, unsigned
  * \remarks 
  * \author Mauch
  */
-propError scalar_RichardsonWolf(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double f, double Dz, double** x2_ptrptr, double** y2_ptrptr)
+/*propError scalar_RichardsonWolf(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double f, double Dz, double** x2_ptrptr, double** y2_ptrptr)
 {
 	// we can only handle regularly squared grids here
 	if (dimx!=dimy)
@@ -593,7 +593,7 @@ propError scalar_RichardsonWolf(complex<double>* Uin_ptr, unsigned int dimx, uns
 	memcpy((*y2_ptrptr),x2_l,dimx*sizeof(double));
 	return PROP_NO_ERR;
 }
-
+*/
 /**
  * \detail fraunhofer 
  *
@@ -614,7 +614,7 @@ propError scalar_RichardsonWolf(complex<double>* Uin_ptr, unsigned int dimx, uns
  * \remarks 
  * \author Mauch
  */
-propError fraunhofer(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double Dz, double** x2_ptrptr, double** y2_ptrptr)
+/*propError fraunhofer(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double Dz, double** x2_ptrptr, double** y2_ptrptr)
 {
 	// we can only handle regularly squared grids here
 	if (dimx!=dimy)
@@ -647,7 +647,7 @@ propError fraunhofer(complex<double>* Uin_ptr, unsigned int dimx, unsigned int d
 	memcpy((*y2_ptrptr),x2_l,dimx*sizeof(double));
 	return PROP_NO_ERR;
 }
-
+*/
 /**
  * \detail fraunhofer 
  *
@@ -665,7 +665,7 @@ propError fraunhofer(complex<double>* Uin_ptr, unsigned int dimx, unsigned int d
  * \remarks 
  * \author Mauch
  */
-propError fraunhofer_1D(complex<double>* Uin_ptr, unsigned int dimx, double wvl, double* x1_ptr, double Dz, double** x2_ptrptr)
+/*propError fraunhofer_1D(complex<double>* Uin_ptr, unsigned int dimx, double wvl, double* x1_ptr, double Dz, double** x2_ptrptr)
 {
 	double k=2*M_PI/wvl;
 	double dx1=abs(x1_ptr[0]-x1_ptr[1]);
@@ -686,7 +686,7 @@ propError fraunhofer_1D(complex<double>* Uin_ptr, unsigned int dimx, double wvl,
 	*x2_ptrptr=x2_l; // return coordinates of output field in respective pointer
 	return PROP_NO_ERR;
 };
-
+*/
 propError calcWavefront(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double* x_ptr, double *y_ptr, double D, double wvl, double *coeffVec_ptr)
 {
 //	int nrThreads=omp_get_max_threads();
@@ -776,7 +776,7 @@ propError calcWavefront(complex<double>* Uin_ptr, unsigned int dimx, unsigned in
  * \remarks 
  * \author Mauch
  */
-propError angularSpectrum_scaled_ts(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double Dz, double dx2, double** x2_ptrptr, double** y2_ptrptr, fftw_plan &p_fw, fftw_plan &p_bw)
+/*propError angularSpectrum_scaled_ts(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double Dz, double dx2, double** x2_ptrptr, double** y2_ptrptr, fftw_plan &p_fw, fftw_plan &p_bw)
 {
 	// we can only handle regularly squared grids here
 	if (dimx!=dimy)
@@ -834,7 +834,7 @@ propError angularSpectrum_scaled_ts(complex<double>* Uin_ptr, unsigned int dimx,
 	memcpy((*y2_ptrptr),x2_l,dimx*sizeof(double));
 	return PROP_NO_ERR;
 }
-
+*/
 /**
  * \detail angularSpectrum_ABCD_ts 
  *
@@ -859,7 +859,7 @@ propError angularSpectrum_scaled_ts(complex<double>* Uin_ptr, unsigned int dimx,
  * \remarks 
  * \author Mauch
  */
-propError angularSpectrum_ABCD_ts(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double Dz, double dx2, double* ABCD, double** x2_ptrptr, double** y2_ptrptr, fftw_plan &p_fw, fftw_plan &p_bw)
+/*propError angularSpectrum_ABCD_ts(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double Dz, double dx2, double* ABCD, double** x2_ptrptr, double** y2_ptrptr, fftw_plan &p_fw, fftw_plan &p_bw)
 {
 	// we can only handle regularly squared grids here
 	if (dimx!=dimy)
@@ -917,7 +917,7 @@ propError angularSpectrum_ABCD_ts(complex<double>* Uin_ptr, unsigned int dimx, u
 	memcpy((*y2_ptrptr),x2_l,dimx*sizeof(double));
 	return PROP_NO_ERR;
 }
-
+*/
 /**
  * \detail fresnel_two_step_1D_ts 
  *
@@ -937,7 +937,7 @@ propError angularSpectrum_ABCD_ts(complex<double>* Uin_ptr, unsigned int dimx, u
  * \remarks 
  * \author Mauch
  */
-propError fresnel_two_step_1D(complex<double>* Uin_ptr, unsigned int dimx, double wvl, double* x1_ptr, double dx2, double Dz, double** x2_ptrptr , fftw_plan &p)
+/*propError fresnel_two_step_1D(complex<double>* Uin_ptr, unsigned int dimx, double wvl, double* x1_ptr, double dx2, double Dz, double** x2_ptrptr , fftw_plan &p)
 {
 	double k=2*M_PI/wvl;
 	double dx1=abs(x1_ptr[0]-x1_ptr[1]);
@@ -988,7 +988,7 @@ propError fresnel_two_step_1D(complex<double>* Uin_ptr, unsigned int dimx, doubl
 
 	return PROP_NO_ERR;
 }
-
+*/
 /**
  * \detail fresnel_two_step_ts 
  *
@@ -1011,7 +1011,7 @@ propError fresnel_two_step_1D(complex<double>* Uin_ptr, unsigned int dimx, doubl
  * \remarks 
  * \author Mauch
  */
-propError fresnel_two_step_ts(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double dx2, double Dz, double** x2_ptrptr, double** y2_ptrptr, fftw_plan &p)
+/*propError fresnel_two_step_ts(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double dx2, double Dz, double** x2_ptrptr, double** y2_ptrptr, fftw_plan &p)
 {
 	// we can only handle squared grids here
 	if (dimx!=dimy)
@@ -1081,7 +1081,7 @@ propError fresnel_two_step_ts(complex<double>* Uin_ptr, unsigned int dimx, unsig
 	delete x1a;
 	return PROP_NO_ERR;
 }
-
+*/
 /**
  * \detail fresnel_one_step_1D_ts 
  *
@@ -1100,7 +1100,7 @@ propError fresnel_two_step_ts(complex<double>* Uin_ptr, unsigned int dimx, unsig
  * \remarks 
  * \author Mauch
  */
-propError fresnel_one_step_1D_ts(complex<double>* Uin_ptr, unsigned int dimx, double wvl, double* x1_ptr, double Dz, double** x2_ptrptr , fftw_plan &p)
+/*propError fresnel_one_step_1D_ts(complex<double>* Uin_ptr, unsigned int dimx, double wvl, double* x1_ptr, double Dz, double** x2_ptrptr , fftw_plan &p)
 {
 	double k=2*M_PI/wvl;
 	double dx1=abs(x1_ptr[0]-x1_ptr[1]);
@@ -1128,7 +1128,7 @@ propError fresnel_one_step_1D_ts(complex<double>* Uin_ptr, unsigned int dimx, do
 
 	return PROP_NO_ERR;
 }
-
+*/
 /**
  * \detail fresnel_one_step_ts 
  *
@@ -1150,7 +1150,7 @@ propError fresnel_one_step_1D_ts(complex<double>* Uin_ptr, unsigned int dimx, do
  * \remarks 
  * \author Mauch
  */
-propError fresnel_one_step_ts(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double Dz, double** x2_ptrptr, double** y2_ptrptr, fftw_plan &p)
+/*propError fresnel_one_step_ts(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double Dz, double** x2_ptrptr, double** y2_ptrptr, fftw_plan &p)
 {
 	// we can only handle regularly squared grids here
 	if (dimx!=dimy)
@@ -1190,7 +1190,7 @@ propError fresnel_one_step_ts(complex<double>* Uin_ptr, unsigned int dimx, unsig
 	memcpy((*y2_ptrptr),x2_l,dimx*sizeof(double));
 	return PROP_NO_ERR;
 }
-
+*/
 /**
  * \detail scalar_RichardsonWolf_ts 
  *
@@ -1213,7 +1213,7 @@ propError fresnel_one_step_ts(complex<double>* Uin_ptr, unsigned int dimx, unsig
  * \remarks 
  * \author Mauch
  */
-propError scalar_RichardsonWolf_ts(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double f, double Dz, double** x2_ptrptr, double** y2_ptrptr, fftw_plan &p)
+/*propError scalar_RichardsonWolf_ts(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double f, double Dz, double** x2_ptrptr, double** y2_ptrptr, fftw_plan &p)
 {
 	// we can only handle regularly squared grids here
 	if (dimx!=dimy)
@@ -1258,7 +1258,7 @@ propError scalar_RichardsonWolf_ts(complex<double>* Uin_ptr, unsigned int dimx, 
 	memcpy((*y2_ptrptr),x2_l,dimx*sizeof(double));
 	return PROP_NO_ERR;
 }
-
+*/
 /**
  * \detail fraunhofer_ts 
  *
@@ -1280,7 +1280,7 @@ propError scalar_RichardsonWolf_ts(complex<double>* Uin_ptr, unsigned int dimx, 
  * \remarks 
  * \author Mauch
  */
-propError fraunhofer_ts(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double Dz, double** x2_ptrptr, double** y2_ptrptr, fftw_plan &p)
+/*propError fraunhofer_ts(complex<double>* Uin_ptr, unsigned int dimx, unsigned int dimy, double wvl, double* x1_ptr, double* y1_ptr, double Dz, double** x2_ptrptr, double** y2_ptrptr, fftw_plan &p)
 {
 	// we can only handle regularly squared grids here
 	if (dimx!=dimy)
@@ -1313,7 +1313,7 @@ propError fraunhofer_ts(complex<double>* Uin_ptr, unsigned int dimx, unsigned in
 	memcpy((*y2_ptrptr),x2_l,dimx*sizeof(double));
 	return PROP_NO_ERR;
 }
-
+*/
 /**
  * \detail fraunhofer_1D_ts 
  *
@@ -1332,7 +1332,7 @@ propError fraunhofer_ts(complex<double>* Uin_ptr, unsigned int dimx, unsigned in
  * \remarks 
  * \author Mauch
  */
-propError fraunhofer_1D_ts(complex<double>* Uin_ptr, unsigned int dimx, double wvl, double* x1_ptr, double Dz, double** x2_ptrptr, fftw_plan &p)
+/*propError fraunhofer_1D_ts(complex<double>* Uin_ptr, unsigned int dimx, double wvl, double* x1_ptr, double Dz, double** x2_ptrptr, fftw_plan &p)
 {
 	double k=2*M_PI/wvl;
 	double dx1=abs(x1_ptr[0]-x1_ptr[1]);
@@ -1353,7 +1353,7 @@ propError fraunhofer_1D_ts(complex<double>* Uin_ptr, unsigned int dimx, double w
 	*x2_ptrptr=x2_l; // return coordinates of output field in respective pointer
 	return PROP_NO_ERR;
 }
-
+*/
 
 /**
  * \detail fftshift 

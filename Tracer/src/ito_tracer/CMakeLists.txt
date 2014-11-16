@@ -100,9 +100,6 @@ OPTIX_add_sample_executable( ITO-MacroSim
   src/geometricRender/Scatter_TorranceSparrow2D_GeomRender.cpp
   src/geometricRender/Scatter_TorranceSparrow2D_GeomRender.h
   src/geometricRender/Scatter_TorranceSparrow2D_GeomRender_hit.h
-  src/geometricRender/Scatter_Phong_GeomRender.cpp
-  src/geometricRender/Scatter_Phong_GeomRender.h
-  src/geometricRender/Scatter_Phong_GeomRender_hit.h
   
   src/geometricRender/hitFunctionAbsorbing_GeomRender.cu
   src/geometricRender/hitFunctionAbsorbing_GeomRender_CoatNumCoeffs_GeomRender.cu
@@ -115,8 +112,7 @@ OPTIX_add_sample_executable( ITO-MacroSim
   src/geometricRender/hitFunctionRefracting_GeomRender_CoatNumCoeffs_GeomRender.cu
   src/geometricRender/hitFunctionReflecting_GeomRender_Scatter_TorranceSparrow2D_GeomRender.cu
   src/geometricRender/hitFunctionReflecting_GeomRender_Scatter_Lambert2D_GeomRender.cu
-  src/geometricRender/hitFunctionReflecting_GeomRender_Scatter_Phong_GeomRender.cu
-  src/geometricRender/hitFunctionLight_GeomRender.cu
+#  src/geometricRender/hitFunctionLight_GeomRender.cu
   
 
   src/hitFunctionRenderFringeProj.cu
@@ -398,9 +394,6 @@ OPTIX_add_sample_executable( ITO-MacroSim
   src/Scatter_hit.h
   src/Scatter_NoScatter.cpp
   src/Scatter_NoScatter.h
-  src/Scatter_Phong.cpp
-  src/Scatter_Phong.h
-  src/Scatter_Phong_hit.h
   
   src/differentialRayTracing/Scatter_DiffRays.cpp
   src/differentialRayTracing/Scatter_DiffRays.h
@@ -514,7 +507,6 @@ OPTIX_add_sample_executable( ITO-MacroSim
   src/hitFunctionReflecting_Scatter_TorranceSparrow1D_CoatNumCoeffs.cu
   src/differentialRayTracing/hitFunctionReflecting_DiffRays_Scatter_TorranceSparrow1D_DiffRays_CoatNumCoeffs_DiffRays.cu
   src/hitFunctionReflecting_Scatter_Lambert2D.cu
-  src/hitFunctionReflecting_Scatter_Phong.cu
   
   src/hitFunctionReflecting_Scatter_TorranceSparrow2D.cu
   src/hitFunctionReflecting_Scatter_TorranceSparrow2D_PathTrace.cu
