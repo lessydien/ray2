@@ -1459,7 +1459,7 @@ fieldError DiffRayField::convert2ScalarField(Field* imagePtr, detParams &oDetPar
 
 	unsigned long long hitNr=0;
 
-	double3 posMinOffset;
+	double3 posMinOffset = make_double3(0.0,0.0,0.0);
 	double3 indexFloat;
 	long3 index;
 
