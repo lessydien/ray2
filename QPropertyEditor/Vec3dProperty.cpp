@@ -13,7 +13,7 @@
 #include "Vec3dProperty.h"
 #include "CustomTypes.h"
 
-#include <Qt/qregexp.h>
+#include <qregexp.h>
 
 Vec3dProperty::Vec3dProperty(const QString& name /*= QString()*/, QObject* propertyObject /*= 0*/, QObject* parent /*= 0*/) : Property(name, propertyObject, parent)
 {

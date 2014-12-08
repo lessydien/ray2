@@ -382,7 +382,12 @@ void ApertureStopItem::updateVtk()
 		m_pActor->SetVisibility(1);
 	else
 		m_pActor->SetVisibility(0);
-	
+
+#if  (VTK_MAJOR_VERSION <= 5)
 	// request the update
 	m_pPolydata->Update();
+#else
+    m_pMapper->Update();
+#endif
+
 };

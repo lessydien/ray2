@@ -13,7 +13,7 @@
 #include "Vec2iProperty.h"
 #include "CustomTypes.h"
 
-#include <Qt/qregexp.h>
+#include <qregexp.h>
 
 Vec2iProperty::Vec2iProperty(const QString& name /*= QString()*/, QObject* propertyObject /*= 0*/, QObject* parent /*= 0*/) : Property(name, propertyObject, parent)
 {

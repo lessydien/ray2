@@ -13,7 +13,7 @@
 #include "Vec9siProperty.h"
 #include "CustomTypes.h"
 
-#include <Qt/qregexp.h>
+#include <qregexp.h>
 
 Vec9siProperty::Vec9siProperty(const QString& name /*= QString()*/, QObject* propertyObject /*= 0*/, QObject* parent /*= 0*/) : Property(name, propertyObject, parent)
 {

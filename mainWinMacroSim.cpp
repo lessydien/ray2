@@ -38,6 +38,7 @@
 #include "qcoreapplication.h"
 
 #include <qdir.h>
+#include <qmessagebox.h>
 
 //#include "testFile.h"
 
@@ -46,8 +47,9 @@
 
 
 //#include <QXmlStreamWriter>
-#include <QtXml>
-#include <QFile>
+#include <qxml.h>
+#include <qfile.h>
+#include <qtoolbar.h>
 
 
 #include <iostream>
@@ -321,7 +323,7 @@ void MainWinMacroSim::addItemToScene(const QModelIndex index)
 
 	if (l_pNewAbstractItem==NULL)
 	{
-		//string str=item.toAscii();
+		//string str=item.toLatin1();
 		//cout << "error in MainWinMacroSim.addItemToScene(): unknown geometry: " << str << endl;//error msg
 	}
 	else
@@ -517,7 +519,7 @@ bool MainWinMacroSim::loadScene()
 		FieldItem *l_pField=l_fieldItemLib.createField(l_fieldType);
 		if (l_pField==NULL)
 		{
-			string str=l_fieldTypeStr.toAscii();
+			string str=l_fieldTypeStr.toLatin1();
 			cout << "error in MainWinMacoSim.loadScene(): could not create field of type: " << str << endl;
 			return false;
 		}
@@ -543,7 +545,7 @@ bool MainWinMacroSim::loadScene()
 			GeometryItem *l_pGeom=l_geomItemLib.createGeometry(l_geomItemLib.stringToGeomType(l_geomTypeStr));
 			if (l_pGeom==NULL)
 			{
-				string str=l_geomTypeStr.toAscii();
+				string str=l_geomTypeStr.toLatin1();
 				cout << "error in MainWinMacoSim.loadScene(): could not create geometry of type: " << str << endl;
 				return false;
 			}
@@ -567,7 +569,7 @@ bool MainWinMacroSim::loadScene()
 		    DetectorItem *l_pDet=l_detItemLib.createDetector(l_detItemLib.stringToDetType(l_detTypeStr));
 		    if (l_pDet==NULL)
 		    {
-			    string str=l_detTypeStr.toAscii();
+			    string str=l_detTypeStr.toLatin1();
 			    cout << "error in MainWinMacoSim.loadScene(): could not create detector of type: " << str << endl;
 			    return false;
 		    }

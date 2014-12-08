@@ -69,7 +69,7 @@ void TracerThread::init(QString& scene, ito::DataObject* field, ConsoleStream *o
 
     QString glassFile = QDir::toNativeSeparators( guiParams.glassCatalog );
     glassFile.replace("//","/");
-    strcpy( &(m_params.glassFilePath[0]), glassFile.toAscii().data() );
+    strcpy( &(m_params.glassFilePath[0]), glassFile.toLatin1().data() );
 
     QString outFilePath = QDir::toNativeSeparators( guiParams.outputFilePath );
     outFilePath.replace("//","/");
@@ -78,7 +78,7 @@ void TracerThread::init(QString& scene, ito::DataObject* field, ConsoleStream *o
     {
         outFilePath = outFilePath.mid(0, outFilePath.length() - 1);
     }
-    strcpy(&(m_params.outputFilesPath[0]), outFilePath.toAscii().data() );
+    strcpy(&(m_params.outputFilesPath[0]), outFilePath.toLatin1().data() );
 
     QString inFilePath = QDir::toNativeSeparators( guiParams.inputFilePath );
     inFilePath.replace("//","/");
@@ -87,13 +87,13 @@ void TracerThread::init(QString& scene, ito::DataObject* field, ConsoleStream *o
     {
         inFilePath = inFilePath.mid(0, inFilePath.length() - 1);
     }
-    strcpy(&(m_params.inputFilesPath[0]), inFilePath.toAscii().data() );
+    strcpy(&(m_params.inputFilesPath[0]), inFilePath.toLatin1().data() );
 
-	/*string l_glassString=guiParams.glassCatalog.toAscii();
+	/*string l_glassString=guiParams.glassCatalog.toLatin1();
 	strcpy(&(this->m_params.glassFilePath[0]), l_glassString.c_str());
-	string l_outFilePathString=guiParams.outputFilePath.toAscii();
+	string l_outFilePathString=guiParams.outputFilePath.toLatin1();
 	strcpy(&(this->m_params.outputFilesPath[0]), l_outFilePathString.c_str());
-	string l_inFilePathString=guiParams.inputFilePath.toAscii();
+	string l_inFilePathString=guiParams.inputFilePath.toLatin1();
 	strcpy(&(this->m_params.inputFilesPath[0]), l_inFilePathString.c_str());*/
     QString ptxPath = QDir::toNativeSeparators( guiParams.path_to_ptx );
     ptxPath.replace("//","/");
@@ -102,7 +102,7 @@ void TracerThread::init(QString& scene, ito::DataObject* field, ConsoleStream *o
     {
         ptxPath = ptxPath.mid(0, ptxPath.length() - 1);
     }
-	strcpy(&(m_params.path_to_ptx[0]), ptxPath.toAscii().data() );
+	strcpy(&(m_params.path_to_ptx[0]), ptxPath.toLatin1().data() );
 }
 
 //void TracerThread::run()
@@ -116,7 +116,7 @@ void TracerThread::init(QString& scene, ito::DataObject* field, ConsoleStream *o
 void TracerThread::runMacroSimRayTrace()
 {
 	//qDebug() << QThread::currentThreadId();
-	string l_sceneStr=m_scene.toAscii();
+	string l_sceneStr=m_scene.toLatin1();
 	char* sceneChar=new char [l_sceneStr.size()+1];
 	sceneChar=strcpy(sceneChar,l_sceneStr.c_str());
 
@@ -138,7 +138,7 @@ void TracerThread::runMacroSimRayTrace()
 
 void TracerThread::runMacroSimLayoutTrace(RayPlotData *rayPlotData)
 {
-	string l_sceneStr=m_scene.toAscii();
+	string l_sceneStr=m_scene.toLatin1();
 	char* sceneChar=new char [l_sceneStr.size()+1];
 	sceneChar=strcpy(sceneChar,l_sceneStr.c_str());
 

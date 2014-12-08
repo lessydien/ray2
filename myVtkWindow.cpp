@@ -518,7 +518,7 @@ void RayPlotData::renderVtk(vtkSmartPointer<vtkRenderer> renderer)
 #if VTK_MAJOR_VERSION <= 5
 	m_pMapper->SetInput(m_pPolydata);
 #else
-	mapper->SetInputData(polyData);
+	m_pMapper->SetInputData(m_pPolydata);
 #endif
 	m_pActor = vtkSmartPointer<vtkActor>::New();
 	m_pActor->SetMapper(m_pMapper);

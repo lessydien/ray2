@@ -12,7 +12,7 @@
 #ifndef CUSTOMTYPES_H_
 #define CUSTOMTYPES_H_
 
-#include <Qt/qvariant.h>
+#include <qvariant.h>
 #include <math.h>
 
 #ifndef PI

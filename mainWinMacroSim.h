@@ -38,16 +38,16 @@
 
 //#include "myGraphicsScene.h"
 #include <qplaintextedit.h>
+#include <qprogressbar.h>
+
 #include "TracerThread.h"
 #include "dockWidget_Console.h"
 #include "consoleStream.h"
 
 #include "myVtkWindow.h"
 
-#include <QtGui>
 #include <qdialog.h>
-#include <QtCore>
-
+#include <qfiledialog.h>
 
 #include "ui_mainWinMacroSim.h"
 #include "ui_simConfigDialog.h"

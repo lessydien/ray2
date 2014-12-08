@@ -42,7 +42,7 @@ VolumeScattererItem::VolumeScattererItem(QString name, QObject *parent) :
 	m_pPolydata = vtkSmartPointer<vtkPolyData>::New();
 
 	// Setup actor and mapper
-	vtkSmartPointer<vtkPolyDataMapper> m_pMapper =	vtkSmartPointer<vtkPolyDataMapper>::New();
+	m_pMapper =	vtkSmartPointer<vtkPolyDataMapper>::New();
 
 #if VTK_MAJOR_VERSION <= 5
 	m_pMapper->SetInput(m_pPolydata);
@@ -345,6 +345,10 @@ void VolumeScattererItem::updateVtk()
 	else
 		m_pActor->GetProperty()->SetColor(0.0,0.0,1.0); // red
 
+#if  (VTK_MAJOR_VERSION <= 5)
 	// request the update
 	m_pPolydata->Update();
+#else
+    m_pMapper->Update();
+#endif
 };

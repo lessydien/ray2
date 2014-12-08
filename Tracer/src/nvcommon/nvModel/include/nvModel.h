@@ -32,7 +32,9 @@
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #else
-#include <GL/glew.h>
+//#include <GL/glew.h>
+#include <Windows.h>
+#include <GL/GL.h>
 #endif
 #include <nvMath.h>
 

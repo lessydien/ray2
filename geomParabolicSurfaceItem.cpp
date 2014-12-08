@@ -276,6 +276,10 @@ void ParabolicSurfaceItem::updateVtk()
 	else
 		m_pActor->GetProperty()->SetColor(0.0,0.0,1.0); // red
 
+#if  (VTK_MAJOR_VERSION==5 && VTK_MINOR_VERSION<6)
 	// request the update
 	m_pPolydata->Update();
+#else
+    m_pMapper->Update();
+#endif
 }
