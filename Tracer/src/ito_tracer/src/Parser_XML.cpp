@@ -331,6 +331,8 @@ ScatterType Parser_XML::asciiToScatType(const char* ascii) const
 		return ST_TORRSPARR2D;
 	if (!strcmp(ascii, "PHONG"))
 		return ST_PHONG;
+	if (!strcmp(ascii, "COOKTORRANCE"))
+		return ST_COOKTORRANCE;
 
 	cout << "error in Parser_XML.asciiToScatType: unknown scatter type: "  << ascii << endl;
 	return ST_NOSCATTER;

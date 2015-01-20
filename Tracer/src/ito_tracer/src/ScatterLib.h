@@ -32,7 +32,8 @@
 #include "Scatter_DoubleCauchy1D.h"
 #include "Scatter_DispersiveDoubleCauchy1D.h"
 #include "Scatter_Lambert2D.h"
-//#include "Scatter_Phong.h"
+#include "Scatter_Phong.h"
+#include "Scatter_CookTorrance.h"
 #include "Scatter_NoScatter.h"
 
 #include "Parser_XML.h"

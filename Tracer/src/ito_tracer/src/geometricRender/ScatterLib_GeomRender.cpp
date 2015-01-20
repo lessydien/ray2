@@ -57,9 +57,12 @@ bool ScatterFab_GeomRender::createScatInstFromXML(xml_node &node, Scatter* &pSca
 	case ST_LAMBERT2D:
 		pScat=new Scatter_Lambert2D_GeomRender();
 		break;
-//	case ST_PHONG:
-//		pScat=new Scatter_Phong_GeomRender();
-//		break;
+	case ST_PHONG:
+		pScat=new Scatter_Phong_GeomRender();
+		break;
+	case ST_COOKTORRANCE:
+		pScat=new Scatter_CookTorrance_GeomRender();
+		break;
 	default:
         std::cout << "error in ScatterLib_GeomRender.createScatInstFromXML(): scatterType " << scatTypeAscii << " is not known...\n";
 		pScat=new Scatter_NoScatter();

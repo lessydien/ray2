@@ -51,9 +51,12 @@ bool ScatterFab::createScatInstFromXML(xml_node &node, Scatter* &pScat, SimParam
 	case ST_TORRSPARR1D:
 		pScat=new Scatter_TorranceSparrow1D();
 		break;
-//	case ST_PHONG:
-//		pScat=new Scatter_Phong();
-//		break;
+	case ST_PHONG:
+		pScat=new Scatter_Phong();
+		break;
+	case ST_COOKTORRANCE:
+		pScat=new Scatter_CookTorrance();
+		break;
 	case ST_TORRSPARR2D:
 		pScat=new Scatter_TorranceSparrow2D();
 		break;

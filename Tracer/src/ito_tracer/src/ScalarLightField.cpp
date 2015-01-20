@@ -248,30 +248,30 @@ fieldError ScalarLightField::createOptixInstance(RTcontext &context, RTbuffer &o
  * \remarks 
  * \author Mauch
  */
-//fieldError ScalarLightField::traceScene(Group &oGroup, bool RunOnCPU)
-//{
-//	double l_dz=10;
-//	double *l_px1=(double*)malloc(this->getParamsPtr()->nrPixels.x*sizeof(double));
-//	double *l_py1=(double*)malloc(this->getParamsPtr()->nrPixels.y*sizeof(double));
-//	for (unsigned int ix=0; ix<this->getParamsPtr()->nrPixels.x; ix++)
-//	{
-//		l_px1[ix]=-(this->getParamsPtr()->nrPixels.x/2*this->getParamsPtr()->scale.x-this->getParamsPtr()->scale.x/2)+ix*this->getParamsPtr()->scale.x;
-//	}
-//	for (unsigned int iy=0; iy<this->getParamsPtr()->nrPixels.y; iy++)
-//	{
-//		l_py1[iy]=-(this->getParamsPtr()->nrPixels.y/2*this->getParamsPtr()->scale.y-this->getParamsPtr()->scale.y/2)+iy*this->getParamsPtr()->scale.y;
-//	}
-//
-//	double *l_px2, *l_py2;
-//
-//	if (PROP_NO_ERR != fraunhofer(this->U, this->getParamsPtr()->nrPixels.x, this->getParamsPtr()->nrPixels.y, this->getParamsPtr()->lambda, l_px1, l_py1, l_dz, &l_px2, &l_py2))
-//	{
-//		std::cout << "error in ScalarLightField.traceScene(): fraunhofer() returned an error" << "...\n";
-//		return FIELD_ERR;
-//	}
-//	//std::cout <<"error in ScalarLightField.traceScene(): this has not yet been implemented for the given Field representation" << "...\n";
-//	return FIELD_NO_ERR;
-//}
+fieldError ScalarLightField::traceScene(Group &oGroup, bool RunOnCPU)
+{
+	double l_dz=10;
+	double *l_px1=(double*)malloc(this->getParamsPtr()->nrPixels.x*sizeof(double));
+	double *l_py1=(double*)malloc(this->getParamsPtr()->nrPixels.y*sizeof(double));
+	for (unsigned int ix=0; ix<this->getParamsPtr()->nrPixels.x; ix++)
+	{
+		l_px1[ix]=-(this->getParamsPtr()->nrPixels.x/2*this->getParamsPtr()->scale.x-this->getParamsPtr()->scale.x/2)+ix*this->getParamsPtr()->scale.x;
+	}
+	for (unsigned int iy=0; iy<this->getParamsPtr()->nrPixels.y; iy++)
+	{
+		l_py1[iy]=-(this->getParamsPtr()->nrPixels.y/2*this->getParamsPtr()->scale.y-this->getParamsPtr()->scale.y/2)+iy*this->getParamsPtr()->scale.y;
+	}
+
+	double *l_px2, *l_py2;
+
+	if (PROP_NO_ERR != fraunhofer(this->U, this->getParamsPtr()->nrPixels.x, this->getParamsPtr()->nrPixels.y, this->getParamsPtr()->lambda, l_px1, l_py1, l_dz, &l_px2, &l_py2))
+	{
+		std::cout << "error in ScalarLightField.traceScene(): fraunhofer() returned an error" << "...\n";
+		return FIELD_ERR;
+	}
+	//std::cout <<"error in ScalarLightField.traceScene(): this has not yet been implemented for the given Field representation" << "...\n";
+	return FIELD_NO_ERR;
+}
 
 /**
  * \detail convert2ScalarField 

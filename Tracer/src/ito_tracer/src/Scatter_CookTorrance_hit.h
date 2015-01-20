@@ -22,8 +22,8 @@
 * \author Mauch
 */
 
-#ifndef SCATTER_PHONG_HIT_H
-  #define SCATTER_PHONG_HIT_H
+#ifndef SCATTER_COOKTORRANCE_HIT_H
+  #define SCATTER_COOKTORRANCE_HIT_H
   
 #include "randomGenerator.h"
 #include "rayTracingMath.h"
@@ -50,12 +50,12 @@
   *         \author  Mauch
   *
   */
-class ScatPhong_params: public Scatter_ReducedParams
+class ScatCookTorrance_params: public Scatter_ReducedParams
 {
 public:
 	double coefLambertian; // coef reflectance for lambertian
-	double phongParam; // factor n for cos
-	double coefPhong; // factor for Phong
+	double fresnelParam; // factor n for cos
+	double roughnessFactor; // factor for Phong
 };
 
 /**
@@ -70,14 +70,14 @@ public:
  * \remarks this function is defined inline so it can be used on GPU and CPU
  * \author Mauch
  */
-inline RT_HOSTDEVICE bool hitPhong(rayStruct &prd, Mat_hitParams hitParams, ScatPhong_params params)
+inline RT_HOSTDEVICE bool hitCookTorrance(rayStruct &prd, Mat_hitParams hitParams, ScatCookTorrance_params params)
 {
 	uint32_t x1[5];
 	RandomInit(prd.currentSeed, x1); // init random variable
 
 	prd.running=true;
 
-	ScatPhong_params test=params;
+	ScatCookTorrance_params test=params;
 //	params.phongParam;   // cos(a)^n,  the parameter n
 //	params.coefPhong;    // reflectance of cos(a)^n
 //	params.coefLambertian;
@@ -125,7 +125,7 @@ inline RT_HOSTDEVICE bool hitPhong(rayStruct &prd, Mat_hitParams hitParams, Scat
 		if (cosTheta<0){
 			cosTheta=0;
 		}
-		prd.flux=intensityCosLambertian*prd.flux*sqrt(params.coefLambertian)+sqrt(params.coefPhong)*prd.flux*pow(cosTheta,params.phongParam);
+		prd.flux=intensityCosLambertian*prd.flux*sqrt(params.coefLambertian)+sqrt(params.roughnessFactor)*prd.flux*pow(cosTheta,params.fresnelParam);
 	}
 	else // if we have an importance area, we scatter into this area. Directions are uniformly distributed and flux adjusted according to BRDF
 	{
@@ -150,7 +150,7 @@ inline RT_HOSTDEVICE bool hitPhong(rayStruct &prd, Mat_hitParams hitParams, Scat
 		if (cosTheta<0){
 			cosTheta=0;
 		}
-		prd.flux=intensityCosLambertian*prd.flux*sqrt(params.coefLambertian)+sqrt(params.coefPhong)*prd.flux*pow(cosTheta,params.phongParam);
+		prd.flux=intensityCosLambertian*prd.flux*sqrt(params.coefLambertian)+sqrt(params.roughnessFactor)*prd.flux*pow(cosTheta,params.fresnelParam);
 		//double3 impAreaX=make_double3(1,0,0);
 		//rotateRay(&impAreaX,params.impAreaTilt);
 		//double3 impAreaY=make_double3(0,1,0);

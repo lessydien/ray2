@@ -102,7 +102,7 @@ class ScalarPlaneField: public ScalarLightField
 //			delete ScalarLightField::paramsPtr;
 	    this->paramsPtr = new planeFieldParams();
 	    *(this->paramsPtr)=paramsIn;
-		//double *in=(double*) malloc(sizeof(double) * paramsPtr->nrPixels.x*paramsPtr->nrPixels.y*paramsPtr->nrPixels.z);
+		//fftw_complex *in=(fftw_complex*) fftw_malloc(sizeof(fftw_complex) * paramsPtr->nrPixels.x*paramsPtr->nrPixels.y*paramsPtr->nrPixels.z);
 		//ScalarLightField::U=reinterpret_cast<complex<double>*>(in);
 		//double x=-(paramsPtr->nrPixels.x-1)/2*paramsPtr->scale.x;
 		//double y=-(paramsPtr->nrPixels.y-1)/2*paramsPtr->scale.y;

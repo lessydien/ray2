@@ -98,7 +98,7 @@ class ScalarSphericalField: public ScalarLightField
 	  // allocate memory and initialize it to zero		
 	    this->paramsPtr = new sphericalFieldParams();
 	    *(this->paramsPtr)=paramsIn;
-		//double *in=(double*) malloc(sizeof(double) * paramsPtr->nrPixels.x*paramsPtr->nrPixels.y*paramsPtr->nrPixels.z);
+		//fftw_complex *in=(fftw_complex*) fftw_malloc(sizeof(fftw_complex) * paramsPtr->nrPixels.x*paramsPtr->nrPixels.y*paramsPtr->nrPixels.z);
 		//U=reinterpret_cast<complex<double>*>(in);
 		//// init to zero
 		//for (unsigned long jx=0;jx<paramsPtr->nrPixels.x;jx++)
