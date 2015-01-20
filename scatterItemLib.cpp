@@ -46,7 +46,9 @@ ScatterItem* ScatterItemLib::createScatter(ScatterItem::ScatterType type)
 		case ScatterItem::PHONG:
 			l_pItem=new ScatterPhongItem();
 			break;
-
+        case ScatterItem::COOKTORRANCE:
+			l_pItem=new ScatterCookTorranceItem();
+			break;
 		default:
 			l_pItem=new ScatterNoItem();
 			break;
@@ -80,6 +82,9 @@ QString ScatterItemLib::scatterTypeToString(const ScatterItem::ScatterType type)
 	case ScatterItem::PHONG:
 		str= "PHONG";
 		break;
+    case ScatterItem::COOKTORRANCE:
+		str= "COOKTORRANCE";
+		break;
 	case ScatterItem::NOSCATTER:
 		str= "NOSCATTER";
 		break;
@@ -109,6 +114,8 @@ ScatterItem::ScatterType ScatterItemLib::stringToScatterType(const QString str) 
 		return ScatterItem::DOUBLECAUCHY1D;
 	if (!str.compare("PHONG"))
 		return ScatterItem::PHONG;
+	if (!str.compare("COOKTORRANCE"))
+		return ScatterItem::COOKTORRANCE;
 	if (!str.compare("NOSCATTER"))
 		return ScatterItem::NOSCATTER;
 
@@ -177,6 +184,9 @@ ScatterItem::ScatterType ScatterItemLib::matScatTypeToScatType(const MaterialIte
 	case MaterialItem::PHONG:
 		typeOut= ScatterItem::PHONG;
 		break;
+	case MaterialItem::COOKTORRANCE:
+		typeOut= ScatterItem::COOKTORRANCE;
+		break;
 	case MaterialItem::NOSCATTER:
 		typeOut= ScatterItem::NOSCATTER;
 		break;
@@ -213,6 +223,9 @@ MaterialItem::Mat_ScatterType ScatterItemLib::scatTypeToMatScatType(const Scatte
 		break;
 	case ScatterItem::PHONG:
 		typeOut= MaterialItem::PHONG;
+		break;
+	case ScatterItem::COOKTORRANCE:
+		typeOut= MaterialItem::COOKTORRANCE;
 		break;
 	case ScatterItem::NOSCATTER:
 		typeOut= MaterialItem::NOSCATTER;

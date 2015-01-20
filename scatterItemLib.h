@@ -19,6 +19,7 @@
 #define SCATTERITEMLIB
 
 #include "scatterPhongItem.h"
+#include "scatterCookTorranceItem.h"
 #include "scatterLambert2DItem.h"
 #include "scatterDispersiveDoubleCauchy1DItem.h"
 #include "scatterDoubleCauchy1DItem.h"
