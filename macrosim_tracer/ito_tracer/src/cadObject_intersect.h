@@ -119,8 +119,8 @@ inline RT_HOSTDEVICE Mat_hitParams calcHitParamsCADObject(CadObject_ReducedParam
 
     const float3 v0 = vertex_buffer[ v_idx.y]-vertex_buffer[v_idx.x ];
     const float3 v1 = vertex_buffer[ v_idx.z]-vertex_buffer[v_idx.x ];
-    float3 normal=cross(v0,v1);
- 
+    //float3 normal=cross(v0,v1);
+    float3 normal=cross(v1,v0);
 	Mat_hitParams t_hitParams;
 	t_hitParams.normal=make_double3(normal.x, normal.y, normal.z);
     t_hitParams.normal=normalize(t_hitParams.normal);

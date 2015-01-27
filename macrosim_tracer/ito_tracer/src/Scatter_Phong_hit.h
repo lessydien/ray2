@@ -78,18 +78,18 @@ inline RT_HOSTDEVICE bool hitPhong(rayStruct &prd, Mat_hitParams hitParams, Scat
 	prd.running=true;
 
 	ScatPhong_params test=params;
-//	params.phongParam;   // cos(a)^n,  the parameter n
+//	params.phongParam;   // cos(a)^n,  the parameter ne
 //	params.coefPhong;    // reflectance of cos(a)^n
 //	params.coefLambertian;
 	// adjust flux of ray according to TIR of surface
 	//prd.flux=prd.flux*sqrt(params.TIR);  // here TIR is the reflectance of lambertian
-
+	double3 incidentDirection=normalize(reflect(prd.direction,-hitParams.normal));
     double3 mirrorReflectionDirection=prd.direction;
 	//double3 reflectionDirection=reflect(prd.direction,hitParams.normal);
-	double intensityCosLambertian=dot(-hitParams.normal,mirrorReflectionDirection)/sqrt(dot(hitParams.normal,hitParams.normal)*dot(mirrorReflectionDirection,mirrorReflectionDirection));
+	double intensityCosLambertian=dot(hitParams.normal,prd.direction)/sqrt(dot(hitParams.normal,hitParams.normal)*dot(prd.direction,prd.direction));
 	//intensityCosLambertian=abs(intensityCosLambertian);
 	//double intensityCosLambertian=dot(hitParams.normal,prd.direction)/abs(dot(hitParams.normal,prd.direction));
-	if (intensityCosLambertian<0){intensityCosLambertian=0;}
+	//if (intensityCosLambertian<0){intensityCosLambertian=0;}
 	// if we had no importance area in prescription file, the parser set one that corresponds to the full hemisphere...
 	// if we have no importance area, we scatter into full hemisphere. Directions are distributed according to BRDF and flux is constant
 	if (params.impAreaType==AT_INFTY)
