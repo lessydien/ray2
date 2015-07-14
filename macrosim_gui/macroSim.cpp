@@ -116,9 +116,6 @@ ito::RetVal MacroSim::init(QVector<ito::ParamBase> *paramsMand, QVector<ito::Par
 {
     ito::RetVal retval = ito::retOk;
 
-	// fill API-pointer
-	if (ITOM_API_FUNCS==NULL)
-		ITOM_API_FUNCS=m_pBasePlugin->m_apiFunctionsBasePtr;
 
     ItomSharedSemaphoreLocker locker(waitCond);
 
