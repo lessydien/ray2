@@ -7,7 +7,7 @@
 #include "cuda.h"
 #include "cuda_runtime.h"
 #include <iostream>
-#include "sm_12_atomic_functions.h"
+//#include "sm_12_atomic_functions.h"
 //#include "PropagationMath.h"
 
 //#define PI ((double)3.141592653589793238462643383279502884197169399375105820)
