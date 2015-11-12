@@ -302,7 +302,7 @@ ito::RetVal MacroSim::simConfRawSignalParams(QVector<ito::Param> *paramsMand, QV
 	if(retval.containsError()) return retval;
 
 	paramsMand->clear();
-    paramsMand->append(ito::Param("params", ito::ParamBase::DoubleArray | ito::ParamBase::In, 0, tr("vector holding the parameters of the simulation. The format is as follows: gridWidth, , number of sample points along grid, magnification, NA, number of scan points in x, number of scan points in y, number of scan points in z, scan step in x, scan step in y, scan step in z, wavelength, vector containing 16 zernike coefficients").toLatin1().data()) );
+    paramsMand->append(ito::Param("params", ito::ParamBase::DoubleArray | ito::ParamBase::In, 0, tr("vector holding the parameters of the simulation. The format is as follows: gridWidth, number of sample points along grid, magnification, NA, number of scan points in x, number of scan points in y, number of scan points in z, scan step in x, scan step in y, scan step in z, wavelength, vector containing 16 zernike coefficients").toLatin1().data()) );
 	paramsMand->append(ito::Param("resultPtr", ito::ParamBase::DObjPtr | ito::ParamBase::In | ito::ParamBase::Out, NULL, tr("pointer to the dataObject where the result will be saved").toLatin1().data()) );
 
 	paramsOpt->clear();
