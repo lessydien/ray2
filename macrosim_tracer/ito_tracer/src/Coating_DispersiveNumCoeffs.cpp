@@ -40,7 +40,7 @@
  */
 CoatingError Coating_DispersiveNumCoeffs::createCPUSimInstance(double lambda)
 {
-	double l_lambda=lambda*1e3; // we need lambda in um here...
+	double l_lambda=lambda*1e3; // we need lambda in µm here...
 	this->reducedParamsPtr->t=this->fullParamsPtr->a_t*l_lambda*l_lambda+this->fullParamsPtr->c_t;
 	this->reducedParamsPtr->r=this->fullParamsPtr->a_r*l_lambda*l_lambda+this->fullParamsPtr->c_r;
 	this->update=false;

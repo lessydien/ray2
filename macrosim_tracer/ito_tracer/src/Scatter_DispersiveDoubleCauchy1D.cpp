@@ -101,7 +101,7 @@ ScatterError Scatter_DispersiveDoubleCauchy1D::setParams2Program( RTcontext cont
 
 ScatterError Scatter_DispersiveDoubleCauchy1D::createCPUSimInstance(double lambda)
 {
-	double l_lambda=lambda*1e3; // we need lambda in um here...
+	double l_lambda=lambda*1e3; // we need lambda in µm here...
 	// calc the refractive indices at current wavelength
 	this->reducedParams.Ksl=this->fullParamsPtr->a_k_sl*l_lambda*l_lambda+this->fullParamsPtr->c_k_sl;
 	this->reducedParams.Ksp=this->fullParamsPtr->a_k_sp*l_lambda*l_lambda+this->fullParamsPtr->c_k_sp;

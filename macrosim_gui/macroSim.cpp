@@ -270,9 +270,9 @@ ito::RetVal MacroSim::simConfRawSignal(QVector<ito::ParamBase> *paramsMand, QVec
 		l_pDataObject->setAxisScale(0, l_confPointParams.scanStep.x);
 		l_pDataObject->setAxisScale(1, l_confPointParams.scanStep.y);
 		l_pDataObject->setAxisScale(2, l_confPointParams.scanStep.z);
-		l_pDataObject->setAxisUnit(0,"um");
-		l_pDataObject->setAxisUnit(1,"um");
-		l_pDataObject->setAxisUnit(2,"um");
+		l_pDataObject->setAxisUnit(0,"µm");
+		l_pDataObject->setAxisUnit(1,"µm");
+		l_pDataObject->setAxisUnit(2,"µm");
 
 		// create data object from l_pField and push it to outVals
 	}
@@ -302,7 +302,7 @@ ito::RetVal MacroSim::simConfRawSignalParams(QVector<ito::Param> *paramsMand, QV
 	if(retval.containsError()) return retval;
 
 	paramsMand->clear();
-    paramsMand->append(ito::Param("params", ito::ParamBase::DoubleArray | ito::ParamBase::In, 0, tr("vector holding the parameters of the simulation. The format is as follows: gridWidth, number of sample points along grid, magnification, NA, number of scan points in x, number of scan points in y, number of scan points in z, scan step in x, scan step in y, scan step in z, wavelength, vector containing 16 zernike coefficients").toLatin1().data()) );
+    paramsMand->append(ito::Param("params", ito::ParamBase::DoubleArray | ito::ParamBase::In, 0, tr("vector holding the parameters of the simulation. The format is as follows: gridWidth, number of sample points along grid, magnification, NA, number of scan points in x, number of scan points in y, number of scan points in z, scan step in x, scan step in y, scan step in z, wavelength, apodisationRadius, vector containing 16 zernike coefficients").toLatin1().data()) );
 	paramsMand->append(ito::Param("resultPtr", ito::ParamBase::DObjPtr | ito::ParamBase::In | ito::ParamBase::Out, NULL, tr("pointer to the dataObject where the result will be saved").toLatin1().data()) );
 
 	paramsOpt->clear();
@@ -386,9 +386,9 @@ ito::RetVal MacroSim::simConfSensorSignal(QVector<ito::ParamBase> *paramsMand, Q
 		l_pDataObject->setAxisOffset(1, -l_confPointParams.scanStep.y*l_confPointParams.scanNumber.y/2);
 		l_pDataObject->setAxisScale(0, l_confPointParams.scanStep.x);
 		l_pDataObject->setAxisScale(1, l_confPointParams.scanStep.y);
-		l_pDataObject->setAxisUnit(0,"um");
-		l_pDataObject->setAxisUnit(1,"um");
-        l_pDataObject->setValueUnit("um");
+		l_pDataObject->setAxisUnit(0,"µm");
+		l_pDataObject->setAxisUnit(1,"µm");
+        l_pDataObject->setValueUnit("µm");
 		
 		// create data object from l_pField and push it to outVals
 	}

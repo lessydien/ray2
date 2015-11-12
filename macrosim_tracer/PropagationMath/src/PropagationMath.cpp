@@ -1393,10 +1393,10 @@ propError fftshift(complex<double>* in, unsigned int dimx, unsigned int dimy)
  *
  * \param[in]	double				NA			:	numerical aperture of objective lens
  *				double				magnif		:	magnification of objective lens
- *				double				wvl			:	wavelength of illumination in um
+ *				double				wvl			:	wavelength of illumination in µm
  *				unsigned int		n			:	number of sample points per dimension
  *				double				gridWidth   :   width of the square grid in the objective lens aperture
- *				double*				pScanWidth	:	vector containing the scan widths in x, y and z in um
+ *				double*				pScanWidth	:	vector containing the scan widths in x, y and z in µm
  *				unsigned int*		pScanNumber :	number of steps of the scan in x, y and z
  *				double*				pAberrVec	:	vector containing the zernike coefficients of the aberrations of the confocal sensor
  * \param[out]	double**			pRawSig		:	3D-array containing the raw signals. The layout is: first z, then x, then y.
@@ -1454,10 +1454,10 @@ propError simConfSensorSig(double **ppRawSig, ConfPoint_Params params, bool runO
  *
  * \param[in]	double				NA			:	numerical aperture of objective lens
  *				double				magnif		:	magnification of objective lens
- *				double				wvl			:	wavelength of illumination in um
+ *				double				wvl			:	wavelength of illumination in µm
  *				unsigned int		n			:	number of sample points per dimension
  *				double				gridWidth   :   width of the square grid in the objective lens aperture
- *				double*				pScanWidth	:	vector containing the scan widths in x, y and z in um
+ *				double*				pScanWidth	:	vector containing the scan widths in x, y and z in µm
  *				unsigned int*		pScanNumber :	number of steps of the scan in x, y and z
  *				double*				pAberrVec	:	vector containing the zernike coefficients of the aberrations of the confocal sensor
  * \param[out]	double**			pRawSig		:	3D-array containing the raw signals. The layout is: first z, then x, then y.
