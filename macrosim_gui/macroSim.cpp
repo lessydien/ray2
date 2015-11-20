@@ -37,32 +37,21 @@
 
 #include "DataObject/dataObjectFuncs.h"
 
-void ** ITOM_API_FUNCS=NULL;
-
 //----------------------------------------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------------------
 ito::RetVal MacroSimInterface::getAddInInst(ito::AddInBase **addInInst)
 {
-    MacroSim* newInst = new MacroSim();
-    newInst->setBasePlugin(this);
-    *addInInst = qobject_cast<ito::AddInBase*>(newInst);
-	m_InstList.append(*addInInst);
 
+    NEW_PLUGININSTANCE(MacroSim)
     return ito::retOk;
 }
 
 //----------------------------------------------------------------------------------------------------------------------------------
 ito::RetVal MacroSimInterface::closeThisInst(ito::AddInBase **addInInst)
 {
-    if (*addInInst)
-    {
-        delete ((MacroSim *)*addInInst);
-        int idx = m_InstList.indexOf(*addInInst);
-        m_InstList.removeAt(idx);
-    }
-
+    REMOVE_PLUGININSTANCE(MacroSim)
     return ito::retOk;
 }
 

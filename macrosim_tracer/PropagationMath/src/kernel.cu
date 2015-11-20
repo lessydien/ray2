@@ -3,6 +3,7 @@
 #include <thrust/fill.h>
 #include <thrust/copy.h>
 #include <ctime>
+#include <algorithm>
 
 //#include "cutil_math.h"
 

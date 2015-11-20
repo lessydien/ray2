@@ -81,29 +81,6 @@ IF(CUDA_FOUND)
         SET ( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Oi /Ot /Oy /GL /openmp" )
         SET ( CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /LTCG")
     endif (MSVC)    
-    
-    # find_library(MacroSim_Tracer_LIBD ITO-MacroSimd HINTS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
-    # find_library(MacroSim_Tracer_LIBR ITO-MacroSim HINTS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
-    # set(MacroSim_Tracer_LIB debug ${MacroSim_Tracer_LIBD} optimized ${MacroSim_Tracer_LIBR}  CACHE STRING "" FORCE)
-
-    # find_library(MacroSim_Propagation_LIBD PropagationMathd HINTS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
-    # find_library(MacroSim_Propagation_LIBR PropagationMath HINTS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
-    # set(MacroSim_Propagation_LIB debug ${MacroSim_Propagation_LIBD} optimized ${MacroSim_Propagation_LIBR}  CACHE STRING "" FORCE)
-
-    # find_library(MacroSim_nvCommon_LIBD nvCommond HINTS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
-    # find_library(MacroSim_nvCommon_LIBR nvCommon HINTS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
-    # set(MacroSim_nvCommon_LIB debug ${MacroSim_nvCommon_LIBD} optimized ${MacroSim_nvCommon_LIBR}  CACHE STRING "" FORCE)
-
-    # find_library(MacroSim_nvModel_LIBD nvModeld HINTS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
-    # find_library(MacroSim_nvModel_LIBR nvModel HINTS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
-    # set(MacroSim_nvModel_LIB debug ${MacroSim_nvModel_LIBD} optimized ${MacroSim_nvModel_LIBR}  CACHE STRING "" FORCE)
-    
-    # find_library(MacroSim_OptiX_LIBR optix.1 HINTS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
-    # find_library(MacroSim_OptiXu_LIBR optixu.1 HINTS ${CMAKE_CURRENT_SOURCE_DIR}/${Tracer_LIB_DIR})
-    # set(MacroSim_OptiX_LIB debug ${MacroSim_OptiX_LIBR} optimized ${MacroSim_OptiX_LIBR}  CACHE STRING "" FORCE)
-    # set(MacroSim_OptiXu_LIB debug ${MacroSim_OptiXu_LIBR} optimized ${MacroSim_OptiXu_LIBR}  CACHE STRING "" FORCE)
-
-    # set(MacroSim_Tracer_LIBS ${MacroSim_Tracer_LIBS} ${MacroSim_Tracer_LIB} ${MacroSim_OptiX_LIB} ${MacroSim_OptiXu_LIB} ${MacroSim_Propagation_LIB} ${MacroSim_nvModel_LIB} ${MacroSim_nvCommon_LIB} ${GLEW_LIBRARIES})
 
     INCLUDE_DIRECTORIES(
         ${CMAKE_CURRENT_BINARY_DIR}
@@ -131,13 +108,7 @@ IF(CUDA_FOUND)
         ${ITOM_SDK_INCLUDE_DIR}/common/sharedStructures.h
         ${ITOM_SDK_INCLUDE_DIR}/common/sharedStructuresQt.h
         ${ITOM_SDK_INCLUDE_DIR}/common/typeDefs.h
-        #${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/ColorCombo.h
         ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/CustomTypes.h
-        #${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/EnumProperty.h
-        #${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/Property.h
-        #${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/QPropertyEditorWidget.h
-        #${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/QPropertyModel.h
-        #${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/QVariantDelegate.h
         ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/Vec2dProperty.h
         ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/Vec2iProperty.h
         ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/Vec3dProperty.h
@@ -206,8 +177,6 @@ IF(CUDA_FOUND)
         ${CMAKE_CURRENT_SOURCE_DIR}/materialRenderLightItem.h
         ${CMAKE_CURRENT_SOURCE_DIR}/materialRenderFringeProjItem.h
         ${CMAKE_CURRENT_SOURCE_DIR}/materialVolumeScatterItem.h
-#        ${CMAKE_CURRENT_SOURCE_DIR}/MyDelegate.h
-#        ${CMAKE_CURRENT_SOURCE_DIR}/myGraphicsScene.h
         ${CMAKE_CURRENT_SOURCE_DIR}/rayFieldItem.h
         ${CMAKE_CURRENT_SOURCE_DIR}/renderFuncs.h
         ${CMAKE_CURRENT_SOURCE_DIR}/scalarFieldItem.h
@@ -240,13 +209,7 @@ IF(CUDA_FOUND)
     )
 
         set(plugin_SOURCES 
-#        ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/ColorCombo.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/CustomTypes.cpp
-#        ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/EnumProperty.cpp
-#        ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/Property.cpp
-#        ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/QPropertyEditorWidget.cpp
-#        ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/QPropertyModel.cpp
-#        ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/QVariantDelegate.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/Vec2dProperty.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/Vec2iProperty.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/QPropertyEditor/Vec3dProperty.cpp
