@@ -11,7 +11,7 @@ set(PTX_DIR "${CMAKE_BINARY_DIR}/ptx" CACHE PATH "Path to where the samples look
 # Add paths to our CMake code to the module path, so they can be found automatically by
 # CMake.
 set(CMAKE_MODULE_PATH
-  "${CMAKE_SOURCE_DIR}/macrosim_tracer/CMake"
+  "${CMAKE_SOURCE_DIR}/CMake"
   ${CMAKE_MODULE_PATH}
   )
 
