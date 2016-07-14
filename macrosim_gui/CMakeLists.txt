@@ -31,7 +31,6 @@ include("${ITOM_SDK_DIR}/ItomBuildMacros.cmake")
 FIND_PACKAGE_QT(ON Core Widgets Xml LinguistTools OpenGL)
 find_package(OpenCV COMPONENTS core REQUIRED)
 find_package(CUDA 4)
-find_package(GLEW)
 #SET(VTK_INSTALL_EXPORT_NAME 1) #avoid that vtk directly links to an absolute Qt-library, that is located somewhere on their computer configuration.
 find_package(VTK REQUIRED)
 include(${VTK_USE_FILE})
