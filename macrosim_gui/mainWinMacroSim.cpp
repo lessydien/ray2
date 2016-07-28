@@ -147,11 +147,13 @@ MainWinMacroSim::MainWinMacroSim(QWidget *parent) :
 	//m_pLibraryModel_TreeView->setColumnHidden(1, true);
 
 	m_pDockWidget_LibraryView->setWidget(m_pLibraryModel_TreeView);
+	m_pLibraryModel_TreeView->setColumnWidth(0, 200);
 
 	// attach m_pSceneModel to treeView
 	m_pDockWidget_SceneTreeView = new QDockWidget("Scene Treeview", this);
 	this->addDockWidget(Qt::RightDockWidgetArea, m_pDockWidget_SceneTreeView);
 	m_pSceneTreeView = new QTreeView(m_pDockWidget_SceneTreeView);
+	m_pSceneTreeView->setColumnWidth(0, 200);
 	m_pSceneTreeView->setModel(m_pSceneModel);
 	m_pDockWidget_SceneTreeView->setWidget(m_pSceneTreeView);
 
