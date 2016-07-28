@@ -582,8 +582,10 @@ bool createDataObjectFromMacroSimResult(ItomFieldParams &fieldParams, ito::DataO
 			dataObject->setAxisScale(2, fieldParams.scale[0]);
 			dataObject->setAxisUnit(1,"mm");
 			dataObject->setAxisUnit(2,"mm");
+			dataObject->setValueUnit("a. u.");
 			dataObject->setAxisDescription(1, "y axis");
 			dataObject->setAxisDescription(2, "x axis");
+			dataObject->setValueDescription("intensity");
 			dataObject->setTag("wvl", fieldParams.lambda);
 			dataObject->setTag("title", "Intensity Field");
 			dataObject->setValueDescription("intensity");

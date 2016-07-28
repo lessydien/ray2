@@ -4,7 +4,7 @@ import numpy as np
 def plotResult(resultObject):
     global result
     result=resultObject;
-    plot(result,'itom2dQwtPlot')
+    plot(result,'itom2dQwtPlot', properties={"colorBarVisible" : True})
 
 if(__name__ == "__main__"):
 #    messPlanAssist = MessplanAssistent()
