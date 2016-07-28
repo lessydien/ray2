@@ -45,9 +45,9 @@ class FieldItem :
 	public AbstractItem
 {
 	Q_OBJECT
-
-	Q_PROPERTY(Vec3d tilt READ getTilt WRITE setTilt DESIGNABLE true USER true);
+			
 	Q_PROPERTY(Vec3d root READ getRoot WRITE setRoot DESIGNABLE true USER true);
+	Q_PROPERTY(Vec3d tilt READ getTilt WRITE setTilt DESIGNABLE true USER true);
 	Q_PROPERTY(FieldType fieldType READ getFieldType DESIGNABLE true USER true);
 	Q_PROPERTY(double lambda READ getLambda WRITE setLambda DESIGNABLE true USER true);
 	Q_PROPERTY(Vec2d apertureHalfWidth READ getApertureHalfWidth WRITE setApertureHalfWidth DESIGNABLE true USER true);

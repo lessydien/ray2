@@ -45,12 +45,13 @@ bool DetectorItem::writeToXML(QDomDocument &document, QDomElement &node) const
 {
 	if (!AbstractItem::writeToXML(document, node))
 		return false;
-	node.setAttribute("root.x", m_root.X);
-	node.setAttribute("root.y", m_root.Y);
-	node.setAttribute("root.z", m_root.Z);
+	
 	node.setAttribute("tilt.x", QString::number(m_tilt.X));
 	node.setAttribute("tilt.y", QString::number(m_tilt.Y));
 	node.setAttribute("tilt.z", QString::number(m_tilt.Z));
+	node.setAttribute("root.x", m_root.X);
+	node.setAttribute("root.y", m_root.Y);
+	node.setAttribute("root.z", m_root.Z);
 	node.setAttribute("apertureHalfWidth.x", QString::number(m_apertureHalfWidth.X));
 	node.setAttribute("apertureHalfWidth.y", QString::number(m_apertureHalfWidth.Y));
 	DetectorItemLib l_detItemLib;
@@ -65,12 +66,13 @@ bool DetectorItem::readFromXML(const QDomElement &node)
 	// read from base class
 	if (!AbstractItem::readFromXML(node))
 		return false;
-	m_root.X=node.attribute("root.x").toDouble();
-	m_root.Y=node.attribute("root.y").toDouble();
-	m_root.Z=node.attribute("root.z").toDouble();
+	
 	m_tilt.X=node.attribute("tilt.x").toDouble();
 	m_tilt.Y=node.attribute("tilt.y").toDouble();
 	m_tilt.Z=node.attribute("tilt.z").toDouble();
+	m_root.X = node.attribute("root.x").toDouble();
+	m_root.Y = node.attribute("root.y").toDouble();
+	m_root.Z = node.attribute("root.z").toDouble();
 	m_apertureHalfWidth.X=node.attribute("apertureHalfWidth.x").toDouble();
 	m_apertureHalfWidth.Y=node.attribute("apertureHalfWidth.y").toDouble();
 	QString detTypeStr=node.attribute("detType");

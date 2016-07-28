@@ -101,7 +101,7 @@ MainWinMacroSim::MainWinMacroSim(QWidget *parent) :
 	m_pQVTKWidget->getRenderer()->SetOcclusionRatio(0.1);
 
 	// create text edit in a dock widget
-	m_pDockWidget_Console = new dockWidget_Console("tracer status out", this);
+	m_pDockWidget_Console = new dockWidget_Console("tracer status output", this);
 	this->addDockWidget(Qt::BottomDockWidgetArea, m_pDockWidget_Console);
 	
 	// create PropertyEditor in dock widget

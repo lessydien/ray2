@@ -60,8 +60,8 @@ class DetectorItem :
 
 	Q_PROPERTY(DetType detType READ getDetType WRITE setDetType DESIGNABLE true USER true);
 	Q_PROPERTY(Vec2d apertureHalfWidth READ getApertureHalfWidth WRITE setApertureHalfWidth DESIGNABLE true USER true);
-	Q_PROPERTY(Vec3d tilt READ getTilt WRITE setTilt DESIGNABLE true USER true);
 	Q_PROPERTY(Vec3d root READ getRoot WRITE setRoot DESIGNABLE true USER true);
+	Q_PROPERTY(Vec3d tilt READ getTilt WRITE setTilt DESIGNABLE true USER true);	
 	Q_PROPERTY(DetOutFormat outFormat READ getDetOutFormat WRITE setDetOutFormat DESIGNABLE true USER true);
 	Q_PROPERTY(QString FileName READ getFileName WRITE setFileName DESIGNABLE true USER true);
 
