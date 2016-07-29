@@ -44,7 +44,7 @@ RT_PROGRAM void intersect(int)
 {
 	  double t=intersectRayPlaneSurface(prd.position, prd.direction, params);
 
-	  rtPrintf("plane surface intersect %i \n", params.geometryID);
+	  rtPrintf("plane surface intersect %d, t = %f \n", params.geometryID, t);
 	  // check wether intersection lies within valid interval of t_hit
 	  if( rtPotentialIntersection( (float)t ) ) 
 	  {
