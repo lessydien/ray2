@@ -365,11 +365,16 @@ IF(CUDA_FOUND)
 	SET(OPTIX_DLLs ${optix_DLL} ${optixu_DLL})
     POST_BUILD_COPY_FILE_TO_LIB_FOLDER(${target_name} OPTIX_DLLs)
         
-    ADD_CUSTOM_COMMAND(TARGET ${target_name} POST_BUILD                 # Adds a post-build event to MyTest
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
+	#add another sub-project that does nothing more but copying the cuda output files (*.ptx)
+	#to the itom/plugins/macrosim/ptx folder. This sub-project is always outdated, such that
+	#compiling ALL_BUILD or POST_COPY_TO_ITOM_PLUGINS will always copy the ptx files.
+	add_custom_target(
+		POST_COPY_TO_ITOM_PLUGINS ALL
+		COMMAND ${CMAKE_COMMAND} -E copy_directory
             "${PTX_DIR}"
             "${ITOM_APP_DIR}/plugins/${target_name}/ptx"
-            )    
+		DEPENDS macrosim_tracer
+    ) 
 
 ELSE(CUDA_FOUND)
     message(WARNING "CUDA could not be found. ${target_name} will not be build")

@@ -1309,6 +1309,7 @@ RT_PROGRAM void rayGeneration_DirRandImpArea_PosGridRect()
 
 RT_PROGRAM void rayGeneration_DirUniform_PosGridRect()
 {
+    rtPrintf(" start tracing ray %i,%i\n", launch_index.x, launch_index.y);
 #ifdef TIME_VIEW
   clock_t t0, t1;
   double time;

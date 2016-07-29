@@ -552,10 +552,10 @@ fieldError RayField::createOptiXContext()
     if (!RT_CHECK_ERROR_NOEXIT( rtContextSetEntryPointCount( context, 1 ), context ))
 		return FIELD_ERR;
 
-	//rtContextSetExceptionEnabled(context, RT_EXCEPTION_ALL, 1);
-	//rtContextSetPrintEnabled(context, 1);
-	//rtContextSetPrintBufferSize(context, 14096 );
-	//rtContextSetPrintLaunchIndex(context, -1, 0, 0);
+	rtContextSetExceptionEnabled(context, RT_EXCEPTION_ALL, 1);
+	rtContextSetPrintEnabled(context, 1);
+	rtContextSetPrintBufferSize(context, 14096 );
+	rtContextSetPrintLaunchIndex(context, -1, 0, 0);
 
     /* variables for the miss program */
 
