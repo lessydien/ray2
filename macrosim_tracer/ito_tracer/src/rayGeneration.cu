@@ -1309,66 +1309,66 @@ RT_PROGRAM void rayGeneration_DirRandImpArea_PosGridRect()
 
 RT_PROGRAM void rayGeneration_DirUniform_PosGridRect()
 {
-    rtPrintf(" start tracing ray %i,%i\n", launch_index.x, launch_index.y);
+    rtPrintf(" start tracing ray %i,%i\n", (launch_index.x + launch_offsetX), (launch_index.y + launch_offsetY));
 #ifdef TIME_VIEW
-  clock_t t0, t1;
-  double time;
+    clock_t t0, t1;
+    double time;
 #endif
- 
-  rayStruct prd;
-  prd.flux = params.flux;
-  prd.depth = 0;
 
-  // set seed for each ray
-  prd.currentSeed=seed_buffer[launch_index];
+    rayStruct prd;
+    prd.flux = params.flux;
+    prd.depth = 0;
+
+    // set seed for each ray
+    prd.currentSeed = seed_buffer[launch_index];
 
 #ifdef TIME_VIEW
-  t0=clock();
+    t0=clock();
 #endif 
 
-	// calc ray position
-	posDistr_GridRect_device(prd, params);	
-	// transform rayposition into global coordinate system
-	prd.position=params.Mrot*prd.position+params.translation;
-	// calc ray direction
-	dirDistr_Uniform_device(prd, params);
-	
+    // calc ray position
+    posDistr_GridRect_device(prd, params);
+    // transform rayposition into global coordinate system
+    prd.position = params.Mrot*prd.position + params.translation;
+    // calc ray direction
+    dirDistr_Uniform_device(prd, params);
+
     float3 ray_origin = make_float3(prd.position);//(float)(launch_index.x+launch_offsetX), (float)(launch_index.y+launch_offsetY), origin.z);
     float3 ray_direction = make_float3(prd.direction);//make_float3(0.0f);
     optix::Ray ray = optix::make_Ray(ray_origin, ray_direction, 0, scene_epsilon, RT_DEFAULT_MAX);
 
 
 #ifdef TIME_VIEW
-  t1 = clock(); 
-  time = (double)(t1-t0);
-  rtPrintf("time elapsed while creating ray: %lf ms\n", time);
+    t1 = clock(); 
+    time = (double)(t1-t0);
+    rtPrintf("time elapsed while creating ray: %lf ms\n", time);
 #endif 
-	
 
-  rtPrintf("test \n");
+    prd.currentGeometryID = 0;
+    prd.lambda = params.lambda;
+    prd.nImmersed = params.nImmersed;
+    prd.running = true;
+    prd.opl = 0;
 
-  prd.currentGeometryID = 0;
-  prd.lambda=params.lambda;
-  prd.nImmersed=params.nImmersed;
-  prd.running=true;
-  prd.opl=0; 
- 
-  for(;;) 
-  {
-    //optix::Ray ray = optix::make_Ray(ray_origin, ray_direction, 0, scene_epsilon, RT_DEFAULT_MAX);
-    rtTrace(top_object, ray, prd);
-
-	// update ray
-	ray.origin=make_float3(prd.position);
-	ray.direction=make_float3(prd.direction);
-    if(!prd.running) 
+    for (;;)
     {
-       //prd.result += prd.radiance * prd.attenuation;
-       break;
-    }
-  }
+        //optix::Ray ray = optix::make_Ray(ray_origin, ray_direction, 0, scene_epsilon, RT_DEFAULT_MAX);
+        rtPrintf("%i, pos before trace: %lf %lf %lf\n", (launch_index.x + launch_offsetX), ray.origin.x, ray.origin.y, ray.origin.z);
+        rtTrace(top_object, ray, prd);
+        rtPrintf("%i, pos after trace: %lf %lf %lf\n", (launch_index.x + launch_offsetX), ray.origin.x, ray.origin.y, ray.origin.z);
+        // update ray
+        ray.origin = make_float3(prd.position);
+        ray.direction = make_float3(prd.direction);
 
-  output_buffer[launch_index] = prd;//.direction;//prd.position;
+        rtPrintf("%i, pos after trace (2): %lf %lf %lf\n", (launch_index.x + launch_offsetX), ray.origin.x, ray.origin.y, ray.origin.z);
+        if (!prd.running)
+        {
+            //prd.result += prd.radiance * prd.attenuation;
+            break;
+        }
+    }
+
+    output_buffer[launch_index] = prd;//.direction;//prd.position;
 }
 
 /***********************************************************************************

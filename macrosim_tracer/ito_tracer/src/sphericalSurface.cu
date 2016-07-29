@@ -50,6 +50,9 @@ RT_PROGRAM void intersect(int)
 		{
 			t = intersectRaySphere(prd.position, prd.direction, params);
 		}
+
+        rtPrintf("spherical surface intersect %d, t = %f \n", params.geometryID, t);
+
 		// check wether intrersection is within valid interval of t
 		if( rtPotentialIntersection( (float)t ) ) 
 		{
