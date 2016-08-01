@@ -68,6 +68,7 @@ geometryError CadObject::setParams(Geometry_Params *paramsIn)//CadObject_Params 
     return GEOM_NO_ERR;
 };
 
+
 /**
  * \detail intersect function for geometric rays
  *
@@ -82,19 +83,37 @@ double CadObject::intersect(rayStruct *ray)
 {
     if (model->getIndexCount() > 0)
     {
-        double t_min = 0.0;
-        double t;
-        for (int idx = 0; idx < model->getIndexCount() / 3; ++idx)
-        {
-            t = intersectRayCadObject(ray->position, ray->direction, *(this->reducedParamsPtr), (float3*)model->getCompiledVertices(), (int3*)model->getCompiledIndices(), idx);
-            if (t != 0.0 && (t < t_min || t_min == 0.0))
-            {
-                t_min = t;
-                ray->currentGeometryID = idx;
-            }
-        }
+        
+        double3 tmpPos = ray->position - this->reducedParamsPtr->root;
+        rotateRayInv(&tmpPos, this->reducedParamsPtr->tilt);
+        double3 tmpDir = ray->direction;
+        rotateRayInv(&tmpDir, this->reducedParamsPtr->tilt);
 
-        return t_min;
+        nanort::TriangleIntersector<> triangle_intersector(model->getCompiledVertices(), model->getCompiledIndices());
+        nanort::Ray ray2;
+
+        ray2.min_t = 0.0f;
+        ray2.max_t = 1.0e+30f;
+        ray2.org[0] = tmpPos.x;
+        ray2.org[1] = tmpPos.y;
+        ray2.org[2] = tmpPos.z;
+        ray2.dir[0] = tmpDir.x;
+        ray2.dir[1] = tmpDir.y;
+        ray2.dir[2] = tmpDir.z;
+
+        nanort::BVHTraceOptions trace_options;
+
+        bool hit = m_accel.Traverse(ray2, trace_options, triangle_intersector);
+        if (hit)
+        {
+            ray->currentGeometryID = triangle_intersector.intersection.prim_id;
+            return triangle_intersector.intersection.t;
+        }
+        else
+        {
+            return 0.0;
+        }
+        
     }
     else
     {
@@ -416,6 +435,14 @@ geometryError CadObject::parseXml(pugi::xml_node &geometry, SimParams simParams,
 		return GEOM_ERR;
 	}
 	model->compileModel();
+
+    nanort::TriangleMesh triangle_mesh(model->getCompiledVertices(), model->getCompiledIndices());
+    nanort::TriangleSAHPred triangle_pred(model->getCompiledVertices(), model->getCompiledIndices());
+    nanort::BVHBuildOptions options; // Use default option
+    m_accel.Build(model->getCompiledIndexCount() / 3, options, triangle_mesh, triangle_pred);
+
+    nanort::BVHBuildStatistics stats = m_accel.GetStatistics();
+    std::cout << "  BVH statistics:\n" << "    # of leaf   nodes: " << stats.num_leaf_nodes << "\n# of branch nodes: " << stats.num_branch_nodes << "\nMax tree depth   : " << stats.max_tree_depth << "\n";
 
 	geomVec.push_back(this);
 	return GEOM_NO_ERR;

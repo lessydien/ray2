@@ -29,6 +29,7 @@
 #include <nvModel.h>
 #include "Geometry.h"
 #include "cadObject_intersect.h"
+#include "nanort.h"
 
 /* declare class */
 /**
@@ -148,6 +149,7 @@ private:
 	  }
 	}
 	
+    nanort::BVHAccel<nanort::TriangleMesh, nanort::TriangleSAHPred, nanort::TriangleIntersector<> > m_accel;
     Geometry_Params* getParamsPtr(void);
 	geometryError setParams(Geometry_Params *paramsIn);//CadObject_Params *params);
 	double intersect(rayStruct *ray);

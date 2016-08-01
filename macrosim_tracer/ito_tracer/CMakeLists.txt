@@ -587,6 +587,8 @@ OPTIX_add_sample_executable( macrosim_tracer
   src/boundingBox.cu
   src/exception.cu
   src/cadObject.cu
+
+  src/nanort.h
   
   # This is an extra option to compile to sm_13 (use sm_20 for Tesla?).  It is parsed out in the
   # OPTIX_add_sample_executable macro.
