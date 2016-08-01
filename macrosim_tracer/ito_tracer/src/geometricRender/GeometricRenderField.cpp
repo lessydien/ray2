@@ -599,6 +599,11 @@ fieldError GeometricRenderField::initSimulation(Group &oGroup, simAssParams &par
 	return FIELD_NO_ERR;
 };
 
+int CallbackFunction()
+{
+    return 0; //continue
+}
+
 fieldError GeometricRenderField::createOptiXContext()
 {
 	RTprogram  miss_program;
@@ -615,9 +620,13 @@ fieldError GeometricRenderField::createOptiXContext()
 		return FIELD_ERR;
 
 	rtContextSetExceptionEnabled(context, RT_EXCEPTION_ALL, 1);
-	rtContextSetPrintEnabled(context, 1);
+	rtContextSetPrintEnabled(context, 0);
 	rtContextSetPrintBufferSize(context, 14096 );
 	rtContextSetPrintLaunchIndex(context, -1, 0, 0);
+
+    
+    // Call CBFunc at most once every 300 ms.
+    rtContextSetTimeoutCallback(context, CallbackFunction, 0.3);
 
     /* variables for the miss program */
 
@@ -633,7 +642,7 @@ fieldError GeometricRenderField::createOptiXContext()
     if (!RT_CHECK_ERROR_NOEXIT( rtContextSetMissProgram( context, 0, miss_program ), context ))
 		return FIELD_ERR;
 
-	rtContextSetStackSize(context, 1536);
+    rtContextSetStackSize(context, 1536);
 	//rtContextGetStackSize(context, &stack_size_bytes);
 
 	delete path_to_ptx;

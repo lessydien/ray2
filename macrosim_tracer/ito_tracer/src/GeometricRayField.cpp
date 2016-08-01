@@ -1306,6 +1306,12 @@ fieldError GeometricRayField::traceScene(Group &oGroup, bool RunOnCPU)
 		std::cout << "tracing on GPU." << "...\n";
 
 		initGPUSubset(context, seed_buffer_obj);
+
+        RTsize memory1, memory2;
+        rtContextGetAttribute(context, RT_CONTEXT_ATTRIBUTE_AVAILABLE_DEVICE_MEMORY, sizeof(RTsize), &memory1);
+        rtContextGetAttribute(context, RT_CONTEXT_ATTRIBUTE_USED_HOST_MEMORY, sizeof(RTsize), &memory2);
+        std::cout << "available device memory: " << memory1 << ", used host memory: " << memory2 << "\n";
+
 		// start current launch
 		if (!RT_CHECK_ERROR_NOEXIT( rtContextLaunch2D( (context), 0, this->rayParamsPtr->GPUSubset_width, this->rayParamsPtr->GPUSubset_height), context))//this->rayParamsPtr->launchOffsetX, this->rayParamsPtr->launchOffsetY ) );
 			return FIELD_ERR;
