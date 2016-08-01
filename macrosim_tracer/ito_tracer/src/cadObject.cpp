@@ -80,7 +80,26 @@ geometryError CadObject::setParams(Geometry_Params *paramsIn)//CadObject_Params 
  */
 double CadObject::intersect(rayStruct *ray)
 {
-	return 0;//intersectRayCadObject(ray->position,ray->direction,*(this->reducedParamsPtr));
+    if (model->getIndexCount() > 0)
+    {
+        double t_min = 0.0;
+        double t;
+        for (int idx = 0; idx < model->getIndexCount() / 3; ++idx)
+        {
+            t = intersectRayCadObject(ray->position, ray->direction, *(this->reducedParamsPtr), (float3*)model->getCompiledVertices(), (int3*)model->getCompiledIndices(), idx);
+            if (t != 0.0 && (t < t_min || t_min == 0.0))
+            {
+                t_min = t;
+                ray->currentGeometryID = idx;
+            }
+        }
+
+        return t_min;
+    }
+    else
+    {
+        return 0.0;
+    }
 };
 
 /**
@@ -137,8 +156,7 @@ geometryError CadObject::reduceParams(void)
  */
 geometryError CadObject::hit(rayStruct &ray, double t)
 {
-	Mat_hitParams hitParams;
-	hitParams.normal=this->paramsPtr->normal;
+    Mat_hitParams hitParams = calcHitParamsCADObject(*(this->reducedParamsPtr), (float3*)model->getCompiledVertices(), (int3*)model->getCompiledIndices(), ray.currentGeometryID);
 	int i;
 	for (i=0;i<this->materialListLength;i++)
 	{

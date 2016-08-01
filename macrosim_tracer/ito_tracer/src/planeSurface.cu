@@ -60,7 +60,7 @@ RT_PROGRAM void intersect(int)
 
 RT_PROGRAM void bounds (int, float result[6])
 {
-    planeSurfaceBounds (0, result, params);
+    //planeSurfaceBounds (0, result, params); //TODO
   //optix::Aabb* aabb = (optix::Aabb*)result;
   //double3 l_ex=make_double3(1,0,0);
   //rotateRay(&l_ex,params.tilt);

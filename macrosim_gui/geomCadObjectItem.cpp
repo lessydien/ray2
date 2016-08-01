@@ -188,35 +188,67 @@ Vec3f CadObjectItem::calcNormal(Vec3f vertex, Vec3f* neighbours, int nr)
 
 void CadObjectItem::updateVtk()
 {
-	// apply root and tilt
-	//m_pActor->SetOrigin(this->getRoot().X, this->getRoot().Y, this->getRoot().Z);
-	m_pActor->SetPosition(this->getRoot().X, this->getRoot().Y, this->getRoot().Z);
-	m_pActor->SetOrientation(this->getTilt().X, this->getTilt().Y, this->getTilt().Z);
-	m_pReader->Update();
+	//// apply root and tilt
+	////m_pActor->SetOrigin(this->getRoot().X, this->getRoot().Y, this->getRoot().Z);
+	//m_pActor->SetPosition(this->getRoot().X, this->getRoot().Y, this->getRoot().Z);
+	//m_pActor->SetOrientation(this->getTilt().X, this->getTilt().Y, this->getTilt().Z);
+	//m_pReader->Update();
 
-	if (this->m_focus)
-		m_pActor->GetProperty()->SetColor(0.0,1.0,0.0); // green
-	else
-		m_pActor->GetProperty()->SetColor(0.0,0.0,1.0); // red
+	//if (this->m_focus)
+	//	m_pActor->GetProperty()->SetColor(0.0,1.0,0.0); // green
+	//else
+	//	m_pActor->GetProperty()->SetColor(0.0,0.0,1.0); // red
+
+
+ //   if (this->getRender())
+ //       m_pActor->SetVisibility(1);
+ //   else
+ //       m_pActor->SetVisibility(0);
+
+    // apply root and tilt
+    //m_pActor->SetOrigin(this->getRoot().X, this->getRoot().Y, this->getRoot().Z);
+    m_pActor->SetPosition(this->getRoot().X, this->getRoot().Y, this->getRoot().Z);
+    m_pActor->SetOrientation(this->getTilt().X, this->getTilt().Y, this->getTilt().Z);
+
+    m_pActor->GetProperty()->SetAmbient(m_renderOptions.m_ambientInt);
+    m_pActor->GetProperty()->SetDiffuse(m_renderOptions.m_diffuseInt);
+    m_pActor->GetProperty()->SetSpecular(m_renderOptions.m_specularInt);
+
+    // Set shading
+    m_pActor->GetProperty()->SetInterpolationToGouraud();
+
+    if (this->m_focus)
+        m_pActor->GetProperty()->SetColor(0.0, 1.0, 0.0); // green
+    else
+        m_pActor->GetProperty()->SetColor(0.0, 0.0, 1.0); // red
+
+#if  (VTK_MAJOR_VERSION <= 5)
+    // request the update
+    m_pPolydata->Update();
+#else
+    m_pMapper->Update();
+#endif
 };
 
 void CadObjectItem::renderVtk(vtkSmartPointer<vtkRenderer> renderer)
 {
-	QByteArray ba = m_objFilename.toLocal8Bit();
-	m_pReader->SetFileName(ba.data());
-
-//	m_pReader->SetFileName("E:/mauch/MacroSim_In/gearMesh.obj");
-//	m_pReader->Update();
-
-	if (this->getRender())
-		m_pActor->SetVisibility(1);
-	else
-		m_pActor->SetVisibility(0);
-
-	if (this->m_focus)
-		m_pActor->GetProperty()->SetColor(0.0,1.0,0.0); // green
-	else
-		m_pActor->GetProperty()->SetColor(0.0,0.0,1.0); // red
+//	QByteArray ba = m_objFilename.toLocal8Bit();
+//	m_pReader->SetFileName(ba.data());
+//
+////	m_pReader->SetFileName("E:/mauch/MacroSim_In/gearMesh.obj");
+////	m_pReader->Update();
+//
+//	if (this->getRender())
+//		m_pActor->SetVisibility(1);
+//	else
+//		m_pActor->SetVisibility(0);
+//
+//	if (this->m_focus)
+//		m_pActor->GetProperty()->SetColor(0.0,1.0,0.0); // green
+//	else
+//		m_pActor->GetProperty()->SetColor(0.0,0.0,1.0); // red
 
 	renderer->AddActor(m_pActor);
+
+    updateVtk();
 }
