@@ -157,9 +157,18 @@ inline RT_HOSTDEVICE void rotateRayInv(double3 *ray, double3 tilt)
 {
 	double3 rayTmp;
 	tilt=-tilt;
-	double3x3 Mx=make_double3x3(1,0,0, 0,cos(tilt.x),-sin(tilt.x), 0,sin(tilt.x),cos(tilt.x));
-	double3x3 My=make_double3x3(cos(tilt.y),0,sin(tilt.y), 0,1,0, -sin(tilt.y),0,cos(tilt.y));
-	double3x3 Mz=make_double3x3(cos(tilt.z),-sin(tilt.z),0, sin(tilt.z),cos(tilt.z),0, 0,0,1);
+
+	double cosTiltx = cos(tilt.x);
+	double sinTiltx = sin(tilt.x);
+	double3x3 Mx = make_double3x3(1, 0, 0, 0, cosTiltx, -sinTiltx, 0, sinTiltx, cosTiltx);
+
+	double cosTilty = cos(tilt.y);
+	double sinTilty = sin(tilt.y);
+	double3x3 My = make_double3x3(cosTilty, 0, sinTilty, 0, 1, 0, -sinTilty, 0, cosTilty);
+
+	double cosTiltz = cos(tilt.z);
+	double sinTiltz = sin(tilt.z);
+	double3x3 Mz = make_double3x3(cosTiltz, -sinTiltz, 0, sinTiltz, cosTiltz, 0, 0, 0, 1);
 	double3x3 Mzy=Mz*My;
 	double3x3 M=Mzy*Mx;
 	rayTmp=M*(*ray);
@@ -172,7 +181,9 @@ inline RT_HOSTDEVICE double3 rotateRay(double3 ray, double3 tilt)
 	double3 rayTmp;
 	double3 rotKrnlTmp;
 	/* rotate phiX around x-axis */
-	double3x3 Mx=make_double3x3(1,0,0, 0,cos(tilt.x),-sin(tilt.x), 0,sin(tilt.x),cos(tilt.x));
+	double cosTiltx = cos(tilt.x);
+	double sinTiltx = sin(tilt.x);
+	double3x3 Mx = make_double3x3(1, 0, 0, 0, cosTiltx, -sinTiltx, 0, sinTiltx, cosTiltx);
 	rayTmp=Mx*(ray);
 	ray=rayTmp;
 	/* rotate y- and z axis accordingly */
@@ -320,9 +331,17 @@ inline RT_HOSTDEVICE double4x4 createTransformationMatrix(double3 rotation, doub
 {
 
 	double4x4 t;
-	double3x3 rotMatX=make_double3x3(1,0,0, 0,cos(rotation.x),-sin(rotation.x), 0,sin(rotation.x),cos(rotation.x));
-	double3x3 rotMatY=make_double3x3(cos(rotation.y),0,sin(rotation.y), 0,1,0, -sin(rotation.y),0,cos(rotation.y));
-	double3x3 rotMatZ=make_double3x3(cos(rotation.z),-sin(rotation.z),0, sin(rotation.z),cos(rotation.z),0, 0,0,1);
+	double cosTiltx = cos(rotation.x);
+	double sinTiltx = sin(rotation.x);
+	double3x3 rotMatX = make_double3x3(1, 0, 0, 0, cosTiltx, -sinTiltx, 0, sinTiltx, cosTiltx);
+
+	double cosTilty = cos(rotation.y);
+	double sinTilty = sin(rotation.y);
+	double3x3 rotMatY = make_double3x3(cosTilty, 0, sinTilty, 0, 1, 0, -sinTilty, 0, cosTilty);
+
+	double cosTiltz = cos(rotation.z);
+	double sinTiltz = sin(rotation.z);
+	double3x3 rotMatZ = make_double3x3(cosTiltz, -sinTiltz, 0, sinTiltz, cosTiltz, 0, 0, 0, 1);
 	double3x3 rotMat=rotMatX*rotMatY;
 	rotMat=rotMat*rotMatZ;
 
