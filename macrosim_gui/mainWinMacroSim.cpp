@@ -410,14 +410,14 @@ void MainWinMacroSim::saveScene()
 		QFile file(m_fileName);
 		if(!file.open(QIODevice::WriteOnly | QIODevice::Text))
 		{
-			cout << "failed to open file for writing" << endl;
+			cout << "failed to open file for writing" << "\n" << std::endl;;
 		}
 		else
 		{
 			QTextStream stream(&file);
 			stream << m_html;
 			file.close();
-			cout << "done saving to file";
+			cout << "done saving to file" << "\n" << std::endl;
 		}
 	}
 }
